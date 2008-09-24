@@ -1,0 +1,424 @@
+<ui version="4.0" >
+ <class>RecordSettingsDialogClass</class>
+ <widget class="QDialog" name="RecordSettingsDialogClass" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>402</width>
+    <height>405</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Recording Options</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3" >
+   <item row="0" column="0" colspan="3" >
+    <widget class="QGroupBox" name="grpGeneral" >
+     <property name="title" >
+      <string>General options</string>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3" >
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <widget class="QCheckBox" name="chkRecordingDuration" >
+          <property name="text" >
+           <string>Automatically stop recording after (minutes):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="edtRecordingDuration" >
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <number>999</number>
+          </property>
+          <property name="value" >
+           <number>30</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Channel 1 (EAD)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Low cutoff:</string>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="6" row="0" column="1" >
+       <widget class="Line" name="line" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="label_8" >
+        <property name="text" >
+         <string>Range:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QComboBox" name="cmbHighpass_1" />
+      </item>
+      <item row="1" column="2" >
+       <widget class="QComboBox" name="cmbRange_1" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>High cutoff:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>Offset (µV):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QComboBox" name="cmbLowpass_1" />
+      </item>
+      <item row="3" column="2" >
+       <widget class="QSpinBox" name="edtOffset_1" >
+        <property name="minimum" >
+         <number>-1000000</number>
+        </property>
+        <property name="maximum" >
+         <number>1000000</number>
+        </property>
+        <property name="singleStep" >
+         <number>30</number>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="2" row="4" column="0" >
+       <widget class="QCheckBox" name="chkInvert_1" >
+        <property name="text" >
+         <string>Invert</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2" >
+       <widget class="QSlider" name="sliderOffset_1" >
+        <property name="minimum" >
+         <number>-60</number>
+        </property>
+        <property name="maximum" >
+         <number>60</number>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="3" >
+       <layout class="QHBoxLayout" name="horizontalLayout_3" >
+        <item>
+         <widget class="QLabel" name="label" >
+          <property name="text" >
+           <string>External amplification:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="edtExternalAmplification_1" >
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="0" >
+       <spacer name="verticalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>20</width>
+          <height>18</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Channel 2 (FID)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_7" >
+        <property name="text" >
+         <string>Low cutoff</string>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="6" row="0" column="1" >
+       <widget class="Line" name="line_2" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="label_9" >
+        <property name="text" >
+         <string>Range:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QComboBox" name="cmbHighpass_2" />
+      </item>
+      <item row="1" column="2" >
+       <widget class="QComboBox" name="cmbRange_2" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>High cutoff</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QLabel" name="label_6" >
+        <property name="text" >
+         <string>Offset (µV):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QComboBox" name="cmbLowpass_2" />
+      </item>
+      <item row="3" column="2" >
+       <widget class="QSpinBox" name="edtOffset_2" >
+        <property name="minimum" >
+         <number>-1000000</number>
+        </property>
+        <property name="maximum" >
+         <number>1000000</number>
+        </property>
+        <property name="singleStep" >
+         <number>30</number>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="2" row="4" column="0" >
+       <widget class="QCheckBox" name="chkInvert_2" >
+        <property name="text" >
+         <string>Invert</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2" >
+       <widget class="QSlider" name="sliderOffset_2" >
+        <property name="minimum" >
+         <number>-60</number>
+        </property>
+        <property name="maximum" >
+         <number>60</number>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="3" >
+       <layout class="QGridLayout" name="gridLayout_2" >
+        <item row="0" column="0" >
+         <widget class="QLabel" name="label_10" >
+          <property name="text" >
+           <string>External amplification:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" >
+         <widget class="QSpinBox" name="edtExternalAmplification_2" >
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_11" >
+          <property name="text" >
+           <string>GC Delay (ms):</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QSpinBox" name="edtGcDelay" >
+          <property name="maximum" >
+           <number>1000</number>
+          </property>
+          <property name="singleStep" >
+           <number>10</number>
+          </property>
+          <property name="value" >
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="groupBox_3" >
+     <property name="title" >
+      <string>Digital 1 (Trigger)</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
+      <item>
+       <widget class="QCheckBox" name="chkRecordOnTrigger" >
+        <property name="text" >
+         <string>Trigger initiates recording</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkInvert_3" >
+        <property name="text" >
+         <string>Invert</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2" >
+    <widget class="QGroupBox" name="groupBox_4" >
+     <property name="title" >
+      <string>Digital 2 (Signal)</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <item>
+       <widget class="QCheckBox" name="chkEnabled_4" >
+        <property name="text" >
+         <string>Record signal data</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkInvert_4" >
+        <property name="text" >
+         <string>Invert</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="1" >
+    <spacer name="horizontalSpacer_2" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>103</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QPushButton" name="btnClose" >
+     <property name="text" >
+      <string>&amp;Close</string>
+     </property>
+     <property name="default" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>chkRecordingDuration</tabstop>
+  <tabstop>edtRecordingDuration</tabstop>
+  <tabstop>cmbHighpass_1</tabstop>
+  <tabstop>cmbLowpass_1</tabstop>
+  <tabstop>chkInvert_1</tabstop>
+  <tabstop>cmbRange_1</tabstop>
+  <tabstop>edtOffset_1</tabstop>
+  <tabstop>sliderOffset_1</tabstop>
+  <tabstop>cmbHighpass_2</tabstop>
+  <tabstop>cmbLowpass_2</tabstop>
+  <tabstop>chkInvert_2</tabstop>
+  <tabstop>cmbRange_2</tabstop>
+  <tabstop>edtOffset_2</tabstop>
+  <tabstop>sliderOffset_2</tabstop>
+  <tabstop>chkRecordOnTrigger</tabstop>
+  <tabstop>chkInvert_3</tabstop>
+  <tabstop>chkEnabled_4</tabstop>
+  <tabstop>chkInvert_4</tabstop>
+  <tabstop>btnClose</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnClose</sender>
+   <signal>clicked()</signal>
+   <receiver>RecordSettingsDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>396</x>
+     <y>360</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>271</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,21 @@
+Installation:
+	Need to copy VS80 dlls to the bin directory (see /home/ellis/sharer/Ead/DebugFiles
+	Need to run Setup.exe to make sure that .NET 3.5 gets installed
+
+
+Settings for individual waveforms:
+	sensitivity
+	inversion
+	time offset
+	comment
+	color?
+
+Recording objects:
+	Idac: interfaces with hardware
+	RecordHandler: converts idac data to raw and display data
+	RecordDialog: shows preview of the incoming EAD data and lets user adjust settings
+	RecordSettingsDialog: for setting the recording options
+	MainScope:
+		adds data to the EadFile
+		tells ChartWidget to update itself when in Recording view
+		auto-stops Idac recording when duration is reached
