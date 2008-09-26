@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>GC-EAD/2008</title>
+	<link rel="stylesheet" href="http://vivia-video.org/vivia.css" type="text/css">
+	<!--link rel="shortcut icon" href="favicon.png" type="image/png"-->
+</head>
+
+<body>
+
+<table align="center" width="80%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="31" width="31"><img src="http://vivia-video.org/images/top-left.png"/></td>
+		<td height="31" style="background: url(http://vivia-video.org/images/top.png) repeat-x">&nbsp;</td>
+		<td height="31" width="31"><img src="http://vivia-video.org/images/top-right.png"/></td>
+	</tr>
+	<tr>
+		<td width="30px" style="background: white url(http://vivia-video.org/images/left.png) repeat-y top left">&nbsp;</td>
+		<td>
+<div id="wrapper">
+<div id="title">GC-EAD/2008</div>
+
+<div id="menu">
+	<span class="menu-item"><a href="index.html">Home</a></span>
+	<span class="menu-item"><a href="documentation.html">Documentation</a></span>
+	<span class="menu-item"><a href="download.html">Download</a></span>
+</div>
+
+<div id="content">
+
+<table>
+
+  <tbody>
+
+    <tr>
+
+      <td valign="top">
+	<h2>Start</h2>
+	When you run <i>GC-EAD 2008</i>, you will be presented with an empty project.  At this point, you can either record new data or load an existing project file.  Alternatively, if you just want to play around with the program without first record data, you can select "Load Sample Project" from the "File" menu.  Lets take a quick look at the program:
+	
+	<p><center><img src="start-large.jpg"/></center></p>
+	
+	<h3 style="text-align: center">Toolbar</h3>
+	<p><center><img src="toolbar-large.jpg"/></center></p>
+	<p>The first button lets you start recording.  The next several options let you view and edit peaks in the data (more about this later).  The last button lets you add a comment for the project.
+	
+	<h3 style="text-align: center">View/Publish modes</h3>
+	<p><center><img src="modes.png"/></center></p>
+	<p>Below the toolbar on the left, there are two tabs: <i>View</i> and <i>Publish</i>.  In <i>View</i> mode, you can adjust the recorded data in the graph on the right (in the screenshot above, no data has been recorded yet, so the graph is empty).  Once you have recorded and adjusted the data to your liking, you can use the <i>Publish</i> mode to either print a report or save an image of the graph.</p>
+	
+	<h3 style="text-align: center">Graph perspectives</h3>
+	<p><center><img src="views.png"/></center></p>
+	<p>
+	Above the graph are five tabs that contain different perspectives on the data: <i>Averages</i>, <i>EADs</i>, <i>FIDs</i>, <i>All</i>, <i>Recording</i>.
+	
+	
+	<h2>Recording</h2>
+	To start recording, you need to open the recording window.  This can be done by:
+	<ul><li>selecting "Record" from the "Record" menu, or</li><li>clicking the green arrow button on the left side of the toolbar, or</li><li>pressing Ctrl+R.</li></ul>
+	In the screenshot below, the inputs are all grounded, but normally you'll see fluctuating signals.
+	<p><center><img src="sample-record-large.jpg"/></center></p>
+	<p>Once you have verified that all inputs are present, you can click the [Record] button to start recording.</p>
+	<p>If this is your first time using <i>GC-EAD 2008</i>, you'll want to open the options dialog by clicking on the [Options] button:</p>
+	<p><center><img src="recording_options.png"/></center></p>
+	
+	
+	<h2>View</h2>
+	Once you have recorded data, you might want to adjust it.  Here is a screenshot of the sample project (with it's somewhat artificial data).
+	<center><img src="sample-view-all-large.jpg"/></center>
+	You can move recorded signals up and down by clicking on them with the mouse and dragging.
+	<h3 style="text-align: center">Signal List</h3>
+	<p><center><img src="waveinfo.png"/></center></p>
+	In the signal list on the left, you can adjust several properties.  Click on the wrench icon to open the properties dialog.  Click on the checkbox to show or hide the signal.  By clicking on the zoom icons, you can adjust the magnification of the signals on the graph.
+	
+	<h3 style="text-align: center">Signal Properties</h3>
+	<p><center><img src="waveeditdialog.png"/></center></p>
+	The signal properties dialog lets you adjust a few additional parameters.  By increasing the timeshift value, for example, the signal will be moved to the right on the graph.  You can also add a comment the signal and invert it.
+	
+	<h2>Edit Peaks</h2>
+	By clicking on "Edit" in the toolbar, you can start editing peaks.  Note that you can only edit peaks in <i>View</i> mode, and you cannot edit peaks on the <i>EADs</i> graph.  You will need to select which FID signal to edit peaks on by selecting a signal from the drop-down box beneath the signal list on the left.
+	
+	<center><img src="sample-edit_peaks-large.jpg"/></center>
+	The program automatically offers suggestions for where peaks might be.  You can verify the automatically detected peaks by clicking on "Add" or you can set your own peaks by holding down the CTRL key and clicking on the FID signal.  The peak area is adjusted by dragging the blue boxes to the appropriate position.
+
+	<h2>Publish</h2>
+	In <i>Publish</i> mode, you can select which graph elements to display and specify the dimensions of the graph.
+	<p><center><img src="sample-publish-all-large.jpg"/></center></p>
+	<ul>
+		<li>The "Specify width" option lets you set the number of colums for the graph (there are always 10 rows).</li>
+		<li>The "Specify timebase" option lets you set the number of minutes per division.</li>
+		<li>The "Specify size (pixels)" option lets you set the width in pixels when saving the graph to an image file.</li>
+	</ul>
+	In order to print, select the "Printer" under "Output Type".
+      </div>
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+</div>
+
+</div>
+
+	</td>
+		<td width="30px" style="background: white url(http://vivia-video.org/images/right.png) repeat-y top right">&nbsp;</td>
+	</tr>
+	<tr>
+		<td height="31" width="31"><img src="http://vivia-video.org/images/bottom-left.png"/></td>
+		<td height="31" style="background: url(http://vivia-video.org/images/bottom.png) repeat-x">&nbsp;</td>
+		<td height="31" width="31"><img src="http://vivia-video.org/images/bottom-right.png"/></td>
+	</tr>
+</table>
+
+<center>
+<small>Last edited: 2008-09-26, Copyright 2008</small><br />
+<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=169366&amp;type=1" alt="SourceForge.net Logo" border="0" height="31" width="88"></a>
+</center>
+
+</body>
+</html>
