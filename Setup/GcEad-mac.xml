@@ -1,0 +1,308 @@
+<project>
+	<shortName>GcEad</shortName>
+	<fullName>GC-EAD 2009</fullName>
+	<version>1.1</version>
+	<installerFilename></installerFilename>
+	<enableRollback>1</enableRollback>
+	<enableTimestamp>1</enableTimestamp>
+	<saveRelativePaths>1</saveRelativePaths>
+	<startMenuGroupName>Syntech/GC-EAD</startMenuGroupName>
+	<vendor>Syntech</vendor>
+	<allowComponentSelection>1</allowComponentSelection>
+	<initializationActionList>
+		<!-- For Windows, enable idacusbwindows and disable idacusblinux -->
+		<componentSelection>
+			<select>idacusbwindows</select>
+			<deselect>idacusblinux</deselect>
+			<deselect>desktopEntryLinux</deselect>
+			<ruleList>
+				<platformTest>
+					<type>windows</type>
+				</platformTest>
+			</ruleList>
+		</componentSelection>
+		<!-- For Linux, enable idacusblinux and disable idacusbwindows -->
+		<componentSelection>
+			<select>idacusblinux</select>
+			<select>desktopEntryLinux</select>
+			<deselect>idacusbwindows</deselect>
+			<ruleList>
+				<platformTest>
+					<type>linux</type>
+				</platformTest>
+			</ruleList>
+		</componentSelection>
+	</initializationActionList>
+	<componentList>
+		<component>
+			<name>default</name>
+			<description>Application Files</description>
+			<canBeEdited>0</canBeEdited>
+			<selected>1</selected>
+			<show>1</show>
+			<folderList>
+				<folder>
+					<description>Program Files</description>
+					<destination>${installdir}</destination>
+					<name>programfiles</name>
+					<platforms>all</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/gpl-3.0.txt</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/idc2fpga.hex</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/idc4fpga.hex</origin>
+						</distributionFile>
+					</distributionFileList>
+					<shortcutList>
+						<shortcut>
+							<comment>Uninstall</comment>
+							<exec>${installdir}/${uninstallerName}</exec>
+							<icon></icon>
+							<name>Uninstall ${product_fullname}</name>
+							<path>${installdir}</path>
+							<platforms>all</platforms>
+							<runInTerminal>0</runInTerminal>
+							<windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+							<windowsExecArgs></windowsExecArgs>
+							<windowsIcon></windowsIcon>
+							<windowsPath>${installdir}</windowsPath>
+						</shortcut>
+					</shortcutList>
+				</folder>
+				<folder>
+					<description>Program Files</description>
+					<destination>${installdir}</destination>
+					<name>programfileslinux</name>
+					<platforms>linux</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../release/GcEad</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libgcc_s.so.1</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtCore.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtGui.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtSvg.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtXml.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libstdc++.so.6</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/60-syntech.rules</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/GcEad.sh</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+				<folder>
+					<description>Program Files</description>
+					<destination>${installdir}</destination>
+					<name>programfileswindows</name>
+					<platforms>windows</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/Windows/GcEad.exe</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/idac4.cat</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/idac4.inf</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/idac4_x64.cat</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/libusb0.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/libusb0.sys</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/libusb0_x64.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/libusb0_x64.sys</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/mingwm10.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/msvcr90.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/QtCore4.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/QtGui4.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/QtSvg4.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Windows/QtXml4.dll</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../View/images/GcEad.ico</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+				<folder>
+					<description>Program Files</description>
+					<destination>${installdir}</destination>
+					<name>programfilesosx</name>
+					<platforms>osx</platforms>
+				</folder>
+			</folderList>
+			<desktopShortcutList>
+				<shortcut>
+					<comment>Run GC-EAD 2009</comment>
+					<exec>${installdir}/GcEad.sh</exec>
+					<icon></icon>
+					<name>GC-EAD 2009</name>
+					<path>${installdir}/</path>
+					<platforms>all</platforms>
+					<runInTerminal>0</runInTerminal>
+					<windowsExec>${installdir}/GcEad.exe</windowsExec>
+					<windowsExecArgs></windowsExecArgs>
+					<windowsIcon>${installdir}/GcEad.ico</windowsIcon>
+					<windowsPath>${installdir}/</windowsPath>
+				</shortcut>
+			</desktopShortcutList>
+			<startMenuShortcutList>
+				<startMenuShortcut>
+					<comment>Gas Chromatography - Electroantennographic Detection</comment>
+					<name>GC-EAD 2009</name>
+					<runInTerminal>0</runInTerminal>
+					<windowsExec>${installdir}/GcEad.exe</windowsExec>
+					<windowsExecArgs></windowsExecArgs>
+					<windowsIcon>${installdir}/GcEad.ico</windowsIcon>
+					<windowsPath>${installdir}</windowsPath>
+				</startMenuShortcut>
+				<startMenuLinkShortcut>
+					<comment>Launch web browser to visit the GC-EAD website</comment>
+					<name>Visit GC-EAD Website</name>
+					<runInTerminal>0</runInTerminal>
+					<url>http://gcead.sourceforge.net</url>
+					<windowsIcon></windowsIcon>
+				</startMenuLinkShortcut>
+				<startMenuShortcut>
+					<comment>Uninstall ${product_fullname}</comment>
+					<name>Uninstall ${product_fullname}</name>
+					<runInTerminal>0</runInTerminal>
+					<windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+					<windowsExecArgs></windowsExecArgs>
+					<windowsIcon></windowsIcon>
+					<windowsPath>${installdir}/</windowsPath>
+				</startMenuShortcut>
+			</startMenuShortcutList>
+		</component>
+		<component>
+			<name>idacusbwindows</name>
+			<description>IDAC USB Driver</description>
+			<canBeEdited>1</canBeEdited>
+			<detailedDescription>This will install the USB driver for the IDAC devices</detailedDescription>
+			<selected>1</selected>
+			<show>1</show>
+			<folderList>
+				<folder>
+					<description>Windows DLL files</description>
+					<destination>${windows_folder_systemroot}\system32</destination>
+					<name>dllfileswindows</name>
+					<platforms>windows</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/Windows/libusb0.dll</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+			</folderList>
+			<postInstallationActionList>
+				<addSharedDLL>
+					<explanation>Register libusb0.dll</explanation>
+					<path>${windows_folder_systemroot}/system32/libusb0.dll</path>
+				</addSharedDLL>
+				<runProgram>
+					<explanation>Register USB driver for IDAC-2 and IDAC-4</explanation>
+					<program>rundll32</program>
+					<programArguments>libusb0.dll,usb_install_driver_np_rundll ${installdir}\idac4.inf</programArguments>
+					<progressText>Registering USB drivers</progressText>
+				</runProgram>
+			</postInstallationActionList>
+			<postUninstallationActionList>
+				<removeSharedDLL path="${windows_folder_systemroot}/system32/libusb0.dll"/>
+			</postUninstallationActionList>
+		</component>
+		<component>
+			<name>idacusblinux</name>
+			<description>Register IDAC (root only)</description>
+			<canBeEdited>1</canBeEdited>
+			<detailedDescription>Register the IDAC USB hardware with udev in /etc/udev/rules.de so that users in the "plugdev" group will be able to access the hardware.</detailedDescription>
+			<selected>0</selected>
+			<show>1</show>
+			<folderList>
+				<folder>
+					<description>udev rules</description>
+					<destination>/etc/udev/rules.d</destination>
+					<name>udevrules</name>
+					<platforms>linux</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/Linux/60-syntech.rules</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+			</folderList>
+		</component>
+		<component>
+			<name>desktopEntryLinux</name>
+			<description>Menu entry for all users (root only)</description>
+			<canBeEdited>1</canBeEdited>
+			<detailedDescription>Add GC-EAD to the application menu for all users.  Only the root user can perform this operation.</detailedDescription>
+			<selected>0</selected>
+			<show>1</show>
+			<folderList>
+				<folder>
+					<description>Folder for .desktop files</description>
+					<destination>/usr/share/applications/</destination>
+					<name>sharedApplications</name>
+					<platforms>linux</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/Linux/GcEad.desktop</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+			</folderList>
+		</component>
+	</componentList>
+	<parameterList>
+		<directoryParameter>
+			<name>installdir</name>
+			<description>Installer.Parameter.installdir.description</description>
+			<explanation>Installer.Parameter.installdir.explanation</explanation>
+			<value></value>
+			<default>${platform_install_prefix}/Syntech/${product_shortname}-${product_version}</default>
+			<allowEmptyValue>0</allowEmptyValue>
+			<cliOptionName>prefix</cliOptionName>
+			<mustBeWritable>yes</mustBeWritable>
+			<mustExist>0</mustExist>
+			<width>30</width>
+		</directoryParameter>
+	</parameterList>
+</project>
+

@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="usb", SYSFS{idVendor}=="088d", MODE="0660", GROUP="plugdev"

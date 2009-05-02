@@ -1,0 +1,219 @@
+<project>
+	<shortName>GcEad</shortName>
+	<fullName>GC-EAD</fullName>
+	<version>1.1</version>
+	<installerFilename></installerFilename>
+	<a2555a>1</a2555a>
+	<allowComponentSelection>1</allowComponentSelection>
+	<enableRollback>1</enableRollback>
+	<enableTimestamp>1</enableTimestamp>
+	<saveRelativePaths>1</saveRelativePaths>
+	<startMenuGroupName>Syntech/GC-EAD</startMenuGroupName>
+	<vendor>Syntech</vendor>
+	<readmeFile>../Installables/Linux/Readme.txt</readmeFile>
+	<componentList>
+		<component>
+			<name>default</name>
+			<description>Application Files</description>
+			<detailedDescription>Install the files necessary to run GC-EAD</detailedDescription>
+			<canBeEdited>0</canBeEdited>
+			<selected>1</selected>
+			<show>1</show>
+			<desktopShortcutList>
+				<shortcut>
+					<comment>Run GC-EAD</comment>
+					<exec>${installdir}/GcEad.sh</exec>
+					<icon>${installdir}/GcEad.png</icon>
+					<name>GC-EAD</name>
+					<path>${installdir}/</path>
+					<platforms>all</platforms>
+					<runInTerminal>0</runInTerminal>
+					<windowsExec>${installdir}/GcEad.exe</windowsExec>
+					<windowsExecArgs></windowsExecArgs>
+					<windowsIcon>${installdir}/GcEad.ico</windowsIcon>
+					<windowsPath>${installdir}/</windowsPath>
+				</shortcut>
+			</desktopShortcutList>
+			<folderList>
+				<folder>
+					<description>Program Files</description>
+					<destination>${installdir}</destination>
+					<name>programfiles</name>
+					<platforms>all</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/gpl-3.0.txt</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/idc2fpga.hex</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/idc4fpga.hex</origin>
+						</distributionFile>
+					</distributionFileList>
+					<shortcutList>
+						<shortcut>
+							<comment>Uninstall</comment>
+							<exec>${installdir}/${uninstallerName}</exec>
+							<icon></icon>
+							<name>Uninstall ${product_fullname}</name>
+							<path>${installdir}</path>
+							<platforms>all</platforms>
+							<runInTerminal>0</runInTerminal>
+							<windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+							<windowsExecArgs></windowsExecArgs>
+							<windowsIcon></windowsIcon>
+							<windowsPath>${installdir}</windowsPath>
+						</shortcut>
+					</shortcutList>
+				</folder>
+				<folder>
+					<description>Program Files</description>
+					<destination>${installdir}</destination>
+					<name>programfileslinux</name>
+					<platforms>linux</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../release/GcEad</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libgcc_s.so.1</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtCore.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtGui.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtSvg.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libQtXml.so.4</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>libs/libstdc++.so.6</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/60-syntech.rules</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/GcEad.sh</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/GcEad.desktop</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/create-desktop-entry.sh</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../Installables/Linux/Readme.txt</origin>
+						</distributionFile>
+						<distributionFile>
+							<origin>../View/images/GcEad.png</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+			</folderList>
+			<postInstallationActionList>
+				<runProgram>
+					<explanation>Creating menu entry file</explanation>
+					<program>${installdir}/create-desktop-entry.sh</program>
+					<programArguments>${installdir} ${installdir}/GcEad.desktop</programArguments>
+					<progressText>Creating menu entry file</progressText>
+				</runProgram>
+			</postInstallationActionList>
+		</component>
+		<component>
+			<name>idacusblinux</name>
+			<description>root: Register IDAC</description>
+			<canBeEdited>1</canBeEdited>
+			<detailedDescription>Register the IDAC USB hardware in /etc/udev/rules.de for users in the "plugdev" group to access the hardware.</detailedDescription>
+			<selected>0</selected>
+			<show>1</show>
+			<folderList>
+				<folder>
+					<description>udev rules</description>
+					<destination>/etc/udev/rules.d</destination>
+					<name>udevrules</name>
+					<platforms>linux</platforms>
+					<distributionFileList>
+						<distributionFile>
+							<origin>../Installables/Linux/60-syntech.rules</origin>
+						</distributionFile>
+					</distributionFileList>
+				</folder>
+			</folderList>
+		</component>
+		<component>
+			<name>desktopEntryLinux</name>
+			<description>Menu entry</description>
+			<canBeEdited>0</canBeEdited>
+			<detailedDescription>Add GC-EAD to the application menu for this user.</detailedDescription>
+			<selected>1</selected>
+			<show>0</show>
+			<postInstallationActionList>
+				<createDirectory>
+					<path>~/.local/share/applications/</path>
+				</createDirectory>
+				<runProgram>
+					<explanation>Creating menu entry</explanation>
+					<program>${installdir}/create-desktop-entry.sh</program>
+					<programArguments>${installdir} ~/.local/share/applications/GcEad.desktop</programArguments>
+					<progressText>Creating menu entry</progressText>
+				</runProgram>
+			</postInstallationActionList>
+			<postUninstallationActionList>
+				<deleteFile>
+					<path>~/.local/share/applications/GcEad.desktop</path>
+				</deleteFile>
+			</postUninstallationActionList>
+		</component>
+		<component>
+			<name>desktopEntryLinuxRoot</name>
+			<description>root: Menu entry</description>
+			<canBeEdited>1</canBeEdited>
+			<detailedDescription>Add GC-EAD to the application menu for all users.  Only the root user can perform this operation.</detailedDescription>
+			<selected>0</selected>
+			<show>1</show>
+			<postInstallationActionList>
+				<createDirectory>
+					<path>/usr/share/applications/</path>
+				</createDirectory>
+				<runProgram>
+					<explanation>Creating menu entry</explanation>
+					<program>${installdir}/create-desktop-entry.sh</program>
+					<programArguments>${installdir} /usr/share/applications/GcEad.desktop</programArguments>
+					<progressText>Creating menu entry</progressText>
+				</runProgram>
+			</postInstallationActionList>
+			<postUninstallationActionList>
+				<deleteFile>
+					<path>/usr/share/applications/GcEad.desktop</path>
+				</deleteFile>
+			</postUninstallationActionList>
+		</component>
+	</componentList>
+	<finalPageActionList>
+		<runProgram>
+			<program>${installdir}/GcEad.sh</program>
+				<programArguments></programArguments>
+			<progressText>Do you want to run ${product_fullname} now?</progressText>
+		</runProgram>
+	</finalPageActionList>
+	<parameterList>
+		<directoryParameter>
+			<name>installdir</name>
+			<description>Installer.Parameter.installdir.description</description>
+			<explanation>Installer.Parameter.installdir.explanation</explanation>
+			<value></value>
+			<default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
+			<allowEmptyValue>0</allowEmptyValue>
+			<ask>yes</ask>
+			<cliOptionName>prefix</cliOptionName>
+			<mustBeWritable>yes</mustBeWritable>
+			<mustExist>0</mustExist>
+			<width>30</width>
+		</directoryParameter>
+	</parameterList>
+</project>

@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>images/comment-24x24.png</file>
+        <file>images/configure.png</file>
+        <file>images/editcopy-22x22.png</file>
+        <file>images/fileprint-32x32.png</file>
+        <file>images/filesave-32x32.png</file>
+        <file>images/GcEad.ico</file>
+        <file>images/record-24x24.png</file>
+        <file>images/stock_print-preview-22x22.png</file>
+        <file>images/stock_zoom-in.png</file>
+        <file>images/stock_zoom-object.png</file>
+        <file>images/stock_zoom-out.png</file>
+        <file>images/stock_zoom-page-width.png</file>
+        <file>images/zoom-in-16x16.png</file>
+        <file>images/zoom-in-22x22.png</file>
+        <file>images/zoom-out-22x22.png</file>
+    </qresource>
+</RCC>

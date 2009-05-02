@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GC-EAD/2009
+GenericName=GC-EAD acquisition and analysis
+Type=Application
+Terminal=false
+Encoding=UTF-8
+Exec=./GcEad.sh
+Icon=./GcEad.png
+Categories=Education;Science;

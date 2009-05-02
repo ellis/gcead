@@ -1,0 +1,98 @@
+	INSTALLER:
+		MAC:
+			offer to start program after installation
+			how to install libusb on mac? (see http://www.ellert.se/twain-sane/)
+			readme for mac about libusb?
+		WINDOWS:
+		x	offer to start program after installation
+		?	add start menu link to homepage
+		?	<associateWindowsFileExtension>
+			verify libusb on vista
+	CLEANUP:
+	x	automatically copy *.hex to debug/release directory via qmake, then remove SetupFromSvn.*
+	x	remove/reduce compiler warnings
+	x	don't show USB debug info on the console in release mode
+	x	get rid of QTime console output
+	x	svn:eol-style=native on all relevant files
+	x	copyright notices in all files
+	x	svn:ignore relevant directories/files
+	IDAC2
+		handle 0x7ffe (or whatever the reset code is)? (only if I can look at the original code which generated/handled 0x7ffe)
+		get symbolic codes for the IDAC2
+	TEST:
+		test that voltage conversions are done right
+		make sure range settings work correctly for IDAC2
+		test that digital stimulus channel works on IDAC2
+		is the decimation value really right for IDAC2?
+		run through a couple use-cases
+		when installing for LINUX as root:
+			/usr/share/applications/GcEad.desktop works?
+			/etc/udev/60-syntech.rules is there?
+	CONCLUDE:
+		set proper app version number
+		create installers
+		import into sourceforge svn
+		upload EXEs to sourceforge
+
+Link for info about writing a MatLab plugin
+	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf
+
+
+?	Resolve: what units should GcDelay be in?  Timeshifting is done 1 second at a time...
+?	RecordDialog: start recording on trigger
+	
+	testing
+		Verify that all menu actions are connected
+		Run program through valgrind
+	user documentation
+	programmer documentation
+	open-source it
+		setup sourceforge svn
+		import into sourceforge svn
+		upload EXEs to sourceforge
+
+FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possible
+	add programmer documentation to IdacDriver* projects
+	log errors to a log file
+	show USB errors in the status bar, or some perhaps via a message box
+	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
+
+FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement later
+	integrate RecordHandler into Idac/ or IdacDriver/ (and delete RecordHandler)
+	ChartPixmap: BUG: while recording, FID wave sometimes is displayed with a vertical line at the end (might have to zoom in to see the phenomenon)
+	ChartWidget: vertical "crosshair" line
+	ChartWidget: When changing number of horizontal divisions in Publish task, move the scrollbar appropriately
+	ChartWidget: BUG: zoom in three times, then zoom out twice, no data is shown anymore!
+	ChartWidget: When the user first presses Ctrl, update the mouse cursor if appropriate (i.e., about to set a peak)
+	ChartWidget: Don't let user zoom in on an empty document using mouse dragging
+	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
+	EadFile: returned more detailed information when load/save fail (and show it to user)
+	Globals: set whether File or Print output was last selected (variables already exist in PublisherSettings, and they are loaded and saved in Globals)
+	MainScope: only enable m_actions->fileExportRetentionData when the user has set/verified peaks
+	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
+	MainWindow: Chart menu
+	MainWindow: View menu: add actions for switching the view type
+	MainWindow: Beep when done recording?
+	PanelTabs: consider choosing equal widths for tabs, if space allows
+	PanelTabs: draw shadow around active tab?
+	RecordDialog: when trigger comes, somehow start saving data on EXACTLY the sample where the trigger occurred, rather than waiting for the next data block
+	RecordSettingsDialog: on_sliderOffset_sliderMoved(): make it use increments of 1,000,000/0x7fff
+	SweepWidget: when signal is out of range, make it visible somehow (limit to viewport?)
+	TaskPublishWidget: add btnResetColors
+	TaskPublishWidget: when printing the time of a recording, only print hour and minute (not seconds), but keep it localized!
+	TaskPublishWidget: save user-title to EadFile
+	TaskPublishWidget: pen width for signals (Peter's request)
+	TaskPublishWidget: color of signals (Peter's request)
+	TaskPublishWidget: when printing in black/white, need to make peak labels b/w too
+	TaskReviewWidget: in Recording view, let user select any EAD/FID wave he wants (not just the averages)
+	TaskReviewWidget: allow adding comments to average waves
+	WaveEditorWidget: add a [Delete] command
+	WaveEditorWidget: add a wave color?
+	WaveEditorWidget: let user edit name
+
+	Refactor: ChartScope: create a chart scope and use it for ChartWidget (rename ChartWidget to ChartView then)
+	Refactor: MainScope: move File|Open Recent from MainWindow to MainScope
+	Refactor: Rename widgets for the right side: View*Widget
+	Refactor: only call Globals->file()->updateAveWaves() from ViewInfo?
+	Refactor: WaveInfo: vwiUser is a HACK, see if we can improve this
+	Refactor: TaskReviewWidget: figure out a way to use WaveEditorWidget instead of painting everything ourselves, but still maintain smooth drawing
