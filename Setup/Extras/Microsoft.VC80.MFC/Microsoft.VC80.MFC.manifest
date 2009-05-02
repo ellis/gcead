@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- Copyright © 1981-2001 Microsoft Corporation -->
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-    <noInheritable/>
-    <file name="mfc80.dll"/>
-    <file name="mfc80u.dll"/>
-    <file name="mfcm80.dll"/>
-    <file name="mfcm80u.dll"/>
-</assembly>
