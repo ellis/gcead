@@ -63,8 +63,8 @@ signals:
 	/// This is only for internal use with IdacDriverManager
 	void requestCommand(int _cmd);
 	void stateChanged(IdacState state);
-	void statusTextChanged(const QString& sStatus);
-	void statusErrorChanged(const QString& sError);
+	void statusTextChanged(QString sStatus);
+	void statusErrorChanged(QString sError);
 	void isAvailableChanged(bool b);
 
 private slots:

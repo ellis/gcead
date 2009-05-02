@@ -8,8 +8,6 @@
 		?	add start menu link to homepage
 		?	<associateWindowsFileExtension>
 			verify libusb on vista
-		LINUX:
-			why is there an error?
 	CLEANUP:
 	x	remove/reduce compiler warnings
 	x	suppress debug output in release mode
@@ -17,6 +15,9 @@
 	x	copyright notices in all files
 	x	svn:ignore relevant directories/files
 	IDAC2
+		IdacDriver2: range values are in the wrong order
+		IdacDriver2: setting the filter from the RecordSettingDialog doesn't have an effect
+		IdacDriver2: get inverted status correct
 		handle 0x7ffe (or whatever the reset code is)? (only if I can look at the original code which generated/handled 0x7ffe)
 		get symbolic codes for the IDAC2
 	TEST:

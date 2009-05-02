@@ -146,18 +146,15 @@ void IdacDriver4::initUsbFirmware()
 	struct usb_device* dev = device();
 	int idConfiguration = dev->config[0].bConfigurationValue;
 	res = usb_set_configuration(handle(), idConfiguration);
-	if (res < 0)
-		return;
+	CHECK_USBRESULT_RET(res);
 
 	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
 	res = usb_claim_interface(handle(), idInterface);
-	if (res < 0)
-		return;
+	CHECK_USBRESULT_RET(res);
 
 	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
 	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	if (res < 0)
-		return;
+	CHECK_USBRESULT_RET(res);
 
 	sendFirmware(g_firmwareIdacDriver4);
 }
@@ -295,25 +292,21 @@ bool IdacDriver4::claim()
 	struct usb_device* dev = device();
 	int idConfiguration = dev->config[0].bConfigurationValue;
 	res = usb_set_configuration(handle(), idConfiguration);
-	if (res < 0)
-		return false;
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
 	res = usb_claim_interface(handle(), idInterface);
-	if (res < 0)
-		return false;
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
 	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	if (res < 0)
-		return false;
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	for (int iPipe = 0; iPipe < setting->bNumEndpoints; iPipe++)
 	{
 		int idPipe = setting->endpoint[iPipe].bEndpointAddress;
 		res = usb_clear_halt(handle(), idPipe);
-		if (res < 0)
-			return false;
+		CHECK_USBRESULT_RETVAL(res, false);
 	}
 
 	return true;
@@ -439,6 +432,7 @@ void IdacDriver4::sampleInit()
 #else
 		ret = usb_isochronous_setup(&isourb[i], pipeId, 600, isobuf + (i * 4800), 4800);
 #endif
+		CHECK_USBRESULT_NORET(ret);
 		if (ret < 0)
 			printf("isochronous setup returned %d\n", ret);
 	}
@@ -458,6 +452,7 @@ void IdacDriver4::sampleLoop()
 #else
 		ret = usb_isochronous_submit(handle(), isourb[i], &isotv[i]);
 #endif
+		CHECK_USBRESULT_NORET(ret);
 		if (ret < 0)
 			printf("isochronous submit returned %d\n", ret);
 	}
@@ -477,6 +472,7 @@ void IdacDriver4::sampleLoop()
 #else
 			ret = usb_isochronous_reap(handle(), isourb[i], &isotv[i], 5000);
 #endif
+			CHECK_USBRESULT_NORET(ret);
 			iReap++;
 
 			if (ret < 0)
@@ -547,6 +543,7 @@ void IdacDriver4::sampleLoop()
 #else
 				ret = usb_isochronous_submit(handle(), isourb[i], &isotv[i]);
 #endif
+				CHECK_USBRESULT_NORET(ret);
 				if (ret < 0) {
 					printf("isochronous submit returned %d\n", ret);
 				}

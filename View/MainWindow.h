@@ -62,8 +62,9 @@ private:
 	void readSettings();
 	void writeSettings();
 
-// Automatically connected slots
 private slots:
+	void idac_statusErrorChanged(QString sError);
+
 	void scope_fileChanged();
 	void scope_taskTypeChanged(EadTask task);
 	void scope_commentChanged();

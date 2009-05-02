@@ -243,6 +243,7 @@ int IdacDriverManager::takeData(short* digital, short* analog1, short* analog2, 
 
 void IdacDriverManager::setup()
 {
+	setState(IdacState_Searching);
 	findDevice();
 	if (m_driver == NULL)
 	{
@@ -262,6 +263,7 @@ void IdacDriverManager::setup()
 		bool bReady = false;
 		for (int iTry = 0; iTry < 3; iTry++)
 		{
+			setState(IdacState_Searching);
 			Sleeper::msleep(5000);
 			findDevice();
 			if (m_driver != NULL && m_driver->checkUsbFirmwareReady())

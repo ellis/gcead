@@ -33,7 +33,11 @@ IdacDriverUsb::IdacDriverUsb(struct usb_device* device, QObject* parent)
 	m_device = device;
 
 	if (m_device != NULL)
+	{
 		m_handle = usb_open(m_device);
+		if (m_handle == NULL)
+			logUsbError();
+	}
 	else
 		m_handle = NULL;
 }

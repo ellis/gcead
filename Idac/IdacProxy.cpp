@@ -47,6 +47,8 @@ void IdacProxy::setState(int _state)
 	IdacState state = (IdacState) _state;
 	qDebug() << "IdacProxy::setState:" << state;
 
+	updateStatusError();
+
 	if (state != m_state)
 	{
 		m_sHardwareName = m_manager->hardwareName();
@@ -83,6 +85,8 @@ void IdacProxy::commandFinished(int _cmd)
 	m_cmdRequested = IdacCommand_None;
 	if (m_cmdQueued != IdacCommand_None)
 		handleQueue();
+
+	updateStatusError();
 }
 
 QString IdacProxy::statusText() const

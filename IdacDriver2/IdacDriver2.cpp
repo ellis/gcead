@@ -114,18 +114,15 @@ void IdacDriver2::initUsbFirmware()
 	struct usb_device* dev = device();
 	int idConfiguration = dev->config[0].bConfigurationValue;
 	res = usb_set_configuration(handle(), idConfiguration);
-	if (res < 0)
-		return;
+	CHECK_USBRESULT_RET(res);
 
 	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
 	res = usb_claim_interface(handle(), idInterface);
-	if (res < 0)
-		return;
+	CHECK_USBRESULT_RET(res);
 
 	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
 	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	if (res < 0)
-		return;
+	CHECK_USBRESULT_RET(res);
 
 	sendFirmware(g_firmwareIdacDriver2);
 }
@@ -249,25 +246,21 @@ bool IdacDriver2::claim()
 	struct usb_device* dev = device();
 	int idConfiguration = dev->config[0].bConfigurationValue;
 	res = usb_set_configuration(handle(), idConfiguration);
-	if (res < 0)
-		return false;
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
 	res = usb_claim_interface(handle(), idInterface);
-	if (res < 0)
-		return false;
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
 	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	if (res < 0)
-		return false;
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	for (int iPipe = 0; iPipe < setting->bNumEndpoints; iPipe++)
 	{
 		int idPipe = setting->endpoint[iPipe].bEndpointAddress;
 		res = usb_clear_halt(handle(), idPipe);
-		if (res < 0)
-			return false;
+		CHECK_USBRESULT_RETVAL(res, false);
 	}
 
 	return true;
@@ -439,7 +432,8 @@ void IdacDriver2::sampleLoop()
 	setIsoXferEnabled(true);
 
 	// 406779815 S Co:3:005:0 s 02 01 0000 0081 0000 0
-	usb_control_msg(handle(), 0x02, 0x01, 0, 0x0081, NULL, 0, 0);
+	ret = usb_control_msg(handle(), 0x02, 0x01, 0, 0x0081, NULL, 0, 0);
+	CHECK_USBRESULT_NORET(ret);
 
 	g_iDecimation = 0;
 	g_nDigitalSum = 0;
@@ -458,6 +452,7 @@ void IdacDriver2::sampleLoop()
 		bool bSamplingNow = m_bSampling;
 
 		ret = usb_interrupt_read(handle(), 0x81, (char*) buffer, 51, 5000);
+		CHECK_USBRESULT_NORET(ret);
 		if (ret < 0)
 		{
 			cout << "INTERRUPT READ ret = " << ret << " " << usb_strerror() << endl;
