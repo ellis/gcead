@@ -8,11 +8,11 @@
 		?	add start menu link to homepage
 		?	<associateWindowsFileExtension>
 			verify libusb on vista
+		LINUX:
+			why is there an error?
 	CLEANUP:
-	x	automatically copy *.hex to debug/release directory via qmake, then remove SetupFromSvn.*
 	x	remove/reduce compiler warnings
-	x	don't show USB debug info on the console in release mode
-	x	get rid of QTime console output
+	x	suppress debug output in release mode
 	x	svn:eol-style=native on all relevant files
 	x	copyright notices in all files
 	x	svn:ignore relevant directories/files
@@ -29,10 +29,10 @@
 			/usr/share/applications/GcEad.desktop works?
 			/etc/udev/60-syntech.rules is there?
 	CONCLUDE:
-		set proper app version number
+	x	import into sourceforge svn
+	?	set proper app version number
 		create installers
-		import into sourceforge svn
-		upload EXEs to sourceforge
+		upload installers to sourceforge
 
 Link for info about writing a MatLab plugin
 	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf

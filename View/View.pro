@@ -15,11 +15,14 @@ INCLUDEPATH += . \
     ../Idac
 DEPENDPATH += . \
     ../Core \
-    ../Model \
+	../Model \
     ../Scope \
     ../Idac
-CONFIG(debug, debug|release): LIBS += -L../debug
-else: LIBS += -L../release
+
+CONFIG(debug, debug|release):DESTDIR = ../debug
+else:DESTDIR = ../release
+
+LIBS += -L$${DESTDIR}
 
 # VPATH += ../debug
 LIBS += -lCore \
@@ -29,13 +32,13 @@ LIBS += -lCore \
     -lIdacDriver \
     -lModel \
     -lScope
-PRE_TARGETDEPS += ../debug/libCore.a \
-    ../debug/libIdacDriver.a \
-    ../debug/libIdacDriver2.a \
-    ../debug/libIdacDriver4.a \
-    ../debug/libIdac.a \
-    ../debug/libModel.a \
-    ../debug/libScope.a
+PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
+	$${DESTDIR}/libIdacDriver.a \
+	$${DESTDIR}/libIdacDriver2.a \
+	$${DESTDIR}/libIdacDriver4.a \
+	$${DESTDIR}/libIdac.a \
+	$${DESTDIR}/libModel.a \
+	$${DESTDIR}/libScope.a
 win32:LIBS += ../extern/win32/libusb.a
 unix:LIBS += /usr/lib/libusb.a -static-libgcc -L../release -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
 unix:QMAKE_CFLAGS += -static-libgcc
@@ -46,8 +49,6 @@ unix:pg {
     QMAKE_CXXFLAGS += -pg
     QMAKE_LFLAGS += -pg
 }
-CONFIG(debug, debug|release):DESTDIR = ../debug
-else:DESTDIR = ../release
 
 # Copy IDAC2 hex file
 idac2hex.target = $${DESTDIR}/idc2fpga.hex

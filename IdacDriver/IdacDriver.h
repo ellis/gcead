@@ -38,6 +38,8 @@ public:
 	const QStringList& highpassStrings() const { return m_asHighpassStrings; }
 
 	bool hasErrors();
+	/// Get a list of existing error messages and then clear the internal list.
+	/// Thread-safe.
 	QStringList errorMessages();
 
 	void setChannelSettings(int iChannel, const IdacChannelSettings& channel);

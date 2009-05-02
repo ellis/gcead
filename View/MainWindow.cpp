@@ -59,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 	setupWidgets();
 
 	connect(idac, SIGNAL(statusTextChanged(QString)), m_lblIdacStatus, SLOT(setText(QString)));
+	connect(idac, SIGNAL(statusErrorChanged(QString)), statusBar(), SLOT(showMessage(QString)));
 	connect(m_scope, SIGNAL(fileChanged(EadFile*)), this, SLOT(scope_fileChanged()));
 	connect(m_scope, SIGNAL(isRecentFilesMenuEnabledChanged(bool)), m_recentFilesMenu, SLOT(setEnabled(bool)));
 	connect(m_scope, SIGNAL(waveListChanged()), this, SLOT(updateReview()));

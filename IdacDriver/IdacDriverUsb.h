@@ -25,9 +25,13 @@ struct usb_device;
 struct usb_dev_handle;
 
 
+// These should be used in IdacDriverUsb and derived classes to check USB errors
+#define CHECK_USBRESULT_RET(x) { if ((x) < 0) { logUsbError(); CHECK_ASSERT_RET(x); } }
+#define CHECK_USBRESULT_RETVAL(x, ret) { if ((x) < 0) { logUsbError(); CHECK_ASSERT_RETVAL(x, ret); } }
+#define CHECK_USBRESULT_NORET(x) { if ((x) < 0) { logUsbError(); CHECK_ASSERT_NORET(x); } }
+
+
 #define MAX_INTEL_HEX_RECORD_LENGTH 64
-
-
 struct INTEL_HEX_RECORD
 {
 	quint32 length;
@@ -50,6 +54,7 @@ public:
 	virtual void sampleLoop() = 0;
 
 protected:
+	void logUsbError();
 	bool sendOutgoingMessage(int requestId, int timeout = 5000);
 	bool sendOutgoingMessage(int requestId, quint8* buffer, int size, int timeout = 5000);
 	bool sendIncomingMessage(int requestId, quint8* buffer, int size, int timeout = 5000);

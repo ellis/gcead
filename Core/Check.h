@@ -18,8 +18,6 @@
 #ifndef __CHECK_H
 #define __CHECK_H
 
-//#include "stdtypes.h"
-
 /// checkFailure() is called by the CHECK_* macros when a check fails
 /// This function will need to be implemented somewhere in the application code
 /// in order to handle a check failure sensibly.
@@ -27,7 +25,7 @@ extern void checkFailure(const char* sFile, int iLine);
 
 
 // Only define checkFailure()
-#ifdef NDEBUG
+#ifdef QT_NO_DEBUG
 	#define __CHECK_COND_RETVAL(x, ret) \
 		{ if ((x) == false) { return (ret); } }
 	#define __CHECK_COND_RET(x) \
@@ -52,6 +50,9 @@ extern void checkFailure(const char* sFile, int iLine);
 
 	/// Check a condition for validity, and return if the check fails
 	#define CHECK_ASSERT_RET(x) __CHECK_COND_RET(x)
+
+	/// Check a condition for validity, and just print debug info if the check fails
+	#define CHECK_ASSERT_NORET(x) __CHECK_COND_NORET(x)
 
 	#define CHECK_FAILURE_RETVAL(ret) \
 		{ return (ret); }

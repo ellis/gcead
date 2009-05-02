@@ -17,6 +17,9 @@
 
 #include "IdacDriver.h"
 
+#include <iostream>
+using namespace std;
+
 #include <QtDebug>
 
 #include <Check.h>
@@ -29,7 +32,7 @@ IdacDriver::IdacDriver(QObject* parent)
 
 void IdacDriver::addError(const QString& s)
 {
-	qDebug() << "addError:" << s;
+	cerr << "addError: " << qPrintable(s) << endl;
 	m_errorMutex.lock();
 	m_errors << s;
 	m_errorMutex.unlock();

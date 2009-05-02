@@ -212,6 +212,13 @@ QStringList IdacDriverManager::highpassStrings()
 	return m_driver->highpassStrings();
 }
 
+QStringList IdacDriverManager::errorMessages()
+{
+	if (m_driver == NULL)
+		return QStringList();
+	return m_driver->errorMessages();
+}
+
 void IdacDriverManager::loadDefaultChannelSettings(IdacChannelSettings* channels)
 {
 	if (m_driver == NULL)

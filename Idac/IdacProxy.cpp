@@ -78,6 +78,7 @@ void IdacProxy::setState(int _state)
 void IdacProxy::commandFinished(int _cmd)
 {
 	CHECK_ASSERT_NORET(m_cmdRequested == _cmd);
+	Q_UNUSED(_cmd);
 
 	m_cmdRequested = IdacCommand_None;
 	if (m_cmdQueued != IdacCommand_None)
@@ -253,5 +254,14 @@ void IdacProxy::handleQueue()
 		qDebug() << "IdacProxy::handleQueue: state:" << m_state << "queued:" << m_cmdQueued;
 		m_cmdQueued = IdacCommand_None;
 		CHECK_FAILURE_RET();
+	}
+}
+
+void IdacProxy::updateStatusError()
+{
+	QStringList errors = m_manager->errorMessages();
+	if (errors.size() > 0)
+	{
+		emit statusErrorChanged(errors[0]);
 	}
 }

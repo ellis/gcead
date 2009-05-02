@@ -64,13 +64,8 @@ signals:
 	void requestCommand(int _cmd);
 	void stateChanged(IdacState state);
 	void statusTextChanged(const QString& sStatus);
+	void statusErrorChanged(const QString& sError);
 	void isAvailableChanged(bool b);
-
-protected:
-	//void setErrors(IdacErrors errors);
-	//void setRanges(const QList<int>& ranges);
-	//void setLowpassStrings(const QStringList& strings);
-	//void setHighpassStrings(const QStringList& strings);
 
 private slots:
 	void setState(int _state);
@@ -79,7 +74,7 @@ private slots:
 private:
 	void queueCommand(IdacCommand cmd);
 	void handleQueue();
-	void updateIsAvailable();
+	void updateStatusError();
 
 private:
 	IdacState m_state;

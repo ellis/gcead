@@ -84,6 +84,7 @@ private:
 
 	QLabel* m_lblComment;
 	QLabel* m_lblIdacStatus;
+	//QLabel* m_lblIdacError;
 
 	PanelTabs* m_paneltabs;
 	ViewTabs* m_viewtabs;

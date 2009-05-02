@@ -63,6 +63,13 @@ IdacDriverUsb::~IdacDriverUsb()
 	}
 }
 
+void IdacDriverUsb::logUsbError()
+{
+	const char* s = usb_strerror();
+	if (s != NULL && *s != 0)
+		addError(tr("USB ERROR: %0").arg(s));
+}
+
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 {
 	int n = usb_control_msg(
@@ -74,7 +81,9 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 			NULL,
 			0,
 			timeout);
-	return (n >= 0);
+	CHECK_USBRESULT_RETVAL(n, false);
+
+	return true;
 }
 
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size, int timeout)
@@ -89,7 +98,9 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size,
 			(char*) buffer,
 			size,
 			timeout);
-	return (n >= 0);
+	CHECK_USBRESULT_RETVAL(n, false);
+
+	return true;
 }
 
 bool IdacDriverUsb::sendIncomingMessage(int requestId, quint8* buffer, int size, int timeout)
@@ -103,7 +114,9 @@ bool IdacDriverUsb::sendIncomingMessage(int requestId, quint8* buffer, int size,
 			(char*) buffer,
 			size,
 			timeout);
-	return (n >= 0);
+	CHECK_USBRESULT_RETVAL(n, false);
+
+	return true;
 }
 
 bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
@@ -115,36 +128,41 @@ bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 	// USB Reset
 	buffer[0] = 1;
 	res = usb_control_msg(m_handle, 0x40, 0xA0, 0xE600, 0, (char*) &buffer, 1, 5000);
+	CHECK_USBRESULT_NORET(res);
 	if (res < 0)
 	{
 		bOk = false;
 	}
 
-	int i = 0;
-	while (firmware[i].type == 0)
+	if (res >= 0)
 	{
-		INTEL_HEX_RECORD& d = firmware[i];
-
-		res = usb_control_msg(m_handle, 0x40, 0xA0, d.address, 0, (char*) d.data, d.length, 5000);
-		if (res < 0)
+		int i = 0;
+		while (firmware[i].type == 0)
 		{
-			bOk = false;
-			// TODO: add some error message/handling here
-			qDebug() << "Failed to init: res =" << res;
-			break;
+			INTEL_HEX_RECORD& d = firmware[i];
+
+			res = usb_control_msg(m_handle, 0x40, 0xA0, d.address, 0, (char*) d.data, d.length, 5000);
+			CHECK_USBRESULT_NORET(res);
+			if (res < 0)
+			{
+				bOk = false;
+				// TODO: add some error message/handling here
+				qDebug() << "Failed to init: res =" << res;
+				break;
+			}
+			i++;
 		}
-		i++;
 	}
 
 	// USB Reset
 	buffer[0] = 0;
 	res = usb_control_msg(m_handle, 0x40, 0xA0, 0xE600, 0, (char*) &buffer, 1, 5000);
+	CHECK_USBRESULT_NORET(res);
 	if (res < 0)
 	{
 		bOk = false;
 	}
 
-	// FIXME: I once had code here for setting m_handle = NULL.  Where did it go???  It's necessary on Windows. -- ellis, 2009-04-26
 	m_handle = NULL;
 
 	Sleeper::msleep(5000);
@@ -223,13 +241,14 @@ bool IdacDriverUsb::sendHexData(const QByteArray& hex)
 			buffer[iData] = (quint8) sHex.toInt(NULL, 16);
 		}
 
-		b = usb_bulk_write(
+		int res = usb_bulk_write(
 				m_handle,
 				1, // end point, TODO: don't hardcode the endpoint? -- ellis, 2009-04-26
 				(char*) buffer, // bytes
 				nData, // size
 				5000); // timeout
-		// TODO: detect error
+		CHECK_USBRESULT_NORET(res);
+		b = (res >= 0);
 	}
 
 	delete[] buffer;
@@ -261,13 +280,14 @@ bool IdacDriverUsb::sendBinData(const QByteArray& bin)
 		if (nData > 5000)
 			nData = 5000;
 
-		b = usb_bulk_write(
+		int res = usb_bulk_write(
 				m_handle,
 				1, // end point, TODO: don't hardcode the endpoint? -- ellis, 2009-04-26
 				(char*) bin.data() + iData, // bytes
 				nData, // size
 				5000); // timeout
-		// TODO: detect error
+		CHECK_USBRESULT_NORET(res);
+		b = (res >= 0);
 
 		iData += nData;
 	}

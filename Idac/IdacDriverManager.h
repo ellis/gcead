@@ -45,6 +45,7 @@ public:
 	QList<int> ranges();
 	QStringList lowpassStrings();
 	QStringList highpassStrings();
+	QStringList errorMessages();
 
 	/// Load up default channel settings for the current driver
 	void loadDefaultChannelSettings(IdacChannelSettings* channels);
