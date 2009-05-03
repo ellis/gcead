@@ -92,6 +92,8 @@ void IdacDriverManager::createDriver()
 		// IDAC 2
 		else if (m_device->descriptor.idProduct == 0x0008)
 			m_driver = new IdacDriver2(m_device);
+
+		m_driver->init();
 	}
 }
 

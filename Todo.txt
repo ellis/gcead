@@ -1,3 +1,5 @@
+	180 minutes default record duration
+	hide GC Delay for channel 1
 	INSTALLER:
 		MAC:
 			offer to start program after installation

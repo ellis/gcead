@@ -61,61 +61,46 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	IdacChannelSettings* chan;
 	const IdacCaps* caps = idac->caps();
 	
+	ui.lblRange->setVisible(!caps->bRangePerChannel);
+	ui.cmbRange->setVisible(!caps->bRangePerChannel);
+	ui.cmbRange->addItems(ranges);
+	ui.cmbRange->setCurrentIndex(settings->channels[1].iRange);
+
 	chan = &settings->channels[1];
-
-	//ui.gridChan1->removeWidget(ui.cmbHighcut_1);
-	//ui.gridChan1->removeWidget(ui.cmbHighcut_1);
-	//ui.gridChan1->removeWidget(ui.chkInvert_1);
-	int iRow;
-
-	iRow = 2;
-	if (caps->bHighcut)
-	{
-		ui.gridChan1->addWidget(ui.lblHighcut_1, iRow++, 0);
-		ui.gridChan1->addWidget(ui.cmbHighcut_1, iRow++, 0);
-	}
-	ui.gridChan1->addWidget(ui.chkInvert_1, iRow++, 0);
-	ui.lblHighcut_1->setVisible(caps->bHighcut);
-	ui.cmbHighcut_1->setVisible(caps->bHighcut);
-
-	iRow = 0;
-	if (caps->bRangePerChannel)
-	{
-		ui.gridChan1->addWidget(ui.lblRange_1, iRow++, 2);
-		ui.gridChan1->addWidget(ui.cmbRange_1, iRow++, 2);
-	}
-	ui.gridChan1->addWidget(ui.lblOffset_1, iRow++, 2);
-	ui.gridChan1->addWidget(ui.edtOffset_1, iRow++, 2);
-	ui.gridChan1->addWidget(ui.sliderOffset_1, iRow++, 2);
-	ui.lblRange_1->setVisible(caps->bRangePerChannel);
-	ui.cmbRange_1->setVisible(caps->bRangePerChannel);
 
 	ui.cmbLowcut_1->addItems(idac->lowcutStrings());
 	ui.cmbLowcut_1->setCurrentIndex(chan->iLowcut);
 	ui.cmbLowcut_1->setEnabled(ui.cmbLowcut_1->count() > 0);
+	ui.lblHighcut_1->setVisible(caps->bHighcut);
+	ui.cmbHighcut_1->setVisible(caps->bHighcut);
 	ui.cmbHighcut_1->addItems(idac->highcutStrings());
 	ui.cmbHighcut_1->setCurrentIndex(chan->iHighcut);
 	ui.chkInvert_1->setChecked(chan->mInvert);
+	ui.lblRange_1->setVisible(caps->bRangePerChannel);
+	ui.cmbRange_1->setVisible(caps->bRangePerChannel);
 	ui.cmbRange_1->addItems(ranges);
 	ui.cmbRange_1->setCurrentIndex(chan->iRange);
 	ui.edtOffset_1->setValue(convOffsetSamplesToMicrovolts(chan->nOffset));
 	ui.sliderOffset_1->setValue(convOffsetSamplesToSlider(chan->nOffset));
 	ui.edtExternalAmplification_1->setValue(chan->nExternalAmplification);
+	// Hide this label, but make sure it has the appropriate width
+	ui.lblDelay_1->setMinimumWidth(ui.lblDelay_1->sizeHint().width());
+	ui.lblDelay_1->setText("");
 	
 	chan = &settings->channels[2];
 	ui.cmbLowcut_2->addItems(idac->lowcutStrings());
 	ui.cmbLowcut_2->setCurrentIndex(chan->iLowcut);
 	ui.cmbLowcut_2->setEnabled(ui.cmbLowcut_2->count() > 0);
 	ui.lblHighcut_2->setVisible(caps->bHighcut);
+	ui.cmbHighcut_2->setVisible(caps->bHighcut);
 	ui.cmbHighcut_2->addItems(idac->highcutStrings());
 	ui.cmbHighcut_2->setCurrentIndex(chan->iHighcut);
-	ui.cmbHighcut_2->setVisible(caps->bHighcut);
 	ui.chkInvert_2->setChecked(chan->mInvert);
 	ui.lblRange_2->setVisible(false);
+	ui.cmbRange_2->setVisible(caps->bRangePerChannel);
 	ui.cmbRange_2->addItems(ranges);
 	ui.cmbRange_2->setCurrentIndex(chan->iRange);
 	ui.cmbRange_2->setValidator(false);
-	ui.cmbRange_2->setVisible(caps->bRangePerChannel);
 	ui.edtOffset_2->setValue(convOffsetSamplesToMicrovolts(chan->nOffset));
 	ui.sliderOffset_2->setValue(convOffsetSamplesToSlider(chan->nOffset));
 	ui.edtExternalAmplification_2->setValue(chan->nExternalAmplification);
