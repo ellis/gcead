@@ -184,6 +184,13 @@ void IdacDriverManager::command(int _cmd)
 	CHECK_ASSERT_RET(bValid);
 }
 
+const IdacCaps* IdacDriverManager::caps() const
+{
+	if (m_driver == NULL)
+		return NULL;
+	return m_driver->caps();
+}
+
 QString IdacDriverManager::hardwareName()
 {
 	if (m_driver == NULL)
@@ -198,18 +205,18 @@ QList<int> IdacDriverManager::ranges()
 	return m_driver->ranges();
 }
 
-QStringList IdacDriverManager::lowpassStrings()
+QStringList IdacDriverManager::highcutStrings()
 {
 	if (m_driver == NULL)
 		return QStringList();
-	return m_driver->lowpassStrings();
+	return m_driver->highcutStrings();
 }
 
-QStringList IdacDriverManager::highpassStrings()
+QStringList IdacDriverManager::lowcutStrings()
 {
 	if (m_driver == NULL)
 		return QStringList();
-	return m_driver->highpassStrings();
+	return m_driver->lowcutStrings();
 }
 
 QStringList IdacDriverManager::errorMessages()

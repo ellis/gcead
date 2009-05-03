@@ -30,6 +30,13 @@ IdacDriver::IdacDriver(QObject* parent)
 {
 }
 
+void IdacDriver::init()
+{
+	loadCaps(&m_caps);
+	loadDefaultChannelSettings(m_settingsActual);
+	loadDefaultChannelSettings(m_settingsDesired);
+}
+
 void IdacDriver::addError(const QString& s)
 {
 	cerr << "addError: " << qPrintable(s) << endl;

@@ -22,7 +22,8 @@
 #include <QMutex>
 #include <QStringList>
 
-#include "IdacSettings.h"
+#include "IdacCaps.h"
+#include "IdacChannelSettings.h"
 #include "IdacEnums.h"
 
 
@@ -32,10 +33,15 @@ class IdacDriver : public QObject
 public:
 	IdacDriver(QObject* parent = NULL);
 
+	/// Should be called by IdacDriverManager after instantiating a derived IdacDriver class
+	/// This will ask the derived class to tell about its capabilities and defaults.
+	void init();
+
+	const IdacCaps* caps() const { return &m_caps; }
 	const QString hardwareName() { return m_sHardwareName; }
 	const QList<int>& ranges() const { return m_anRanges; }
-	const QStringList& lowpassStrings() const { return m_asLowpassStrings; }
-	const QStringList& highpassStrings() const { return m_asHighpassStrings; }
+	const QStringList& highcutStrings() const { return m_asHighcutStrings; }
+	const QStringList& lowcutStrings() const { return m_asLowcutStrings; }
 
 	bool hasErrors();
 	/// Get a list of existing error messages and then clear the internal list.
@@ -45,14 +51,16 @@ public:
 	void setChannelSettings(int iChannel, const IdacChannelSettings& channel);
 
 public:
+	/// Load up the capabilities of the current driver
+	virtual void loadCaps(IdacCaps* caps) = 0;
+	/// Load up default channel settings for the current driver
+	virtual void loadDefaultChannelSettings(IdacChannelSettings* channels) = 0;
+
 	virtual bool checkUsbFirmwareReady() = 0;
 	virtual bool checkDataFirmwareReady() = 0;
 
 	virtual void initUsbFirmware() = 0;
 	virtual void initDataFirmware() = 0;
-
-	/// Load up default channel settings for the current driver
-	virtual void loadDefaultChannelSettings(IdacChannelSettings* channels) = 0;
 
 	virtual bool startSampling() = 0;
 	virtual void stopSampling() = 0;
@@ -63,8 +71,8 @@ public:
 protected:
 	void setHardwareName(const QString& s) { m_sHardwareName = s; }
 	void setRanges(const QList<int>& ranges) { m_anRanges = ranges; }
-	void setLowpassStrings(const QStringList& strings) { m_asLowpassStrings = strings; }
-	void setHighpassStrings(const QStringList& strings) { m_asHighpassStrings = strings; }
+	void setHighcutStrings(const QStringList& strings) { m_asHighcutStrings = strings; }
+	void setLowcutStrings(const QStringList& strings) { m_asLowcutStrings = strings; }
 	void addError(const QString& s);
 
 	const IdacChannelSettings* desiredSettings();
@@ -75,12 +83,13 @@ protected:
 private:
 	QString m_sHardwareName;
 	QList<int> m_anRanges;
-	QStringList m_asLowpassStrings;
-	QStringList m_asHighpassStrings;
+	QStringList m_asHighcutStrings;
+	QStringList m_asLowcutStrings;
 
 	QMutex m_errorMutex;
 	QStringList m_errors;
 
+	IdacCaps m_caps;
 	// NOTE: I don't think this mutex is necessary, because all members are independent and can be set atomically -- ellis, 2009-04-26
 	QMutex m_settingsMutex;
 	/// Settings requested by user

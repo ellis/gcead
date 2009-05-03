@@ -41,13 +41,15 @@ public:
 
 // Implement IdacDriver
 public:
+	void loadCaps(IdacCaps* caps);
+	void loadDefaultChannelSettings(IdacChannelSettings* channels);
+
 	bool checkUsbFirmwareReady();
 	bool checkDataFirmwareReady();
 
 	void initUsbFirmware();
 	void initDataFirmware();
 
-	void loadDefaultChannelSettings(IdacChannelSettings* channels);
 	void configureChannel(int iChan);
 
 	bool startSampling();

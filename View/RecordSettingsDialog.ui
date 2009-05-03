@@ -25,9 +25,9 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout" >
         <item>
-         <widget class="QCheckBox" name="chkRecordingDuration" >
+         <widget class="QLabel" name="lblRecordingDuration" >
           <property name="text" >
-           <string>Automatically stop recording after (minutes):</string>
+           <string>Maximum recording duration (minutes):</string>
           </property>
          </widget>
         </item>
@@ -58,6 +58,20 @@
          </spacer>
         </item>
        </layout>
+	  </item>
+	  <item>
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <widget class="QLabel" name="lblRange" >
+          <property name="text" >
+           <string>Voltage Range:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cmbRange" />
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -67,9 +81,9 @@
      <property name="title" >
       <string>Channel 1 (EAD)</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
+     <layout class="QGridLayout" name="gridChan1" >
       <item row="0" column="0" >
-       <widget class="QLabel" name="label_3" >
+       <widget class="QLabel" name="lblLowcut_1" >
         <property name="text" >
          <string>Low cutoff:</string>
         </property>
@@ -83,34 +97,34 @@
        </widget>
       </item>
       <item row="0" column="2" >
-       <widget class="QLabel" name="label_8" >
+       <widget class="QLabel" name="lblRange_1" >
         <property name="text" >
          <string>Range:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" >
-       <widget class="QComboBox" name="cmbHighpass_1" />
+       <widget class="QComboBox" name="cmbLowcut_1" />
       </item>
       <item row="1" column="2" >
        <widget class="QComboBox" name="cmbRange_1" />
       </item>
       <item row="2" column="0" >
-       <widget class="QLabel" name="label_2" >
+       <widget class="QLabel" name="lblHighcut_1" >
         <property name="text" >
          <string>High cutoff:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="2" >
-       <widget class="QLabel" name="label_4" >
+       <widget class="QLabel" name="lblOffset_1" >
         <property name="text" >
          <string>Offset (µV):</string>
         </property>
        </widget>
       </item>
       <item row="3" column="0" >
-       <widget class="QComboBox" name="cmbLowpass_1" />
+       <widget class="QComboBox" name="cmbHighcut_1" />
       </item>
       <item row="3" column="2" >
        <widget class="QSpinBox" name="edtOffset_1" >
@@ -203,20 +217,20 @@
        </widget>
       </item>
       <item row="0" column="2" >
-       <widget class="QLabel" name="label_9" >
+       <widget class="QLabel" name="lblRange_2" >
         <property name="text" >
          <string>Range:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" >
-       <widget class="QComboBox" name="cmbHighpass_2" />
+       <widget class="QComboBox" name="cmbLowcut_2" />
       </item>
       <item row="1" column="2" >
        <widget class="QComboBox" name="cmbRange_2" />
       </item>
       <item row="2" column="0" >
-       <widget class="QLabel" name="label_5" >
+       <widget class="QLabel" name="lblHighcut_2" >
         <property name="text" >
          <string>High cutoff</string>
         </property>
@@ -230,7 +244,7 @@
        </widget>
       </item>
       <item row="3" column="0" >
-       <widget class="QComboBox" name="cmbLowpass_2" />
+       <widget class="QComboBox" name="cmbHighcut_2" />
       </item>
       <item row="3" column="2" >
        <widget class="QSpinBox" name="edtOffset_2" >
@@ -384,14 +398,14 @@
  <tabstops>
   <tabstop>chkRecordingDuration</tabstop>
   <tabstop>edtRecordingDuration</tabstop>
-  <tabstop>cmbHighpass_1</tabstop>
-  <tabstop>cmbLowpass_1</tabstop>
+  <tabstop>cmbLowcut_1</tabstop>
+  <tabstop>cmbHighcut_1</tabstop>
   <tabstop>chkInvert_1</tabstop>
   <tabstop>cmbRange_1</tabstop>
   <tabstop>edtOffset_1</tabstop>
   <tabstop>sliderOffset_1</tabstop>
-  <tabstop>cmbHighpass_2</tabstop>
-  <tabstop>cmbLowpass_2</tabstop>
+  <tabstop>cmbLowcut_2</tabstop>
+  <tabstop>cmbHighcut_2</tabstop>
   <tabstop>chkInvert_2</tabstop>
   <tabstop>cmbRange_2</tabstop>
   <tabstop>edtOffset_2</tabstop>

@@ -77,13 +77,15 @@ IdacDriver2::IdacDriver2(struct usb_device* device, QObject* parent)
 	m_bSampling = false;
 
 	setHardwareName("IDAC2");
+
+	loadDefaultChannelSettings(actualSettings());
 }
 
 IdacDriver2::~IdacDriver2()
 {
 	if (handle() != NULL)
 	{
-		setIsoXferEnabled(false);
+		setIntXferEnabled(false);
 		setPowerOn(false);
 	}
 }
@@ -136,6 +138,7 @@ void IdacDriver2::initDataFirmware()
 		return;
 
 	setPowerOn(false);
+	Sleeper::msleep(1000);
 	setPowerOn(true);
 
 	// Program FPGA
@@ -161,6 +164,7 @@ void IdacDriver2::initDataFirmware()
 	// if, after 6 retries, the FPGA still isn't booted
 	if (!m_bFpgaProgrammed)
 	{
+		setPowerOn(false);
 		return;
 	}
 
@@ -171,58 +175,17 @@ void IdacDriver2::initDataFirmware()
 	// 1738193668 S Ci:3:005:0 s c0 2c 0000 0000 0010 16 <
 	// 1738204153 C Ci:3:005:0 0 16 = 005a3c00 99ffffff ffffffff ffffffff
 	sendIncomingMessage(0x2C, buffer, 16);
+	// TODO: How do we interpret this response?
 
 	initStringsAndRanges();
 
-	// Init channels?
-	/*
-	1738207870 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 00808f80 808080
-	1738217771 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	1738221902 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 00808f80 808080
-	1738229919 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	1738237848 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 00808f80 808080
-	1738245649 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	1738249464 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 00808f80 ffe6a0
-	1738250977 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	1738255632 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 00808f80 ffe6a0
-	1738257047 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	1738261250 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 00808f80 ffe6a0
-	1738269804 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	*/
-	/*
-	buffer[0] = 0x00;
-	buffer[1] = 0x80;
-	buffer[2] = 0x8f;
-	buffer[3] = 0x80;
-	buffer[4] = 0x80;
-	buffer[5] = 0x80;
-	buffer[6] = 0x80;
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, buffer, 1);
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, buffer, 1);
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, buffer, 1);
-	buffer[0] = 0x40;
-	buffer[3] = 0x90;
-	buffer[4] = 0xff;
-	buffer[5] = 0xe6;
-	buffer[6] = 0xb0;
-	quint8 zero[1] = { 0x00 };
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, zero, 1);
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, zero, 1);
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, zero, 1);
-	*/
 	sendChannelSettings();
 }
 
 void IdacDriver2::initStringsAndRanges()
 {
-	setLowpassStrings(QStringList());
-	setHighpassStrings(QStringList()
+	setHighcutStrings(QStringList());
+	setLowcutStrings(QStringList()
 			<< tr("DC")
 			<< tr("0.05Hz")
 			<< tr("0.1Hz")
@@ -266,6 +229,12 @@ bool IdacDriver2::claim()
 	return true;
 }
 
+void IdacDriver2::loadCaps(IdacCaps* caps)
+{
+	caps->bHighcut = false;
+	caps->bRangePerChannel = false;
+}
+
 void IdacDriver2::loadDefaultChannelSettings(IdacChannelSettings* channels)
 {
 	channels[0].mEnabled = 0x03;
@@ -276,16 +245,16 @@ void IdacDriver2::loadDefaultChannelSettings(IdacChannelSettings* channels)
 	channels[1].mInvert = 0;
 	channels[1].nDecimation = -1;
 	channels[1].iRange = 3;
-	channels[1].iLowpass = -1;
-	channels[1].iHighpass = 1; // 0.05 Hz on IDAC2
+	channels[1].iHighcut = -1;
+	channels[1].iLowcut = 1; // 0.05 Hz on IDAC2
 	channels[1].nExternalAmplification = 10;
 
 	channels[2].mEnabled = 1;
 	channels[2].mInvert = 0;
 	channels[2].nDecimation = -1;
-	channels[2].iRange = 4;
-	channels[2].iLowpass = -1;
-	channels[2].iHighpass = 1; // 0.05 Hz on IDAC2
+	channels[2].iRange = 3;
+	channels[2].iHighcut = -1;
+	channels[2].iLowcut = 1; // 0.05 Hz on IDAC2
 	channels[2].nExternalAmplification = 1;
 }
 
@@ -305,11 +274,24 @@ bool IdacDriver2::setPowerOn(bool bOn)
 
 bool IdacDriver2::sendChannelSettings()
 {
+	// Encoding is as follows:
+	// 7 bytes are sent.
+	// The highest bit of the first byte is 0.
+	// The highest bit of all other bytes is 1.
+	// So each byte holds 7 bits of information
+	// Values are sent MSB first
+	// Range values are between 0-6, so 3 bits
+	// Offset values are encoded in 16 bits.
+	// Filter on/off is encoded in 1 bit
+	// Filter index is between 0-6, so 3 bits
+	// This data is encoded successively from MSB to LSB direction in
+	// the 7 bits available per outgoing byte.
+
 	IdacChannelSettings* chans = actualSettings();
 
 	quint8 buffer[7];
 
-	buffer[0] = chans[0].iRange << 4;
+	buffer[0] = chans[1].iRange << 4;
 
 	int n, n1, n2, n3, code;
 
@@ -318,8 +300,8 @@ bool IdacDriver2::sendChannelSettings()
 	n2 = (n >> 2) & 0x7f;
 	n3 = (n >> 9) & 0x7f;
 	code = 0x00808080 | (n1 << 5) | (n2 << 8) | (n3 << 16);
-	if (chans[1].iLowpass > 0)
-		code |= 0x10 | (chans[1].iLowpass << 1);
+	if (chans[1].iLowcut > 0)
+		code |= 0x10 | (chans[1].iLowcut << 1);
 	buffer[1] = (code >> 16) & 0xff;
 	buffer[2] = (code >>  8) & 0xff;
 	buffer[3] = (code >>  0) & 0xff;
@@ -329,8 +311,8 @@ bool IdacDriver2::sendChannelSettings()
 	n2 = (n >> 2) & 0x7f;
 	n3 = (n >> 9) & 0x7f;
 	code = 0x00808080 | (n1 << 5) | (n2 << 8) | (n3 << 16);
-	if (chans[2].iHighpass > 0)
-		code |= 0x10 | (chans[2].iHighpass << 1);
+	if (chans[2].iLowcut > 0)
+		code |= 0x10 | (chans[2].iLowcut << 1);
 	buffer[4] = (code >> 16) & 0xff;
 	buffer[5] = (code >>  8) & 0xff;
 	buffer[6] = (code >>  0) & 0xff;
@@ -339,6 +321,13 @@ bool IdacDriver2::sendChannelSettings()
 
 	sendOutgoingMessage(REQUESTID_WRITE_CHANNEL_SETTINGS, buffer, 7);
 
+	// FIXME: for debug only
+	cerr << "CONFIG: ";
+	for (int i = 0; i < 7; i++)
+		cerr << qPrintable(QString("%0").arg(int(buffer[i]), 2, 16, QChar('0')));
+	cerr << "\n";
+
+	// I don't know the purpose this message is sent...
 	// 406739825 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
 	quint8 zero[1] = { 0 };
 	sendOutgoingMessage(0x23, zero, 1);
@@ -354,7 +343,7 @@ bool IdacDriver2::setSamplingPaused(bool bPause)
 		if (bPause)
 			m_bSamplingPaused = true;
 
-		setIsoXferEnabled(!bPause);
+		setIntXferEnabled(!bPause);
 
 		// Allow for isochrone latency (restart may be unsafe)
 		if (bPause)
@@ -364,9 +353,9 @@ bool IdacDriver2::setSamplingPaused(bool bPause)
 	return true;
 }
 
-bool IdacDriver2::setIsoXferEnabled(bool bEnabled)
+bool IdacDriver2::setIntXferEnabled(bool bEnabled)
 {
-	int requestId = (bEnabled) ? REQUESTID_ISO_IN_START : REQUESTID_ISO_IN_STOP; // FIXME: I don't know if these are the proper codes, and if so, this function should be called from sampleLoop() -- ellis, 2009-04-26
+	int requestId = (bEnabled) ? REQUESTID_INT_IN_START : REQUESTID_INT_IN_STOP; // FIXME: I don't know if these are the proper codes, and if so, this function should be called from sampleLoop() -- ellis, 2009-04-26
 	bool b = sendOutgoingMessage(requestId);
 	if (b && bEnabled)
 		m_bSamplingPaused = false;
@@ -381,28 +370,8 @@ bool IdacDriver2::startSampling()
 	// 406727620 S Ci:3:005:0 s c0 22 0000 0000 0001 1 <
 	// 406728490 C Ci:3:005:0 0 1 = 07
 	sendIncomingMessage(0x22, buffer, 1);
+	// TODO: how to interpret the result?
 
-	/*
-	// 406733274 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 10808f80 ffe6a0
-	// 406739825 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	// 406747751 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 10808f80 ffe6a0
-	// 406751745 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	// 406756493 S Co:3:005:0 s 40 28 0000 0000 0007 7 = 10808f80 ffe6a0
-	// 406759713 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00
-	buffer[0] = 0x40;
-	buffer[1] = 0x80;
-	buffer[2] = 0x8f;
-	buffer[3] = 0x90;
-	buffer[4] = 0xff;
-	buffer[5] = 0xe6;
-	buffer[6] = 0xb0;
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, zero, 1);
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, zero, 1);
-	sendOutgoingMessage(0x28, buffer, 7);
-	sendOutgoingMessage(0x23, zero, 1);
-	*/
 	for (int iChan = 0; iChan < 3; iChan++)
 		*actualChannelSettings(iChan) = *desiredChannelSettings(iChan);
 	sendChannelSettings();
@@ -427,9 +396,9 @@ void IdacDriver2::sampleLoop()
 {
 	int ret;
 
-	// Begin ISO xfer?
+	// Begin INT xfer?
 	// 406772916 S Co:3:005:0 s 40 29 0000 0000 0000 0
-	setIsoXferEnabled(true);
+	setIntXferEnabled(true);
 
 	// 406779815 S Co:3:005:0 s 02 01 0000 0081 0000 0
 	ret = usb_control_msg(handle(), 0x02, 0x01, 0, 0x0081, NULL, 0, 0);
@@ -532,7 +501,7 @@ void IdacDriver2::sampleLoop()
 						{
 							bOverflow = true;
 							//m_bSampling = false;
-							printf("OVERFLOW\n");
+							addError("OVERFLOW");
 						}
 					}
 				}
@@ -541,9 +510,9 @@ void IdacDriver2::sampleLoop()
 		bSamplingPrev = bSamplingNow;
 	}
 
-	// End of ISO xfer?
+	// End of INT xfer?
 	// 412307451 S Co:3:005:0 s 40 2a 0000 0000 0000 0
-	setIsoXferEnabled(false);
+	setIntXferEnabled(false);
 }
 
 void IdacDriver2::stopSampling()

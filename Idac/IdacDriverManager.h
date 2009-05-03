@@ -25,6 +25,7 @@
 
 struct usb_device;
 
+class IdacCaps;
 class IdacChannelSettings;
 class IdacDriver;
 
@@ -41,10 +42,11 @@ public:
 	IdacState state() const { return m_state; }
 	IdacCommand currentCommand() const { return m_cmd; }
 
+	const IdacCaps* caps() const;
 	QString hardwareName();
 	QList<int> ranges();
-	QStringList lowpassStrings();
-	QStringList highpassStrings();
+	QStringList highcutStrings();
+	QStringList lowcutStrings();
 	QStringList errorMessages();
 
 	/// Load up default channel settings for the current driver

@@ -59,8 +59,8 @@ void IdacProxy::setState(int _state)
 		{
 			bAvailable = true;
 			m_anRanges = m_manager->ranges();
-			m_asLowpassStrings = m_manager->lowpassStrings();
-			m_asHighpassStrings = m_manager->highpassStrings();
+			m_asHighcutStrings = m_manager->highcutStrings();
+			m_asLowcutStrings = m_manager->lowcutStrings();
 		}
 
 		m_state = state;
@@ -87,6 +87,11 @@ void IdacProxy::commandFinished(int _cmd)
 		handleQueue();
 
 	updateStatusError();
+}
+
+const IdacCaps* IdacProxy::caps() const
+{
+	return m_manager->caps();
 }
 
 QString IdacProxy::statusText() const

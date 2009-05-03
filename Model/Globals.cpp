@@ -86,22 +86,25 @@ void GlobalVars::readIdacChannelSettings(const QString& sIdacName)
 	m_idacSettings->nRecordingDuration = settings.value("RecordingDuration", 0).toInt();
 	m_idacSettings->nGcDelay_ms = settings.value("GcDelay", 0).toInt();
 
-	m_idacSettings->channels[0].mEnabled = settings.value("DIG_Enabled", 0x03).toInt();
-	m_idacSettings->channels[0].mInvert = settings.value("DIG_Invert", 0x00).toInt();
+	IdacChannelSettings* chan = &m_idacSettings->channels[0];
+	chan->mEnabled = settings.value("DIG_Enabled", chan->mEnabled).toInt();
+	chan->mInvert = settings.value("DIG_Invert", chan->mInvert).toInt();
 
-	m_idacSettings->channels[1].mInvert = settings.value("EAD_Invert", 0).toInt();
-	m_idacSettings->channels[1].iRange = settings.value("EAD_Range", 3).toInt();
-	m_idacSettings->channels[1].iLowpass = settings.value("EAD_Lowpass", 10).toInt();
-	m_idacSettings->channels[1].iHighpass = settings.value("EAD_Highpass", 1).toInt();
-	m_idacSettings->channels[1].nOffset = settings.value("EAD_Offset", 0).toInt();
-	m_idacSettings->channels[1].nExternalAmplification = settings.value("EAD_ExternalAmplification", 10).toInt();
+	chan = &m_idacSettings->channels[1];
+	chan->mInvert = settings.value("EAD_Invert", chan->mInvert).toInt();
+	chan->iRange = settings.value("EAD_Range", chan->iRange).toInt();
+	chan->iHighcut = settings.value("EAD_Highcut", chan->iHighcut).toInt();
+	chan->iLowcut = settings.value("EAD_Lowcut", chan->iLowcut).toInt();
+	chan->nOffset = settings.value("EAD_Offset", chan->nOffset).toInt();
+	chan->nExternalAmplification = settings.value("EAD_ExternalAmplification", chan->nExternalAmplification).toInt();
 
-	m_idacSettings->channels[2].mInvert = settings.value("FID_Invert", 0).toInt();
-	m_idacSettings->channels[2].iRange = settings.value("FID_Range", 4).toInt();
-	m_idacSettings->channels[2].iLowpass = settings.value("FID_Lowpass", 10).toInt();
-	m_idacSettings->channels[2].iHighpass = settings.value("FID_Highpass", 1).toInt();
-	m_idacSettings->channels[2].nOffset = settings.value("FID_Offset", 0).toInt();
-	m_idacSettings->channels[2].nExternalAmplification = settings.value("FID_ExternalAmplification", 1).toInt();
+	chan = &m_idacSettings->channels[2];
+	chan->mInvert = settings.value("FID_Invert", chan->mInvert).toInt();
+	chan->iRange = settings.value("FID_Range", chan->iRange).toInt();
+	chan->iHighcut = settings.value("FID_Highcut", chan->iHighcut).toInt();
+	chan->iLowcut = settings.value("FID_Lowcut", chan->iLowcut).toInt();
+	chan->nOffset = settings.value("FID_Offset", chan->nOffset).toInt();
+	chan->nExternalAmplification = settings.value("FID_ExternalAmplification", chan->nExternalAmplification).toInt();
 	settings.endGroup();
 }
 
@@ -148,15 +151,15 @@ void GlobalVars::writeIdacChannelSettings(const QString& sIdacName)
 
 	settings.setValue("EAD_Invert", m_idacSettings->channels[1].mInvert);
 	settings.setValue("EAD_Range", m_idacSettings->channels[1].iRange);
-	settings.setValue("EAD_Lowpass", m_idacSettings->channels[1].iLowpass);
-	settings.setValue("EAD_Highpass", m_idacSettings->channels[1].iHighpass);
+	settings.setValue("EAD_Highcut", m_idacSettings->channels[1].iHighcut);
+	settings.setValue("EAD_Lowcut", m_idacSettings->channels[1].iLowcut);
 	settings.setValue("EAD_Offset", m_idacSettings->channels[1].nOffset);
 	settings.setValue("EAD_ExternalAmplification", m_idacSettings->channels[1].nExternalAmplification);
 	
 	settings.setValue("FID_Invert", m_idacSettings->channels[2].mInvert);
 	settings.setValue("FID_Range", m_idacSettings->channels[2].iRange);
-	settings.setValue("FID_Lowpass", m_idacSettings->channels[2].iLowpass);
-	settings.setValue("FID_Highpass", m_idacSettings->channels[2].iHighpass);
+	settings.setValue("FID_Highcut", m_idacSettings->channels[2].iHighcut);
+	settings.setValue("FID_Lowcut", m_idacSettings->channels[2].iLowcut);
 	settings.setValue("FID_Offset", m_idacSettings->channels[2].nOffset);
 	settings.setValue("FID_ExternalAmplification", m_idacSettings->channels[2].nExternalAmplification);
 	settings.endGroup();

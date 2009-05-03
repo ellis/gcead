@@ -26,12 +26,12 @@ public:
 	{
 		mEnabled = 0;
 		mInvert = 0;
-		nDecimation = 960;
-		iRange = 4;
-		iLowpass = 10; // 3kHz on IDAC4
-		iHighpass = 1; // 0.1 Hz on IDAC4
+		nDecimation = -1;
+		iRange = -1;
+		iLowcut = -1;
+		iHighcut = -1;
 		nOffset = 0;
-		nExternalAmplification = 10;
+		nExternalAmplification = 1;
 	}
 
 	/// Mask for enabling this channel.
@@ -46,10 +46,10 @@ public:
 	int nDecimation;
 	/// Hardware-specific index for the range value
 	int iRange;
-	/// Hardware-specific index for high-pass filter
-	int iLowpass;
-	/// Hardware-specific index for high-pass filter
-	int iHighpass;
+	/// Hardware-specific index for lowcut/highpass filter
+	int iLowcut;
+	/// Hardware-specific index for highcut/lowpass filter
+	int iHighcut;
 	/// Hardware-specific raw value offset
 	short nOffset;
 	/// External amplification before being digitized

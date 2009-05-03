@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include <Idac/IdacProxy.h>
+#include <IdacDriver/IdacCaps.h>
 #include <IdacDriver/IdacSettings.h>
 
 #include "Globals.h"
@@ -51,30 +52,49 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	}
 	m_idac = (bSendChanges) ? idac : NULL;
 
-	if (settings->nRecordingDuration > 0)
-	{
-		ui.edtRecordingDuration->setValue(settings->nRecordingDuration);
-		ui.chkRecordingDuration->setChecked(true);
-	}
-	else
-	{
-		ui.edtRecordingDuration->setValue(30);
-		ui.edtRecordingDuration->setEnabled(false);
-		ui.chkRecordingDuration->setChecked(false);
-	}
+	if (settings->nRecordingDuration <= 0)
+		settings->nRecordingDuration = 30;
+	ui.edtRecordingDuration->setValue(settings->nRecordingDuration);
 
 	ui.edtGcDelay->setValue(settings->nGcDelay_ms);
 
 	IdacChannelSettings* chan;
+	const IdacCaps* caps = idac->caps();
 	
 	chan = &settings->channels[1];
 
-	ui.cmbHighpass_1->addItems(idac->highpassStrings());
-	ui.cmbHighpass_1->setCurrentIndex(chan->iHighpass);
-	ui.cmbHighpass_1->setEnabled(ui.cmbHighpass_1->count() > 0);
-	ui.cmbLowpass_1->addItems(idac->lowpassStrings());
-	ui.cmbLowpass_1->setCurrentIndex(chan->iLowpass);
-	ui.cmbLowpass_1->setEnabled(ui.cmbLowpass_1->count() > 0);
+	//ui.gridChan1->removeWidget(ui.cmbHighcut_1);
+	//ui.gridChan1->removeWidget(ui.cmbHighcut_1);
+	//ui.gridChan1->removeWidget(ui.chkInvert_1);
+	int iRow;
+
+	iRow = 2;
+	if (caps->bHighcut)
+	{
+		ui.gridChan1->addWidget(ui.lblHighcut_1, iRow++, 0);
+		ui.gridChan1->addWidget(ui.cmbHighcut_1, iRow++, 0);
+	}
+	ui.gridChan1->addWidget(ui.chkInvert_1, iRow++, 0);
+	ui.lblHighcut_1->setVisible(caps->bHighcut);
+	ui.cmbHighcut_1->setVisible(caps->bHighcut);
+
+	iRow = 0;
+	if (caps->bRangePerChannel)
+	{
+		ui.gridChan1->addWidget(ui.lblRange_1, iRow++, 2);
+		ui.gridChan1->addWidget(ui.cmbRange_1, iRow++, 2);
+	}
+	ui.gridChan1->addWidget(ui.lblOffset_1, iRow++, 2);
+	ui.gridChan1->addWidget(ui.edtOffset_1, iRow++, 2);
+	ui.gridChan1->addWidget(ui.sliderOffset_1, iRow++, 2);
+	ui.lblRange_1->setVisible(caps->bRangePerChannel);
+	ui.cmbRange_1->setVisible(caps->bRangePerChannel);
+
+	ui.cmbLowcut_1->addItems(idac->lowcutStrings());
+	ui.cmbLowcut_1->setCurrentIndex(chan->iLowcut);
+	ui.cmbLowcut_1->setEnabled(ui.cmbLowcut_1->count() > 0);
+	ui.cmbHighcut_1->addItems(idac->highcutStrings());
+	ui.cmbHighcut_1->setCurrentIndex(chan->iHighcut);
 	ui.chkInvert_1->setChecked(chan->mInvert);
 	ui.cmbRange_1->addItems(ranges);
 	ui.cmbRange_1->setCurrentIndex(chan->iRange);
@@ -83,15 +103,19 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	ui.edtExternalAmplification_1->setValue(chan->nExternalAmplification);
 	
 	chan = &settings->channels[2];
-	ui.cmbHighpass_2->addItems(idac->highpassStrings());
-	ui.cmbHighpass_2->setCurrentIndex(chan->iHighpass);
-	ui.cmbHighpass_2->setEnabled(ui.cmbHighpass_2->count() > 0);
-	ui.cmbLowpass_2->addItems(idac->lowpassStrings());
-	ui.cmbLowpass_2->setCurrentIndex(chan->iLowpass);
-	ui.cmbLowpass_2->setEnabled(ui.cmbLowpass_2->count() > 0);
+	ui.cmbLowcut_2->addItems(idac->lowcutStrings());
+	ui.cmbLowcut_2->setCurrentIndex(chan->iLowcut);
+	ui.cmbLowcut_2->setEnabled(ui.cmbLowcut_2->count() > 0);
+	ui.lblHighcut_2->setVisible(caps->bHighcut);
+	ui.cmbHighcut_2->addItems(idac->highcutStrings());
+	ui.cmbHighcut_2->setCurrentIndex(chan->iHighcut);
+	ui.cmbHighcut_2->setVisible(caps->bHighcut);
 	ui.chkInvert_2->setChecked(chan->mInvert);
+	ui.lblRange_2->setVisible(false);
 	ui.cmbRange_2->addItems(ranges);
 	ui.cmbRange_2->setCurrentIndex(chan->iRange);
+	ui.cmbRange_2->setValidator(false);
+	ui.cmbRange_2->setVisible(caps->bRangePerChannel);
 	ui.edtOffset_2->setValue(convOffsetSamplesToMicrovolts(chan->nOffset));
 	ui.sliderOffset_2->setValue(convOffsetSamplesToSlider(chan->nOffset));
 	ui.edtExternalAmplification_2->setValue(chan->nExternalAmplification);
@@ -131,7 +155,7 @@ int RecordSettingsDialog::convOffsetSamplesToSlider(int n) const
 	return nSlider;
 }
 
-void RecordSettingsDialog::on_chkRecordingDuration_clicked()
+/*void RecordSettingsDialog::on_chkRecordingDuration_clicked()
 {
 	IdacSettings* settings = Globals->idacSettings();
 
@@ -139,7 +163,7 @@ void RecordSettingsDialog::on_chkRecordingDuration_clicked()
 	settings->nRecordingDuration = (ui.chkRecordingDuration->isChecked())
 		? ui.edtRecordingDuration->value()
 		: 0;
-}
+}*/
 
 void RecordSettingsDialog::on_edtRecordingDuration_editingFinished()
 {
@@ -147,25 +171,31 @@ void RecordSettingsDialog::on_edtRecordingDuration_editingFinished()
 	settings->nRecordingDuration = ui.edtRecordingDuration->value();
 }
 
+void RecordSettingsDialog::on_cmbRange_activated(int i)
+{
+	on_cmbRange_activated(1, i);
+	on_cmbRange_activated(2, i);
+}
+
 //
 // Helper functions
 //
 
-void RecordSettingsDialog::on_cmbHighpass_activated(int iChan, int i)
+void RecordSettingsDialog::on_cmbLowcut_activated(int iChan, int i)
 {
 	IdacSettings* settings = Globals->idacSettings();
 	IdacChannelSettings& chan = settings->channels[iChan];
-	chan.iHighpass = i;
+	chan.iLowcut = i;
 	if (m_idac != NULL)
 		m_idac->resendChannelSettings(iChan, chan);
 	emit settingsChanged();
 }
 
-void RecordSettingsDialog::on_cmbLowpass_activated(int iChan, int i)
+void RecordSettingsDialog::on_cmbHighcut_activated(int iChan, int i)
 {
 	IdacSettings* settings = Globals->idacSettings();
 	IdacChannelSettings& chan = settings->channels[iChan];
-	chan.iLowpass = i;
+	chan.iHighcut = i;
 	if (m_idac != NULL)
 		m_idac->resendChannelSettings(iChan, chan);
 	emit settingsChanged();
@@ -232,14 +262,14 @@ void RecordSettingsDialog::on_edtExternalAmplification_editingFinished(int iChan
 // EAD
 //
 
-void RecordSettingsDialog::on_cmbHighpass_1_activated(int i)
+void RecordSettingsDialog::on_cmbLowcut_1_activated(int i)
 {
-	on_cmbHighpass_activated(1, i);
+	on_cmbLowcut_activated(1, i);
 }
 
-void RecordSettingsDialog::on_cmbLowpass_1_activated(int i)
+void RecordSettingsDialog::on_cmbHighcut_1_activated(int i)
 {
-	on_cmbLowpass_activated(1, i);
+	on_cmbHighcut_activated(1, i);
 }
 
 void RecordSettingsDialog::on_chkInvert_1_clicked()
@@ -278,14 +308,14 @@ void RecordSettingsDialog::on_edtExternalAmplification_1_editingFinished()
 // FID
 //
 
-void RecordSettingsDialog::on_cmbHighpass_2_activated(int i)
+void RecordSettingsDialog::on_cmbLowcut_2_activated(int i)
 {
-	on_cmbHighpass_activated(2, i);
+	on_cmbLowcut_activated(2, i);
 }
 
-void RecordSettingsDialog::on_cmbLowpass_2_activated(int i)
+void RecordSettingsDialog::on_cmbHighcut_2_activated(int i)
 {
-	on_cmbLowpass_activated(2, i);
+	on_cmbHighcut_activated(2, i);
 }
 
 void RecordSettingsDialog::on_chkInvert_2_clicked()

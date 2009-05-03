@@ -109,6 +109,8 @@ IdacDriver4::IdacDriver4(struct usb_device* device, QObject* parent)
 	m_bSampling = false;
 
 	setHardwareName("IDAC4");
+
+	loadDefaultChannelSettings(actualSettings());
 }
 
 IdacDriver4::~IdacDriver4()
@@ -117,6 +119,35 @@ IdacDriver4::~IdacDriver4()
 	{
 		power(false);
 	}
+}
+
+void IdacDriver4::loadCaps(IdacCaps* caps)
+{
+	caps->bHighcut = true;
+	caps->bRangePerChannel = true;
+}
+
+void IdacDriver4::loadDefaultChannelSettings(IdacChannelSettings* channels)
+{
+	channels[0].mEnabled = 0x03;
+	channels[0].mInvert = 0x00;
+	channels[0].nDecimation = 960; // 100 samples per second
+
+	channels[1].mEnabled = 1;
+	channels[1].mInvert = 0;
+	channels[1].nDecimation = 960; // 100 samples per second
+	channels[1].iRange = 3;
+	channels[1].iHighcut = 10; // 3kHz on IDAC4
+	channels[1].iLowcut = 1; // 0.1 Hz on IDAC4
+	channels[1].nExternalAmplification = 10;
+
+	channels[2].mEnabled = 1;
+	channels[2].mInvert = 0;
+	channels[2].nDecimation = 960; // 100 samples per second
+	channels[2].iRange = 4;
+	channels[2].iHighcut = 10; // 3kHz on IDAC4
+	channels[2].iLowcut = 1; // 0.1 Hz on IDAC4
+	channels[2].nExternalAmplification = 1;
 }
 
 bool IdacDriver4::checkUsbFirmwareReady()
@@ -235,7 +266,7 @@ void IdacDriver4::initDataFirmware()
 
 void IdacDriver4::initStringsAndRanges()
 {
-	setLowpassStrings(QStringList() <<
+	setHighcutStrings(QStringList() <<
 		" 10Hz" <<
 		" 20Hz" <<
 		" 30Hz" <<
@@ -254,7 +285,7 @@ void IdacDriver4::initStringsAndRanges()
 		"50kHz"
 	 );
 
-	setHighpassStrings(QStringList() <<
+	setLowcutStrings(QStringList() <<
 		"   DC" <<
 		"0.1Hz" <<
 		"0.2Hz" <<
@@ -312,36 +343,13 @@ bool IdacDriver4::claim()
 	return true;
 }
 
-void IdacDriver4::loadDefaultChannelSettings(IdacChannelSettings* channels)
-{
-	channels[0].mEnabled = 0x03;
-	channels[0].mInvert = 0x00;
-	channels[0].nDecimation = 960; // 100 samples per second
-
-	channels[1].mEnabled = 1;
-	channels[1].mInvert = 0;
-	channels[1].nDecimation = 960; // 100 samples per second
-	channels[1].iRange = 3;
-	channels[1].iLowpass = 10; // 3kHz on IDAC4
-	channels[1].iHighpass = 1; // 0.1 Hz on IDAC4
-	channels[1].nExternalAmplification = 10;
-
-	channels[2].mEnabled = 1;
-	channels[2].mInvert = 0;
-	channels[2].nDecimation = 960; // 100 samples per second
-	channels[2].iRange = 4;
-	channels[2].iLowpass = 10; // 3kHz on IDAC4
-	channels[2].iHighpass = 1; // 0.1 Hz on IDAC4
-	channels[2].nExternalAmplification = 1;
-}
-
 void IdacDriver4::configureChannel(int iChan)
 {
 	const IdacChannelSettings* chan = desiredChannelSettings(iChan);
 	CHECK_ASSERT_RET(chan != NULL);
 
-	setChannelLowPass(iChan, chan->iLowpass);
-	setChannelHighPass(iChan, chan->iHighpass);
+	setChannelLowPass(iChan, chan->iHighcut);
+	setChannelHighPass(iChan, chan->iLowcut);
 	setChannelOffsetAnalogIn(iChan, chan->nOffset);
 }
 
@@ -356,8 +364,8 @@ bool IdacDriver4::startSampling()
 		if (iChan != 0)
 		{
 			setChannelRange(iChan, chan->iRange);
-			setChannelLowPass(iChan, chan->iLowpass);
-			setChannelHighPass(iChan, chan->iHighpass);
+			setChannelLowPass(iChan, chan->iHighcut);
+			setChannelHighPass(iChan, chan->iLowcut);
 			setChannelOffsetAnalogIn(iChan, chan->nOffset);
 		}
 	}
@@ -668,7 +676,7 @@ bool IdacDriver4::setChannelLowPass(int iChan, int index)
 {
 	CHECK_PARAM_RETVAL(iChan >= 1 && iChan < IDAC_CHANNELCOUNT, false);
 	CHECK_PARAM_RETVAL(index >= 0 && index < IDAC_LOWPASSCOUNT, false);
-	actualChannelSettings(iChan)->iLowpass = index;
+	actualChannelSettings(iChan)->iHighcut = index;
 	return UpdateAnalogIn(iChan, BI_LOWPASS_ADJUST, (quint32) index);
 }
 
@@ -678,7 +686,7 @@ bool IdacDriver4::setChannelHighPass(int iChan, int index)
 {
 	CHECK_PARAM_RETVAL(iChan >= 1 && iChan < IDAC_CHANNELCOUNT, false);
 	CHECK_PARAM_RETVAL(index >= 0 && index < IDAC_HIGHPASSCOUNT, false);
-	actualChannelSettings(iChan)->iHighpass = index;
+	actualChannelSettings(iChan)->iLowcut = index;
 	quint32 n = HighPassTable[index];
 	return UpdateAnalogIn(iChan, BI_HIGHPASS_ADJUST, n);
 }

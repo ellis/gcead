@@ -24,6 +24,7 @@
 #include <IdacDriver/IdacEnums.h>
 
 
+class IdacCaps;
 class IdacChannelSettings;
 class IdacDriver;
 class IdacDriverManager;
@@ -41,10 +42,11 @@ public:
 	bool isAvailable() const { return m_bAvailable; }
 	IdacErrors errors() const { return m_errors; }
 
+	const IdacCaps* caps() const;
 	const QString& hardwareName() const { return m_sHardwareName; }
 	const QList<int>& ranges() const { return m_anRanges; }
-	const QStringList& lowpassStrings() const { return m_asLowpassStrings; }
-	const QStringList& highpassStrings() const { return m_asHighpassStrings; }
+	const QStringList& highcutStrings() const { return m_asHighcutStrings; }
+	const QStringList& lowcutStrings() const { return m_asLowcutStrings; }
 	QString statusText() const;
 
 	/// Load up default channel settings for the current driver
@@ -87,8 +89,8 @@ private:
 	bool m_bAvailable;
 	QString m_sHardwareName;
 	QList<int> m_anRanges;
-	QStringList m_asLowpassStrings;
-	QStringList m_asHighpassStrings;
+	QStringList m_asHighcutStrings;
+	QStringList m_asLowcutStrings;
 
 	friend class IdacFactory;
 };

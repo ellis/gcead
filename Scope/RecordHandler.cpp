@@ -66,6 +66,9 @@ void RecordHandler::calcRawToVoltageFactors(int iChan, int& nNum, int& nDen)
 		* chan->nExternalAmplification // Account for 10x external amplification before being digitized
 		//* 1000000.0 // 1000000 micro volts (1 volt) is full range
 		* 1000; // 1000 milli volts (1 volt) is full range
+
+	// FIXME: for debug  only
+	qDebug() << "nNum:" << nNum << "nDen:" << nDen;
 }
 
 bool RecordHandler::check()

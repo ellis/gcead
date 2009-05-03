@@ -41,13 +41,14 @@ public:
 
 // Implement IdacDriver
 public:
+	void loadCaps(IdacCaps* caps);
+	void loadDefaultChannelSettings(IdacChannelSettings* channels);
+
 	bool checkUsbFirmwareReady();
 	bool checkDataFirmwareReady();
 
 	void initUsbFirmware();
 	void initDataFirmware();
-
-	void loadDefaultChannelSettings(IdacChannelSettings* channels);
 
 	bool startSampling();
 	void stopSampling();
@@ -61,7 +62,7 @@ public:
 	// Temporarily turn sampling off (if we're sampling) in order to change settings
 	bool setSamplingPaused(bool bPause);
 	/// Activate / deactivate isochrone transfer (SUPPINT.H)
-	bool setIsoXferEnabled(bool bEnabled);
+	bool setIntXferEnabled(bool bEnabled);
 
 private:
 	struct ConfigData

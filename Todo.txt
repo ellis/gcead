@@ -8,12 +8,6 @@
 		?	add start menu link to homepage
 		?	<associateWindowsFileExtension>
 			verify libusb on vista
-	CLEANUP:
-	x	remove/reduce compiler warnings
-	x	suppress debug output in release mode
-	x	svn:eol-style=native on all relevant files
-	x	copyright notices in all files
-	x	svn:ignore relevant directories/files
 	IDAC2
 		IdacDriver2: range values are in the wrong order
 		IdacDriver2: setting the filter from the RecordSettingDialog doesn't have an effect
@@ -27,13 +21,24 @@
 		is the decimation value really right for IDAC2?
 		run through a couple use-cases
 		when installing for LINUX as root:
-			/usr/share/applications/GcEad.desktop works?
-			/etc/udev/60-syntech.rules is there?
+		x	/usr/share/applications/GcEad.desktop works?
+		x	/etc/udev/60-syntech.rules is there?
 	CONCLUDE:
 	x	import into sourceforge svn
 	?	set proper app version number
 		create installers
 		upload installers to sourceforge
+	FOR PETER:
+		old settings will be gone for people who previously had the program installed
+		USB drivers CANNOT co-exist with old drivers
+
+
+	CLEANUP:
+	x	remove/reduce compiler warnings
+	x	suppress debug output in release mode
+	x	svn:eol-style=native on all relevant files
+	x	copyright notices in all files
+	x	svn:ignore relevant directories/files
 
 Link for info about writing a MatLab plugin
 	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf

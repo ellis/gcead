@@ -44,8 +44,8 @@ private:
 	int convOffsetSamplesToSlider(int nSamples) const;
 
 private:
-	void on_cmbHighpass_activated(int iChan, int i);
-	void on_cmbLowpass_activated(int iChan, int i);
+	void on_cmbLowcut_activated(int iChan, int i);
+	void on_cmbHighcut_activated(int iChan, int i);
 	void on_chkInvert_clicked(int iChan, bool bInvert);
 	void on_cmbRange_activated(int iChan, int i);
 	int on_edtOffset_valueChanged(int iChan, int n);
@@ -54,12 +54,13 @@ private:
 
 private slots:
 	// Recording duration
-	void on_chkRecordingDuration_clicked();
+	//void on_chkRecordingDuration_clicked();
 	void on_edtRecordingDuration_editingFinished();
+	void on_cmbRange_activated(int n);
 
 	// EAD
-	void on_cmbHighpass_1_activated(int i);
-	void on_cmbLowpass_1_activated(int i);
+	void on_cmbLowcut_1_activated(int i);
+	void on_cmbHighcut_1_activated(int i);
 	void on_chkInvert_1_clicked();
 	void on_cmbRange_1_activated(int i);
 	void on_edtOffset_1_valueChanged(int n);
@@ -67,8 +68,8 @@ private slots:
 	void on_edtExternalAmplification_1_editingFinished();
 
 	// FID
-	void on_cmbHighpass_2_activated(int i);
-	void on_cmbLowpass_2_activated(int i);
+	void on_cmbLowcut_2_activated(int i);
+	void on_cmbHighcut_2_activated(int i);
 	void on_chkInvert_2_clicked();
 	void on_cmbRange_2_activated(int i);
 	void on_edtOffset_2_valueChanged(int n);
