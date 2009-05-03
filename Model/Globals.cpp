@@ -38,7 +38,7 @@ GlobalVars::GlobalVars()
 	m_idacSettings = new IdacSettings();
 
 	m_idacSettings->bRecordOnTrigger = false;
-	m_idacSettings->nRecordingDuration = 0;
+	m_idacSettings->nRecordingDuration = 180;
 	m_idacSettings->nGcDelay_ms = 0;
 }
 
@@ -141,7 +141,7 @@ void GlobalVars::writeIdacChannelSettings(const QString& sIdacName)
 
 	QSettings settings("Syntech", APPSETTINGSKEY);
 
-	settings.beginGroup("IDAC-" + sIdacName);
+	settings.beginGroup("Hardware-" + sIdacName);
 	settings.setValue("RecordOnTrigger", m_idacSettings->bRecordOnTrigger);
 	settings.setValue("RecordingDuration", m_idacSettings->nRecordingDuration);
 	settings.setValue("GcDelay", m_idacSettings->nGcDelay_ms);

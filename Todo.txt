@@ -1,5 +1,6 @@
 	180 minutes default record duration
-	hide GC Delay for channel 1
+x	hide GC Delay for channel 1
+x	range setting not getting saved somehow
 	INSTALLER:
 		MAC:
 			offer to start program after installation
@@ -11,28 +12,28 @@
 		?	<associateWindowsFileExtension>
 			verify libusb on vista
 	IDAC2
-		IdacDriver2: range values are in the wrong order
-		IdacDriver2: setting the filter from the RecordSettingDialog doesn't have an effect
-		IdacDriver2: get inverted status correct
+	x	IdacDriver2: range values are in the wrong order
+	x	IdacDriver2: setting the filter from the RecordSettingDialog doesn't have an effect
+	?	IdacDriver2: get inverted status correct
 		handle 0x7ffe (or whatever the reset code is)? (only if I can look at the original code which generated/handled 0x7ffe)
 		get symbolic codes for the IDAC2
 	TEST:
+	-	make sure range settings work correctly for IDAC2
 		test that voltage conversions are done right
-		make sure range settings work correctly for IDAC2
 		test that digital stimulus channel works on IDAC2
 		is the decimation value really right for IDAC2?
 		run through a couple use-cases
-		when installing for LINUX as root:
-		x	/usr/share/applications/GcEad.desktop works?
-		x	/etc/udev/60-syntech.rules is there?
 	CONCLUDE:
-	x	import into sourceforge svn
-	?	set proper app version number
+		set proper app version number
 		create installers
 		upload installers to sourceforge
 	FOR PETER:
+		what should be the default recording duration?
 		old settings will be gone for people who previously had the program installed
 		USB drivers CANNOT co-exist with old drivers
+		IDAC2: same signal on INPUT 2 reads about 10x smaller than on INPUT 1...
+		IDAC2: when I set ext amp=1, signal on INPUT 1 is *2mV* peak to peak
+		IDAC4: when I set ext amp=10, signal on INPUT 1 is *1mV* peak to peak
 
 
 	CLEANUP:

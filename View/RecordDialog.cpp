@@ -66,7 +66,7 @@ RecordDialog::RecordDialog(IdacProxy* idac, QWidget* parent)
 	loadSettings();
 	on_spnWindow_valueChanged();
 	// This forces the time-axis to be placed in the middle (the value passed is arbitrary)
-	ui.eadSignal->setRange(m_nVoltsPerDivision * 10);
+	ui.eadSignal->setRange(m_nVoltsPerDivision * 5);
 
 	connect(m_idac, SIGNAL(stateChanged(IdacState)), this, SLOT(updateStatus()));
 	updateStatus();
@@ -217,14 +217,14 @@ void RecordDialog::getData()
 void RecordDialog::on_btnSensDec_clicked()
 {
 	m_nVoltsPerDivision = changeVoltsPerDivision(m_nVoltsPerDivision, 1);
-	ui.eadSignal->setRange(m_nVoltsPerDivision * 10);
+	ui.eadSignal->setRange(m_nVoltsPerDivision * 5);
 	updateSens();
 }
 
 void RecordDialog::on_btnSensInc_clicked()
 {
 	m_nVoltsPerDivision = changeVoltsPerDivision(m_nVoltsPerDivision, -1);
-	ui.eadSignal->setRange(m_nVoltsPerDivision * 10);
+	ui.eadSignal->setRange(m_nVoltsPerDivision * 5);
 	updateSens();
 }
 
@@ -253,6 +253,7 @@ void RecordDialog::on_btnOptions_clicked()
 	RecordSettingsDialog dlg(m_idac, true, this);
 	connect(&dlg, SIGNAL(settingsChanged()), this, SLOT(settingsChanged()));
 	dlg.exec();
+	Globals->writeIdacChannelSettings(m_idac->hardwareName());
 	m_bOptionsDialogOpen = false;
 }
 

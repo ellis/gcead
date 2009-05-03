@@ -61,10 +61,17 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	IdacChannelSettings* chan;
 	const IdacCaps* caps = idac->caps();
 	
+	// Setup the range editor for all channels
 	ui.lblRange->setVisible(!caps->bRangePerChannel);
 	ui.cmbRange->setVisible(!caps->bRangePerChannel);
 	ui.cmbRange->addItems(ranges);
 	ui.cmbRange->setCurrentIndex(settings->channels[1].iRange);
+
+	// NOTE: I decided to remove these from the UI -- delete them later if noone complains -- ellis, 2009-05-03
+	ui.lblSliderOffset_1->setVisible(false);
+	ui.sliderOffset_1->setVisible(false);
+	ui.lblSliderOffset_2->setVisible(false);
+	ui.sliderOffset_2->setVisible(false);
 
 	chan = &settings->channels[1];
 
@@ -119,14 +126,16 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 int RecordSettingsDialog::convOffsetSamplesToMicrovolts(int nSamples) const
 {
 	double nFactor = 1000000.0 / 0x7fff;
-	int nMicrovolts = int(nSamples * nFactor + 0.5);
+	double nRounder = (nSamples >= 0) ? 0.5 : -0.5;
+	int nMicrovolts = int(nSamples * nFactor + nRounder);
 	return nMicrovolts;
 }
 
 int RecordSettingsDialog::convOffsetMicrovoltsToSamples(int nMicrovolts) const
 {
 	double nFactor = 0x7fff / 1000000.0;
-	int nSamples = int(nMicrovolts * nFactor + 0.5);
+	double nRounder = (nMicrovolts >= 0) ? 0.5 : -0.5;
+	int nSamples = int(nMicrovolts * nFactor + nRounder);
 	return nSamples;
 }
 
@@ -158,8 +167,15 @@ void RecordSettingsDialog::on_edtRecordingDuration_editingFinished()
 
 void RecordSettingsDialog::on_cmbRange_activated(int i)
 {
-	on_cmbRange_activated(1, i);
-	on_cmbRange_activated(2, i);
+	IdacSettings* settings = Globals->idacSettings();
+	settings->channels[1].iRange = i;
+	settings->channels[2].iRange = i;
+	if (m_idac != NULL)
+	{
+		m_idac->stopSampling();
+		m_idac->startSampling(settings->channels);
+	}
+	emit settingsChanged();
 }
 
 //

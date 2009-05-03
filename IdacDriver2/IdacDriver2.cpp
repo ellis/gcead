@@ -90,6 +90,35 @@ IdacDriver2::~IdacDriver2()
 	}
 }
 
+void IdacDriver2::loadCaps(IdacCaps* caps)
+{
+	caps->bHighcut = false;
+	caps->bRangePerChannel = false;
+}
+
+void IdacDriver2::loadDefaultChannelSettings(IdacChannelSettings* channels)
+{
+	channels[0].mEnabled = 0x03;
+	channels[0].mInvert = 0x01; // Invert the trigger channel
+	channels[0].nDecimation = -1;
+
+	channels[1].mEnabled = 1;
+	channels[1].mInvert = 0;
+	channels[1].nDecimation = -1;
+	channels[1].iRange = 3;
+	channels[1].iHighcut = -1;
+	channels[1].iLowcut = 1; // 0.05 Hz on IDAC2
+	channels[1].nExternalAmplification = 10;
+
+	channels[2].mEnabled = 1;
+	channels[2].mInvert = 0;
+	channels[2].nDecimation = -1;
+	channels[2].iRange = 3;
+	channels[2].iHighcut = -1;
+	channels[2].iLowcut = 1; // 0.05 Hz on IDAC2
+	channels[2].nExternalAmplification = 1;
+}
+
 bool IdacDriver2::checkUsbFirmwareReady()
 {
 	CHECK_PRECOND_RETVAL(device() != NULL, false);
@@ -227,35 +256,6 @@ bool IdacDriver2::claim()
 	}
 
 	return true;
-}
-
-void IdacDriver2::loadCaps(IdacCaps* caps)
-{
-	caps->bHighcut = false;
-	caps->bRangePerChannel = false;
-}
-
-void IdacDriver2::loadDefaultChannelSettings(IdacChannelSettings* channels)
-{
-	channels[0].mEnabled = 0x03;
-	channels[0].mInvert = 0x00;
-	channels[0].nDecimation = -1;
-
-	channels[1].mEnabled = 1;
-	channels[1].mInvert = 0;
-	channels[1].nDecimation = -1;
-	channels[1].iRange = 3;
-	channels[1].iHighcut = -1;
-	channels[1].iLowcut = 1; // 0.05 Hz on IDAC2
-	channels[1].nExternalAmplification = 10;
-
-	channels[2].mEnabled = 1;
-	channels[2].mInvert = 0;
-	channels[2].nDecimation = -1;
-	channels[2].iRange = 3;
-	channels[2].iHighcut = -1;
-	channels[2].iLowcut = 1; // 0.05 Hz on IDAC2
-	channels[2].nExternalAmplification = 1;
 }
 
 void IdacDriver2::configureChannel(int iChan)
@@ -453,19 +453,18 @@ void IdacDriver2::sampleLoop()
 					for (int i = 0; i < 5; i++)
 						parts[i] &= 0x7f;
 
-					short analog1 = (parts[0] << 9) | (parts[1] << 2) | (parts[2] >> 5);
-					short analog2 = ((parts[2] & 0x1f) << 11) | (parts[3] << 4) | (parts[4] >> 3);
+					short analog1 = -((parts[0] << 9) | (parts[1] << 2) | (parts[2] >> 5));
+					short analog2 = -(((parts[2] & 0x1f) << 11) | (parts[3] << 4) | (parts[4] >> 3));
 					short digital = 0;
 					digital |= ((parts[4] & 0x02) > 0);
 					digital |= ((parts[4] & 0x01) > 0) << 1;
+					digital = ~digital;
 
-					/*
 					cout << "\t" << analog1;
 					cout << "\t" << analog2;
 					cout << "\t" << ((parts[4] & 0x02) > 0 ? 'X' : '_');
 					cout << "\t" << ((parts[4] & 0x01) > 0 ? 'X' : '_');
 					cout << endl;
-					*/
 
 					iPart = 0;
 

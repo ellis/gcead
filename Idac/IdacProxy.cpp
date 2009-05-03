@@ -54,7 +54,7 @@ void IdacProxy::setState(int _state)
 		m_sHardwareName = m_manager->hardwareName();
 
 		// REFACTOR: consider changing this so that the assignment only occurs once. -- ellis, 2009-04-20
-		bool bAvailable = false;
+		bool bAvailable = (state == IdacState_Ready || state == IdacState_Sampling);
 		if (state == IdacState_Ready && !m_bAvailable)
 		{
 			bAvailable = true;
