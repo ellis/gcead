@@ -1,4 +1,4 @@
-	180 minutes default record duration
+x	180 minutes default record duration
 x	hide GC Delay for channel 1
 x	range setting not getting saved somehow
 	INSTALLER:
@@ -7,9 +7,9 @@ x	range setting not getting saved somehow
 			how to install libusb on mac? (see http://www.ellert.se/twain-sane/)
 			readme for mac about libusb?
 		WINDOWS:
-		x	offer to start program after installation
 		?	add start menu link to homepage
 		?	<associateWindowsFileExtension>
+			test double-clicking on an .ead file
 			verify libusb on vista
 	IDAC2
 	x	IdacDriver2: range values are in the wrong order
@@ -28,8 +28,6 @@ x	range setting not getting saved somehow
 		create installers
 		upload installers to sourceforge
 	FOR PETER:
-		what should be the default recording duration?
-		old settings will be gone for people who previously had the program installed
 		USB drivers CANNOT co-exist with old drivers
 		IDAC2: same signal on INPUT 2 reads about 10x smaller than on INPUT 1...
 		IDAC2: when I set ext amp=1, signal on INPUT 1 is *2mV* peak to peak
@@ -63,7 +61,6 @@ Link for info about writing a MatLab plugin
 FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possible
 	add programmer documentation to IdacDriver* projects
 	log errors to a log file
-	show USB errors in the status bar, or some perhaps via a message box
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 
 FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement later

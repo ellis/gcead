@@ -205,6 +205,7 @@ void MainWindow::setupActions()
 	ui.mnuRecord->addAction(actions->recordHardwareSettings);
 	ui.mnuRecord->addAction(actions->recordSave);
 	ui.mnuRecord->addAction(actions->recordDiscard);
+	ui.mnuRecord->addSeparator();
 	ui.mnuRecord->addAction(actions->recordHardwareConnect);
 
 	ui.toolBar->addAction(actions->recordRecord);

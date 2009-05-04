@@ -15,13 +15,11 @@ INCLUDEPATH += . \
     ../Idac
 DEPENDPATH += . \
     ../Core \
-	../Model \
+    ../Model \
     ../Scope \
     ../Idac
-
 CONFIG(debug, debug|release):DESTDIR = ../debug
 else:DESTDIR = ../release
-
 LIBS += -L$${DESTDIR}
 
 # VPATH += ../debug
@@ -33,14 +31,19 @@ LIBS += -lCore \
     -lModel \
     -lScope
 PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
-	$${DESTDIR}/libIdacDriver.a \
-	$${DESTDIR}/libIdacDriver2.a \
-	$${DESTDIR}/libIdacDriver4.a \
-	$${DESTDIR}/libIdac.a \
-	$${DESTDIR}/libModel.a \
-	$${DESTDIR}/libScope.a
+    $${DESTDIR}/libIdacDriver.a \
+    $${DESTDIR}/libIdacDriver2.a \
+    $${DESTDIR}/libIdacDriver4.a \
+    $${DESTDIR}/libIdac.a \
+    $${DESTDIR}/libModel.a \
+    $${DESTDIR}/libScope.a
 win32:LIBS += ../extern/win32/libusb.a
-unix:LIBS += /usr/lib/libusb.a -static-libgcc -L../release -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
+unix:LIBS += /usr/lib/libusb.a \
+    -static-libgcc \
+    -L../release \
+    -Wl,-Bstatic \
+    -lstdc++ \
+    -Wl,-Bdynamic
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc
@@ -52,16 +55,25 @@ unix:pg {
 
 # Copy IDAC2 hex file
 idac2hex.target = $${DESTDIR}/idc2fpga.hex
-win32:idac2hex.commands = ${COPY_FILE} ..\Installables\idc2fpga.hex ${DESTDIR}
-unix:idac2hex.commands = ${COPY_FILE} ../Installables/idc2fpga.hex ${DESTDIR}
+win32:idac2hex.commands = ${COPY_FILE} \
+    ..\Installables\idc2fpga.hex \
+    ${DESTDIR}
+unix:idac2hex.commands = ${COPY_FILE} \
+    ../Installables/idc2fpga.hex \
+    ${DESTDIR}
+
 # Copy IDAC4 hex file
 idac4hex.target = $${DESTDIR}/idc4fpga.hex
-win32:idac4hex.commands = ${COPY_FILE} ..\Installables\idc4fpga.hex ${DESTDIR}
-unix:idac4hex.commands = ${COPY_FILE} ../Installables/idc4fpga.hex ${DESTDIR}
-QMAKE_EXTRA_TARGETS += idac2hex idac4hex
-POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex $${DESTDIR}/idc4fpga.hex
-
-
+win32:idac4hex.commands = ${COPY_FILE} \
+    ..\Installables\idc4fpga.hex \
+    ${DESTDIR}
+unix:idac4hex.commands = ${COPY_FILE} \
+    ../Installables/idc4fpga.hex \
+    ${DESTDIR}
+QMAKE_EXTRA_TARGETS += idac2hex \
+    idac4hex
+POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex \
+    $${DESTDIR}/idc4fpga.hex
 HEADERS += ./WaitCursor.h \
     ./ChartWidget.h \
     ./SuffixSpinBox.h \
@@ -83,7 +95,8 @@ HEADERS += ./WaitCursor.h \
     ./TaskPanel.h \
     ./MainWindow.h \
     ./WaveEditorWidget.h \
-    ./WaveEditorDialog.h
+    ./WaveEditorDialog.h \
+    WaitForHardwareDialog.h
 SOURCES += ./DataListItem.cpp \
     ./TaskReviewWidget.cpp \
     ./MainWindow.cpp \
@@ -104,7 +117,8 @@ SOURCES += ./DataListItem.cpp \
     ./RecordSettingsDialog.cpp \
     ./TaskWidget.cpp \
     ./WaveEditorWidget.cpp \
-    ./WaveEditorDialog.cpp
+    ./WaveEditorDialog.cpp \
+    WaitForHardwareDialog.cpp
 
 # Forms
 FORMS += ./MainWindow.ui \

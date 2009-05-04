@@ -44,6 +44,7 @@ public:
 	void showError(const QString& sTitle, const QString& sError);
 	void showStatusMessage(const QString& sStatus);
 
+	bool waitForHardware(IdacProxy* idac, bool bCloseOnAvailable);
 	bool showRecordPreview(IdacProxy* idac);
 	void showRecordOptions(IdacProxy* idac);
 

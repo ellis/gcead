@@ -239,12 +239,11 @@ void MainScope::updateActions()
 	m_actions->viewVerifiedPeaks->setEnabled(bPeaks);
 	m_actions->viewEditPeaks->setEnabled(bPeaks);
 
-	bool bIdac = (m_idac->isAvailable() && bHaveFile);
-	m_actions->recordRecord->setEnabled(bIdac && !m_bRecording);
-	m_actions->recordHardwareSettings->setEnabled(bIdac && !m_bRecording);
-	m_actions->recordSave->setEnabled(bIdac && m_bRecording);
-	m_actions->recordDiscard->setEnabled(bIdac && m_bRecording);
-	m_actions->recordHardwareConnect->setEnabled(!bIdac);
+	m_actions->recordRecord->setEnabled(bHaveFile && !m_bRecording);
+	m_actions->recordHardwareSettings->setEnabled(bHaveFile && !m_bRecording);
+	m_actions->recordSave->setEnabled(bHaveFile && m_bRecording);
+	m_actions->recordDiscard->setEnabled(bHaveFile && m_bRecording);
+	m_actions->recordHardwareConnect->setEnabled(!m_idac->isAvailable());
 }
 
 void MainScope::updateWindowTitle()
@@ -317,6 +316,14 @@ void MainScope::updateRecentFileActions()
 		m_actions->fileOpenRecentActions[i]->setText(text);
 		m_actions->fileOpenRecentActions[i]->setVisible(true);
 	}
+}
+
+bool MainScope::checkHardware()
+{
+	if (m_idac->isAvailable())
+		return true;
+	else
+		return m_ui->waitForHardware(m_idac, true);
 }
 
 void MainScope::on_idac_isAvailable()
@@ -522,6 +529,9 @@ void MainScope::on_actions_recordRecord_triggered()
 	CHECK_PRECOND_RET(m_file != NULL);
 	CHECK_PRECOND_RET(m_idac != NULL);
 
+	if (!checkHardware())
+		return;
+
 	if (m_ui->showRecordPreview(m_idac))
 	{
 		m_file->discardNewRecording();
@@ -553,6 +563,9 @@ void MainScope::on_actions_recordRecord_triggered()
 
 void MainScope::on_actions_recordHardwareSettings_triggered()
 {
+	if (!checkHardware())
+		return;
+
 	m_ui->showRecordOptions(m_idac);
 	Globals->writeIdacChannelSettings(m_idac->hardwareName());
 }
@@ -585,6 +598,7 @@ void MainScope::on_actions_recordHardwareConnect_triggered()
 	case IdacState_Initializing:
 	case IdacState_InitError:
 		m_idac->setup();
+		m_ui->waitForHardware(m_idac, false);
 		break;
 	default:
 		break;

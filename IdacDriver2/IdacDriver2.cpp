@@ -389,6 +389,7 @@ void IdacDriver2::sampleStart()
 	g_iSampleWrite = 0;
 	g_nSamplesInBuffer = 0;
 	g_recordThread = new IdacDriverSamplingThread(this);
+	// NOTE: The priority specification is probably completely unnecessary -- ellis, 2009-05-04
 	g_recordThread->start(QThread::TimeCriticalPriority);
 }
 
@@ -460,11 +461,13 @@ void IdacDriver2::sampleLoop()
 					digital |= ((parts[4] & 0x01) > 0) << 1;
 					digital = ~digital;
 
+					/*
 					cout << "\t" << analog1;
 					cout << "\t" << analog2;
 					cout << "\t" << ((parts[4] & 0x02) > 0 ? 'X' : '_');
 					cout << "\t" << ((parts[4] & 0x01) > 0 ? 'X' : '_');
 					cout << endl;
+					*/
 
 					iPart = 0;
 

@@ -24,6 +24,9 @@
 class IdacProxy;
 
 
+/// User-Interface class for all interactions required by MainScope.
+/// Currently this is implemented by MainWindowUi.
+/// An alternative implementation could enable unit-testing without user-interaction.
 class MainScopeUi
 {
 public:
@@ -48,6 +51,10 @@ public:
 	/// Show status message (does not require user acknowledgement)
 	virtual void showStatusMessage(const QString& sStatus) = 0;
 
+	/// Wait for hardware to become available before proceeding.
+	/// @param bCloseOnAvailable if true, the dialog will automatically close as soon as the hardware becomes available.
+	/// @returns true if the hardware is now available, false if user clicks on "Cancel" while waiting.
+	virtual bool waitForHardware(IdacProxy* idac, bool bCloseOnAvailable) = 0;
 	/// Let the user configure/setup recording
 	/// @returns true if recording should be initiated
 	virtual bool showRecordPreview(IdacProxy* idac) = 0;

@@ -333,6 +333,8 @@ struct usb_device* IdacDriverManager::findIdac(struct usb_device* dev)
 	for (int i = 0; i < dev->num_children && !found; i++)
 	{
 		// TODO: Add an error message if child is NULL -- that happens when user doesn't have permissions for the device
+		if (dev->children == NULL)
+			break;
 		if (dev->children[i] != NULL)
 			found = findIdac(dev->children[i]);
 	}

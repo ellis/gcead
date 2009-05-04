@@ -25,6 +25,7 @@
 #include "AppDefines.h"
 #include "RecordDialog.h"
 #include "RecordSettingsDialog.h"
+#include "WaitForHardwareDialog.h"
 
 
 MainWindowUi::MainWindowUi(QMainWindow* parent)
@@ -98,6 +99,13 @@ void MainWindowUi::showError(const QString& sTitle, const QString& sError)
 void MainWindowUi::showStatusMessage(const QString& sStatus)
 {
 	m_widget->statusBar()->showMessage(sStatus, 3000);
+}
+
+bool MainWindowUi::waitForHardware(IdacProxy* idac, bool bCloseOnAvailable)
+{
+	WaitForHardwareDialog dlg(idac, bCloseOnAvailable, m_widget);
+	int res = dlg.exec();
+	return (res == QDialog::Accepted);
 }
 
 bool MainWindowUi::showRecordPreview(IdacProxy* idac)

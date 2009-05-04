@@ -1,9 +1,42 @@
-Settings for individual waveforms:
-	sensitivity
-	inversion
-	time offset
-	comment
-	color?
+DIRECTORIES
+===========
+
+Core/
+	A few semi-generic files that may be used by all sub-projects
+Idac/
+	Classes to interface between the hardware drivers and the main application code.
+	IdacFactory and IdacProxy are the only two IDAC classes that should be used by
+	the main application (other than the settings and capabilities structures).
+	IdacProxy runs in the main application thread and shields the main application
+	programmer from all driver threads and details.
+IdacDriver/
+	The general driver code.  This is not really a "driver", since it runs in
+	user-space via libusb.
+IdacDriver2/
+	USB protocol implementation for the IDAC2
+IdacDriver4/
+	USB protocol implementation for the IDAC4
+Model/
+	The basic data classes for GC-EAD
+Scope/
+	Classes to implement non-UI code to support the UI.  Basically, this is a
+	representation of the UI in a form that can potentially be unit-tested without
+	user-interaction.  This approach wasn't taken until near the end of the project,
+	so there's not much in here.
+View/
+	UI code and main()
+
+
+USB DRIVERS
+===========
+
+The IDAC drivers were hacked together very quickly.  Part of the source-code
+for the old proprietary IDAC4 driver was available to me, so that helped.  I
+didn't have any source code for IDAC2 though, so I had to make guesses based
+on analyzing the USB transfer stream of the proprietary drivers and use what
+I had gleaned from the old IDAC4 sourcecode.  There are still a couple loose
+ends in the IDAC2 code.
+
 
 Recording objects:
 	Idac: interfaces with hardware

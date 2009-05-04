@@ -111,6 +111,7 @@ private:
 	void updateWindowTitle();
 	void addRecentFile(const QString& sFilename);
 	void updateRecentFileActions();
+	bool checkHardware();
 
 private slots:
 	void on_idac_isAvailable();
