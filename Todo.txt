@@ -1,6 +1,3 @@
-x	180 minutes default record duration
-x	hide GC Delay for channel 1
-x	range setting not getting saved somehow
 	INSTALLER:
 		MAC:
 			offer to start program after installation
@@ -9,22 +6,23 @@ x	range setting not getting saved somehow
 		WINDOWS:
 		?	add start menu link to homepage
 		?	<associateWindowsFileExtension>
+			safe installation of USB driver:
+				don't install USB driver by default
+				if the user selects to install the USB driver,
+					detect whether IDAC8_32.dll or IDAC30.sys are in system32
+					if so, strongly warn the user and let them abort installation
 			test double-clicking on an .ead file
 			verify libusb on vista
 	IDAC2
-	x	IdacDriver2: range values are in the wrong order
-	x	IdacDriver2: setting the filter from the RecordSettingDialog doesn't have an effect
 	?	IdacDriver2: get inverted status correct
 		handle 0x7ffe (or whatever the reset code is)? (only if I can look at the original code which generated/handled 0x7ffe)
 		get symbolic codes for the IDAC2
 	TEST:
-	-	make sure range settings work correctly for IDAC2
 		test that voltage conversions are done right
 		test that digital stimulus channel works on IDAC2
 		is the decimation value really right for IDAC2?
 		run through a couple use-cases
 	CONCLUDE:
-		set proper app version number
 		create installers
 		upload installers to sourceforge
 	FOR PETER:
@@ -40,6 +38,7 @@ x	range setting not getting saved somehow
 	x	svn:eol-style=native on all relevant files
 	x	copyright notices in all files
 	x	svn:ignore relevant directories/files
+	x	set proper app version number
 
 Link for info about writing a MatLab plugin
 	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf

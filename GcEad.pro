@@ -10,4 +10,5 @@ SUBDIRS = Core \
     View
 OTHER_FILES += Todo.txt \
     UseCases.txt \
-    Notes.txt
+    Notes.txt \
+    Compiling.txt

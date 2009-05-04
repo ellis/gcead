@@ -47,3 +47,36 @@ Recording objects:
 		adds data to the EadFile
 		tells ChartWidget to update itself when in Recording view
 		auto-stops Idac recording when duration is reached
+
+
+INSTALL PROGRAMS
+================
+
+I used BitRock InstallBuilder to create the installers for Windows and Linux.
+I built both installers from within Linux, which is why there are various
+DLLs in Installables/Windows.
+
+installer for windows
+---------------------
+- build the project
+- make sure that the DLLs in Installabes/Windows are up-to-date
+- copy copy GcEad.exe from the Windows machine to Installables/Windows
+  on the Linux machine
+- cd Setup
+- run: $path_to_builder build GcEad-windows.xml windows
+
+installer for linux
+-------------------
+- build the project
+- cd Setup
+- run: ./copylibs
+- run: $path_to_builder build GcEad-linux.xml linux
+
+installer for mac
+-----------------
+- make sure the Qt SDK is installed
+- build the project
+- cd release
+- cp *.hex GcEad.app/Contents/MacOS
+- macdeployqt GcEad.app -dmg
+- GcEad.dmg is now ready for deployment

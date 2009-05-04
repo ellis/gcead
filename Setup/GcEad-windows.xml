@@ -167,7 +167,7 @@
 			<description>IDAC USB Driver</description>
 			<canBeEdited>1</canBeEdited>
 			<detailedDescription>Install the USB driver for the IDAC devices</detailedDescription>
-			<selected>1</selected>
+			<selected>0</selected>
 			<show>1</show>
 			<folderList>
 				<folder>
@@ -182,6 +182,16 @@
 					</distributionFileList>
 				</folder>
 			</folderList>
+			<componentSelectionValidationActionList>
+				<throwError>
+					<text>You have chosen to install the USB drivers, but old drivers appear to already be installed.  If you want to overwrite the old drivers, please contact Syntech for instructions.</text>
+					<ruleEvaluationLogic>or</ruleEvaluationLogic>
+					<ruleList>
+						<fileTest path="${windows_folder_systemroot}/system32/IDAC8_32.dll"/>
+						<fileTest path="${windows_folder_systemroot}/system32/IDAC30.sys.dll"/>
+					</ruleList>
+				</throwError>
+			</componentSelectionValidationActionList>
 			<postInstallationActionList>
 				<addSharedDLL>
 					<explanation>Register libusb0.dll</explanation>

@@ -8,3 +8,5 @@ elsewhere on your system.
 
 You will find the final program, GcEad, in either the debug/ or release/
 subfolders.
+
+See Notes.txt for programmer notes.
