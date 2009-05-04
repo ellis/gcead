@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008, 2009  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@
 #include <QtDebug>
 #include <QApplication>
 #include <QMutex>
+#include <QSettings>
 
+#include <AppDefines.h>
 #include <Globals.h>
 #include <Idac/IdacFactory.h>
 
@@ -40,7 +42,18 @@ int main(int argc, char *argv[])
 	Globals = new GlobalVars();
 
 	MainWindow* w = new MainWindow();
-	w->show();
+
+	// This used to be handled in MainWindow::readSettings(),
+	// but there were sometimes layout problems upon maximization.
+	// This bug might have been fixed in Qt in the meantime, but
+	// I don't know, so I'm trying this as a workaround -- ellis, 2009-05-04
+	QSettings settings("Syntech", APPSETTINGSKEY);
+	settings.beginGroup("MainWindow");
+	bool bMax = settings.value("Maximized", true).toBool();
+	if (bMax)
+		w->showMaximized();
+	else
+		w->show();
 
 	// Open file from command line
 	if (argc >= 2)

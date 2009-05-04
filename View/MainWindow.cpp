@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008, 2009  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,9 +231,12 @@ void MainWindow::readSettings()
 	
 	settings.beginGroup("MainWindow");
 
-	bool bMax = settings.value("Maximized", false).toBool();
+	bool bMax = settings.value("Maximized", true).toBool();
 	if (bMax)
-		setWindowState(Qt::WindowMaximized);
+	{
+		// NOTE: This is now handled in main.cpp --ellis, 2009-05-04
+		//setWindowState(Qt::WindowMaximized);
+	}
 	// If we're maximized, don't load the size and position values, because the de-maximizing will still have the maximized height
 	else
 	{

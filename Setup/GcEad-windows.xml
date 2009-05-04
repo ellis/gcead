@@ -187,8 +187,8 @@
 					<text>You have chosen to install the USB drivers, but old drivers appear to already be installed.  If you want to overwrite the old drivers, please contact Syntech for instructions.</text>
 					<ruleEvaluationLogic>or</ruleEvaluationLogic>
 					<ruleList>
-						<fileTest path="${windows_folder_systemroot}/system32/IDAC8_32.dll"/>
-						<fileTest path="${windows_folder_systemroot}/system32/IDAC30.sys.dll"/>
+						<fileExists path="${windows_folder_systemroot}/system32/IDAC8_32.dll"/>
+						<fileExists path="${windows_folder_systemroot}/system32/IDAC30.sys.dll"/>
 					</ruleList>
 				</throwError>
 			</componentSelectionValidationActionList>
