@@ -184,7 +184,7 @@
 			</folderList>
 			<componentSelectionValidationActionList>
 				<throwError>
-					<text>You have chosen to install the USB drivers, but old drivers appear to already be installed.  If you want to overwrite the old drivers, please contact Syntech for instructions.</text>
+					<text>You have chosen to install the USB drivers.  However, old drivers appear to already be installed, and we cannot replace them.  The software should also function with the old drivers.</text>
 					<ruleEvaluationLogic>or</ruleEvaluationLogic>
 					<ruleList>
 						<fileExists path="${windows_folder_systemroot}/system32/IDAC8_32.dll"/>

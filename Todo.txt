@@ -4,14 +4,6 @@
 			how to install libusb on mac? (see http://www.ellert.se/twain-sane/)
 			readme for mac about libusb?
 		WINDOWS:
-		?	add start menu link to homepage
-		?	<associateWindowsFileExtension>
-			safe installation of USB driver:
-				don't install USB driver by default
-				if the user selects to install the USB driver,
-					detect whether IDAC8_32.dll or IDAC30.sys are in system32
-					if so, strongly warn the user and let them abort installation
-			test double-clicking on an .ead file
 			verify libusb on vista
 	IDAC2
 	?	IdacDriver2: get inverted status correct
@@ -22,9 +14,6 @@
 		test that digital stimulus channel works on IDAC2
 		is the decimation value really right for IDAC2?
 		run through a couple use-cases
-	CONCLUDE:
-		create installers
-		upload installers to sourceforge
 	FOR PETER:
 		USB drivers CANNOT co-exist with old drivers
 		IDAC2: same signal on INPUT 2 reads about 10x smaller than on INPUT 1...
