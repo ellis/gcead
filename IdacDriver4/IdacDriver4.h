@@ -124,6 +124,7 @@ private:
 	void sampleStart();
 	void sampleInit();
 	void sampleLoop();
+	bool processSampledData(int iTransfer, int nBytesReceived, bool bOverflow);
 
 private:
 	static BitPosition bpIdacBox[BI_COUNT];
