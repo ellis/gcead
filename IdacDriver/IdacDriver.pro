@@ -22,7 +22,9 @@ HEADERS += IdacDriver.h \
 SOURCES += IdacDriver.cpp \
     IdacDriverUsb.cpp
 win32:INCLUDEPATH += ../extern/win32
-unix:!macx:HEADERS += libusb_augment.h
-unix:!macx:SOURCES += libusb_augment.c
+unix:INCLUDEPATH += ../extern/libusb-compat-0.1.3/libusb
+#unix:INCLUDEPATH += ../extern/libusb-1.0.2 ../extern/libusb-compat-0.1.3/libusb
+#unix:!macx:HEADERS += libusb_augment.h
+#unix:!macx:SOURCES += libusb_augment.c
 CONFIG(debug, debug|release):DESTDIR = ../debug
 else:DESTDIR = ../release

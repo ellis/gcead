@@ -38,12 +38,14 @@ PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libModel.a \
     $${DESTDIR}/libScope.a
 win32:LIBS += ../extern/win32/libusb.a
-unix:LIBS += /usr/lib/libusb.a \
+unix:LIBS += \
     -static-libgcc \
     -L../release \
     -Wl,-Bstatic \
     -lstdc++ \
-    -Wl,-Bdynamic
+    -Wl,-Bdynamic \
+    ../extern/libusb-compat-0.1.3/libusb/.libs/libusb.a \
+	../extern/libusb-1.0.2/libusb/.libs/libusb-1.0.a
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc
