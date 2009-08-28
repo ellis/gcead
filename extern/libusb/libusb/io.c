@@ -410,11 +410,16 @@ if (r == 0 && actual_length == sizeof(data)) {
  * Next, populate the length field for the first num_iso_packets entries in
  * the \ref libusb_transfer::iso_packet_desc "iso_packet_desc" array. Section
  * 5.6.3 of the USB2 specifications describe how the maximum isochronous
- * packet length is determined by wMaxPacketSize field in the endpoint
- * descriptor. Two functions can help you here:
+ * packet length is determined by the wMaxPacketSize field in the endpoint
+ * descriptor.
+ * Two functions can help you here:
  *
- * - libusb_get_max_packet_size() is an easy way to determine the max
- *   packet size for an endpoint.
+ * - libusb_get_max_iso_packet_size() is an easy way to determine the max
+ *   packet size for an isochronous endpoint. Note that the maximum packet
+ *   size is actually the maximum number of bytes that can be transmitted in
+ *   a single microframe, therefore this function multiplies the maximum number
+ *   of bytes per transaction by the number of transaction opportunities per
+ *   microframe.
  * - libusb_set_iso_packet_lengths() assigns the same length to all packets
  *   within a transfer, which is usually what you want.
  *
@@ -1478,10 +1483,11 @@ static void handle_timeout(struct usbi_transfer *itransfer)
 
 static int handle_timeouts(struct libusb_context *ctx)
 {
+	int r = 0;
+#ifndef USBI_OS_HANDLES_TIMEOUT
 	struct timespec systime_ts;
 	struct timeval systime;
 	struct usbi_transfer *transfer;
-	int r = 0;
 
 	USBI_GET_CONTEXT(ctx);
 	pthread_mutex_lock(&ctx->flying_transfers_lock);
@@ -1520,6 +1526,8 @@ static int handle_timeouts(struct libusb_context *ctx)
 
 out:
 	pthread_mutex_unlock(&ctx->flying_transfers_lock);
+#endif
+
 	return r;
 }
 
@@ -1770,6 +1778,7 @@ API_EXPORTED int libusb_handle_events_locked(libusb_context *ctx,
 API_EXPORTED int libusb_get_next_timeout(libusb_context *ctx,
 	struct timeval *tv)
 {
+#ifndef USBI_OS_HANDLES_TIMEOUT
 	struct usbi_transfer *transfer;
 	struct timespec cur_ts;
 	struct timeval cur_tv;
@@ -1823,6 +1832,9 @@ API_EXPORTED int libusb_get_next_timeout(libusb_context *ctx,
 	}
 
 	return 1;
+#else
+	return 0;
+#endif
 }
 
 /** \ingroup poll

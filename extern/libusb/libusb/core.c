@@ -238,6 +238,62 @@ if (cfg != desired)
  *
  * The above method works because once an interface is claimed, no application
  * or driver is able to select another configuration.
+ *
+ * \section cancel Cancellation, early completion and timeouts
+ *
+ * NOTE: This section is currently Linux-centric. I am not sure if any of these
+ * considerations apply to Darwin or other platforms.
+ *
+ * Cancellation of transfers can produce some slightly undesirable results.
+ * It is important to understand that a transfer timing out can also result in
+ * cancellation, as can a transfer that completes early (with a short packet).
+ *
+ * The timeout case is easy to comprehend; if a transfer times out, libusb
+ * will cancel it at the point of timeout and inform you of this. Hence timeout
+ * equals cancellation.
+ *
+ * The early completion case needs a little more explanation: When you submit
+ * a large transfer, libusb may need to divide it into several smaller
+ * sub-transfers which are then submitted to the host controller in parallel
+ * for performance reasons. If one sub-transfer completes early, libusb then
+ * needs to cancel all the subsequent sub-transfers before returning the result
+ * to you.
+ *
+ * All forms of cancellation including the usual libusb_cancel_transfer() can
+ * add some complications as it is possible that data transfer may be happening
+ * while libusb is performing cancellation. This can lead to the following
+ * kinds of situations:
+ *  - A transfer may timeout or be cancelled by the user. While libusb is
+ *    cancelling the transfer (which may consist of several sub-transfers
+ *    which libusb has to cancel one-by-one), data may start to be transferred.
+ *    libusb will report successful cancellation as usual, and will reflect the
+ *    situation with the \ref libusb_transfer::actual_length "actual_length"
+ *    field of the transfer, and for device-to-host transfers, the appropriate
+ *    amount of data will be present in \ref libusb_transfer::buffer "buffer").
+ *  - Similarly, a few USB-level packets within the transfer may already have
+ *    been transferred when the timeout/cancellation occurred, and more
+ *    packets may complete during the time needed to cancel the transfer.
+ *  - A non-ultimate sub-transfer within a transfer may complete with a short
+ *    packet, prompting libusb to immediately cancel all subsequent
+ *    sub-transfers and report early completion. However, during the time
+ *    needed to cancel the subsequent transfers, more data may be transferred.
+ *    This is a difficult situation because the libusb API does not currently
+ *    have a way of indicating the point at which the transfer ended relative
+ *    to the surplus data that was transferred.
+ *
+ * In all cases where the transfer is a device-to-host transfer and surplus
+ * data is recieved as above, libusb places it in the transfer buffer as if
+ * it had arrived contiguously and updates
+ * \ref libusb_transfer::actual_length "actual_length" accordingly.
+ *
+ * We hope to eliminate some of these difficulties in the near future, but
+ * kernel changes may be required.
+ *
+ * Ultimately, if you cancel a transfer before it has completed then you are
+ * obligated to handle the above caveats and to resynchronize with the device
+ * at the application level. Also, remember that timeouts are simply time-based
+ * cancellations which libusb makes convenient for you, hence the same
+ * considerations apply.
  */
 
 /**
@@ -626,32 +682,10 @@ API_EXPORTED uint8_t libusb_get_device_address(libusb_device *dev)
 	return dev->device_address;
 }
 
-/** \ingroup dev
- * Convenience function to retrieve the wMaxPacketSize value for a particular
- * endpoint in the active device configuration. This is useful for setting up
- * isochronous transfers.
- *
- * \param dev a device
- * \param endpoint address of the endpoint in question
- * \returns the wMaxPacketSize value
- * \returns LIBUSB_ERROR_NOT_FOUND if the endpoint does not exist
- * \returns LIBUSB_ERROR_OTHER on other failure
- */
-API_EXPORTED int libusb_get_max_packet_size(libusb_device *dev,
-	unsigned char endpoint)
+static const struct libusb_endpoint_descriptor *find_endpoint(
+	struct libusb_config_descriptor *config, unsigned char endpoint)
 {
 	int iface_idx;
-	struct libusb_config_descriptor *config;
-	int r;
-
-	r = libusb_get_active_config_descriptor(dev, &config);
-	if (r < 0) {
-		usbi_err(DEVICE_CTX(dev),
-			"could not retrieve active config descriptor");
-		return LIBUSB_ERROR_OTHER;
-	}
-
-	r = LIBUSB_ERROR_NOT_FOUND;
 	for (iface_idx = 0; iface_idx < config->bNumInterfaces; iface_idx++) {
 		const struct libusb_interface *iface = &config->interface[iface_idx];
 		int altsetting_idx;
@@ -665,16 +699,107 @@ API_EXPORTED int libusb_get_max_packet_size(libusb_device *dev,
 			for (ep_idx = 0; ep_idx < altsetting->bNumEndpoints; ep_idx++) {
 				const struct libusb_endpoint_descriptor *ep =
 					&altsetting->endpoint[ep_idx];
-				if (ep->bEndpointAddress == endpoint) {
-					r = ep->wMaxPacketSize;
-					goto out;
-				}
+				if (ep->bEndpointAddress == endpoint)
+					return ep;
 			}
 		}
 	}
+	return NULL;
+}
 
-out:
+/** \ingroup dev
+ * Convenience function to retrieve the wMaxPacketSize value for a particular
+ * endpoint in the active device configuration.
+ *
+ * This function was originally intended to be of assistance when setting up
+ * isochronous transfers, but a design mistake resulted in this function
+ * instead. It simply returns the wMaxPacketSize value without considering
+ * its contents. If you're dealing with isochronous transfers, you probably
+ * want libusb_get_max_iso_packet_size() instead.
+ *
+ * \param dev a device
+ * \param endpoint address of the endpoint in question
+ * \returns the wMaxPacketSize value
+ * \returns LIBUSB_ERROR_NOT_FOUND if the endpoint does not exist
+ * \returns LIBUSB_ERROR_OTHER on other failure
+ */
+API_EXPORTED int libusb_get_max_packet_size(libusb_device *dev,
+	unsigned char endpoint)
+{
+	struct libusb_config_descriptor *config;
+	const struct libusb_endpoint_descriptor *ep;
+	int r;
+
+	r = libusb_get_active_config_descriptor(dev, &config);
+	if (r < 0) {
+		usbi_err(DEVICE_CTX(dev),
+			"could not retrieve active config descriptor");
+		return LIBUSB_ERROR_OTHER;
+	}
+
+	ep = find_endpoint(config, endpoint);
+	if (!ep)
+		return LIBUSB_ERROR_NOT_FOUND;
+
+	r = ep->wMaxPacketSize;
 	libusb_free_config_descriptor(config);
+	return r;
+}
+
+/** \ingroup dev
+ * Calculate the maximum packet size which a specific endpoint is capable is
+ * sending or receiving in the duration of 1 microframe
+ *
+ * Only the active configution is examined. The calculation is based on the
+ * wMaxPacketSize field in the endpoint descriptor as described in section
+ * 9.6.6 in the USB 2.0 specifications.
+ *
+ * If acting on an isochronous or interrupt endpoint, this function will
+ * multiply the value found in bits 0:10 by the number of transactions per
+ * microframe (determined by bits 11:12). Otherwise, this function just
+ * returns the numeric value found in bits 0:10.
+ *
+ * This function is useful for setting up isochronous transfers, for example
+ * you might pass the return value from this function to
+ * libusb_set_iso_packet_lengths() in order to set the length field of every
+ * isochronous packet in a transfer.
+ *
+ * Since v1.0.3.
+ *
+ * \param dev a device
+ * \param endpoint address of the endpoint in question
+ * \returns the maximum packet size which can be sent/received on this endpoint
+ * \returns LIBUSB_ERROR_NOT_FOUND if the endpoint does not exist
+ * \returns LIBUSB_ERROR_OTHER on other failure
+ */
+API_EXPORTED int libusb_get_max_iso_packet_size(libusb_device *dev,
+	unsigned char endpoint)
+{
+	struct libusb_config_descriptor *config;
+	const struct libusb_endpoint_descriptor *ep;
+	enum libusb_transfer_type ep_type;
+	uint16_t val;
+	int r;
+
+	r = libusb_get_active_config_descriptor(dev, &config);
+	if (r < 0) {
+		usbi_err(DEVICE_CTX(dev),
+			"could not retrieve active config descriptor");
+		return LIBUSB_ERROR_OTHER;
+	}
+
+	ep = find_endpoint(config, endpoint);
+	if (!ep)
+		return LIBUSB_ERROR_NOT_FOUND;
+
+	val = ep->wMaxPacketSize;
+	ep_type = ep->bmAttributes & 0x3;
+	libusb_free_config_descriptor(config);
+
+	r = val & 0x07ff;
+	if (ep_type == LIBUSB_TRANSFER_TYPE_ISOCHRONOUS
+			|| ep_type == LIBUSB_TRANSFER_TYPE_INTERRUPT)
+		r *= (1 + ((val >> 11) & 3));
 	return r;
 }
 

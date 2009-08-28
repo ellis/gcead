@@ -1,3 +1,81 @@
+commit f46716f42040986203fa6e873bfdabe1be2900ec
+Author: Daniel Drake <dsd@gentoo.org>
+Date:   Thu Aug 27 21:14:54 2009 +0545
+
+    v1.0.3 release
+
+commit 5b489b8b2a5aba7b8b804e5af6d2628735548238
+Author: Toby Peterson <toby@macports.org>
+Date:   Sun Aug 23 10:04:59 2009 +0545
+
+    Darwin: 64-bit type fixes
+
+commit ad8ae04d0b52009af0b1180e005f7554d2bbb26c
+Author: Nathan Hjelm <hjelmn@mac.com>
+Date:   Sun Aug 23 10:02:55 2009 +0545
+
+    Darwin: fix crash when reading descriptors after close
+    
+    Fix a crash which occurs if the user does the following sequence on a
+    device: open, close, get_configuration_descriptor.
+
+commit 45ae2aecf5512dcff059b2a416534e81c6a00c88
+Author: Daniel Drake <dsd@gentoo.org>
+Date:   Sat Aug 1 13:55:15 2009 +0545
+
+    move bug info to bug tracker
+    
+    Protection needed: http://www.libusb.org/ticket/4
+    Losing data: fixed in previous commit
+
+commit 126129e174062c2a27423817a459e5113f777789
+Author: Daniel Drake <dsd@gentoo.org>
+Date:   Thu Jul 9 22:09:04 2009 +0100
+
+    Linux: try harder not to lose any data
+    
+    We would previously lose any data that was present on a cancelled URB.
+    Work harder to make sure this doesn't happen.
+
+commit 0334ee642b47dfe1ca9db64b22e7702ea14b3f09
+Author: Daniel Drake <dsd@gentoo.org>
+Date:   Sun Jun 28 19:49:10 2009 +0100
+
+    Add libusb_get_max_iso_packet_size()
+    
+    As pointed out by Dennis Muhlestein, libusb_get_max_packet_size()
+    doesn't really do what the documentation might suggest because it
+    does not consider the number of transaction opportunities per
+    microframe.
+    
+    Add a new function to do what is useful for isochronous I/O.
+
+commit 615f18e64e96ae4ecc8e43d0de00933059a5209a
+Author: Daniel Drake <dsd@gentoo.org>
+Date:   Sat Jun 20 22:33:21 2009 +0100
+
+    Linux: fix sending of zero length bulk packets
+    
+    Note that there are is a kernel bug preventing this from working
+    properly at the moment, even after this fix.
+
+commit 86f79fbf61c2018bdf009c7ebf92b38f3a16fd0c
+Author: Nathan Hjelm <hjelmn@mac.com>
+Date:   Fri Jun 19 22:18:44 2009 +0100
+
+    Darwin: Don't cancel transfers on timeout
+    
+    ...because the OS does this for us.
+
+commit d4bd9ed4de19a9c766f7a23eea8c852cdd61c18f
+Author: Daniel Drake <dsd@gentoo.org>
+Date:   Sun Jun 14 19:23:21 2009 +0100
+
+    Don't terminate enums with commas
+    
+    g++ -pedantic doesn't like this
+    Reported by Eberhard Mattes
+
 commit 8be256082eb9bd8e243d89529f742926bb29a21b
 Author: Daniel Drake <dsd@gentoo.org>
 Date:   Sat Jun 13 17:19:07 2009 +0100

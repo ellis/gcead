@@ -76,6 +76,9 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Backend handles timeout */
+#undef USBI_OS_HANDLES_TIMEOUT
+
 /* Version number of package */
 #undef VERSION
 

@@ -78,8 +78,8 @@ am__remove_distdir = \
   { test ! -d $(distdir) \
     || { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr $(distdir); }; }
-DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2
 GZIP_ENV = --best
+DIST_ARCHIVES = $(distdir).tar.bz2
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
@@ -200,13 +200,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AUTOMAKE_OPTIONS = dist-bzip2
+AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 ACLOCAL_AMFLAGS = -I m4
 DISTCLEANFILES = ChangeLog libusb-1.0.pc
-EXTRA_DIST = TODO PORTING BUGS
+EXTRA_DIST = TODO PORTING
 SUBDIRS = libusb doc $(am__append_1)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libusb-1.0.pc
+reldir = .release/$(distdir)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -498,7 +499,6 @@ dist-zip: distdir
 	$(am__remove_distdir)
 
 dist dist-all: distdir
-	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	$(am__remove_distdir)
 
@@ -688,9 +688,12 @@ ChangeLog:
 	git --git-dir $(top_srcdir)/.git log > ChangeLog || touch ChangeLog
 
 dist-hook: ChangeLog
-
 dist-up: dist
-	rsync $(distdir).tar.bz2 frs.sourceforge.net:uploads/
+	rm -rf $(reldir)
+	mkdir -p $(reldir)
+	cp $(distdir).tar.bz2 $(reldir)
+	rsync -rv $(reldir) dsd_,libusb@frs.sourceforge.net:/home/frs/project/l/li/libusb/libusb-1.0/
+	rm -rf $(reldir)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
