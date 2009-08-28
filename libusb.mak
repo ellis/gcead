@@ -2,7 +2,8 @@
 # libusb 1.0 for linux and mac.
 
 BASEDIR := $(shell pwd)
-LIBUSB1_SRCDIR := extern/libusb-1.0.2/libusb
+LIBUSB1_BASEDIR := extern/libusb
+LIBUSB1_SRCDIR := ${LIBUSB1_BASEDIR}/libusb
 LIBUSB1_LIBDIR := ${LIBUSB1_SRCDIR}/.libs
 LIBUSB1 := ${LIBUSB1_LIBDIR}/libusb-1.0.a
 LIBCOMPAT := extern/libusb-compat-0.1.3/libusb/.libs/libusb.a
@@ -10,7 +11,7 @@ LIBCOMPAT := extern/libusb-compat-0.1.3/libusb/.libs/libusb.a
 all: ${LIBUSB1} ${LIBCOMPAT}
 
 ${LIBUSB1}:
-	cd extern/libusb-1.0.2 && \
+	cd ${LIBUSB1_BASEDIR} && \
 	./configure && \
 	make
 

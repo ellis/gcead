@@ -45,7 +45,7 @@ unix:LIBS += \
     -lstdc++ \
     -Wl,-Bdynamic \
     ../extern/libusb-compat-0.1.3/libusb/.libs/libusb.a \
-	../extern/libusb-1.0.2/libusb/.libs/libusb-1.0.a
+	../extern/libusb/libusb/.libs/libusb-1.0.a
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc
