@@ -202,7 +202,7 @@ p, li { white-space: pre-wrap; }
      <item row="9" column="1">
       <widget class="QPushButton" name="btnUsbView">
        <property name="text">
-        <string>Install USB-View</string>
+        <string>Run USB-View</string>
        </property>
       </widget>
      </item>
@@ -321,7 +321,7 @@ p, li { white-space: pre-wrap; }
     </spacer>
    </item>
    <item row="3" column="1">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btnClose">
      <property name="text">
       <string>&amp;Close</string>
      </property>
@@ -340,7 +340,7 @@ p, li { white-space: pre-wrap; }
       <string>color: red</string>
      </property>
      <property name="text">
-      <string>Follows steps 1-2-3 below</string>
+      <string>Follow steps 1-2-3 below</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -359,7 +359,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnGcEad</tabstop>
   <tabstop>btnGcEadPro</tabstop>
   <tabstop>btnUsbView</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>btnClose</tabstop>
  </tabstops>
  <resources/>
  <connections/>
