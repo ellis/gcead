@@ -25,6 +25,7 @@ private slots:
 	void on_btnGcEad_clicked();
 	void on_btnGcEadPro_clicked();
 	void on_btnUsbView_clicked();
+	void on_btnClose_clicked();
 
 private:
 	void run(const QString& sExe);
