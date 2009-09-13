@@ -1,23 +1,36 @@
-#ifndef MAINWIDGET_H
-#define MAINWIDGET_H
+#ifndef _MAINWIDGET_H
+#define _MAINWIDGET_H
 
 #include <QtGui/QWidget>
 
 namespace Ui
 {
-    class MainWidget;
+	class MainWidget;
 }
 
 class MainWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MainWidget(QWidget *parent = 0);
-    ~MainWidget();
+	MainWidget(QWidget *parent = 0);
+	~MainWidget();
+
+private slots:
+	void on_btnUsbDriver_clicked();
+	void on_btnIdacDriver_clicked();
+	void on_btnAutoSpike_clicked();
+	void on_btnEag_clicked();
+	void on_btnEagPro_clicked();
+	void on_btnGcEad_clicked();
+	void on_btnGcEadPro_clicked();
+	void on_btnUsbView_clicked();
 
 private:
-    Ui::MainWidget *ui;
+	void run(const QString& sExe);
+
+private:
+	Ui::MainWidget *ui;
 };
 
-#endif // MAINWIDGET_H
+#endif
