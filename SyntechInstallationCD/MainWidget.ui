@@ -175,18 +175,18 @@ p, li { white-space: pre-wrap; }
      <item row="7" column="2">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Gas Chromatography-Electro Antenno Detection (old version)</string>
+        <string>Gas Chromatography - Electro Antenno Detection (old version)</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="9" column="1">
       <widget class="QPushButton" name="btnGcEadPro">
        <property name="text">
         <string>Install GcEad-Pro</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="2">
+     <item row="9" column="2">
       <widget class="QLabel" name="label_7">
        <property name="font">
         <font>
@@ -199,14 +199,14 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="10" column="1">
       <widget class="QPushButton" name="btnUsbView">
        <property name="text">
         <string>Run USB-View</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="2">
+     <item row="10" column="2">
       <widget class="QLabel" name="label_8">
        <property name="font">
         <font>
@@ -288,6 +288,26 @@ p, li { white-space: pre-wrap; }
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="8" column="1">
+      <widget class="QPushButton" name="btnGcEadOpen">
+       <property name="text">
+        <string>Install GC-EAD/Open</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2">
+      <widget class="QLabel" name="label_13">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Gas Chromatography - Electro Antenno Detection (user friendly version)</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
