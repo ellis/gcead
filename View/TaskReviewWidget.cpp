@@ -67,8 +67,8 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 	m_groups[1].sTitle = tr("Averages");
 	m_groups[2].sTitle = tr("Extras");
 
-	m_sVisible = tr("Visible:");
-	m_sSens = tr("Sensitivity:");
+	//m_sVisible = tr("Visible:");
+	//m_sSens = tr("Sensitivity:");
 
 	/*
 	m_area = new QScrollArea();
@@ -250,19 +250,28 @@ QSize TaskReviewWidget::sizeHint() const
 
 void TaskReviewWidget::layout(bool bLayoutItems)
 {
+	QString sNameA = QObject::tr("EAD AVE");
+	QString sNameB = QObject::tr("FID AVE");
 	QString s3a = QObject::tr("%0 mV").arg(g_anVoltsPerDivision[0]);
 	QString s3b = QObject::tr("%0 mV").arg(100);
 
 	QFontMetrics fm = fontMetrics();
+	QFont fontBold;
+	fontBold.setBold(true);
+	QFontMetrics fmBold = QFontMetrics(fontBold);
 
 	nBorderGroup = 15;
 	m_nPixmapSize = 22;
-	x0 = nBorderGroup + 15;
-	x1 = x0 + 5;
-	x2 = x1 + qMax(fm.width(m_sVisible), fm.width(m_sSens)) + 5;
-	x3 = x2 + qMax(fm.width(s3a), fm.width(s3b)) + 5;
-	x4 = x3 + m_nPixmapSize + 2;
-	x5 = x4 + m_nPixmapSize;
+	int x = nBorderGroup + 15;
+	x0 = x;
+	xVisible = x;
+	xEdit = xVisible + m_nPixmapSize + 2;
+	xName = xEdit + m_nPixmapSize + 5;
+	xSensitivity = xName + qMax(fmBold.width(sNameA), fmBold.width(sNameB)) + 15;
+	wSensitivity = qMax(fm.width(s3a), fm.width(s3b));
+	xZoomIn = xSensitivity + wSensitivity + 10;
+	xZoomOut = xZoomIn + m_nPixmapSize + 2;
+	int xRight = xZoomOut + m_nPixmapSize;
 	m_nLineHeight = fm.lineSpacing() + fm.lineSpacing() / 3;
 	m_nLineHeight = qMax(m_nLineHeight, m_nPixmapSize);
 
@@ -275,12 +284,12 @@ void TaskReviewWidget::layout(bool bLayoutItems)
 		m_pixZoomOut = m_pixZoomOut.scaledToHeight(m_nPixmapSize);
 	}
 
-	m_nWidthMin = x5 + 15 + nBorderGroup + 5;
+	m_nWidthMin = xRight + 15 + nBorderGroup + 5;
 	m_nWidthGroup = width() - nBorderGroup * 2 - 5;
 	m_nWidthItem = m_nWidthGroup - 30;
 
 	// HACK: hackish calculation for centering the items
-	int x1New = (width() - 5 - (x5 - x1)) / 2;
+	/*int x1New = (width() - 5 - (x5 - x1)) / 2;
 	int dx = x1New - x1;
 	if (dx > 0)
 	{
@@ -289,7 +298,7 @@ void TaskReviewWidget::layout(bool bLayoutItems)
 		x2 += dx;
 		x3 += dx;
 		x4 += dx;
-	}
+	}*/
 
 	// Setup each group's rectangle
 	int y = 20;
@@ -407,8 +416,8 @@ void TaskReviewWidget::layoutGroupItem(ItemInfo& item, int y)
 	
 	// Account for height of wave name
 	y += m_nLineHeight;
-	if (item.bShowSens)
-		y += m_nLineHeight;
+	//if (item.bShowSens)
+	//	y += m_nLineHeight;
 
 	item.rc.setHeight(y - item.rc.top());
 }
@@ -424,6 +433,10 @@ bool TaskReviewWidget::event(QEvent* e)
 		// Check for user clicking on "visible" checkbox
 		if ((info = itemAt(m_arcVisible, pt)) != NULL)
 			QToolTip::showText(helpEvent->globalPos(), tr("Show/hide this wave"));
+		else if ((info = itemAt(m_arcEdit, pt)) != NULL)
+			QToolTip::showText(helpEvent->globalPos(), tr("Open settings dialog"));
+		else if ((info = itemAt(m_arcSensitivity, pt)) != NULL)
+			QToolTip::showText(helpEvent->globalPos(), tr("Sensitivity"));
 		else
 			QToolTip::hideText();
 	}
@@ -456,8 +469,9 @@ void TaskReviewWidget::paintEvent(QPaintEvent* e)
 	grad.setColorAt(1, Qt::white);
 	p.fillRect(rect(), grad);
 
-	m_arcEdit.clear();
 	m_arcVisible.clear();
+	m_arcEdit.clear();
+	m_arcSensitivity.clear();
 	m_arcZoomIn.clear();
 	m_arcZoomOut.clear();
 	
@@ -539,6 +553,7 @@ void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 
 	// Wave name
 	rc = item.rc;
+	rc.setLeft(xName);
 	rc.setHeight(m_nLineHeight);
 	p.setFont(fontBold);
 	if (wave != NULL)
@@ -546,11 +561,14 @@ void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 	p.setFont(font);
 
 	// Draw edit icon to the right of the name
-	rc = paintPixmap(p, m_pixEdit, x3, item.rc.top());
-	m_arcEdit[&item] = rc;
-	p.drawPixmap(rc, m_pixEdit);
+	int flagsExtra = item.flags & (WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Timeshift);
+	if (flagsExtra != 0) {
+		rc = paintPixmap(p, m_pixEdit, xEdit, rc.top());
+		m_arcEdit[&item] = rc;
+		p.drawPixmap(rc, m_pixEdit);
+	}
 
-	int y = rc.top() + m_nLineHeight;
+	int y = item.rc.top();
 	
 	// Visible
 	if (item.bShowVisible)
@@ -566,7 +584,7 @@ void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 
 		int nWidth = style()->pixelMetric(QStyle::PM_IndicatorWidth, &opt, this);
 		int nHeight = style()->pixelMetric(QStyle::PM_IndicatorWidth, &opt, this);
-		opt.rect = QRect(x4 + (16 - nWidth) / 2, item.rc.top() + (m_nLineHeight - nHeight) / 2, nWidth, nHeight);
+		opt.rect = QRect(xVisible + (16 - nWidth) / 2, item.rc.top() + (m_nLineHeight - nHeight) / 2, nWidth, nHeight);
 		m_arcVisible[&item] = opt.rect;
 
 		bool bChecked = vwi->isVisible();
@@ -581,17 +599,17 @@ void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 	if (item.bShowSens)
 	{
 		// Draw label
-		rc = QRect(x1, y, x2 - x1, m_nLineHeight);
-		p.drawText(rc, Qt::AlignVCenter, m_sSens);
+		rc = QRect(xSensitivity, y, wSensitivity, m_nLineHeight);
+		//p.drawText(rc, Qt::AlignVCenter, m_sSens);
 		// Draw sensitivity value
-		rc = QRect(x2, y, x3 - x2, m_nLineHeight);
 		QString s = QObject::tr("%0 mV").arg(vwi->voltsPerDivision());
-		p.drawText(rc, Qt::AlignVCenter, s);
+		p.drawText(rc, Qt::AlignVCenter | Qt::AlignRight, s);
+		m_arcSensitivity[&item] = rc;
 		// Draw zoom-in button
-		rc = paintPixmap(p, m_pixZoomIn, x3, y);
+		rc = paintPixmap(p, m_pixZoomIn, xZoomIn, y);
 		m_arcZoomIn[&item] = rc;
 		// Draw zoom-out button
-		rc = paintPixmap(p, m_pixZoomOut, x4, y);
+		rc = paintPixmap(p, m_pixZoomOut, xZoomOut, y);
 		m_arcZoomOut[&item] = rc;
 		
 		y += m_nLineHeight;

@@ -152,19 +152,19 @@ private:
 
 	bool m_bLayout;
 
-	QString m_sVisible;
-	QString m_sSens;
 	QPixmap m_pixEdit;
 	QPixmap m_pixZoomIn;
 	QPixmap m_pixZoomOut;
 	int nBorderGroup;
 	int m_nPixmapSize;
 	int x0;
-	int x1;
-	int x2;
-	int x3;
-	int x4;
-	int x5;
+	int xVisible;
+	int xEdit;
+	int xName;
+	int xSensitivity;
+	int wSensitivity;
+	int xZoomIn;
+	int xZoomOut;
 	int m_nLineHeight;
 
 	int m_nHeight;
@@ -172,10 +172,11 @@ private:
 	int m_nWidthGroup;
 	int m_nWidthItem;
 
+	QMap<const ItemInfo*, QRect> m_arcVisible;
 	QMap<const ItemInfo*, QRect> m_arcEdit;
+	QMap<const ItemInfo*, QRect> m_arcSensitivity;
 	QMap<const ItemInfo*, QRect> m_arcZoomIn;
 	QMap<const ItemInfo*, QRect> m_arcZoomOut;
-	QMap<const ItemInfo*, QRect> m_arcVisible;
 };
 
 #endif
