@@ -608,16 +608,15 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 	if (e->button() == Qt::LeftButton)
 	{
 		// Clicked on a chosen peak:
-		if (info.didxChosenPeak >= 0)
+		if (info.iChosenPeak >= 0)
 		{
-			vwi->unchoosePeakAtDidx(info.didxChosenPeak);
-			//repaintChart();
+			//vwi->unchoosePeakAtDidx(info.didxChosenPeak);
+			m_bDragging = true;
 		}
 		// Clicked on a detected peak:
 		else if (info.didxPossiblePeak >= 0)
 		{
 			vwi->choosePeakAtDidx(info.didxPossiblePeak);
-			//repaintChart();
 		}
 		// Clicked on a peak area handle:
 		else if (info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
@@ -792,6 +791,19 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			info.vwi->waveInfo()->calcAreaPercents();
 			repaintChart();
 		}
+		else if (info.iChosenPeak >= 0)
+		{
+			WavePeakChosenInfo& marker = wave->peaksChosen[info.iChosenPeak];
+			int x = e->pos().x() - m_rcPixmap.left();
+			int didx = m_pixmap->xToCenterSample(info.vwi->wave(), x);
+			int d = didx - marker.didxMiddle;
+			marker.didxLeft += d;
+			marker.didxMiddle += d;
+			marker.didxRight += d;
+			info.vwi->waveInfo()->calcPeakArea(info.iRightAreaHandle);
+			info.vwi->waveInfo()->calcAreaPercents();
+			repaintChart();
+		}
 		else if (wave != NULL)
 		{
 			if (e->modifiers() == Qt::ControlModifier && m_scope->peakMode() == EadPeakMode_Edit && wave == m_pixmap->waveOfPeaks())
@@ -819,7 +831,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		m_pixmap->fillChartPointInfo(ptPixmap, &info);
 		setHilight(info.vwi);
 		
-		if (info.didxPossiblePeak >= 0 || info.didxChosenPeak >= 0 || info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
+		if (info.didxPossiblePeak >= 0 || info.iChosenPeak >= 0 || info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
 		{
 			setCursor(Qt::PointingHandCursor);
 		}
@@ -868,7 +880,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 	QAction* actRemoveMarker = NULL;
 	{
 		// Clicked on a chosen peak:
-		if (info.didxChosenPeak >= 0)
+		if (info.iChosenPeak >= 0)
 		{
 			actRemoveMarker = new QAction(tr("Remove Marker"), &menu);
 			menu.addAction(actRemoveMarker);
@@ -917,9 +929,9 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		}
 		else if (act == actRemoveMarker)
 		{
-			CHECK_ASSERT_NORET(info.didxChosenPeak >= 0);
-			if (info.didxChosenPeak >= 0)
-				vwi->unchoosePeakAtDidx(info.didxChosenPeak);
+			CHECK_ASSERT_NORET(info.iChosenPeak >= 0);
+			if (info.iChosenPeak >= 0)
+				vwi->unchoosePeakAtIndex(info.iChosenPeak);
 		}
 	}
 

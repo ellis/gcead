@@ -142,8 +142,10 @@ public:
 
 	void findFidPeaks();
 
+	int indexOfChosenPeakAtDidx(int didx) const;
 	void choosePeakAtDidx(int didx);
-	void unchoosePeakAtDidx(int didx);
+	void unchoosePeakAtIndex(int i);
+	//void unchoosePeakAtDidx(int didx);
 
 	/// Call this if you've changed the indexes of a peak in order to recalculate the area under the curve.
 	void calcPeakArea(int iPeak);

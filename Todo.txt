@@ -1,19 +1,15 @@
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-	let user set markers on EAD waves
+x	let user set markers on EAD waves
 	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
 	right-click menu:
-		waveform:
-			Settings...
-			add marker [if EAD]
-			add peak [if FID, but disabled if not in edit mode]
-		marker/peak:
-			remove marker/peak (so don't remove peaks by just clicking on them)
+		implement Settings
+		"Add Peak Marker" should be disabled if not in edit mode
 		background:
 			zoom out
 			zoom in?
 			zoom full
 			scroll left/right?
-	let user move peaks (and don't remove peaks by just clicking on them)
+x	let user move peaks (and don't remove peaks by just clicking on them)
 	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 	in publish mode: checkboxes for time/?? not saved between sessions, off by default
 	import of Autospike-CSV files and old EAG files
@@ -34,11 +30,9 @@
 		CTRL-Click or Right-Click
 	Let user scroll chart with the mouse wheel
 	File comment dialog needs to be wider, and it should be multiline
-	REFACTOR: ChosenPeak => VerifiedPeak?
 	shortcuts for the different chart modes
 	put different chart modes into the View menu
-	BUG: load sample project, All mode, edit mode, add and remove first peak, add markers to all EAD waves, "All" labels disappear from FID Ave
-	BUG: after the above, the time labels on the markers aren't been recognized well by mouse-over
+	BUG: turning off verified peaks in publish mode doesn't work
 
 	INSTALLER:
 		MAC:

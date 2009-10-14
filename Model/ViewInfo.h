@@ -30,6 +30,9 @@ class EadFile;
 class ViewInfo;
 
 
+/// Encapsulates extra view info about a wave on a given view.
+/// The extra information includes a pointer to the view and
+/// to the wave's position on the view.
 class ViewWaveInfo : public QObject
 {
 	Q_OBJECT
@@ -71,7 +74,7 @@ public:
 
 	void choosePeak(const WavePeakChosenInfo& peak);
 	void choosePeakAtDidx(int didx);
-	void unchoosePeakAtDidx(int didx);
+	void unchoosePeakAtIndex(int i);
 
 private:
 	void emitChanged(ViewChangeEvents e);

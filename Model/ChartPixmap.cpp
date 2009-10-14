@@ -475,9 +475,12 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		drawPossiblePeaks(painter, cwi);
 
 	// Mark peaks of averaged FID waves (but not in Publish task)
-	drawPeakTimes(painter, cwi);
-	if (wave->type == WaveType_FID)
-		drawAreaLines(painter, cwi);
+	if (peakMode != EadPeakMode_Hide)
+	{
+		drawPeakTimes(painter, cwi);
+		if (wave->type == WaveType_FID)
+			drawAreaLines(painter, cwi);
+	}
 }
 
 void ChartPixmap::drawWaveformRough(QPainter& painter, ChartWaveInfo* cwi)
@@ -913,7 +916,7 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 
 	info->vwi = NULL;
 	info->didxPossiblePeak = -1;
-	info->didxChosenPeak = -1;
+	info->iChosenPeak = -1;
 	info->iLeftAreaHandle = -1;
 	info->iRightAreaHandle = -1;
 
@@ -935,7 +938,8 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 				QRect rc = cwi->arcPeaksChosen[iRect].first;
 				if (rc.contains(ptPixmap))
 				{
-					info->didxChosenPeak = cwi->arcPeaksChosen[iRect].second;
+					int didx = cwi->arcPeaksChosen[iRect].second;
+					info->iChosenPeak = cwi->vwi->wave()->indexOfChosenPeakAtDidx(didx);
 					info->vwi = cwi->vwi;
 					return;
 				}

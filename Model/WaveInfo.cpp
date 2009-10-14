@@ -346,6 +346,16 @@ void WaveInfo::findFidPeaks()
 
 */
 
+int WaveInfo::indexOfChosenPeakAtDidx(int didx) const
+{
+	for (int i = 0; i < peaksChosen.size(); i++)
+	{
+		if (peaksChosen.at(i).didxMiddle == didx)
+			return i;
+	}
+	return -1;
+}
+
 void WaveInfo::choosePeakAtDidx(int didx)
 {
 	for (int i0 = 0; i0 < peaks0.size(); i0++)
@@ -369,25 +379,23 @@ void WaveInfo::choosePeakAtDidx(int didx)
 	CHECK_FAILURE_RET();
 }
 
-void WaveInfo::unchoosePeakAtDidx(int didx)
+//void WaveInfo::unchoosePeakAtDidx(int didx)
+void WaveInfo::unchoosePeakAtIndex(int i)
 {
-	for (int i = 0; i < peaksChosen.size(); i++)
-	{
-		if (peaksChosen.at(i).didxMiddle == didx)
+	//int i = indexOfChosenPeakAtDidx(didx);
+	CHECK_PARAM_RET(i >= 0 && i < peaksChosen.size());
+	if (i >= 0) {
+		int didx = peaksChosen[i].didxMiddle;
+		peaksChosen.removeAt(i);
+
+		// Enable the possible peak again
+		for (int i0 = 0; i0 < peaks0.size(); i0++)
 		{
-			peaksChosen.removeAt(i);
-
-			// Enable the possible peak again
-			for (int i0 = 0; i0 < peaks0.size(); i0++)
+			if (peaks0.at(i0).middle.i == didx)
 			{
-				if (peaks0.at(i0).middle.i == didx)
-				{
-					peaks0[i0].bEnabled = true;
-					break;
-				}
+				peaks0[i0].bEnabled = true;
+				break;
 			}
-
-			return;
 		}
 	}
 }

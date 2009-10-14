@@ -79,7 +79,7 @@ class ChartPointInfo
 public:
 	QPointer<ViewWaveInfo> vwi;
 	int didxPossiblePeak;
-	int didxChosenPeak;
+	int iChosenPeak;
 	int iLeftAreaHandle;
 	int iRightAreaHandle;
 };

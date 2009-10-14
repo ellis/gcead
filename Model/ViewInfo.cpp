@@ -164,10 +164,10 @@ void ViewWaveInfo::choosePeakAtDidx(int didx)
 	emitChanged(ViewChangeEvent_Paint);
 }
 
-void ViewWaveInfo::unchoosePeakAtDidx(int didx)
+void ViewWaveInfo::unchoosePeakAtIndex(int i)
 {
 	CHECK_PRECOND_RET(m_wave != NULL);
-	m_wave->unchoosePeakAtDidx(didx);
+	m_wave->unchoosePeakAtIndex(i);
 	emitChanged(ViewChangeEvent_Paint);
 }
 
