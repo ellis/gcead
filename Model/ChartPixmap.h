@@ -161,7 +161,7 @@ private:
 		/// List of rects where user can click on ADD to choose a peak
 		//QList< QPair<QRect, int> > arcPeaksPossible;
 		/// List of rects where user can click to remove a chosen peak
-		//QList< QPair<QRect, int> > arcPeaksChosen;
+		QList< QPair<QRect, int> > arcPeaksChosen;
 
 		ChartWaveInfo()
 			: render(NULL)
@@ -215,7 +215,7 @@ private:
 	/// List of rects where user can click on ADD to choose a peak
 	QList< QPair<QRect, int> > m_arcPeaksPossible;
 	/// List of rects where user can click to remove a chosen peak
-	QList< QPair<QRect, int> > m_arcPeaksChosen;
+	//QList< QPair<QRect, int> > m_arcPeaksChosen;
 };
 
 #endif

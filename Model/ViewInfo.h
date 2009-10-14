@@ -34,7 +34,7 @@ class ViewWaveInfo : public QObject
 {
 	Q_OBJECT
 public:
-	/// HACK: By settings this to true, ChartWidget will adjust nDivisionOffset if this wave isn't visible
+	/// HACK: By settings this to true, ChartWidget will adjust nDivisionOffset if this wave is shifted completely off the graph
 	bool bAssureVisibility;
 
 public:
@@ -76,9 +76,6 @@ public:
 private:
 	void emitChanged(ViewChangeEvents e);
 
-private slots:
-	//void on_wave_destroyed(QObject* obj);
-
 private:
 	ViewInfo* m_view;
 	QPointer<WaveInfo> m_wave;
@@ -86,6 +83,7 @@ private:
 };
 
 
+/// Data about a particular view (Averages, EADs, FIDs, All, Recording)
 class ViewInfo : public QObject
 {
 	Q_OBJECT
@@ -93,8 +91,8 @@ public:
 	ViewInfo(EadFile* file);
 	~ViewInfo();
 
-	ViewWaveInfo vwiUser; // REFACTOR: rename to vwiUser
-	WavePos posExtra; // REFACTOR: rename to posExtra
+	ViewWaveInfo vwiUser;
+	WavePos posExtra;
 
 	/// Get the list of standard waves in this view
 	const QList<ViewWaveInfo*>& vwis() { return m_vwis; }
@@ -124,7 +122,6 @@ private:
 	QPointer<EadFile> m_file;
 	QList<ViewWaveInfo*> m_vwis;
 	QList<ViewWaveInfo*> m_vwiExtras;
-	//QList<ViewWaveInfo*> m_vwiUsers;
 	/// WavePos objects for our "extra" waves
 	QList<WavePos*> m_posExtras;
 };

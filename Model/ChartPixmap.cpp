@@ -132,7 +132,6 @@ void ChartPixmap::paint(QPainter& painter, const ChartPixmapParams& params)
 
 	m_wavePeaks = NULL;
 	m_arcPeaksPossible.clear();
-	m_arcPeaksChosen.clear();
 
 	// Draw the grid
 	drawGrid(painter);
@@ -178,6 +177,7 @@ void ChartPixmap::paint(QPainter& painter, const ChartPixmapParams& params)
 			cwiFound->vwi = vwi;
 			m_cwis << cwiFound;
 		}
+		cwiFound->arcPeaksChosen.clear();
 
 		if (cwiFound->vwi == m_params.vwiHilight)
 			cwiHilight = cwiFound;
@@ -768,9 +768,7 @@ void ChartPixmap::drawPeakTimes(QPainter& painter, ChartWaveInfo* cwi)
 		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, sTime, &rcTime);
 		rcTime.adjust(-3, -3, 3, 3);
 
-		CHECK_PRECOND_RET(m_wavePeaks == NULL || m_wavePeaks == vwi->waveInfo());
-		m_wavePeaks = vwi->waveInfo();
-		m_arcPeaksChosen << QPair<QRect, int>(rcTime, info.didxMiddle);
+		cwi->arcPeaksChosen << QPair<QRect, int>(rcTime, info.didxMiddle);
 	}
 }
 
@@ -935,14 +933,17 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 	if (bPeaks)
 	{
 		// Check whether mouse is over a CHOSEN peak label
-		for (int iRect = 0; iRect < m_arcPeaksChosen.size(); iRect++)
+		foreach (ChartWaveInfo* cwi, m_cwis)
 		{
-			QRect rc = m_arcPeaksChosen[iRect].first;
-			if (rc.contains(ptPixmap))
+			for (int iRect = 0; iRect < cwi->arcPeaksChosen.size(); iRect++)
 			{
-				info->didxChosenPeak = m_arcPeaksChosen[iRect].second;
-				info->vwi = waveToViewWaveInfo(m_wavePeaks);
-				return;
+				QRect rc = cwi->arcPeaksChosen[iRect].first;
+				if (rc.contains(ptPixmap))
+				{
+					info->didxChosenPeak = cwi->arcPeaksChosen[iRect].second;
+					info->vwi = cwi->vwi;
+					return;
+				}
 			}
 		}
 
