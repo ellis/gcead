@@ -93,6 +93,7 @@ private:
 
 	void setHilight(ViewWaveInfo* vwi);
 
+	void addPeak(ViewWaveInfo* vwi, int x);
 	void updateStatus();
 
 	/// Convert a screen coordinate to box coordinates

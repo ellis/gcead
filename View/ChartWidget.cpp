@@ -630,20 +630,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 			// If the user Ctrl+clicks on the selected FID wave while in peak editing mode:
 			if (e->modifiers() == Qt::ControlModifier && m_scope->peakMode() == EadPeakMode_Edit && wave->recId() == m_scope->peakModeRecId())
 			{
-				int x = m_ptClickPixmap.x();
-				int didx1 = m_pixmap->xToCenterSample(info.vwi->wave(), x);
-				int didx0 = m_pixmap->xToCenterSample(info.vwi->wave(), x - 10);
-				int didx2 = m_pixmap->xToCenterSample(info.vwi->wave(), x + 10);
-
-				if (didx0 >= 0 && didx2 < vwi->wave()->display.size())
-				{
-					WavePeakChosenInfo peak;
-					peak.didxLeft = didx0;
-					peak.didxMiddle = didx1;
-					peak.didxRight = didx2;
-					vwi->choosePeak(peak);
-					//repaintChart();
-				}
+				addPeak(vwi, m_ptClickPixmap.x());
 			}
 			else
 			{
@@ -926,12 +913,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 			if (info.didxPossiblePeak >= 0)
 				vwi->choosePeakAtDidx(info.didxPossiblePeak);
 			else
-			{
-				int didx = m_pixmap->xToCenterSample(wave, ptPixmap.x());
-				WavePeakChosenInfo peak;
-				peak.didxMiddle = didx;
-				vwi->choosePeak(peak);
-			}
+				addPeak(vwi, ptPixmap.x());
 		}
 		else if (act == actRemoveMarker)
 		{
@@ -943,6 +925,22 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 
 	e->accept();
 	updateStatus();
+}
+
+void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
+{
+	int didx1 = m_pixmap->xToCenterSample(vwi->wave(), x);
+	int didx0 = m_pixmap->xToCenterSample(vwi->wave(), x - 10);
+	int didx2 = m_pixmap->xToCenterSample(vwi->wave(), x + 10);
+
+	if (didx0 >= 0 && didx2 < vwi->wave()->display.size())
+	{
+		WavePeakChosenInfo peak;
+		peak.didxLeft = didx0;
+		peak.didxMiddle = didx1;
+		peak.didxRight = didx2;
+		vwi->choosePeak(peak);
+	}
 }
 
 static int calcPrecision(double nMinutes)

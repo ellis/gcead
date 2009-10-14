@@ -475,14 +475,9 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		drawPossiblePeaks(painter, cwi);
 
 	// Mark peaks of averaged FID waves (but not in Publish task)
-	if (bPeakFid)
-	{
-		drawPeakTimes(painter, cwi);
+	drawPeakTimes(painter, cwi);
+	if (wave->type == WaveType_FID)
 		drawAreaLines(painter, cwi);
-	}
-	else if (peakMode != EadPeakMode_Hide) {
-		drawPeakTimes(painter, cwi);
-	}
 }
 
 void ChartPixmap::drawWaveformRough(QPainter& painter, ChartWaveInfo* cwi)
