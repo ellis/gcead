@@ -2,18 +2,43 @@
 	let user set markers on EAD waves
 	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
 	right-click menu:
-		add marker
-		remove marker (so don't remove peaks by just clicking on them)
+		waveform:
+			Settings...
+			add marker [if EAD]
+			add peak [if FID, but disabled if not in edit mode]
+		marker/peak:
+			remove marker/peak (so don't remove peaks by just clicking on them)
+		background:
+			zoom out
+			zoom in?
+			zoom full
+			scroll left/right?
 	let user move peaks (and don't remove peaks by just clicking on them)
 	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 	in publish mode: checkboxes for time/?? not saved between sessions, off by default
 	import of Autospike-CSV files and old EAG files
 	display of standard deviation around average
-	Visual improvements:
-		visible/settings closer together
-		more space after "EAD AVG"
-		right align "2 mv"
-		y higher for "2 mv" and zoom buttons
+	pageup/pagedn for scrolling chart
+	zoom in button shouldn't automatically have focus
+	shortcuts for zoom in/out
+	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
+	MainWindow: Chart menu
+		zoom in/out/full
+		scroll
+	MainWindow: View menu: add actions for switching the view type
+	Add tooltips to the Peak buttons in the toolbar
+	Add the vertical marker line to the area that is detected as part of the marker, not just the text
+	Detect mouse-over-marker even when not in edit mode
+	Add more instructions about markers
+		Click on "Add"
+		CTRL-Click or Right-Click
+	Let user scroll chart with the mouse wheel
+	File comment dialog needs to be wider, and it should be multiline
+	REFACTOR: ChosenPeak => VerifiedPeak?
+	shortcuts for the different chart modes
+	put different chart modes into the View menu
+	BUG: load sample project, All mode, edit mode, add and remove first peak, add markers to all EAD waves, "All" labels disappear from FID Ave
+	BUG: after the above, the time labels on the markers aren't been recognized well by mouse-over
 
 	INSTALLER:
 		MAC:
@@ -75,12 +100,9 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 	ChartWidget: BUG: zoom in three times, then zoom out twice, no data is shown anymore!
 	ChartWidget: When the user first presses Ctrl, update the mouse cursor if appropriate (i.e., about to set a peak)
 	ChartWidget: Don't let user zoom in on an empty document using mouse dragging
-	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
 	EadFile: returned more detailed information when load/save fail (and show it to user)
 	Globals: set whether File or Print output was last selected (variables already exist in PublisherSettings, and they are loaded and saved in Globals)
 	MainScope: only enable m_actions->fileExportRetentionData when the user has set/verified peaks
-	MainWindow: Chart menu
-	MainWindow: View menu: add actions for switching the view type
 	MainWindow: Beep when done recording?
 	PanelTabs: consider choosing equal widths for tabs, if space allows
 	PanelTabs: draw shadow around active tab?

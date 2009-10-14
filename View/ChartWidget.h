@@ -76,6 +76,7 @@ protected:
 	//void mouseDoubleClickEvent(QMouseEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
 	void mouseMoveEvent(QMouseEvent* e);
+	void contextMenuEvent(QContextMenuEvent* e);
 
 private:
 	void setupWidgets();

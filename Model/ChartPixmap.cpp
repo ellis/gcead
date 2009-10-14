@@ -480,6 +480,9 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		drawPeakTimes(painter, cwi);
 		drawAreaLines(painter, cwi);
 	}
+	else if (peakMode != EadPeakMode_Hide) {
+		drawPeakTimes(painter, cwi);
+	}
 }
 
 void ChartPixmap::drawWaveformRough(QPainter& painter, ChartWaveInfo* cwi)

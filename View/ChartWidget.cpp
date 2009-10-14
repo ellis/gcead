@@ -22,6 +22,7 @@
 #include <QtDebug>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
@@ -852,6 +853,95 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			unsetCursor();
 	}
 
+	updateStatus();
+}
+
+void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
+{
+	QRect rcWaveforms = m_rcPixmap;
+
+	ChartPointInfo info;
+	QPoint ptPixmap = e->pos() - m_rcPixmap.topLeft();
+	m_pixmap->fillChartPointInfo(ptPixmap, &info);
+	m_clickInfo = info;
+	ViewWaveInfo* vwi = info.vwi;
+
+	m_ptMouseWidget = e->pos();
+	m_ptMousePixmap = ptPixmap;
+	m_ptClickWidget = m_ptMouseWidget;
+	m_ptClickPixmap = m_ptMousePixmap;
+
+	const WaveInfo* wave = NULL;
+	if (vwi != NULL)
+		wave = vwi->wave();
+
+	QMenu menu(this);
+	QAction* actSettings = NULL;
+	QAction* actAddMarker = NULL;
+	QAction* actRemoveMarker = NULL;
+	{
+		// Clicked on a chosen peak:
+		if (info.didxChosenPeak >= 0)
+		{
+			actRemoveMarker = new QAction(tr("Remove Marker"), &menu);
+			menu.addAction(actRemoveMarker);
+		}
+		// Clicked on a detected peak:
+		else if (info.didxPossiblePeak >= 0)
+		{
+			actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
+			menu.addAction(actAddMarker);
+		}
+		// Clicked on a peak area handle:
+		else if (info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
+		{
+			actRemoveMarker = new QAction(tr("Remove Marker"), &menu);
+			menu.addAction(actRemoveMarker);
+		}
+		// Clicked on a wave:
+		else if (wave != NULL)
+		{
+			actSettings = new QAction(tr("Settings..."), &menu);
+			menu.addAction(actSettings);
+			if (wave->type == WaveType_FID)
+				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
+			else
+				actAddMarker = new QAction(tr("Add Time Marker"), &menu);
+			menu.addAction(actAddMarker);
+		}
+		else if (rcWaveforms.contains(e->pos()))
+		{
+		}
+		else
+		{
+		}
+	}
+	if (menu.actions().size() > 0)
+	{
+		QAction* act = menu.exec(mapToGlobal(e->pos()));
+		if (act == NULL)
+			;
+		else if (act == actAddMarker)
+		{
+			if (info.didxPossiblePeak >= 0)
+				vwi->choosePeakAtDidx(info.didxPossiblePeak);
+			else
+			{
+				int didx = m_pixmap->xToCenterSample(wave, ptPixmap.x());
+				WavePeakChosenInfo peak;
+				peak.didxMiddle = didx;
+				vwi->choosePeak(peak);
+			}
+		}
+		else if (act == actRemoveMarker)
+		{
+			CHECK_ASSERT_NORET(info.didxChosenPeak >= 0);
+			if (info.didxChosenPeak >= 0)
+				vwi->unchoosePeakAtDidx(info.didxChosenPeak);
+		}
+	}
+
+	e->accept();
 	updateStatus();
 }
 
