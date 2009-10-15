@@ -76,6 +76,7 @@ protected:
 	//void mouseDoubleClickEvent(QMouseEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
 	void mouseMoveEvent(QMouseEvent* e);
+	void mouseDoubleClickEvent(QMouseEvent* e);
 	void contextMenuEvent(QContextMenuEvent* e);
 
 private:
@@ -94,6 +95,7 @@ private:
 	void setHilight(ViewWaveInfo* vwi);
 
 	void addPeak(ViewWaveInfo* vwi, int x);
+	void openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal);
 	void updateStatus();
 
 	/// Convert a screen coordinate to box coordinates

@@ -2,7 +2,7 @@
 x	let user set markers on EAD waves
 	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
 	right-click menu:
-		implement Settings
+	x	implement Settings
 		"Add Peak Marker" should be disabled if not in edit mode
 		background:
 			zoom out
@@ -10,6 +10,7 @@ x	let user set markers on EAD waves
 			zoom full
 			scroll left/right?
 x	let user move peaks (and don't remove peaks by just clicking on them)
+x	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
 	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 	in publish mode: checkboxes for time/?? not saved between sessions, off by default
 	import of Autospike-CSV files and old EAG files
@@ -17,7 +18,6 @@ x	let user move peaks (and don't remove peaks by just clicking on them)
 	pageup/pagedn for scrolling chart
 	zoom in button shouldn't automatically have focus
 	shortcuts for zoom in/out
-	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
 	MainWindow: Chart menu
 		zoom in/out/full
 		scroll
@@ -33,6 +33,7 @@ x	let user move peaks (and don't remove peaks by just clicking on them)
 	shortcuts for the different chart modes
 	put different chart modes into the View menu
 	BUG: turning off verified peaks in publish mode doesn't work
+	click-and-scroll with the scroll wheel
 
 	INSTALLER:
 		MAC:

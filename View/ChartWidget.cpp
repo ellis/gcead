@@ -672,42 +672,6 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 	updateStatus();
 }
 
-/*
-void ChartWidget::mouseDoubleClickEvent(QMouseEvent* e)
-{
-	QRect rcWaveforms = m_rcPixmap;
-
-	ChartPointInfo info;
-	QPoint ptPixmap = e->pos() - m_rcPixmap.topLeft();
-	m_pixmap->fillChartPointInfo(ptPixmap, &info);
-	m_clickInfo = info;
-	ViewWaveInfo* vwi = info.vwi;
-
-	m_ptMouseWidget = e->pos();
-	m_ptMousePixmap = ptPixmap;
-	m_ptClickWidget = m_ptMouseWidget;
-	m_ptClickPixmap = m_ptMousePixmap;
-	
-	const WaveInfo* wave = NULL;
-	if (vwi != NULL)
-		wave = vwi->wave();
-
-	if (e->button() == Qt::LeftButton)
-	{
-		// Double-clicked on a wave:
-		if (wave != NULL)
-		{
-			QPoint ptGlobal(mapToGlobal(e->pos()));
-			WaveEditorDialog editor(vwi, item->flags, QColor(0xc0, 0xc0, 0xff), this);
-			editor.move(ptGlobal);
-			editor.exec();
-		}
-	}
-
-	updateStatus();
-}
-*/
-
 void ChartWidget::mouseReleaseEvent(QMouseEvent* e)
 {
 	Q_UNUSED(e);
@@ -856,6 +820,57 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 	updateStatus();
 }
 
+void ChartWidget::mouseDoubleClickEvent(QMouseEvent* e)
+{
+	QRect rcWaveforms = m_rcPixmap;
+
+	ChartPointInfo info;
+	QPoint ptPixmap = e->pos() - m_rcPixmap.topLeft();
+	m_pixmap->fillChartPointInfo(ptPixmap, &info);
+	m_clickInfo = info;
+	ViewWaveInfo* vwi = info.vwi;
+
+	m_ptMouseWidget = e->pos();
+	m_ptMousePixmap = ptPixmap;
+	m_ptClickWidget = m_ptMouseWidget;
+	m_ptClickPixmap = m_ptMousePixmap;
+
+	const WaveInfo* wave = NULL;
+	if (vwi != NULL)
+		wave = vwi->wave();
+
+	if (e->button() == Qt::LeftButton)
+	{
+		// Clicked on a chosen peak:
+		if (info.iChosenPeak >= 0)
+		{
+		}
+		// Clicked on a detected peak:
+		else if (info.didxPossiblePeak >= 0)
+		{
+		}
+		// Clicked on a peak area handle:
+		else if (info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
+		{
+		}
+		// Clicked on a wave:
+		else if (wave != NULL)
+		{
+			QPoint ptGlobal = mapToGlobal(e->pos());
+			openWaveEditorDialog(vwi, ptGlobal);
+		}
+		else if (rcWaveforms.contains(e->pos()))
+		{
+		}
+		else
+		{
+			m_bDragging = false;
+		}
+	}
+
+	updateStatus();
+}
+
 void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 {
 	QRect rcWaveforms = m_rcPixmap;
@@ -924,10 +939,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 			;
 		else if (act == actSettings)
 		{
-			qDebug() << "settings...:" << vwi->wave()->sName << vwi->editorFlags;
-			WaveEditorDialog editor(vwi, vwi->editorFlags, this);
-			editor.move(ptGlobal);
-			editor.exec();
+			openWaveEditorDialog(vwi, ptGlobal);
 		}
 		else if (act == actAddMarker)
 		{
@@ -962,6 +974,13 @@ void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
 		peak.didxRight = didx2;
 		vwi->choosePeak(peak);
 	}
+}
+
+void ChartWidget::openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal)
+{
+	WaveEditorDialog editor(vwi, vwi->editorFlags, this);
+	editor.move(ptGlobal);
+	editor.exec();
 }
 
 static int calcPrecision(double nMinutes)
