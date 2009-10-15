@@ -37,12 +37,13 @@ class ViewWaveInfo : public QObject
 {
 	Q_OBJECT
 public:
+	WaveEditorFlags editorFlags;
 	/// HACK: By settings this to true, ChartWidget will adjust nDivisionOffset if this wave is shifted completely off the graph
 	bool bAssureVisibility;
 
 public:
 	ViewWaveInfo()
-		: bAssureVisibility(false), m_view(NULL), m_wave(NULL), m_pos(NULL)
+		: editorFlags(0), bAssureVisibility(false), m_view(NULL), m_wave(NULL), m_pos(NULL)
 	{
 	}
 	ViewWaveInfo(ViewInfo* view, WaveInfo* wave);
@@ -91,11 +92,14 @@ class ViewInfo : public QObject
 {
 	Q_OBJECT
 public:
-	ViewInfo(EadFile* file);
-	~ViewInfo();
-
 	ViewWaveInfo vwiUser;
 	WavePos posExtra;
+
+public:
+	ViewInfo(EadView viewType, EadFile* file);
+	~ViewInfo();
+
+	EadView viewType() const { return m_viewType; }
 
 	/// Get the list of standard waves in this view
 	const QList<ViewWaveInfo*>& vwis() { return m_vwis; }
@@ -122,6 +126,10 @@ signals:
 	void changed(ViewChangeEvents e);
 
 private:
+	void setEditorFlags(ViewWaveInfo* vwi);
+
+private:
+	EadView m_viewType;
 	QPointer<EadFile> m_file;
 	QList<ViewWaveInfo*> m_vwis;
 	QList<ViewWaveInfo*> m_vwiExtras;

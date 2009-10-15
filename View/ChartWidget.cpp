@@ -40,6 +40,7 @@
 #include "PublisherSettings.h"
 #include "Utils.h"
 #include "ViewSettings.h"
+#include "WaveEditorDialog.h"
 
 
 // REFACTOR: duplicated in ChartWidget.cpp
@@ -917,9 +918,17 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 	}
 	if (menu.actions().size() > 0)
 	{
-		QAction* act = menu.exec(mapToGlobal(e->pos()));
+		QPoint ptGlobal = mapToGlobal(e->pos());
+		QAction* act = menu.exec(ptGlobal);
 		if (act == NULL)
 			;
+		else if (act == actSettings)
+		{
+			qDebug() << "settings...:" << vwi->wave()->sName << vwi->editorFlags;
+			WaveEditorDialog editor(vwi, vwi->editorFlags, this);
+			editor.move(ptGlobal);
+			editor.exec();
+		}
 		else if (act == actAddMarker)
 		{
 			if (info.didxPossiblePeak >= 0)

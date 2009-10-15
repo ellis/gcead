@@ -17,6 +17,8 @@
 
 #include "ViewInfo.h"
 
+#include <QtDebug>
+
 #include <Check.h>
 #include <Globals.h>
 #include <Utils.h>
@@ -47,8 +49,6 @@ void ViewWaveInfo::init(WaveInfo* wave, WavePos* pos)
 		if (pos == NULL)
 			pos = &m_wave->pos;
 		m_pos = pos;
-
-		//connect(m_wave, SIGNAL(destroyed(QObject*)), this, SLOT(on_wave_destroyed(QObject*)));
 	}
 	else
 	{
@@ -186,9 +186,10 @@ void ViewWaveInfo::emitChanged(ViewChangeEvents e)
 
 
 
-ViewInfo::ViewInfo(EadFile* file)
+ViewInfo::ViewInfo(EadView viewType, EadFile* file)
 : vwiUser(this, NULL)
 {
+	m_viewType = viewType;
 	m_file = file;
 }
 
@@ -215,6 +216,7 @@ ViewWaveInfo* ViewInfo::addWave(WaveInfo* wave)
 	//CHECK_PRECOND_RET(!m_vwis.contains(wave));
 
 	ViewWaveInfo* vwi = new ViewWaveInfo(this, wave);
+	setEditorFlags(vwi);
 	m_vwis << vwi;
 	emitChanged(ViewChangeEvent_Paint);
 	return vwi;
@@ -235,6 +237,7 @@ ViewWaveInfo* ViewInfo::addExtraWave(WaveInfo* wave)
 	m_posExtras << pos;
 
 	ViewWaveInfo* vwi = new ViewWaveInfo(this, wave, pos);
+	setEditorFlags(vwi);
 	m_vwiExtras << vwi;
 	emitChanged(ViewChangeEvent_Paint);
 
@@ -250,7 +253,27 @@ void ViewInfo::clearWaves()
 void ViewInfo::setUserWave(WaveInfo* wave)
 {
 	vwiUser.init(wave, &posExtra);
+	setEditorFlags(&vwiUser);
+	// Can't change visibility of the user-selected wave
+	vwiUser.editorFlags &= ~WaveEditorFlag_Visible;
 	emitChanged(ViewChangeEvent_Paint);
+}
+
+void ViewInfo::setEditorFlags(ViewWaveInfo* vwi)
+{
+	// If this is an averaged waveform
+	if (vwi->wave()->recId() == 0)
+	{
+		// If this is the "Averages" view:
+		if (m_viewType == EadView_Averages)
+			vwi->editorFlags = WaveEditorFlag_Sensitivity;
+		else
+			vwi->editorFlags = WaveEditorFlag_Sensitivity | WaveEditorFlag_Visible;
+	}
+	else
+		vwi->editorFlags = WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Sensitivity | WaveEditorFlag_Timeshift | WaveEditorFlag_Visible;
+
+	qDebug() << "setEditorFlags:" << vwi->wave()->sName << vwi->editorFlags;
 }
 
 void ViewInfo::emitChanged(ViewChangeEvents e)

@@ -141,12 +141,12 @@ void TaskReviewWidget::setupItems(EadFile* file)
 			if (wave->recId() == 0)
 			{
 				if (m_scope->viewType() == EadView_Averages)
-					m_groups[1].items << ItemInfo(vwi, Mode_Sens, WaveEditorFlag_Sensitivity);
+					m_groups[1].items << ItemInfo(vwi, Mode_Sens);
 				else
-					m_groups[1].items << ItemInfo(vwi, Mode_SensVisible, WaveEditorFlag_Sensitivity | WaveEditorFlag_Visible);
+					m_groups[1].items << ItemInfo(vwi, Mode_SensVisible);
 			}
 			else
-				m_groups[0].items << ItemInfo(vwi, Mode_Everything, WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Sensitivity | WaveEditorFlag_Timeshift | WaveEditorFlag_Visible);
+				m_groups[0].items << ItemInfo(vwi, Mode_Everything);
 
 			// Add all visible FIDs to m_cmbPeakFid
 			if (wave->type == WaveType_FID)
@@ -160,7 +160,7 @@ void TaskReviewWidget::setupItems(EadFile* file)
 		// Add the extra waveform, if there is one
 		if (view->vwiUser.wave() != NULL)
 		{
-			m_groups[2].items << ItemInfo(&view->vwiUser, Mode_Sens, WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Sensitivity | WaveEditorFlag_Timeshift);
+			m_groups[2].items << ItemInfo(&view->vwiUser, Mode_Sens);
 
 			// Add all visible FIDs to m_cmbPeakFid (NOTE: duplicate code)
 			const WaveInfo* wave = view->vwiUser.wave();
@@ -561,7 +561,7 @@ void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 	p.setFont(font);
 
 	// Draw edit icon to the right of the name
-	int flagsExtra = item.flags & (WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Timeshift);
+	int flagsExtra = item.vwi->editorFlags & (WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Timeshift);
 	if (flagsExtra != 0) {
 		rc = paintPixmap(p, m_pixEdit, xEdit, rc.top());
 		m_arcEdit[&item] = rc;
@@ -662,7 +662,7 @@ void TaskReviewWidget::mousePressEvent(QMouseEvent* e)
 
 		QPoint ptGlobal(mapToGlobal(QPoint(0, pt.y())));
 
-		WaveEditorDialog editor(item->vwi, item->flags, this);
+		WaveEditorDialog editor(item->vwi, item->vwi->editorFlags, this);
 		editor.move(ptGlobal);
 		editor.exec();
 	}
@@ -722,7 +722,7 @@ void TaskReviewWidget::setAllVisible(bool bVisible)
 		for (int iItem = 0; iItem < m_groups[iGroup].items.count(); iItem++)
 		{
 			const ItemInfo& item = m_groups[iGroup].items[iItem];
-			if (item.flags.testFlag(WaveEditorFlag_Visible))
+			if (item.vwi->editorFlags.testFlag(WaveEditorFlag_Visible))
 			{
 				item.vwi->setVisible(bVisible);
 			}

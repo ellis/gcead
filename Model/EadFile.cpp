@@ -596,8 +596,9 @@ void EadFile::createViewInfo()
 	// Allocate views
 	qDeleteAll(m_views);
 	m_views.clear();
+
 	for (int i = 0; i < EadViewCount; i++)
-		m_views << new ViewInfo(this);
+		m_views << new ViewInfo((EadView) i, this);
 
 	RecInfo* recAve = m_recs[0];
 	

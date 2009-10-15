@@ -70,20 +70,19 @@ private:
 	struct ItemInfo
 	{
 		ViewWaveInfo* vwi;
-		ItemMode mode;
-		WaveEditorFlags flags;
+		ItemMode mode; // REFACTOR: Use vwi->editorFlags instead
 		QRect rc;
 
-		bool bShowVisible;
-		bool bShowSens;
+		bool bShowVisible; // REFACTOR: Do we need this?
+		bool bShowSens; // REFACTOR: Do we need this?
 
 		ItemInfo()
 			: vwi(NULL)
 		{
 		}
 
-		ItemInfo(ViewWaveInfo* vwi, ItemMode mode, WaveEditorFlags flags)
-			: vwi(vwi), mode(mode), flags(flags)
+		ItemInfo(ViewWaveInfo* vwi, ItemMode mode)
+			: vwi(vwi), mode(mode)
 		{
 		}
 	};
