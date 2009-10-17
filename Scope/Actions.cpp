@@ -93,6 +93,16 @@ Actions::Actions(QObject *parent)
 	viewChartRecording->setEnabled(false);
 	viewChartRecording->setShortcut(tr("Ctrl+5"));
 
+	viewZoomIn = new QAction(tr("Zoom In"), this);
+	viewZoomIn->setShortcut(tr("Ctrl++"));
+	viewZoomIn->setIcon(QIcon(":/images/stock_zoom-in.png"));
+	viewZoomOut = new QAction(tr("Zoom Out"), this);
+	viewZoomOut->setShortcut(tr("Ctrl+-"));
+	viewZoomOut->setIcon(QIcon(":/images/stock_zoom-out.png"));
+	viewZoomFull = new QAction(tr("Zoom Full"), this);
+	viewZoomFull->setShortcut(tr("Ctrl+="));
+	viewZoomFull->setIcon(QIcon(":/images/stock_zoom-page-width.png"));
+
 	viewWaveComments = new QAction(tr("Show wave &comments"), this);
 	viewWaveComments->setCheckable(true);
 

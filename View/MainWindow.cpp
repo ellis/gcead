@@ -200,6 +200,10 @@ void MainWindow::setupActions()
 	ui.mnuView->addAction(actions->viewChartAll);
 	ui.mnuView->addAction(actions->viewChartRecording);
 	ui.mnuView->addSeparator();
+	ui.mnuView->addAction(actions->viewZoomIn);
+	ui.mnuView->addAction(actions->viewZoomOut);
+	ui.mnuView->addAction(actions->viewZoomFull);
+	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewWaveComments);
 	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewHidePeaks);

@@ -61,6 +61,7 @@ ChartWidget::ChartWidget(MainScope* scope, QWidget* parent)
 	Q_ASSERT(scope != NULL);
 
 	setMouseTracking(true);
+	setFocusPolicy(Qt::StrongFocus);
 
 	m_scope = scope;
 	connect(m_scope, SIGNAL(fileChanged(EadFile*)), this, SLOT(scope_fileChanged()));
@@ -115,23 +116,25 @@ void ChartWidget::setupWidgets()
 	QToolButton* tbtn;
 
 	tbtn = new QToolButton;
-	//tbtn->setIconSize(QSize(22, 22));
-	//tbtn->setIcon(QIcon(":/images/zoom-in-22x22.png"));
-	tbtn->setIcon(QIcon(":/images/stock_zoom-in.png"));
+	tbtn->setDefaultAction(m_scope->actions()->viewZoomIn);
+	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	connect(tbtn, SIGNAL(clicked()), this, SLOT(zoomIn()));
+	// REFACTOR: the zoom functions should perhaps be handled in MainScope
+	connect(m_scope->actions()->viewZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
 	m_btnZoomIn = tbtn;
 
 	tbtn = new QToolButton;
-	tbtn->setIcon(QIcon(":/images/stock_zoom-out.png"));
+	tbtn->setDefaultAction(m_scope->actions()->viewZoomOut);
+	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	connect(tbtn, SIGNAL(clicked()), this, SLOT(zoomOut()));
+	connect(m_scope->actions()->viewZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
 	m_btnZoomOut = tbtn;
 
 	tbtn = new QToolButton;
-	tbtn->setIcon(QIcon(":/images/stock_zoom-page-width.png"));
+	tbtn->setDefaultAction(m_scope->actions()->viewZoomFull);
+	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	connect(tbtn, SIGNAL(clicked()), this, SLOT(zoomFull()));
+	connect(m_scope->actions()->viewZoomFull, SIGNAL(triggered()), this, SLOT(zoomFull()));
 	tblayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 	m_btnZoomFull = tbtn;
 
@@ -875,7 +878,7 @@ void ChartWidget::wheelEvent(QWheelEvent* e)
 {
 	// Each 'click' of the scroll wheel produces a delta of 120
 	int nDivs = e->delta() / 120;
-	int nSamples = m_nSecondsPerDivision * nDivs / EAD_SAMPLES_PER_SECOND;
+	int nSamples = -nDivs * m_nSecondsPerDivision * EAD_SAMPLES_PER_SECOND;
 	int i = m_scrollbar->value() + nSamples;
 	if (i < 0)
 		i = 0;

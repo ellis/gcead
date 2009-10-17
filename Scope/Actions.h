@@ -47,6 +47,9 @@ public:
 	QAction* viewChartFids;
 	QAction* viewChartAll;
 	QAction* viewChartRecording;
+	QAction* viewZoomIn;
+	QAction* viewZoomOut;
+	QAction* viewZoomFull;
 	QAction* viewWaveComments;
 	QAction* viewHidePeaks;
 	QAction* viewDetectedPeaks;
