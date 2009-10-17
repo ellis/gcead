@@ -871,6 +871,17 @@ void ChartWidget::mouseDoubleClickEvent(QMouseEvent* e)
 	updateStatus();
 }
 
+void ChartWidget::wheelEvent(QWheelEvent* e)
+{
+	// Each 'click' of the scroll wheel produces a delta of 120
+	int nDivs = e->delta() / 120;
+	int nSamples = m_nSecondsPerDivision * nDivs / EAD_SAMPLES_PER_SECOND;
+	int i = m_scrollbar->value() + nSamples;
+	if (i < 0)
+		i = 0;
+	m_scrollbar->setValue(i);
+}
+
 void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 {
 	QRect rcWaveforms = m_rcPixmap;

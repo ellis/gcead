@@ -273,7 +273,7 @@ void ViewInfo::setEditorFlags(ViewWaveInfo* vwi)
 	else
 		vwi->editorFlags = WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Sensitivity | WaveEditorFlag_Timeshift | WaveEditorFlag_Visible;
 
-	qDebug() << "setEditorFlags:" << vwi->wave()->sName << vwi->editorFlags;
+	//qDebug() << "setEditorFlags:" << vwi->wave()->sName << vwi->editorFlags;
 }
 
 void ViewInfo::emitChanged(ViewChangeEvents e)

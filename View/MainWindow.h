@@ -68,7 +68,7 @@ private slots:
 	void scope_fileChanged();
 	void scope_taskTypeChanged(EadTask task);
 	void scope_commentChanged();
-	void scope_isRecordingViewEnabledChanged();
+	void actions_viewChartRecording_changed();
 	void updateReview();
 	
 	void actions_fileExportSignalData_triggered();

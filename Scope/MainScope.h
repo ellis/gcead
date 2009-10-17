@@ -56,7 +56,6 @@ public:
 	bool isWindowModified() const { return m_bWindowModified; }
 
 	bool isRecording() const { return m_bRecording; }
-	bool isRecordingViewEnabled() const { return m_bRecordingViewEnabled; }
 
 public:
 	Actions* actions() { return m_actions; }
@@ -97,7 +96,6 @@ signals:
 	void windowTitleChanged(const QString& sWindowTitle);
 	void isWindowModifiedChanged(bool bWindowModified);
 	void isRecordingChanged(bool bRecording);
-	void isRecordingViewEnabledChanged(bool bRecording);
 
 	void viewSettingChanged(const QString& sName);
 
@@ -107,7 +105,6 @@ private:
 	void setIsRecentFilesMenuEnabled(bool bEnabled);
 	void setIsWindowModified(bool bWindowModified);
 	void setIsRecording(bool bRecording);
-	void setIsRecordingViewEnabled(bool bRecordingViewEnabled);
 	void updateWindowTitle();
 	void addRecentFile(const QString& sFilename);
 	void updateRecentFileActions();
@@ -127,6 +124,11 @@ private slots:
 
 	void on_actions_viewViewMode_triggered();
 	void on_actions_viewPublishMode_triggered();
+	void on_actions_viewChartAverages_triggered();
+	void on_actions_viewChartEads_triggered();
+	void on_actions_viewChartFids_triggered();
+	void on_actions_viewChartAll_triggered();
+	void on_actions_viewChartRecording_triggered();
 	void on_actions_viewWaveComments_triggered();
 	void on_actions_viewHidePeaks_triggered();
 	void on_actions_viewDetectedPeaks_triggered();
@@ -160,7 +162,6 @@ private:
 	bool m_bWindowModified;
 
 	bool m_bRecording;
-	bool m_bRecordingViewEnabled;
 	ViewWaveInfo* m_vwiEad;
 	ViewWaveInfo* m_vwiFid;
 	ViewWaveInfo* m_vwiDig;

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2009  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,11 @@ public:
 
 	QAction* viewViewMode;
 	QAction* viewPublishMode;
+	QAction* viewChartAverages;
+	QAction* viewChartEads;
+	QAction* viewChartFids;
+	QAction* viewChartAll;
+	QAction* viewChartRecording;
 	QAction* viewWaveComments;
 	QAction* viewHidePeaks;
 	QAction* viewDetectedPeaks;

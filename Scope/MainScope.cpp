@@ -55,7 +55,6 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	m_bWindowModified = false;
 
 	m_bRecording = false;
-	m_bRecordingViewEnabled = false;
 	m_vwiEad = NULL;
 	m_vwiFid = NULL;
 	m_vwiDig = NULL;
@@ -84,6 +83,11 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->fileLoadSampleProject, SIGNAL(triggered()), this, SLOT(on_actions_fileLoadSampleProject_triggered()));
 	connect(m_actions->viewViewMode, SIGNAL(triggered()), this, SLOT(on_actions_viewViewMode_triggered()));
 	connect(m_actions->viewPublishMode, SIGNAL(triggered()), this, SLOT(on_actions_viewPublishMode_triggered()));
+	connect(m_actions->viewChartAverages, SIGNAL(triggered()), this, SLOT(on_actions_viewChartAverages_triggered()));
+	connect(m_actions->viewChartEads, SIGNAL(triggered()), this, SLOT(on_actions_viewChartEads_triggered()));
+	connect(m_actions->viewChartFids, SIGNAL(triggered()), this, SLOT(on_actions_viewChartFids_triggered()));
+	connect(m_actions->viewChartAll, SIGNAL(triggered()), this, SLOT(on_actions_viewChartAll_triggered()));
+	connect(m_actions->viewChartRecording, SIGNAL(triggered()), this, SLOT(on_actions_viewChartRecording_triggered()));
 	connect(m_actions->viewWaveComments, SIGNAL(triggered()), this, SLOT(on_actions_viewWaveComments_triggered()));
 	connect(m_actions->viewHidePeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewHidePeaks_triggered()));
 	connect(m_actions->viewDetectedPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewDetectedPeaks_triggered()));
@@ -123,8 +127,8 @@ void MainScope::setFile(EadFile* file)
 		setTaskType(EadTask_Review);
 		setViewType(EadView_Averages);
 		updateActions();
-		setIsRecordingViewEnabled(false);
 		addRecentFile(m_file->filename());
+		m_actions->viewChartRecording->setEnabled(false);
 	}
 }
 
@@ -148,6 +152,13 @@ void MainScope::setViewType(EadView viewType)
 	if (viewType != m_viewType)
 	{
 		m_viewType = viewType;
+
+		m_actions->viewChartAverages->setChecked(m_viewType == EadView_Averages);
+		m_actions->viewChartEads->setChecked(m_viewType == EadView_EADs);
+		m_actions->viewChartFids->setChecked(m_viewType == EadView_FIDs);
+		m_actions->viewChartAll->setChecked(m_viewType == EadView_All);
+		m_actions->viewChartRecording->setChecked(m_viewType == EadView_Recording);
+
 		updateActions();
 		emit viewTypeChanged(m_viewType);
 	}
@@ -205,15 +216,6 @@ void MainScope::setIsRecording(bool bRecording)
 			m_recTimer->stop();
 
 		updateActions();
-	}
-}
-
-void MainScope::setIsRecordingViewEnabled(bool bRecordingViewEnabled)
-{
-	if (bRecordingViewEnabled != m_bRecordingViewEnabled)
-	{
-		m_bRecordingViewEnabled = bRecordingViewEnabled;
-		emit isRecordingViewEnabledChanged(m_bRecordingViewEnabled);
 	}
 }
 
@@ -488,15 +490,14 @@ void MainScope::on_actions_fileLoadSampleProject_triggered()
 	}
 }
 
-void MainScope::on_actions_viewViewMode_triggered()
-{
-	setTaskType(EadTask_Review);
-}
+void MainScope::on_actions_viewViewMode_triggered() { setTaskType(EadTask_Review); }
+void MainScope::on_actions_viewPublishMode_triggered() { setTaskType(EadTask_Publish); }
 
-void MainScope::on_actions_viewPublishMode_triggered()
-{
-	setTaskType(EadTask_Publish);
-}
+void MainScope::on_actions_viewChartAverages_triggered() { setViewType(EadView_Averages); }
+void MainScope::on_actions_viewChartEads_triggered() { setViewType(EadView_EADs); }
+void MainScope::on_actions_viewChartFids_triggered() { setViewType(EadView_FIDs); }
+void MainScope::on_actions_viewChartAll_triggered() { setViewType(EadView_All); }
+void MainScope::on_actions_viewChartRecording_triggered() { setViewType(EadView_Recording); }
 
 void MainScope::on_actions_viewWaveComments_triggered()
 {
@@ -553,7 +554,7 @@ void MainScope::on_actions_recordRecord_triggered()
 		m_recHandler->updateRawToVoltageFactors();
 
 		// Enable and switch to the Recording view
-		setIsRecordingViewEnabled(true);
+		m_actions->viewChartRecording->setEnabled(true);
 		setTaskType(EadTask_Review);
 		setViewType(EadView_Recording);
 

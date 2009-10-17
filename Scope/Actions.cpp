@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2009  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,9 +69,30 @@ Actions::Actions(QObject *parent)
 	viewViewMode = new QAction(tr("&View Mode"), group);
 	viewViewMode->setCheckable(true);
 	viewViewMode->setChecked(true);
+	viewViewMode->setShortcut(tr("Ctrl+V"));
 	viewPublishMode = new QAction(tr("&Publish Mode"), group);
 	viewPublishMode->setCheckable(true);
-	
+	viewPublishMode->setShortcut(tr("Ctrl+P"));
+
+	group = new QActionGroup(this);
+	viewChartAverages = new QAction(tr("Chart: Averages"), group);
+	viewChartAverages->setCheckable(true);
+	viewChartAverages->setChecked(true);
+	viewChartAverages->setShortcut(tr("Ctrl+1"));
+	viewChartEads = new QAction(tr("Chart: EADs"), group);
+	viewChartEads->setCheckable(true);
+	viewChartEads->setShortcut(tr("Ctrl+2"));
+	viewChartFids = new QAction(tr("Chart: FIDs"), group);
+	viewChartFids->setCheckable(true);
+	viewChartFids->setShortcut(tr("Ctrl+3"));
+	viewChartAll = new QAction(tr("Chart: All"), group);
+	viewChartAll->setCheckable(true);
+	viewChartAll->setShortcut(tr("Ctrl+4"));
+	viewChartRecording = new QAction(tr("Chart: Recording"), group);
+	viewChartRecording->setCheckable(true);
+	viewChartRecording->setEnabled(false);
+	viewChartRecording->setShortcut(tr("Ctrl+5"));
+
 	viewWaveComments = new QAction(tr("Show wave &comments"), this);
 	viewWaveComments->setCheckable(true);
 

@@ -24,6 +24,10 @@
 #include <QSettings>
 #include <QStackedLayout>
 
+#include <WaveInfo.h>
+#include <Idac/IdacFactory.h>
+#include <Idac/IdacProxy.h>
+
 #include "Actions.h"
 #include "AppDefines.h"
 #include "ChartWidget.h"
@@ -35,9 +39,6 @@
 #include "MainWindowUi.h"
 #include "PanelTabs.h"
 #include "RecordHandler.h"
-#include <WaveInfo.h>
-#include <Idac/IdacFactory.h>
-#include <Idac/IdacProxy.h>
 #include "TaskPanel.h"
 #include "TaskPublishWidget.h"
 #include "TaskReviewWidget.h"
@@ -68,14 +69,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 	connect(m_scope, SIGNAL(commentChanged(const QString&)), this, SLOT(scope_commentChanged()));
 	connect(m_scope, SIGNAL(windowTitleChanged(const QString&)), this, SLOT(setWindowTitle(const QString&)));
 	connect(m_scope, SIGNAL(isWindowModifiedChanged(bool)), this, SLOT(setWindowModified(bool)));
-	connect(m_scope, SIGNAL(isRecordingViewEnabledChanged(bool)), this, SLOT(scope_isRecordingViewEnabledChanged()));
 
 	// Setup initial values from m_scope
 	setWindowTitle(m_scope->windowTitle());
 	scope_fileChanged();
 	m_recentFilesMenu->setEnabled(m_scope->isRecentFilesMenuEnabled());
 	scope_taskTypeChanged(m_scope->taskType());
-	scope_isRecordingViewEnabledChanged();
+	actions_viewChartRecording_changed();
 
 	idac->setup();
 }
@@ -194,6 +194,12 @@ void MainWindow::setupActions()
 	ui.mnuView->addAction(actions->viewViewMode);
 	ui.mnuView->addAction(actions->viewPublishMode);
 	ui.mnuView->addSeparator();
+	ui.mnuView->addAction(actions->viewChartAverages);
+	ui.mnuView->addAction(actions->viewChartEads);
+	ui.mnuView->addAction(actions->viewChartFids);
+	ui.mnuView->addAction(actions->viewChartAll);
+	ui.mnuView->addAction(actions->viewChartRecording);
+	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewWaveComments);
 	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewHidePeaks);
@@ -223,6 +229,7 @@ void MainWindow::setupActions()
 	connect(actions->fileExportSignalData, SIGNAL(triggered()), this, SLOT(actions_fileExportSignalData_triggered()));
 	connect(actions->fileExportRetentionData, SIGNAL(triggered()), this, SLOT(actions_fileExportRetentionData_triggered()));
 	connect(actions->fileExit, SIGNAL(triggered()), this, SLOT(actions_fileExit_triggered()));
+	connect(actions->viewChartRecording, SIGNAL(changed()), this, SLOT(actions_viewChartRecording_changed()));
 }
 
 void MainWindow::readSettings()
@@ -305,9 +312,9 @@ void MainWindow::scope_commentChanged()
 	m_lblComment->setText(m_scope->comment());
 }
 
-void MainWindow::scope_isRecordingViewEnabledChanged()
+void MainWindow::actions_viewChartRecording_changed()
 {
-	m_viewtabs->setEnabled(EadView_Recording, m_scope->isRecordingViewEnabled());
+	m_viewtabs->setEnabled(EadView_Recording, m_scope->actions()->viewChartRecording->isEnabled());
 }
 
 void MainWindow::updateReview()

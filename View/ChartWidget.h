@@ -77,6 +77,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent* e);
 	void mouseMoveEvent(QMouseEvent* e);
 	void mouseDoubleClickEvent(QMouseEvent* e);
+	void wheelEvent(QWheelEvent* e);
 	void contextMenuEvent(QContextMenuEvent* e);
 
 private:
