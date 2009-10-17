@@ -103,7 +103,16 @@ Actions::Actions(QObject *parent)
 	viewZoomFull->setShortcut(tr("Ctrl+="));
 	viewZoomFull->setIcon(QIcon(":/images/stock_zoom-page-width.png"));
 
-	viewWaveComments = new QAction(tr("Show wave &comments"), this);
+	viewScrollDivLeft = new QAction(tr("Scroll Division Left"), this);
+	viewScrollDivLeft->setShortcut(QKeySequence::MoveToPreviousChar);
+	viewScrollDivRight = new QAction(tr("Scroll Division Right"), this);
+	viewScrollDivRight->setShortcut(QKeySequence::MoveToNextChar);
+	viewScrollPageLeft = new QAction(tr("Scroll Page Left"), this);
+	viewScrollPageLeft->setShortcut(QKeySequence::MoveToPreviousPage);
+	viewScrollPageRight = new QAction(tr("Scroll Page Right"), this);
+	viewScrollPageRight->setShortcut(QKeySequence::MoveToNextPage);
+
+	viewWaveComments = new QAction(tr("Show Wave &Comments"), this);
 	viewWaveComments->setCheckable(true);
 
 	group = new QActionGroup(this);

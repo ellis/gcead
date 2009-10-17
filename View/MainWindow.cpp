@@ -203,6 +203,12 @@ void MainWindow::setupActions()
 	ui.mnuView->addAction(actions->viewZoomIn);
 	ui.mnuView->addAction(actions->viewZoomOut);
 	ui.mnuView->addAction(actions->viewZoomFull);
+	QMenu* mnu = new QMenu(tr("Scroll"), this);
+	mnu->addAction(actions->viewScrollDivLeft);
+	mnu->addAction(actions->viewScrollDivRight);
+	mnu->addAction(actions->viewScrollPageLeft);
+	mnu->addAction(actions->viewScrollPageRight);
+	ui.mnuView->addMenu(mnu);
 	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewWaveComments);
 	ui.mnuView->addSeparator();

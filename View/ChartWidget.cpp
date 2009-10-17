@@ -940,6 +940,9 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		}
 		else if (rcWaveforms.contains(e->pos()))
 		{
+			menu.addAction(m_scope->actions()->viewZoomIn);
+			menu.addAction(m_scope->actions()->viewZoomOut);
+			menu.addAction(m_scope->actions()->viewZoomFull);
 		}
 		else
 		{

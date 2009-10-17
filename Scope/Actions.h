@@ -50,6 +50,10 @@ public:
 	QAction* viewZoomIn;
 	QAction* viewZoomOut;
 	QAction* viewZoomFull;
+	QAction* viewScrollDivLeft;
+	QAction* viewScrollDivRight;
+	QAction* viewScrollPageLeft;
+	QAction* viewScrollPageRight;
 	QAction* viewWaveComments;
 	QAction* viewHidePeaks;
 	QAction* viewDetectedPeaks;
