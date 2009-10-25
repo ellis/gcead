@@ -51,8 +51,6 @@ public:
 	//const ChartPixmap* pixmap() const { return m_pixmap; }
 
 public slots:
-	/// Force a repaint of the chart
-	void repaintChart();
 	/// Update waves in which recording is taking place
 	void updateRecordings();
 
@@ -98,7 +96,6 @@ private:
 	/// Maximum area that the pixmap is allowed to use
 	QRect m_rcPixmapMax;
 	QRect m_rcPixmap;
-	bool m_bRedraw;
 
 	/// Whether the user is currently dragging the mouse (click+drag)
 	bool m_bDragging;

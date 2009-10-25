@@ -45,14 +45,12 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	m_idac = idac;
 	connect(m_idac, SIGNAL(isAvailableChanged(bool)), this, SLOT(on_idac_isAvailable()));
 
+	m_actions = new Actions(this);
+	m_file = new EadFile;
+	m_chart = new ChartScope(this);
+
 	m_taskType = EadTask_Review;
 	m_viewType = EadView_Averages;
-	m_peakMode = EadPeakMode_Verified;
-	m_nPeakModeRecId = 0;
-
-	m_actions = new Actions(this);
-
-	m_file = new EadFile;
 
 	m_bRecentFilesMenuEnabled = false;
 	m_bWindowModified = false;
@@ -147,9 +145,9 @@ void MainScope::setTaskType(EadTask taskType)
 
 		updateActions();
 
-		m_chart->setTask(m_taskType);
 		emit taskTypeChanged(m_taskType);
 	}
+	m_chart->setTask(m_taskType);
 }
 
 void MainScope::setViewType(EadView viewType)
@@ -166,9 +164,9 @@ void MainScope::setViewType(EadView viewType)
 
 		updateActions();
 
-		m_chart->setView(m_file->viewInfo(m_viewType));
 		emit viewTypeChanged(m_viewType);
 	}
+	m_chart->setView(m_file->viewInfo(m_viewType));
 }
 
 void MainScope::setComment(const QString& s)
@@ -182,14 +180,14 @@ void MainScope::setComment(const QString& s)
 
 void MainScope::setPeakMode(EadPeakMode peakMode)
 {
-	m_peakMode = peakMode;
+	m_chart->setPeakMode(peakMode);
 	emit peakModeChanged(peakMode);
 }
 
 void MainScope::setPeakModeRecId(int id)
 {
-	m_nPeakModeRecId = id;
-	emit peakModeChanged(m_peakMode);
+	m_chart->setPeakModeRecId(id);
+	emit peakModeChanged(m_chart->params().peakMode);
 }
 
 void MainScope::setIsRecentFilesMenuEnabled(bool bEnabled)
@@ -215,6 +213,7 @@ void MainScope::setIsRecording(bool bRecording)
 	if (bRecording != m_bRecording)
 	{
 		m_bRecording = bRecording;
+		m_chart->setRecordingOn(m_bRecording);
 		emit isRecordingChanged(m_bRecording);
 
 		if (m_bRecording)
@@ -509,7 +508,7 @@ void MainScope::on_actions_viewChartRecording_triggered() { setViewType(EadView_
 void MainScope::on_actions_viewWaveComments_triggered()
 {
 	Globals->viewSettings()->bShowWaveComments = m_actions->viewWaveComments->isChecked();
-	emit viewSettingChanged("bShowWaveComments");
+	m_chart->redraw();
 }
 
 void MainScope::on_actions_viewHidePeaks_triggered()
@@ -665,7 +664,6 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 			view->clearWaves();
 			// Delete RecInfo/WaveInfo
 			m_file->discardNewRecording();
-			emit waveListChanged();
 		}
 
 		emit updateRecordings();

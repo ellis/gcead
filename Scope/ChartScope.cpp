@@ -27,6 +27,8 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.file = NULL;
 	m_params.view = NULL;
 	m_params.task = EadTask_Review;
+	m_params.peakMode = EadPeakMode_Verified;
+	m_params.nPeakModeRecId = 0;
 
 	m_nSampleOffset = 0;
 
@@ -44,7 +46,13 @@ void ChartScope::setFile(EadFile* file)
 {
 	if (file != m_params.file)
 	{
+		if (m_params.file != NULL)
+			disconnect(m_params.file);
+
 		m_params.file = file;
+
+		if (file != NULL)
+			connect(file, SIGNAL(waveListChanged()), this, SLOT(emitParamsChanged()));
 
 		// Zoom full if data available
 		if (file != NULL && file->recs().count() > 1)
@@ -265,6 +273,11 @@ void ChartScope::setHilight(ViewWaveInfo* vwi)
 	}
 }
 
+void ChartScope::redraw()
+{
+	emitParamsChanged();
+}
+
 const ChartPixmap* ChartScope::draw(const QSize& sz)
 {
 	if (m_params.size != sz)
@@ -272,6 +285,8 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 
 	if (m_bRedraw)
 	{
+		m_bRedraw = false;
+
 		m_params.size = sz;
 		m_params.nSampleOffset = m_nSampleOffset;
 

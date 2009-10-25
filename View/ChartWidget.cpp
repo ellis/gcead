@@ -56,13 +56,6 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 	m_mainS = mainS;
 	m_chartS = mainS->chart();
 	m_pixmap = m_chartS->pixmap();
-	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(repaintChart()));
-	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), m_lblRecording, SLOT(setVisible(bool)));
-	// FIXME: most of these will need to be changed -- ellis, 2009-10-25
-	connect(m_mainS, SIGNAL(waveListChanged()), this, SLOT(scopeChanged()));
-	connect(m_mainS, SIGNAL(peakModeChanged(EadPeakMode)), this, SLOT(scopeChanged()));
-	connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
-	connect(m_mainS, SIGNAL(viewSettingChanged(const QString&)), this, SLOT(scopeChanged()));
 
 	m_statusbar = NULL;
 	m_lblStatus = NULL;
@@ -76,6 +69,11 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 	setupWidgets();
 
 	m_timerUpdate = new QTimer(this);
+
+	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(update()));
+	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), m_lblRecording, SLOT(setVisible(bool)));
+	// FIXME: most of these will need to be changed -- ellis, 2009-10-25
+	connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
 	connect(m_timerUpdate, SIGNAL(timeout()), this, SLOT(on_timerUpdate_timeout()));
 }
 
@@ -167,20 +165,13 @@ void ChartWidget::setStatusBar(QStatusBar* statusbar)
 	}
 }
 
-void ChartWidget::repaintChart()
-{
-	m_bRedraw = true;
-	update();
-	//qDebug() << "repaintChart:" << QTime::currentTime();
-}
-
 void ChartWidget::updateRecordings()
 {
 	if (m_mainS->viewType() == EadView_Recording)
 	{
 		if (!m_timerUpdate->isActive())
 		{
-			repaintChart();
+			m_chartS->redraw();
 			// REFACTOR: adjust timing so that fewer updates are done when we're zoomed out
 			//  enough that many data samples are drawn in a single pixel
 			// Update 10 times per second
@@ -197,7 +188,7 @@ void ChartWidget::on_timerUpdate_timeout()
 	if (m_nRecordingUpdates > 0)
 	{
 		m_nRecordingUpdates = 0;
-		repaintChart();
+		m_chartS->redraw();
 	}
 	else
 	{
@@ -229,8 +220,6 @@ void ChartWidget::resizeEvent(QResizeEvent* e)
 {
 	Q_UNUSED(e);
 	
-	m_bRedraw = true;
-
 	m_rcPixmapMax = QRect(20, m_buttons->height(), width() - 35, height() - m_buttons->height() - 20);
 	QSize sz = calcPixmapSize();
 	
@@ -239,6 +228,8 @@ void ChartWidget::resizeEvent(QResizeEvent* e)
 	m_scrollbar->setGeometry(rcScroll);
 
 	m_lblRecording->move(width() - m_lblRecording->width() - 20, 5);
+
+	m_chartS->redraw();
 }
 
 void ChartWidget::paintEvent(QPaintEvent* e)
@@ -249,9 +240,8 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 
 	painter.fillRect(rect(), Qt::white);
 
-	if (m_bRedraw)
+	if (m_chartS->isRedrawRequired())
 	{
-		m_bRedraw = false;
 		/*
 		//int n = Globals->publisherSettings()->nPublisherPercentSize;
 		int nCols = 0;
@@ -508,7 +498,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			info.vwi->waveInfo()->peaksChosen[info.iLeftAreaHandle].didxLeft = i;
 			info.vwi->waveInfo()->calcPeakArea(info.iLeftAreaHandle);
 			info.vwi->waveInfo()->calcAreaPercents();
-			repaintChart();
+			m_chartS->redraw();
 		}
 		else if (info.iRightAreaHandle >= 0)
 		{
@@ -517,7 +507,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			info.vwi->waveInfo()->peaksChosen[info.iRightAreaHandle].didxRight = i;
 			info.vwi->waveInfo()->calcPeakArea(info.iRightAreaHandle);
 			info.vwi->waveInfo()->calcAreaPercents();
-			repaintChart();
+			m_chartS->redraw();
 		}
 		else if (info.iChosenPeak >= 0)
 		{
@@ -530,7 +520,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			marker.didxRight += d;
 			info.vwi->waveInfo()->calcPeakArea(info.iRightAreaHandle);
 			info.vwi->waveInfo()->calcAreaPercents();
-			repaintChart();
+			m_chartS->redraw();
 		}
 		else if (wave != NULL)
 		{
@@ -548,7 +538,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 				// Set the channel offset appropriately
 				vwi->setDivisionOffset(m_nDragOrigDivisionOffset - nOffset);
 
-				repaintChart();
+				m_chartS->redraw();
 			}
 		}
 	}

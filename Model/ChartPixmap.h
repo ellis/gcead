@@ -45,8 +45,8 @@ class WavePos;
 class ChartPixmapParams
 {
 public:
-	EadFile* file;
-	ViewInfo* view;
+	QPointer<EadFile> file;
+	QPointer<ViewInfo> view;
 	EadTask task;
 	EadPeakMode peakMode;
 	int nPeakModeRecId;

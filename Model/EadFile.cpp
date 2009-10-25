@@ -554,6 +554,8 @@ void EadFile::discardNewRecording()
 
 	ViewInfo* view = m_views[EadView_Recording];
 	view->clearWaves();
+
+	emit waveListChanged();
 }
 
 void EadFile::saveNewRecording()

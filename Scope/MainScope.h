@@ -24,8 +24,9 @@
 #include <EadEnums.h>
 #include <EadFile.h>
 
+#include "ChartScope.h"
 
-class ChartScope;
+
 class IdacProxy;
 class MainScopeUi;
 class RecordHandler;
@@ -73,11 +74,11 @@ public:
 	void setComment(const QString& s);
 
 	/// Current peak mode
-	EadPeakMode peakMode() const { return m_peakMode; }
+	EadPeakMode peakMode() const { return m_chart->params().peakMode; }
 	void setPeakMode(EadPeakMode peakMode);
 	
 	/// The rec ID for which the peak mode applies (-1 if no record is selected)
-	int peakModeRecId() const { return m_nPeakModeRecId; }
+	int peakModeRecId() const { return m_chart->params().nPeakModeRecId; }
 	void setPeakModeRecId(int id);
 
 	bool checkSaveAndContinue();
@@ -148,17 +149,15 @@ private slots:
 
 private:
 	MainScopeUi* m_ui;
-	ChartScope* m_chart;
 	IdacProxy* m_idac;
+
+	Actions* m_actions;
+	EadFile* m_file;
+	ChartScope* m_chart;
 
 	EadTask m_taskType;
 	EadView m_viewType;
-	EadPeakMode m_peakMode;
-	int m_nPeakModeRecId;
 
-	Actions* m_actions;
-
-	EadFile* m_file;
 
 	bool m_bRecentFilesMenuEnabled;
 

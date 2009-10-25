@@ -34,6 +34,8 @@ public:
 	int sampleOffset() const { return m_nSampleOffset; }
 	double secondsPerDivision() const { return m_nSecondsPerDivision; }
 
+	bool isRedrawRequired() const { return m_bRedraw; }
+
 	void setSecondsPerDivisionIndex(int i);
 	/// Set seconds per division using the minimum value @param nMin
 	bool setSecondsPerDivisionMin(double nMin);
@@ -45,6 +47,7 @@ public:
 
 	int sampleCount();
 
+	void redraw();
 	const ChartPixmap* draw(const QSize& sz);
 
 signals:
@@ -61,10 +64,8 @@ public slots:
 	void setSelectionRange(int iSampleStart, int iSampleEnd);
 	void setMousePosition(int iSample);
 
-private:
-	void emitParamsChanged();
-
 private slots:
+	void emitParamsChanged();
 	void on_view_changed(ViewChangeEvents events);
 
 private:
