@@ -290,17 +290,6 @@ void MainWindow::scope_fileChanged()
 	CHECK_PRECOND_RET(m_scope->file() != NULL);
 
 	updateReview();
-	
-	// If this is a file with data
-	EadFile* file = m_scope->file();
-	bool bHasData = (file->recs().count() > 1);
-
-	// Zoom full if data available
-	if (bHasData)
-		m_chart->zoomFull();
-	// Otherwise
-	else
-		m_chart->setSecondsPerDivisionMin(50);
 
 	scope_commentChanged();
 }

@@ -104,7 +104,7 @@ public:
 	int lastSample() const;
 
 	/// Calculate the size of the chart given the available area and number of columns
-	QSize sizeForAvailableArea(const QSize& size, int nCols);
+	QSize sizeForAvailableArea(const QSize& size, int nCols) const;
 	
 	void draw(const ChartPixmapParams& params);
 	void draw(QPaintDevice* device, const ChartPixmapParams& params);
@@ -117,12 +117,12 @@ public:
 	/// If more than one sample is drawn at x, then it returns the center
 	int xToCenterSample(const WaveInfo* wave, int x) const;
 	int sampleOffsetToX(int nSampleOffset) const;
-	ViewWaveInfo* waveToViewWaveInfo(const WaveInfo* wave);
+	ViewWaveInfo* waveToViewWaveInfo(const WaveInfo* wave) const;
 	double yToValue(const ViewWaveInfo* cwi, int y) const;
 	int valueToY(const ViewWaveInfo* cwi, double n) const;
-	void fillChartPointInfo(const QPoint& pt, ChartPointInfo* info);
+	void fillChartPointInfo(const QPoint& pt, ChartPointInfo* info) const;
 
-	WaveInfo* waveOfPeaks();
+	WaveInfo* waveOfPeaks() const;
 
 private:
 	enum ChartColor
@@ -192,7 +192,7 @@ private:
 	void drawPeakTimes(QPainter& painter, ChartWaveInfo* vwi);
 	void drawAreaLines(QPainter& painter, ChartWaveInfo* vwi);
 	void drawAreaHandles(QPainter& painter, ChartWaveInfo* vwi);
-	QRect rectOfAreaHandle(ViewWaveInfo* vwi, int didx);
+	QRect rectOfAreaHandle(ViewWaveInfo* vwi, int didx) const;
 	int calcPercentVisible(ChartWaveInfo* cwi);
 
 	/// Convert a screen coordinate to box coordinates

@@ -30,6 +30,7 @@ class QScrollBar;
 class QStatusBar;
 class QToolButton;
 
+class ChartScope;
 class EadFile;
 class MainScope;
 class ViewInfo;
@@ -45,26 +46,14 @@ public:
 
 	void setStatusBar(QStatusBar* statusbar);
 
-	EadFile* file() { return m_file; }
+	//EadFile* file() { return m_file; }
 
-	//double timebase() const;
-	QString timebaseString() const;
-	int sampleOffset() const { return m_nSampleOffset; }
-	double secondsPerDivision() const { return m_nSecondsPerDivision; }
-	const ChartPixmap* pixmap() const { return m_pixmap; }
-
-	void setSecondsPerDivisionIndex(int i);
-	/// Set seconds per division using the minimum value @param nMin
-	bool setSecondsPerDivisionMin(double nMin);
+	//const ChartPixmap* pixmap() const { return m_pixmap; }
 
 public slots:
-	void setSampleOffset(int nSampleOffset);
-	void zoomOut();
-	void zoomIn();
-	void zoomFull();
-
 	/// Force a repaint of the chart
 	void repaintChart();
+	/// Update waves in which recording is taking place
 	void updateRecordings();
 
 // Overrides for QWidget
@@ -73,7 +62,6 @@ protected:
 	void paintEvent(QPaintEvent* e);
 	void leaveEvent(QEvent* e);
 	void mousePressEvent(QMouseEvent* e);
-	//void mouseDoubleClickEvent(QMouseEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
 	void mouseMoveEvent(QMouseEvent* e);
 	void mouseDoubleClickEvent(QMouseEvent* e);
@@ -82,45 +70,22 @@ protected:
 
 private:
 	void setupWidgets();
-	void setup(EadFile* file, ViewInfo* view, EadTask task);
 
 	QSize calcPixmapSize() const;
-	int sampleCount();
-	//void updateDrawingParameters();
-	//int xToSample(int x) const;
-	//int xToMiddleSample(int x, const WaveInfo* wave) const;
-
-	/// Center the waveform display around iSample
-	void center(int iSample);
-
-	void setHilight(ViewWaveInfo* vwi);
 
 	void addPeak(ViewWaveInfo* vwi, int x);
 	void openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal);
 	void updateStatus();
 
-	/// Convert a screen coordinate to box coordinates
-	//QPoint screenToBoxPoint(const QPoint& pt) const;
-	//void mouseOverWave(const QPoint& pt, int* piWave, bool* pbPeak);
-
-//private slots:
-	//void on_globals_taskChanged(EadTask task, EadTask oldTask);
-	//void on_globals_viewChanged(EadView view, EadView oldView);
 private slots:
-	void scope_fileChanged();
-	void scopeChanged();
-	void showRecordingLabel(bool bShow);
-	void on_view_changed(ViewChangeEvents events);
 	void on_timerUpdate_timeout();
 
 private:
-	MainScope* m_scope;
+	MainScope* m_mainS;
+	ChartScope* m_chartS;
+	const ChartPixmap* m_pixmap;
 	QStatusBar* m_statusbar;
 	QLabel* m_lblStatus;
-
-	QPointer<EadFile> m_file;
-	QPointer<ViewInfo> m_view;
-	EadTask m_task;
 
 	QWidget* m_buttons;
 	QToolButton* m_btnZoomIn;
@@ -133,18 +98,7 @@ private:
 	/// Maximum area that the pixmap is allowed to use
 	QRect m_rcPixmapMax;
 	QRect m_rcPixmap;
-	ChartPixmap* m_pixmap;
 	bool m_bRedraw;
-
-	/// Scroll offset
-	int m_nSampleOffset;
-	/// Index into array of valid seconds per division settings
-	int m_iSecondsPerDivision;
-	/// Seconds per division, for convenience
-	double m_nSecondsPerDivision;
-
-	/// The currently hilighted wave
-	QPointer<ViewWaveInfo> m_vwiHilight;
 
 	/// Whether the user is currently dragging the mouse (click+drag)
 	bool m_bDragging;

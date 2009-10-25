@@ -44,6 +44,7 @@
 #include <Widgets/GroupWidget.h>
 
 #include "ChartPixmap.h"
+#include <ChartScope.h>
 #include "ChartWidget.h"
 #include "Check.h"
 #include <MainScope.h>
@@ -274,18 +275,8 @@ void TaskPublishWidget::setupChartPixmapParams(ChartPixmapParams& params, const 
 {
 	CHECK_PRECOND_RET(m_chart != NULL);
 
-	EadFile* file = m_chart->file();
-
-	params.file = file;
-	params.view = file->viewInfo(m_scope->viewType());
-	params.task = EadTask_Publish;
-	params.peakMode = m_scope->peakMode();
-	params.nPeakModeRecId = m_scope->peakModeRecId();
-	params.nCols = m_chart->pixmap()->params().nCols;
+	params = m_scope->chart()->params();
 	params.size = size;
-	params.nSampleOffset = m_chart->sampleOffset();
-	params.nSecondsPerDivision = m_chart->secondsPerDivision();
-	params.elements = Globals->publisherSettings()->publisherChartElements;
 }
 
 void TaskPublishWidget::on_chkColor_clicked()

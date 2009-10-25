@@ -33,6 +33,7 @@
 #include <WaveInfo.h>
 #include "Actions.h"
 #include "ChartPixmap.h"
+#include <ChartScope.h>
 #include "Check.h"
 #include "EadFile.h"
 #include "Globals.h"
@@ -43,44 +44,29 @@
 #include "WaveEditorDialog.h"
 
 
-// REFACTOR: duplicated in ChartWidget.cpp
-const double g_anSecondsPerDivision[] =
-{
-	0.1, 0.2, 0.3, 0.5, 0.7,
-	1, 1.5, 2, 3, 5, 7,
-	10, 15, 20, 30, 40, 50,
-	60, 90, 2*60, 3*60, 5*60, 7*60,
-	10*60, 15*60, 20*60, 30*60,
-	0 // termination value
-};
-
-
-ChartWidget::ChartWidget(MainScope* scope, QWidget* parent)
+ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 	: QWidget(parent)
 {
-	Q_ASSERT(scope != NULL);
+	Q_ASSERT(mainS != NULL);
+	Q_ASSERT(mainS->chart() != NULL);
 
 	setMouseTracking(true);
 	setFocusPolicy(Qt::StrongFocus);
 
-	m_scope = scope;
-	connect(m_scope, SIGNAL(fileChanged(EadFile*)), this, SLOT(scope_fileChanged()));
-	connect(m_scope, SIGNAL(waveListChanged()), this, SLOT(scopeChanged()));
-	connect(m_scope, SIGNAL(taskTypeChanged(EadTask)), this, SLOT(scopeChanged()));
-	connect(m_scope, SIGNAL(viewTypeChanged(EadView)), this, SLOT(scopeChanged()));
-	connect(m_scope, SIGNAL(peakModeChanged(EadPeakMode)), this, SLOT(scopeChanged()));
-	connect(m_scope, SIGNAL(isRecordingChanged(bool)), this, SLOT(showRecordingLabel(bool)));
-	connect(m_scope, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
-	connect(m_scope, SIGNAL(viewSettingChanged(const QString&)), this, SLOT(scopeChanged()));
+	m_mainS = mainS;
+	m_chartS = mainS->chart();
+	m_pixmap = m_chartS->pixmap();
+	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(repaintChart()));
+	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), m_lblRecording, SLOT(setVisible(bool)));
+	// FIXME: most of these will need to be changed -- ellis, 2009-10-25
+	connect(m_mainS, SIGNAL(waveListChanged()), this, SLOT(scopeChanged()));
+	connect(m_mainS, SIGNAL(peakModeChanged(EadPeakMode)), this, SLOT(scopeChanged()));
+	connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
+	connect(m_mainS, SIGNAL(viewSettingChanged(const QString&)), this, SLOT(scopeChanged()));
 
 	m_statusbar = NULL;
 	m_lblStatus = NULL;
 
-	m_view = NULL;
-	m_task = EadTask_Review;
-
-	m_pixmap = new ChartPixmap();
-	m_nSampleOffset = 0;
 	m_bDragging = false;
 	m_bSelecting = false;
 
@@ -89,15 +75,12 @@ ChartWidget::ChartWidget(MainScope* scope, QWidget* parent)
 
 	setupWidgets();
 
-	setSecondsPerDivisionIndex(16); // 50s/div
-
 	m_timerUpdate = new QTimer(this);
 	connect(m_timerUpdate, SIGNAL(timeout()), this, SLOT(on_timerUpdate_timeout()));
 }
 
 ChartWidget::~ChartWidget()
 {
-	delete m_pixmap;
 }
 
 void ChartWidget::setupWidgets()
@@ -116,25 +99,22 @@ void ChartWidget::setupWidgets()
 	QToolButton* tbtn;
 
 	tbtn = new QToolButton;
-	tbtn->setDefaultAction(m_scope->actions()->viewZoomIn);
+	tbtn->setDefaultAction(m_mainS->actions()->viewZoomIn);
 	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	// REFACTOR: the zoom functions should perhaps be handled in MainScope
-	connect(m_scope->actions()->viewZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
 	m_btnZoomIn = tbtn;
 
 	tbtn = new QToolButton;
-	tbtn->setDefaultAction(m_scope->actions()->viewZoomOut);
+	tbtn->setDefaultAction(m_mainS->actions()->viewZoomOut);
 	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	connect(m_scope->actions()->viewZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
 	m_btnZoomOut = tbtn;
 
 	tbtn = new QToolButton;
-	tbtn->setDefaultAction(m_scope->actions()->viewZoomFull);
+	tbtn->setDefaultAction(m_mainS->actions()->viewZoomFull);
 	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	connect(m_scope->actions()->viewZoomFull, SIGNAL(triggered()), this, SLOT(zoomFull()));
+	connect(m_mainS->actions()->viewZoomFull, SIGNAL(triggered()), this, SLOT(zoomFull()));
 	tblayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 	m_btnZoomFull = tbtn;
 
@@ -149,9 +129,9 @@ void ChartWidget::setupWidgets()
 
 	// Set fixed size for m_lblSecondsPerDivision
 	int nWidth = 0;
-	for (int i = 0; g_anSecondsPerDivision[i] > 0; i++)
+	for (int i = 0; ChartScope::anSecondsPerDivision[i] > 0; i++)
 	{
-		QString s = timestampString(g_anSecondsPerDivision[i]);
+		QString s = timestampString(ChartScope::anSecondsPerDivision[i]);
 		nWidth = qMax(nWidth, m_lblSecondsPerDivision->fontMetrics().width(s));
 	}
 	m_lblSecondsPerDivision->setMinimumWidth(nWidth);
@@ -183,172 +163,8 @@ void ChartWidget::setStatusBar(QStatusBar* statusbar)
 	{
 		m_lblStatus = new QLabel();
 		m_statusbar->insertPermanentWidget(0, m_lblStatus);
+		connect(m_chartS, SIGNAL(statusTextChanged(QString)), m_lblStatus, SLOT(setText(QString)));
 	}
-}
-
-void ChartWidget::scope_fileChanged()
-{
-	CHECK_PRECOND_RET(m_scope != NULL);
-	CHECK_PRECOND_RET(m_scope->file() != NULL);
-
-	scopeChanged();
-
-	// Zoom full if data available
-	bool bHasData = (m_scope->file()->recs().count() > 1);
-	if (bHasData)
-		zoomFull();
-	// Otherwise
-	else
-		setSecondsPerDivisionMin(50);
-}
-
-void ChartWidget::scopeChanged()
-{
-	CHECK_PRECOND_RET(m_scope != NULL);
-	CHECK_PRECOND_RET(m_scope->file() != NULL);
-
-	EadFile* file = m_scope->file();
-	setup(file, file->viewInfo(m_scope->viewType()), m_scope->taskType());
-}
-
-void ChartWidget::setup(EadFile* file, ViewInfo* view, EadTask task)
-{
-	if (m_view != NULL)
-	{
-		m_view->disconnect(this);
-	}
-
-	m_file = file;
-	m_view = view;
-	m_task = task;
-
-	if (m_view != NULL)
-	{
-		connect(m_view, SIGNAL(changed(ViewChangeEvents)), this, SLOT(on_view_changed(ViewChangeEvents)));
-	}
-
-	repaintChart();
-}
-
-/*
-double ChartWidget::timebase() const
-{
-	return g_anSecondsPerDivision[m_iSecondsPerDivision];
-}
-*/
-
-QString ChartWidget::timebaseString() const
-{
-	return timestampString(m_nSecondsPerDivision);
-}
-
-void ChartWidget::setSampleOffset(int nSampleOffset)
-{
-	m_nSampleOffset = nSampleOffset;
-	repaintChart();
-}
-
-void ChartWidget::setSecondsPerDivisionIndex(int i)
-{
-	if (i >= 0 && g_anSecondsPerDivision[i] > 0)
-	{
-		m_iSecondsPerDivision = i;
-		m_nSecondsPerDivision = g_anSecondsPerDivision[i];
-		repaintChart();
-		m_lblSecondsPerDivision->setText(timebaseString());
-	}
-	updateStatus();
-}
-
-bool ChartWidget::setSecondsPerDivisionMin(double nMin)
-{
-	// Find next larger valid value:
-	for (int i = 0; g_anSecondsPerDivision[i] > 0; i++)
-	{
-		if (g_anSecondsPerDivision[i] >= nMin)
-		{
-			setSecondsPerDivisionIndex(i);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void ChartWidget::showRecordingLabel(bool bShow)
-{
-	m_lblRecording->setVisible(bShow);
-	// HACK: This is done because sometime when we [Discard] a recording and then [Record] a new one,
-	// we might get the same WaveInfo address allocated to us again, which would make ChartPixmap think
-	// that it could still use the old RenderData. -- ellis, 2008-06-23
-	m_pixmap->clearRenderData();
-}
-
-int ChartWidget::sampleCount()
-{
-	int nSamples = 0;
-
-	// First look in the current view
-	if (m_view != NULL)
-	{
-		foreach (ViewWaveInfo* vwi, m_view->vwis())
-		{
-			const WaveInfo* wave = vwi->wave();
-			int n = wave->display.size() + wave->shift();
-			if (n > nSamples)
-				nSamples = n;
-		}
-	}
-	// If the current view is empty, look in the whole file
-	if (nSamples == 0 && m_file != NULL)
-	{
-		foreach (RecInfo* rec, m_file->recs())
-		{
-			foreach (const WaveInfo* wave, rec->waves())
-			{
-				int n = wave->display.size() + wave->shift();
-				if (n > nSamples)
-					nSamples = n;
-			}
-		}
-	}
-
-	return nSamples;
-}
-
-void ChartWidget::zoomOut()
-{
-	int iSample = m_pixmap->centerSample();
-
-	setSecondsPerDivisionIndex(m_iSecondsPerDivision + 1);
-	center(iSample);
-
-	repaintChart();
-}
-
-void ChartWidget::zoomIn()
-{
-	if (m_iSecondsPerDivision > 0)
-	{
-		int iSample = m_pixmap->centerSample();
-
-		setSecondsPerDivisionIndex(m_iSecondsPerDivision - 1);
-
-		if (iSample < sampleCount())
-			center(iSample);
-	}
-}
-
-void ChartWidget::zoomFull()
-{
-	double nSamples = sampleCount();
-	double nSeconds = nSamples / EAD_SAMPLES_PER_SECOND;
-	double nSecondsPerDivision = nSeconds / m_pixmap->params().nCols;
-	setSecondsPerDivisionMin(nSecondsPerDivision);
-
-	setSampleOffset(0);
-
-	repaintChart();
 }
 
 void ChartWidget::repaintChart()
@@ -360,7 +176,7 @@ void ChartWidget::repaintChart()
 
 void ChartWidget::updateRecordings()
 {
-	if (m_scope->viewType() == EadView_Recording)
+	if (m_mainS->viewType() == EadView_Recording)
 	{
 		if (!m_timerUpdate->isActive())
 		{
@@ -374,14 +190,6 @@ void ChartWidget::updateRecordings()
 		else
 			m_nRecordingUpdates++;
 	}
-}
-
-void ChartWidget::on_view_changed(ViewChangeEvents events)
-{
-	if ((events & ViewChangeEvent_Render) != 0)
-		m_pixmap->clearRenderData();
-	
-	repaintChart();
 }
 
 void ChartWidget::on_timerUpdate_timeout()
@@ -403,7 +211,7 @@ QSize ChartWidget::calcPixmapSize() const
 
 	QSize sz = m_rcPixmapMax.size();
 	int nCols = 0;
-	if (m_task == EadTask_Publish)
+	if (m_mainS->taskType() == EadTask_Publish)
 	{
 		if (Globals->publisherSettings()->bPublishCols)
 			nCols = Globals->publisherSettings()->nPublishCols;
@@ -444,27 +252,28 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 	if (m_bRedraw)
 	{
 		m_bRedraw = false;
+		/*
 		//int n = Globals->publisherSettings()->nPublisherPercentSize;
 		int nCols = 0;
 		QSize sz = calcPixmapSize();
-		if (m_task == EadTask_Publish)
+		if (m_mainS->taskType() == EadTask_Publish)
 		{
 			if (Globals->publisherSettings()->bPublishCols)
 				nCols = Globals->publisherSettings()->nPublishCols;
 		}
 		
 		PublisherSettings* pub = Globals->publisherSettings();
-		bool bOverrideTimebase = (m_task == EadTask_Publish && pub->bPublishTimebase);
+		bool bOverrideTimebase = (m_mainS->taskType() == EadTask_Publish && pub->bPublishTimebase);
 
 		ChartPixmapParams params;
-		params.file = m_file;
-		params.view = m_view;
-		params.task = m_task;
-		params.peakMode = m_scope->peakMode();
+		params.file = m_chartS->file();
+		params.view = m_chartS->view();
+		params.task = m_mainS->taskType();
+		params.peakMode = m_mainS->peakMode();
 		params.nPeakModeRecId = m_scope->peakModeRecId();
 		params.nCols = nCols;
 		params.size = sz;
-		params.nSampleOffset = m_nSampleOffset;
+		params.nSampleOffset = m_chartS->sampleOffset();
 		params.vwiHilight = m_vwiHilight;
 		if (m_task == EadTask_Publish)
 		{
@@ -479,33 +288,35 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 		if (bOverrideTimebase)
 		{
 			params.nSecondsPerDivision = pub->nPublishTimebase * 60;
-			m_nSecondsPerDivision = params.nSecondsPerDivision;
+			m_chartS->secondsPerDivision() = params.nSecondsPerDivision;
 		}
 		else
 		{
-			m_nSecondsPerDivision = g_anSecondsPerDivision[m_iSecondsPerDivision];
+			m_chartS->secondsPerDivision() = ChartScope::anSecondsPerDivision[m_iSecondsPerDivision];
 		}
-		params.nSecondsPerDivision = m_nSecondsPerDivision;
+		params.nSecondsPerDivision = m_chartS->secondsPerDivision();
 		m_pixmap->draw(params);
 
 		m_btnZoomIn->setEnabled(!bOverrideTimebase);
 		m_btnZoomOut->setEnabled(!bOverrideTimebase);
 		m_btnZoomFull->setEnabled(!bOverrideTimebase);
 		m_lblSecondsPerDivision->setText(timebaseString());
+		*/
+		QSize sz = calcPixmapSize();
+		m_chartS->draw(sz);
 
-
-		int nSamplesPerPage = int(m_nSecondsPerDivision * EAD_SAMPLES_PER_SECOND * m_pixmap->params().nCols);
+		int nSamplesPerPage = int(m_chartS->secondsPerDivision() * EAD_SAMPLES_PER_SECOND * m_pixmap->params().nCols);
 		m_scrollbar->setPageStep(nSamplesPerPage);
 		m_scrollbar->setSingleStep(nSamplesPerPage / m_pixmap->params().nCols);
 
 		// Total number of samples in the dataset
-		int nSamples = sampleCount();
+		int nSamples = m_chartS->sampleCount();
 
 		int nMaxScroll = nSamples - nSamplesPerPage;
 		if (nMaxScroll < 0)
-			nMaxScroll = m_nSampleOffset;
+			nMaxScroll = m_chartS->sampleOffset();
 		m_scrollbar->setMaximum(nMaxScroll);
-		m_scrollbar->setValue(m_nSampleOffset);
+		m_scrollbar->setValue(m_chartS->sampleOffset());
 
 		QRect rcScroll(m_rcPixmapMax.left(), m_rcPixmapMax.top() + sz.height(), sz.width(), 20);
 		if (rcScroll != m_scrollbar->geometry())
@@ -533,61 +344,10 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 	}
 }
 
-/*
-void ChartWidget::paintAreaHandles(QPainter& painter, ViewWaveInfo* vwi)
-{
-	painter.setPen(QColor(0, 50, 255));
-
-	// Draw stuff
-	foreach (WavePeakInfo peak, vwi->wave()->peaksChosen)
-	{
-		{
-			int i = peak.left.i + vwi->shift();
-			int x = sampleOffsetToX(i);
-			int y = valueToY(vwi, peak.left.n);
-
-			QRect rcStart(x - 5, y - 5, 11, 11);
-			QColor clr(0, 50, 255, 80);
-			painter.drawRect(rcStart);
-			painter.fillRect(rcStart, clr);
-		}
-
-		{
-			int i = peak.right.i + vwi->shift();
-			int x = sampleOffsetToX(i);
-			int y = valueToY(vwi, peak.right.n);
-
-			QRect rcStart(x - 5, y - 5, 11, 11);
-			QColor clr(0, 50, 255, 80);
-			painter.drawRect(rcStart);
-			painter.fillRect(rcStart, clr);
-		}
-	}
-
-	painter.setPen(Qt::black);
-}
-*/
-
-void ChartWidget::center(int iSample)
-{
-	int nSamplesToCenter = int(m_nSecondsPerDivision * m_pixmap->params().nCols * EAD_SAMPLES_PER_SECOND / 2);
-	int n = qMax(iSample - nSamplesToCenter, 0);
-	setSampleOffset(n);
-}
-
-void ChartWidget::setHilight(ViewWaveInfo* vwi)
-{
-	if (m_vwiHilight != vwi)
-	{
-		m_vwiHilight = vwi;
-		repaintChart();
-	}
-}
-
 void ChartWidget::leaveEvent(QEvent* e)
 {
 	Q_UNUSED(e);
-	setHilight(NULL);
+	m_chartS->setHilight(NULL);
 }
 
 void ChartWidget::mousePressEvent(QMouseEvent* e)
@@ -631,7 +391,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 		else if (wave != NULL)
 		{
 			// If the user Ctrl+clicks on the selected FID wave while in peak editing mode:
-			if (e->modifiers() == Qt::ControlModifier && m_scope->peakMode() == EadPeakMode_Edit && wave->recId() == m_scope->peakModeRecId())
+			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadPeakMode_Edit && wave->recId() == m_chartS->params().nPeakModeRecId)
 			{
 				addPeak(vwi, m_ptClickPixmap.x());
 			}
@@ -702,8 +462,8 @@ void ChartWidget::mouseReleaseEvent(QMouseEvent* e)
 				
 				// New seconds per division
 				double nSecondsPerDivision = nSeconds / 10;
-				setSecondsPerDivisionMin(nSecondsPerDivision);
-				center(iSampleCenter);
+				m_chartS->setSecondsPerDivisionMin(nSecondsPerDivision);
+				m_chartS->center(iSampleCenter);
 			}
 
 			update();
@@ -774,7 +534,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		}
 		else if (wave != NULL)
 		{
-			if (e->modifiers() == Qt::ControlModifier && m_scope->peakMode() == EadPeakMode_Edit && wave == m_pixmap->waveOfPeaks())
+			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadPeakMode_Edit && wave == m_pixmap->waveOfPeaks())
 			{
 				setCursor(Qt::PointingHandCursor);
 			}
@@ -797,7 +557,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		ChartPointInfo info;
 		QPoint ptPixmap = e->pos() - m_rcPixmap.topLeft();
 		m_pixmap->fillChartPointInfo(ptPixmap, &info);
-		setHilight(info.vwi);
+		m_chartS->setHilight(info.vwi);
 		
 		if (info.didxPossiblePeak >= 0 || info.iChosenPeak >= 0 || info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
 		{
@@ -807,7 +567,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		{
 			Qt::CursorShape shape = Qt::OpenHandCursor;
 
-			if (e->modifiers() == Qt::ControlModifier && m_scope->peakMode() == EadPeakMode_Edit && info.vwi->wave() == m_pixmap->waveOfPeaks())
+			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadPeakMode_Edit && info.vwi->wave() == m_pixmap->waveOfPeaks())
 				shape = Qt::PointingHandCursor;
 
 			setCursor(shape);
@@ -878,7 +638,7 @@ void ChartWidget::wheelEvent(QWheelEvent* e)
 {
 	// Each 'click' of the scroll wheel produces a delta of 120
 	int nDivs = e->delta() / 120;
-	int nSamples = -nDivs * m_nSecondsPerDivision * EAD_SAMPLES_PER_SECOND;
+	int nSamples = -nDivs * m_chartS->secondsPerDivision() * EAD_SAMPLES_PER_SECOND;
 	int i = m_scrollbar->value() + nSamples;
 	if (i < 0)
 		i = 0;
@@ -940,9 +700,9 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		}
 		else if (rcWaveforms.contains(e->pos()))
 		{
-			menu.addAction(m_scope->actions()->viewZoomIn);
-			menu.addAction(m_scope->actions()->viewZoomOut);
-			menu.addAction(m_scope->actions()->viewZoomFull);
+			menu.addAction(m_mainS->actions()->viewZoomIn);
+			menu.addAction(m_mainS->actions()->viewZoomOut);
+			menu.addAction(m_mainS->actions()->viewZoomFull);
 		}
 		else
 		{
@@ -1000,44 +760,23 @@ void ChartWidget::openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal
 	editor.exec();
 }
 
-static int calcPrecision(double nMinutes)
-{
-	int nPrecision;
-	if (nMinutes >= 1)
-		nPrecision = 1;
-	else if (nMinutes >= 0.1)
-		nPrecision = 2;
-	else
-		nPrecision = 3;
-	return nPrecision;
-}
-
 void ChartWidget::updateStatus()
 {
 	if (m_statusbar == NULL)
 		return;
 
+	const ChartPixmap* pixmap = m_chartS->pixmap();
+
 	QString s;
 	if (m_bDragging && m_bSelecting)
 	{
-		// REFACTOR: Duplicate code
-		int iSampleStart = m_pixmap->xToSampleOffset(m_ptClickPixmap.x());
-		int iSampleEnd = m_pixmap->xToSampleOffset(m_ptMousePixmap.x());
-		int nSamples = qAbs(iSampleEnd - iSampleStart);
-		
-		double nMinutes0 = double(iSampleStart) / (EAD_SAMPLES_PER_SECOND * 60);
-		double nMinutes1 = double(iSampleEnd) / (EAD_SAMPLES_PER_SECOND * 60);
-		double nMinutes = double(nSamples) / (EAD_SAMPLES_PER_SECOND * 60);
-		
-		int nPrecision = calcPrecision(nMinutes / 10);
-		s = tr("Selecting: %0 to %1").arg(nMinutes0, 0, 'f', nPrecision).arg(nMinutes1, 0, 'f', nPrecision);;
+		int iSampleStart = pixmap->xToSampleOffset(m_ptClickPixmap.x());
+		int iSampleEnd = pixmap->xToSampleOffset(m_ptMousePixmap.x());
+		m_chartS->setSelectionRange(iSampleStart, iSampleEnd);
 	}
 	else
 	{
-		int iSample = m_pixmap->xToSampleOffset(m_ptMousePixmap.x());
-		double nMinutes = double(iSample) / (EAD_SAMPLES_PER_SECOND * 60);
-		int nPrecision = calcPrecision(m_nSecondsPerDivision / 60);
-		s = tr("Pos: %0").arg(nMinutes, 0, 'f', nPrecision);
+		int iSample = pixmap->xToSampleOffset(m_ptMousePixmap.x());
+		m_chartS->setMousePosition(iSample);
 	}
-	m_lblStatus->setText(s);
 }

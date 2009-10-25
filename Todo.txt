@@ -6,26 +6,27 @@ x	shortcuts for zoom in/out
 x	View menu: add actions for switching the view type
 x	View menu: zoom in/out/full
 x	Let user scroll chart with the mouse wheel
+	ChartWidget:
+		BUG: for an FID marker, don't let user move peak region outside of where the marker was set
+		right-click menu:
+		x	implement Settings
+			should "Add time Marker" should be disabled if not in edit mode?
+			"Add Peak Marker" should be disabled if not in edit mode
+		Add the vertical marker line to the area that is detected as part of the marker, not just the text
+		Detect mouse-over-marker even when not in edit mode
+		BUG: turning off verified peaks in publish mode doesn't work
+		click-and-scroll with the scroll wheel to drag the timeline
+		display of standard deviation around average
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
 	View menu: scroll -> scroll page right/left, scroll division left/right
-	right-click menu:
-	x	implement Settings
-		should "Add time Marker" should be disabled if not in edit mode?
-		"Add Peak Marker" should be disabled if not in edit mode
 	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 	in publish mode: checkboxes for time/?? not saved between sessions, off by default
 	import of Autospike-CSV files and old EAG files
-	display of standard deviation around average
 	Add tooltips to the Peak buttons in the toolbar
-	Add the vertical marker line to the area that is detected as part of the marker, not just the text
-	Detect mouse-over-marker even when not in edit mode
 	Add more instructions about markers
 		Click on "Add"
 		CTRL-Click or Right-Click
 	File comment dialog needs to be wider, and it should be multiline
-	BUG: turning off verified peaks in publish mode doesn't work
-	click-and-scroll with the scroll wheel
 
 	INSTALLER:
 		MAC:

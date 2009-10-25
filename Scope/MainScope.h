@@ -25,6 +25,7 @@
 #include <EadFile.h>
 
 
+class ChartScope;
 class IdacProxy;
 class MainScopeUi;
 class RecordHandler;
@@ -62,6 +63,8 @@ public:
 	
 	EadFile* file() { return m_file; }
 	void setFile(EadFile* file);
+
+	ChartScope* chart() { return m_chart; }
 
 	bool isRecentFilesMenuEnabled() const { return m_bRecentFilesMenuEnabled; }
 
@@ -145,6 +148,7 @@ private slots:
 
 private:
 	MainScopeUi* m_ui;
+	ChartScope* m_chart;
 	IdacProxy* m_idac;
 
 	EadTask m_taskType;

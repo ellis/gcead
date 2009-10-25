@@ -84,12 +84,12 @@ ChartPixmap::Params::Params(const ChartPixmapParams& user)
 		nXToIndexFactor = 0;
 }
 
-WaveInfo* ChartPixmap::waveOfPeaks()
+WaveInfo* ChartPixmap::waveOfPeaks() const
 {
 	return m_wavePeaks;
 }
 
-QSize ChartPixmap::sizeForAvailableArea(const QSize& size, int nCols)
+QSize ChartPixmap::sizeForAvailableArea(const QSize& size, int nCols) const
 {
 	ChartPixmapParams params = m_params;
 	params.size = size;
@@ -249,7 +249,7 @@ void ChartPixmap::updateDrawingParameters()
 	m_view = m_params.view;
 }
 
-ViewWaveInfo* ChartPixmap::waveToViewWaveInfo(const WaveInfo* wave)
+ViewWaveInfo* ChartPixmap::waveToViewWaveInfo(const WaveInfo* wave) const
 {
 	foreach (ViewWaveInfo* vwi, m_view->allVwis())
 	{
@@ -766,7 +766,8 @@ void ChartPixmap::drawPeakTimes(QPainter& painter, ChartWaveInfo* cwi)
 		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, sTime, &rcTime);
 		rcTime.adjust(-3, -3, 3, 3);
 
-		cwi->arcPeaksChosen << QPair<QRect, int>(rcTime, info.didxMiddle);
+		cwi->arcPeaksChosen << QPair<QRect, int>(rcTime, iPeak);
+		cwi->arcPeaksChosen << QPair<QRect, int>(QRect(x - 2, y - 10, 5, 11), iPeak);
 	}
 }
 
@@ -831,7 +832,7 @@ void ChartPixmap::drawAreaHandles(QPainter& painter, ChartWaveInfo* cwi)
 	painter.setPen(penOld);
 }
 
-QRect ChartPixmap::rectOfAreaHandle(ViewWaveInfo* vwi, int didx)
+QRect ChartPixmap::rectOfAreaHandle(ViewWaveInfo* vwi, int didx) const
 {
 	double n = vwi->wave()->display.at(didx);
 	int i = didx + vwi->shift();
@@ -910,7 +911,7 @@ int ChartPixmap::lastSample() const
 	return m_params.nSampleOffset + int(m_params.nSecondsPerDivision * EAD_SAMPLES_PER_SECOND * p.nCols) - 1;
 }
 
-void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* info)
+void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* info) const
 {
 	CHECK_PRECOND_RET(info != NULL);
 
@@ -926,20 +927,24 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 	if (xCenter < 0 || yCenter < 0 || ptPixmap.x() > p.rcBorder.right() || ptPixmap.y() > p.rcBorder.bottom())
 		return;
 
-	bool bPeaks = (m_params.task == EadTask_Review && m_params.peakMode == EadPeakMode_Edit);
+	//bool bPeaks = (m_params.task == EadTask_Review && m_params.peakMode == EadPeakMode_Edit);
 
-	if (bPeaks)
+	//if (bPeaks)
 	{
 		// Check whether mouse is over a CHOSEN peak label
 		foreach (ChartWaveInfo* cwi, m_cwis)
 		{
-			for (int iRect = 0; iRect < cwi->arcPeaksChosen.size(); iRect++)
+			typedef QPair<QRect, int> Pair;
+			foreach (const Pair& pair, cwi->arcPeaksChosen)
+			//for (int iRect = 0; iRect < cwi->arcPeaksChosen.size(); iRect++)
 			{
-				QRect rc = cwi->arcPeaksChosen[iRect].first;
+				//QRect rc = cwi->arcPeaksChosen[iRect].first;
+				const QRect& rc = pair.first;
 				if (rc.contains(ptPixmap))
 				{
-					int didx = cwi->arcPeaksChosen[iRect].second;
-					info->iChosenPeak = cwi->vwi->wave()->indexOfChosenPeakAtDidx(didx);
+					//int didx = cwi->arcPeaksChosen[iRect].second;
+					//info->iChosenPeak = cwi->vwi->wave()->indexOfChosenPeakAtDidx(didx);
+					info->iChosenPeak = pair.second;
 					info->vwi = cwi->vwi;
 					return;
 				}
@@ -1040,7 +1045,8 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 		info->vwi = vwiWave;
 
 		// Check whether we're over an area handle
-		if (bPeaks)
+		bool bPeakEdit = (m_params.task == EadTask_Review && m_params.peakMode == EadPeakMode_Edit);
+		if (bPeakEdit)
 		{
 			const WaveInfo* wave = vwiWave->wave();
 			for (int iPeak = 0; iPeak < wave->peaksChosen.size(); iPeak++)

@@ -23,14 +23,17 @@
 #include <QSettings>
 #include <QTimer>
 
+#include <Idac/IdacProxy.h>
+#include <IdacDriver/IdacSettings.h>
+
 #include "AppDefines.h"
 #include "Check.h"
 #include "Globals.h"
 #include "MainScopeUi.h"
 #include "RecordHandler.h"
 #include "ViewSettings.h"
-#include <Idac/IdacProxy.h>
-#include <IdacDriver/IdacSettings.h>
+
+#include "ChartScope.h"
 
 
 MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
@@ -121,6 +124,7 @@ void MainScope::setFile(EadFile* file)
 			connect(m_file, SIGNAL(waveListChanged()), this, SIGNAL(waveListChanged()));
 		}
 
+		m_chart->setFile(m_file);
 		emit fileChanged(m_file);
 
 		updateWindowTitle();
@@ -143,6 +147,7 @@ void MainScope::setTaskType(EadTask taskType)
 
 		updateActions();
 
+		m_chart->setTask(m_taskType);
 		emit taskTypeChanged(m_taskType);
 	}
 }
@@ -160,6 +165,8 @@ void MainScope::setViewType(EadView viewType)
 		m_actions->viewChartRecording->setChecked(m_viewType == EadView_Recording);
 
 		updateActions();
+
+		m_chart->setView(m_file->viewInfo(m_viewType));
 		emit viewTypeChanged(m_viewType);
 	}
 }
