@@ -77,6 +77,9 @@ private:
 
 private slots:
 	void on_timerUpdate_timeout();
+	void on_scope_scrollMaxChanged(int i);
+	void on_scope_scrollPageStepChanged(int n);
+	void on_scope_scrollSingleStepChanged(int n);
 
 private:
 	MainScope* m_mainS;

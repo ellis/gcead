@@ -55,14 +55,27 @@ signals:
 	void timebaseChanged();
 	void statusTextChanged(const QString& s);
 	void recordingLabelVisibleChanged(bool bVisible);
+	void scrollMaxChanged(int iScrollMax);
+	void scrollPageStepChanged(int nScrollPageStep);
+	void scrollSingleStepChanged(int nScrollSingleStep);
+	void scrollValueChanged(int iScrollValue);
 
 public slots:
 	void setSampleOffset(int nSampleOffset);
 	void zoomOut();
 	void zoomIn();
 	void zoomFull();
+	void scroll(int nSamplesDiff);
+	void scrollDivs(int nDivs);
+	void scrollDivLeft();
+	void scrollDivRight();
+	void scrollPageLeft();
+	void scrollPageRight();
 	void setSelectionRange(int iSampleStart, int iSampleEnd);
 	void setMousePosition(int iSample);
+
+private:
+	void updateScrollbar();
 
 private slots:
 	void emitParamsChanged();
@@ -84,6 +97,11 @@ private:
 	int m_iSecondsPerDivision;
 	/// Seconds per division, for convenience
 	double m_nSecondsPerDivision;
+
+	int m_iScrollMax;
+	int m_nScrollPageStep;
+	int m_nScrollSingleStep;
+	int m_iScrollValue;
 };
 
 #endif // CHARTSCOPE_H

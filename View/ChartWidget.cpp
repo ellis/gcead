@@ -112,7 +112,6 @@ void ChartWidget::setupWidgets()
 	tbtn->setDefaultAction(m_mainS->actions()->viewZoomFull);
 	tbtn->setFocusPolicy(Qt::NoFocus);
 	tblayout->addWidget(tbtn);
-	connect(m_mainS->actions()->viewZoomFull, SIGNAL(triggered()), this, SLOT(zoomFull()));
 	tblayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 	m_btnZoomFull = tbtn;
 
@@ -120,7 +119,11 @@ void ChartWidget::setupWidgets()
 
 	m_scrollbar = new QScrollBar(Qt::Horizontal, this);
 	m_scrollbar->setSingleStep(EAD_SAMPLES_PER_SECOND);
-	connect(m_scrollbar, SIGNAL(valueChanged(int)), this, SLOT(setSampleOffset(int)));
+	connect(m_chartS, SIGNAL(scrollMaxChanged(int)), this, SLOT(on_scope_scrollMaxChanged(int)));
+	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
+	connect(m_chartS, SIGNAL(scrollSingleStepChanged(int)), this, SLOT(on_scope_scrollSingleStepChanged(int)));
+	connect(m_chartS, SIGNAL(scrollValueChanged(int)), m_scrollbar, SLOT(setValue(int)));
+	connect(m_scrollbar, SIGNAL(valueChanged(int)), m_chartS, SLOT(setSampleOffset(int)));
 
 	m_buttons->setCursor(Qt::ArrowCursor);
 	m_scrollbar->setCursor(Qt::ArrowCursor);
@@ -195,6 +198,10 @@ void ChartWidget::on_timerUpdate_timeout()
 		m_timerUpdate->stop();
 	}
 }
+
+void ChartWidget::on_scope_scrollMaxChanged(int i) { m_scrollbar->setMaximum(i); }
+void ChartWidget::on_scope_scrollPageStepChanged(int n) { m_scrollbar->setPageStep(n); }
+void ChartWidget::on_scope_scrollSingleStepChanged(int n) { m_scrollbar->setSingleStep(n); }
 
 QSize ChartWidget::calcPixmapSize() const
 {
@@ -295,7 +302,7 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 		QSize sz = calcPixmapSize();
 		m_chartS->draw(sz);
 
-		int nSamplesPerPage = int(m_chartS->secondsPerDivision() * EAD_SAMPLES_PER_SECOND * m_pixmap->params().nCols);
+		/*int nSamplesPerPage = int(m_chartS->secondsPerDivision() * EAD_SAMPLES_PER_SECOND * m_pixmap->params().nCols);
 		m_scrollbar->setPageStep(nSamplesPerPage);
 		m_scrollbar->setSingleStep(nSamplesPerPage / m_pixmap->params().nCols);
 
@@ -307,6 +314,7 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 			nMaxScroll = m_chartS->sampleOffset();
 		m_scrollbar->setMaximum(nMaxScroll);
 		m_scrollbar->setValue(m_chartS->sampleOffset());
+		*/
 
 		QRect rcScroll(m_rcPixmapMax.left(), m_rcPixmapMax.top() + sz.height(), sz.width(), 20);
 		if (rcScroll != m_scrollbar->geometry())
@@ -628,11 +636,7 @@ void ChartWidget::wheelEvent(QWheelEvent* e)
 {
 	// Each 'click' of the scroll wheel produces a delta of 120
 	int nDivs = e->delta() / 120;
-	int nSamples = -nDivs * m_chartS->secondsPerDivision() * EAD_SAMPLES_PER_SECOND;
-	int i = m_scrollbar->value() + nSamples;
-	if (i < 0)
-		i = 0;
-	m_scrollbar->setValue(i);
+	m_chartS->scrollDivs(-nDivs);
 }
 
 void ChartWidget::contextMenuEvent(QContextMenuEvent* e)

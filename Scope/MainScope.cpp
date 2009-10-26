@@ -89,6 +89,13 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->viewChartFids, SIGNAL(triggered()), this, SLOT(on_actions_viewChartFids_triggered()));
 	connect(m_actions->viewChartAll, SIGNAL(triggered()), this, SLOT(on_actions_viewChartAll_triggered()));
 	connect(m_actions->viewChartRecording, SIGNAL(triggered()), this, SLOT(on_actions_viewChartRecording_triggered()));
+	connect(m_actions->viewZoomIn, SIGNAL(triggered()), m_chart, SLOT(zoomIn()));
+	connect(m_actions->viewZoomOut, SIGNAL(triggered()), m_chart, SLOT(zoomOut()));
+	connect(m_actions->viewZoomFull, SIGNAL(triggered()), m_chart, SLOT(zoomFull()));
+	connect(m_actions->viewScrollDivLeft, SIGNAL(triggered()), m_chart, SLOT(scrollDivLeft()));
+	connect(m_actions->viewScrollDivRight, SIGNAL(triggered()), m_chart, SLOT(scrollDivRight()));
+	connect(m_actions->viewScrollPageLeft, SIGNAL(triggered()), m_chart, SLOT(scrollPageLeft()));
+	connect(m_actions->viewScrollPageRight, SIGNAL(triggered()), m_chart, SLOT(scrollPageRight()));
 	connect(m_actions->viewWaveComments, SIGNAL(triggered()), this, SLOT(on_actions_viewWaveComments_triggered()));
 	connect(m_actions->viewHidePeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewHidePeaks_triggered()));
 	connect(m_actions->viewDetectedPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewDetectedPeaks_triggered()));

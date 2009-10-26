@@ -229,6 +229,22 @@ void ChartScope::zoomFull()
 	emitParamsChanged();
 }
 
+void ChartScope::scroll(int nSamplesDiff)
+{
+	int i = m_params.nSampleOffset + nSamplesDiff;
+	if (i > m_iScrollMax)
+		i = m_iScrollMax;
+	if (i < 0)
+		i = 0;
+	setSampleOffset(i);
+}
+
+void ChartScope::scrollDivs(int nDivs) { scroll(nDivs * m_nScrollSingleStep); }
+void ChartScope::scrollDivLeft() { scroll(-m_nScrollSingleStep); }
+void ChartScope::scrollDivRight() { scroll(m_nScrollSingleStep); }
+void ChartScope::scrollPageLeft() { scroll(-m_nScrollPageStep); }
+void ChartScope::scrollPageRight() { scroll(m_nScrollPageStep); }
+
 static int calcPrecision(double nMinutes)
 {
 	int nPrecision;
@@ -316,9 +332,45 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		m_params.nSecondsPerDivision = m_nSecondsPerDivision;
 
 		m_pixmap->draw(m_params);
+
+		updateScrollbar();
 	}
 
 	return m_pixmap;
+}
+
+void ChartScope::updateScrollbar()
+{
+	int nPageStep = int(m_params.nSecondsPerDivision * EAD_SAMPLES_PER_SECOND * m_pixmap->params().nCols);
+	int nSingleStep = nPageStep / m_pixmap->params().nCols;
+
+	// Total number of samples in the dataset
+	int nSamples = sampleCount();
+
+	int iMax = nSamples - nPageStep;
+	if (iMax < 0)
+		iMax = m_params.nSampleOffset;
+
+	if (iMax != m_iScrollMax)
+	{
+		m_iScrollMax = iMax;
+		emit scrollMaxChanged(m_iScrollMax);
+	}
+	if (nPageStep != m_nScrollPageStep)
+	{
+		m_nScrollPageStep = nPageStep;
+		emit scrollPageStepChanged(m_nScrollPageStep);
+	}
+	if (nSingleStep != m_nScrollSingleStep)
+	{
+		m_nScrollSingleStep = nSingleStep;
+		emit scrollSingleStepChanged(m_nScrollSingleStep);
+	}
+	if (m_nSampleOffset != m_iScrollValue)
+	{
+		m_iScrollValue = m_nSampleOffset;
+		emit scrollValueChanged(m_iScrollValue);
+	}
 }
 
 void ChartScope::emitParamsChanged()
