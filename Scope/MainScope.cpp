@@ -249,9 +249,9 @@ void MainScope::updateActions()
 	bool bView = (m_taskType == EadTask_Review);
 	m_actions->viewWaveComments->setEnabled(bView);
 	bool bPeaks = (bView && m_viewType != EadView_EADs);
-	m_actions->viewHidePeaks->setEnabled(bPeaks);
-	m_actions->viewDetectedPeaks->setEnabled(bPeaks);
-	m_actions->viewVerifiedPeaks->setEnabled(bPeaks);
+	m_actions->viewHidePeaks->setEnabled(bView);
+	m_actions->viewDetectedPeaks->setEnabled(bView);
+	m_actions->viewVerifiedPeaks->setEnabled(bView);
 	m_actions->viewEditPeaks->setEnabled(bPeaks);
 
 	m_actions->recordRecord->setEnabled(bHaveFile && !m_bRecording);

@@ -92,12 +92,6 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 	m_btnHideAll = new QPushButton(tr("Hide All"), this);
 	connect(m_btnHideAll, SIGNAL(clicked()), this, SLOT(on_btnHideAll_clicked()));
 
-	m_lblPeakFid = new QLabel(tr("Peak FID:"), this);
-
-	m_cmbPeakFid = new QComboBox(this);
-	m_cmbPeakFid->setEnabled(false);
-	connect(m_cmbPeakFid, SIGNAL(activated(int)), this, SLOT(on_cmbPeakFid_activated()));
-
 	m_lblPeakTip = new QLabel(this);
 	m_lblPeakTip->setText(tr("TIP: CTRL-click on the selected FID wave to mark a peak that was not automatically detected."));
 	m_lblPeakTip->setWordWrap(true);
@@ -123,9 +117,6 @@ void TaskReviewWidget::setupItems(EadFile* file)
 	m_cmbFid->addItem(tr("No FID"), -1);
 	int iCmbFid = 0;
 
-	m_cmbPeakFid->clear();
-	int iCmbPeakFid = -1;
-
 	if (m_file != NULL)
 	{
 		ViewInfo* view = m_file->viewInfo(m_scope->viewType());
@@ -147,29 +138,12 @@ void TaskReviewWidget::setupItems(EadFile* file)
 			}
 			else
 				m_groups[0].items << ItemInfo(vwi, Mode_Everything);
-
-			// Add all visible FIDs to m_cmbPeakFid
-			if (wave->type == WaveType_FID)
-			{
-				m_cmbPeakFid->addItem(wave->sName, wave->recId());
-				if (wave->recId() == m_scope->peakModeRecId())
-					iCmbPeakFid = m_cmbPeakFid->count() - 1;
-			}
 		}
 
 		// Add the extra waveform, if there is one
 		if (view->vwiUser.wave() != NULL)
 		{
 			m_groups[2].items << ItemInfo(&view->vwiUser, Mode_Sens);
-
-			// Add all visible FIDs to m_cmbPeakFid (NOTE: duplicate code)
-			const WaveInfo* wave = view->vwiUser.wave();
-			if (wave->type == WaveType_FID)
-			{
-				m_cmbPeakFid->addItem(wave->sName, wave->recId());
-				if (wave->recId() == m_scope->peakModeRecId())
-					iCmbPeakFid = m_cmbPeakFid->count() - 1;
-			}
 		}
 
 		foreach (RecInfo* rec, m_file->recs())
@@ -226,18 +200,6 @@ void TaskReviewWidget::setupItems(EadFile* file)
 	
 	m_btnShowAll->setEnabled(m_scope->viewType() != EadView_Averages);
 	m_btnHideAll->setEnabled(m_scope->viewType() != EadView_Averages);
-
-	bool bPeak = m_scope->viewType() != EadView_EADs;
-	m_lblPeakFid->setVisible(bPeak);
-	m_cmbPeakFid->setVisible(bPeak);
-
-	// If the selected peak FID isn't on the current view, add a blank item to the combobox
-	if (iCmbPeakFid < 0)
-	{
-		m_cmbPeakFid->insertItem(0, "", -1);
-		iCmbPeakFid = 0;
-	}
-	m_cmbPeakFid->setCurrentIndex(iCmbPeakFid);
 
 	m_bLayout = true;
 	update();
@@ -322,16 +284,6 @@ void TaskReviewWidget::layout(bool bLayoutItems)
 	m_btnShowAll->move(xCol1, y);
 	m_btnHideAll->move(xCol1 + m_btnShowAll->sizeHint().width() + 10, y);
 	y += m_btnShowAll->sizeHint().height() + 15;
-
-	// Position Peak widgets
-	nRowWidth = qMax(m_lblPeakFid->width(), m_cmbPeakFid->width());
-	xCol1 = xCenter - nRowWidth / 2;
-	int yLabel = y;
-	m_lblPeakFid->move(xCol1, yLabel);
-	int yCmb = y + m_lblPeakFid->height() + 5;
-	m_cmbPeakFid->move(xCol1, yCmb);
-	
-	y = yCmb + m_cmbPeakFid->height() + 10;
 
 	// Position the FID hint
 	if (m_lblPeakTip->isVisible())
@@ -733,27 +685,8 @@ void TaskReviewWidget::setAllVisible(bool bVisible)
 
 void TaskReviewWidget::on_scope_peakModeChanged()
 {
-	EadPeakMode peakMode = (EadPeakMode) m_scope->peakMode();
-	m_cmbPeakFid->setEnabled(peakMode != EadPeakMode_Hide);
-
+	EadPeakMode peakMode = m_scope->peakMode();
 	bool bShowTip = (peakMode == EadPeakMode_Edit && m_scope->peakModeRecId() >= 0);
-	m_lblPeakTip->setVisible(bShowTip);
-	if (bShowTip)
-	{
-		m_bLayout = true;
-		update();
-	}
-}
-
-void TaskReviewWidget::on_cmbPeakFid_activated()
-{
-	int iItem = m_cmbPeakFid->currentIndex();
-	int id = m_cmbPeakFid->itemData(iItem).toInt();
-	if (id >= 0)
-		m_scope->setPeakModeRecId(id);
-
-	// REFACTOR: duplicate code
-	bool bShowTip = (m_scope->peakMode() == EadPeakMode_Edit && m_scope->peakModeRecId() >= 0);
 	m_lblPeakTip->setVisible(bShowTip);
 	if (bShowTip)
 	{

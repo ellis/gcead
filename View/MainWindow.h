@@ -25,6 +25,7 @@
 #include "EadEnums.h"
 
 
+class QComboBox;
 class QLabel;
 class QStackedLayout;
 
@@ -70,11 +71,14 @@ private slots:
 	void scope_commentChanged();
 	void actions_viewChartRecording_changed();
 	void updateReview();
-	
+	void updateCmbPeakFid();
+
 	void actions_fileExportSignalData_triggered();
 	void actions_fileExportRetentionData_triggered();
 	void actions_fileExit_triggered();
 	void on_actHelpAbout_triggered();
+
+	void on_cmbPeakFid_activated();
 
 private:
 	Ui::MainWindowClass ui;
@@ -98,8 +102,11 @@ private:
 	QStackedLayout* m_taskStack;
 	ChartWidget* m_chart;
 
+	//QLabel* m_lblPeakFid;
+	QComboBox* m_cmbPeakFid;
+
 	/// Seconds per division, for convenience
 	int m_nSecondsPerDivision;
 };
 
-#endif // MAINWINDOW_H
+#endif

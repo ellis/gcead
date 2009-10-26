@@ -135,7 +135,7 @@ Actions::Actions(QObject *parent)
 
 	viewEditPeaks = new QAction(tr("&Edit Peaks"), group);
 	viewEditPeaks->setCheckable(true);
-	viewEditPeaks->setIconText(tr("Edit"));
+	viewEditPeaks->setIconText(tr("Edit Peaks"));
 	viewEditPeaks->setToolTip(tr("Active the mode for selecting peaks and adjusting their areas"));
 
 	//

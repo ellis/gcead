@@ -110,7 +110,6 @@ private slots:
 	void on_btnShowAll_clicked();
 	void on_btnHideAll_clicked();
 	void on_scope_peakModeChanged();
-	void on_cmbPeakFid_activated();
 
 private:
 	/// @param bLayoutItems If this is false, only the widget's width is determined, but not the height
@@ -143,8 +142,6 @@ private:
 	QPushButton* m_btnShowAll;
 	QPushButton* m_btnHideAll;
 
-	QLabel* m_lblPeakFid;
-	QComboBox* m_cmbPeakFid;
 	QLabel* m_lblPeakTip;
 
 	GroupInfo m_groups[3];

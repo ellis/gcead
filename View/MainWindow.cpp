@@ -18,6 +18,7 @@
 #include "MainWindow.h"
 
 #include <QCloseEvent>
+#include <QComboBox>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
@@ -66,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 	connect(m_scope, SIGNAL(waveListChanged()), this, SLOT(updateReview()));
 	connect(m_scope, SIGNAL(taskTypeChanged(EadTask)), this, SLOT(scope_taskTypeChanged(EadTask)));
 	connect(m_scope, SIGNAL(viewTypeChanged(EadView)), this, SLOT(updateReview()));
+	connect(m_scope, SIGNAL(peakModeChanged(EadPeakMode)), this, SLOT(updateCmbPeakFid()));
 	connect(m_scope, SIGNAL(commentChanged(const QString&)), this, SLOT(scope_commentChanged()));
 	connect(m_scope, SIGNAL(windowTitleChanged(const QString&)), this, SLOT(setWindowTitle(const QString&)));
 	connect(m_scope, SIGNAL(isWindowModifiedChanged(bool)), this, SLOT(setWindowModified(bool)));
@@ -226,11 +228,16 @@ void MainWindow::setupActions()
 
 	ui.toolBar->addAction(actions->recordRecord);
 	ui.toolBar->addSeparator();
-	ui.toolBar->addWidget(new QLabel(tr("Peaks:")));
+	ui.toolBar->addWidget(new QLabel(tr("Markers:")));
 	ui.toolBar->addAction(actions->viewHidePeaks);
 	ui.toolBar->addAction(actions->viewDetectedPeaks);
 	ui.toolBar->addAction(actions->viewVerifiedPeaks);
 	ui.toolBar->addAction(actions->viewEditPeaks);
+	//m_lblPeakFid = new QLabel(tr("Peak FID:"));
+	m_cmbPeakFid = new QComboBox(this);
+	m_cmbPeakFid->setEnabled(false);
+	//ui.toolBar->addWidget(m_lblPeakFid);
+	ui.toolBar->addWidget(m_cmbPeakFid);
 	ui.toolBar->addSeparator();
 	ui.toolBar->addAction(actions->fileComment);
 	m_lblComment = new QLabel;
@@ -240,6 +247,7 @@ void MainWindow::setupActions()
 	connect(actions->fileExportRetentionData, SIGNAL(triggered()), this, SLOT(actions_fileExportRetentionData_triggered()));
 	connect(actions->fileExit, SIGNAL(triggered()), this, SLOT(actions_fileExit_triggered()));
 	connect(actions->viewChartRecording, SIGNAL(changed()), this, SLOT(actions_viewChartRecording_changed()));
+	connect(m_cmbPeakFid, SIGNAL(activated(int)), this, SLOT(on_cmbPeakFid_activated()));
 }
 
 void MainWindow::readSettings()
@@ -320,6 +328,51 @@ void MainWindow::updateReview()
 {
 	if (m_scope->taskType() == EadTask_Review)
 		m_taskReview->setupItems(m_scope->file());
+	updateCmbPeakFid();
+}
+
+void MainWindow::updateCmbPeakFid()
+{
+	m_cmbPeakFid->clear();
+	int iCmbPeakFid = -1;
+
+	if (m_scope->file() != NULL)
+	{
+		ViewInfo* view = m_scope->file()->viewInfo(m_scope->viewType());
+
+		QList<ViewWaveInfo*> vwis;
+		vwis << view->vwis() << view->vwiExtras();
+		if (view->vwiUser.wave() != NULL)
+			vwis << &view->vwiUser;
+		foreach (ViewWaveInfo* vwi, vwis)
+		{
+			CHECK_ASSERT_RET(vwi->wave() != NULL);
+			const WaveInfo* wave = vwi->wave();
+
+			// Add all visible FIDs to m_cmbPeakFid
+			if (wave->type == WaveType_FID)
+			{
+				m_cmbPeakFid->addItem(wave->sName, wave->recId());
+				if (wave->recId() == m_scope->peakModeRecId())
+					iCmbPeakFid = m_cmbPeakFid->count() - 1;
+			}
+		}
+	}
+
+	bool bEnabled = (
+			m_scope->taskType() == EadTask_Review &&
+			m_scope->viewType() != EadView_EADs &&
+			m_scope->peakMode() == EadPeakMode_Edit);
+	//m_lblPeakFid->setEnabled(bEnabled);
+	m_cmbPeakFid->setEnabled(bEnabled);
+
+	// If the selected peak FID isn't on the current view, add a blank item to the combobox
+	if (iCmbPeakFid < 0)
+	{
+		m_cmbPeakFid->insertItem(0, "", -1);
+		iCmbPeakFid = 0;
+	}
+	m_cmbPeakFid->setCurrentIndex(iCmbPeakFid);
 }
 
 void MainWindow::actions_fileExportSignalData_triggered()
@@ -398,4 +451,12 @@ void MainWindow::on_actHelpAbout_triggered()
 			"<p>License: GPL</p>").arg(tr(APPNAME)).arg(APPVERSION).arg(APPVERSIONDATE);
 
 	QMessageBox::about(this, tr(APPNAME), s);
+}
+
+void MainWindow::on_cmbPeakFid_activated()
+{
+	int iItem = m_cmbPeakFid->currentIndex();
+	int id = m_cmbPeakFid->itemData(iItem).toInt();
+	if (id >= 0)
+		m_scope->setPeakModeRecId(id);
 }
