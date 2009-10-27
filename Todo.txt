@@ -10,7 +10,7 @@
 	x	click-and-scroll with the scroll wheel to drag the timeline
 4		display of standard deviation around average
 	x	make ChartScope update the timebase string appropriately so that it gets displayed
-3		double-check whether the status line gets properly updated when there is a timebase change
+	x	update status line when there is a timebase change
 	x	Mouse cursors:
 		x	dragging wave: SizeVerCursor
 		x	dragging marker: SizeHorCursor

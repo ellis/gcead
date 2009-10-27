@@ -78,6 +78,7 @@ private:
 
 private slots:
 	void on_timerUpdate_timeout();
+	void on_scope_timebaseChanged(const QString& s);
 	void on_scope_scrollMaxChanged(int i);
 	void on_scope_scrollPageStepChanged(int n);
 	void on_scope_scrollSingleStepChanged(int n);
@@ -118,6 +119,8 @@ private:
 	double m_nDragOrigDivisionOffset;
 	/// Data for timeline dragging (middle-click)
 	int m_nClickSampleOffset;
+
+	bool m_bForceStatusUpdate;
 
 	QTimer* m_timerUpdate;
 	int m_nRecordingUpdates;

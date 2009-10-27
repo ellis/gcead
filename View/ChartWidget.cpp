@@ -62,6 +62,7 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 
 	m_bDragging = false;
 	m_bSelecting = false;
+	m_bForceStatusUpdate = false;
 
 	m_recordingEadWave = NULL;
 	m_recordingFidWave = NULL;
@@ -72,7 +73,7 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 
 	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(update()));
 	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), m_lblRecording, SLOT(setVisible(bool)));
-	connect(m_chartS, SIGNAL(timebaseChanged(QString)), m_lblSecondsPerDivision, SLOT(setText(QString)));
+	connect(m_chartS, SIGNAL(timebaseChanged(QString)), this, SLOT(on_scope_timebaseChanged(QString)));
 	connect(m_chartS, SIGNAL(scrollMaxChanged(int)), this, SLOT(on_scope_scrollMaxChanged(int)));
 	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
 	connect(m_chartS, SIGNAL(scrollSingleStepChanged(int)), this, SLOT(on_scope_scrollSingleStepChanged(int)));
@@ -201,6 +202,12 @@ void ChartWidget::on_timerUpdate_timeout()
 	}
 }
 
+void ChartWidget::on_scope_timebaseChanged(const QString& s)
+{
+	m_lblSecondsPerDivision->setText(s);
+	m_bForceStatusUpdate = true;
+}
+
 void ChartWidget::on_scope_scrollMaxChanged(int i) { m_scrollbar->setMaximum(i); }
 void ChartWidget::on_scope_scrollPageStepChanged(int n) { m_scrollbar->setPageStep(n); }
 void ChartWidget::on_scope_scrollSingleStepChanged(int n) { m_scrollbar->setSingleStep(n); }
@@ -277,6 +284,12 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 		QRect rc(QPoint(x0, rcBorder.top() + 1), QPoint(x1, rcBorder.bottom() - 1));
 		QColor clr(0, 0, 255, 100);
 		painter.fillRect(rc, clr);
+	}
+
+	if (m_bForceStatusUpdate)
+	{
+		m_bForceStatusUpdate = false;
+		updateStatus();
 	}
 }
 
