@@ -487,23 +487,12 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 				m_ptMousePixmap.setX(m_rcPixmap.width() - 1);
 			update();
 		}
-		else if (info.iLeftAreaHandle >= 0)
+		else if (info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
 		{
 			int x = e->pos().x() - m_rcPixmap.left();
-			int i = m_pixmap->xToCenterSample(info.vwi->wave(), x);
-			info.vwi->waveInfo()->peaksChosen[info.iLeftAreaHandle].didxLeft = i;
-			info.vwi->waveInfo()->calcPeakArea(info.iLeftAreaHandle);
-			info.vwi->waveInfo()->calcAreaPercents();
-			m_chartS->redraw();
-		}
-		else if (info.iRightAreaHandle >= 0)
-		{
-			int x = e->pos().x() - m_rcPixmap.left();
-			int i = m_pixmap->xToCenterSample(info.vwi->wave(), x);
-			info.vwi->waveInfo()->peaksChosen[info.iRightAreaHandle].didxRight = i;
-			info.vwi->waveInfo()->calcPeakArea(info.iRightAreaHandle);
-			info.vwi->waveInfo()->calcAreaPercents();
-			m_chartS->redraw();
+			int didx = m_pixmap->xToCenterSample(wave, x);
+			int iPeak = qMax(info.iLeftAreaHandle, info.iRightAreaHandle);
+			movePeakHandle(wave, iPeak, didx, (info.iLeftAreaHandle >= 0));
 		}
 		else if (info.iChosenPeak >= 0)
 		{
@@ -740,6 +729,26 @@ void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
 		peak.didxRight = didx2;
 		vwi->choosePeak(peak);
 	}
+}
+
+void ChartWidget::movePeakHandle(WaveInfo* wave, int iPeak, int didx, bool bLeft)
+{
+	WavePeakChosenInfo& peak = wave->peaksChosen[iPeak];
+	if (bLeft)
+	{
+		if (didx > peak.didxMiddle - 10)
+			didx = peak.didxMiddle - 10;
+		peak.didxLeft = didx;
+	}
+	else
+	{
+		if (didx < peak.didxMiddle + 10)
+			didx = peak.didxMiddle + 10;
+		peak.didxRight = didx;
+	}
+	wave->calcPeakArea(iPeak);
+	wave->calcAreaPercents();
+	m_chartS->redraw();
 }
 
 void ChartWidget::openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal)

@@ -72,6 +72,7 @@ private:
 	QSize calcPixmapSize() const;
 
 	void addPeak(ViewWaveInfo* vwi, int x);
+	void movePeakHandle(WaveInfo* wave, int iPeak, int didx, bool bLeft);
 	void openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal);
 	void updateStatus();
 

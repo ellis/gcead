@@ -1,5 +1,5 @@
 	ChartWidget:
-3		BUG: for an FID marker, don't let user move peak region outside of where the marker was set
+	x	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
 		right-click menu:
 		x	implement Settings
 			should "Add time Marker" should be disabled if not in edit mode?
