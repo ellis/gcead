@@ -113,8 +113,10 @@ private:
 	ChartPointInfo m_clickInfo;
 	/// Pointer to the channel we're currently dragging, or NULL if not dragging.
 	WaveInfo* m_waveDrag;
-	/// Original division offset of m_dragChannel before dragging started
+	/// Original division offset of m_dragChannel before vertical dragging started
 	double m_nDragOrigDivisionOffset;
+	/// Data for timeline dragging (middle-click)
+	int m_nClickSampleOffset;
 
 	QTimer* m_timerUpdate;
 	int m_nRecordingUpdates;

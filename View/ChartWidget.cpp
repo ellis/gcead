@@ -362,6 +362,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 	m_ptMousePixmap = ptPixmap;
 	m_ptClickWidget = m_ptMouseWidget;
 	m_ptClickPixmap = m_ptMousePixmap;
+	m_nClickSampleOffset = m_chartS->sampleOffset();
 	
 	const WaveInfo* wave = NULL;
 	if (vwi != NULL)
@@ -413,22 +414,10 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 			m_bDragging = false;
 		}
 	}
-	/*
-	else if (e->button() == Qt::RightButton)
+	else if (e->button() == Qt::MidButton)
 	{
-		if (wave != NULL)
-		{
-			int iMouse = m_pixmap->xToCenterSample(wave, e->pos().x());
-			int i0 = qMax(iMouse - 25, 0);
-			int i1 = qMin(iMouse + 25, wave->display.size() - 1);
-			
-			for (int i = i0; i <= i1; i++)
-			{
-				
-			}
-		}
+		m_bDragging = true;
 	}
-	*/
 
 	updateStatus();
 }
@@ -474,7 +463,6 @@ void ChartWidget::mouseReleaseEvent(QMouseEvent* e)
 	}
 	m_bDragging = false;
 	m_bSelecting = false;
-	//m_waveDrag = NULL;
 	
 	updateStatus();
 }
@@ -548,6 +536,13 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 
 				m_chartS->redraw();
 			}
+		}
+		else
+		{
+			int nDiffXOrig = m_ptMousePixmap.x() - m_ptClickPixmap.x();
+			int nDiffSamplesOrig = m_pixmap->widthToSampleCount(-nDiffXOrig);
+			int iSample = m_nClickSampleOffset + nDiffSamplesOrig;
+			m_chartS->setSampleOffset(iSample);
 		}
 	}
 	else

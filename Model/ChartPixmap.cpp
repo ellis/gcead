@@ -308,6 +308,11 @@ int ChartPixmap::valueToY(const ViewWaveInfo* vwi, double n) const
 	return y;
 }
 
+int ChartPixmap::widthToSampleCount(int nWidth) const
+{
+	return nWidth * p.nXToIndexFactor;
+}
+
 QColor ChartPixmap::color(ChartColor color)
 {
 	QColor clr;

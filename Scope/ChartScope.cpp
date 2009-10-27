@@ -30,7 +30,8 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.peakMode = EadPeakMode_Verified;
 	m_params.nPeakModeRecId = 0;
 
-	m_nSampleOffset = 0;
+	m_nSampleOffset = 0; // REFACTOR: Do we need this?  Couldn't we use m_params.nSampleOffset instead? -- ellis, 2009-10-27
+	m_iScrollMax = 0;
 
 	m_bRedraw = true;
 
@@ -124,8 +125,16 @@ QString ChartScope::timebaseString() const
 
 void ChartScope::setSampleOffset(int nSampleOffset)
 {
-	m_nSampleOffset = nSampleOffset;
-	emitParamsChanged();
+	if (nSampleOffset > m_iScrollMax)
+		nSampleOffset = m_iScrollMax;
+	if (nSampleOffset < 0)
+		nSampleOffset = 0;
+
+	if (nSampleOffset != m_nSampleOffset)
+	{
+		m_nSampleOffset = nSampleOffset;
+		emitParamsChanged();
+	}
 }
 
 void ChartScope::setSecondsPerDivisionIndex(int i)
@@ -232,10 +241,6 @@ void ChartScope::zoomFull()
 void ChartScope::scroll(int nSamplesDiff)
 {
 	int i = m_params.nSampleOffset + nSamplesDiff;
-	if (i > m_iScrollMax)
-		i = m_iScrollMax;
-	if (i < 0)
-		i = 0;
 	setSampleOffset(i);
 }
 

@@ -120,6 +120,7 @@ public:
 	ViewWaveInfo* waveToViewWaveInfo(const WaveInfo* wave) const;
 	double yToValue(const ViewWaveInfo* cwi, int y) const;
 	int valueToY(const ViewWaveInfo* cwi, double n) const;
+	int widthToSampleCount(int nWidth) const;
 	void fillChartPointInfo(const QPoint& pt, ChartPointInfo* info) const;
 
 	WaveInfo* waveOfPeaks() const;

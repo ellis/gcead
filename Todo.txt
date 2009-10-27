@@ -1,11 +1,3 @@
-x	let user set markers on EAD waves
-x	let user move peaks (and don't remove peaks by just clicking on them)
-x	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
-x	zoom in button shouldn't automatically have focus
-x	shortcuts for zoom in/out
-x	View menu: add actions for switching the view type
-x	View menu: zoom in/out/full
-x	Let user scroll chart with the mouse wheel
 	ChartWidget:
 3		BUG: for an FID marker, don't let user move peak region outside of where the marker was set
 		right-click menu:
@@ -15,11 +7,9 @@ x	Let user scroll chart with the mouse wheel
 	x	Add the vertical marker line to the area that is detected as part of the marker, not just the text
 	x	Detect mouse-over-marker even when not in edit mode
 5		BUG: turning off verified peaks in publish mode doesn't work
-2		click-and-scroll with the scroll wheel to drag the timeline
+	x	click-and-scroll with the scroll wheel to drag the timeline
 4		display of standard deviation around average
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-x	View menu: scroll -> scroll page right/left, scroll division left/right
-x	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 	in publish mode: checkboxes for time/?? not saved between sessions, off by default (or remove this option?)
 	import of Autospike-CSV files and old EAG files
 	Add tooltips to the Peak buttons in the toolbar
@@ -27,6 +17,21 @@ x	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 		Click on "Add"
 		CTRL-Click or Right-Click
 	File comment dialog needs to be wider, and it should be multiline
+
+
+DONE:
+x	let user set markers on EAD waves
+x	let user move peaks (and don't remove peaks by just clicking on them)
+x	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
+x	zoom in button shouldn't automatically have focus
+x	shortcuts for zoom in/out
+x	View menu: add actions for switching the view type
+x	View menu: zoom in/out/full
+x	Let user scroll chart with the mouse wheel
+x	View menu: scroll -> scroll page right/left, scroll division left/right
+x	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
+
+
 
 	INSTALLER:
 		MAC:
