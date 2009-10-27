@@ -31,8 +31,8 @@ public:
 	EadFile* file() { return m_params.file; }
 
 	QString timebaseString() const;
-	int sampleOffset() const { return m_nSampleOffset; }
-	double secondsPerDivision() const { return m_nSecondsPerDivision; }
+	int sampleOffset() const { return m_params.nSampleOffset; }
+	double secondsPerDivision() const { return m_params.nSecondsPerDivision; }
 
 	bool isRedrawRequired() const { return m_bRedraw; }
 
@@ -92,11 +92,11 @@ private:
 	//EadPeakMode m_peakMode;
 
 	/// Scroll offset
-	int m_nSampleOffset;
+	//int m_nSampleOffset;
 	/// Index into array of valid seconds per division settings
 	int m_iSecondsPerDivision;
 	/// Seconds per division, for convenience
-	double m_nSecondsPerDivision;
+	//double m_nSecondsPerDivision;
 
 	int m_iScrollMax;
 	int m_nScrollPageStep;

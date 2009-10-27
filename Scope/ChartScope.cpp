@@ -30,7 +30,7 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.peakMode = EadPeakMode_Verified;
 	m_params.nPeakModeRecId = 0;
 
-	m_nSampleOffset = 0; // REFACTOR: Do we need this?  Couldn't we use m_params.nSampleOffset instead? -- ellis, 2009-10-27
+	//m_nSampleOffset = 0; // REFACTOR: Do we need this?  Couldn't we use m_params.nSampleOffset instead?  PARTIAL ANSWER: this separation was used to let the user set a custom time unit in publishing, and then switch back to the "view" time scale later -- ellis, 2009-10-27
 	m_iScrollMax = 0;
 
 	m_bRedraw = true;
@@ -120,7 +120,7 @@ void ChartScope::setRecordingOn(bool b)
 
 QString ChartScope::timebaseString() const
 {
-	return timestampString(m_nSecondsPerDivision);
+	return timestampString(m_params.nSecondsPerDivision);
 }
 
 void ChartScope::setSampleOffset(int nSampleOffset)
@@ -130,9 +130,9 @@ void ChartScope::setSampleOffset(int nSampleOffset)
 	if (nSampleOffset < 0)
 		nSampleOffset = 0;
 
-	if (nSampleOffset != m_nSampleOffset)
+	if (nSampleOffset != m_params.nSampleOffset)
 	{
-		m_nSampleOffset = nSampleOffset;
+		m_params.nSampleOffset = nSampleOffset;
 		emitParamsChanged();
 	}
 }
@@ -142,9 +142,10 @@ void ChartScope::setSecondsPerDivisionIndex(int i)
 	if (i >= 0 && anSecondsPerDivision[i] > 0)
 	{
 		m_iSecondsPerDivision = i;
-		m_nSecondsPerDivision = anSecondsPerDivision[i];
+		m_params.nSecondsPerDivision = anSecondsPerDivision[i];
 		emitParamsChanged();
 		emit timebaseChanged();
+		updateScrollbar();
 	}
 	// FIXME: From ChartWidget, call this: updateStatus();
 }
@@ -166,7 +167,7 @@ bool ChartScope::setSecondsPerDivisionMin(double nMin)
 
 void ChartScope::center(int iSample)
 {
-	int nSamplesToCenter = int(m_nSecondsPerDivision * m_pixmap->params().nCols * EAD_SAMPLES_PER_SECOND / 2);
+	int nSamplesToCenter = int(m_params.nSecondsPerDivision * m_pixmap->params().nCols * EAD_SAMPLES_PER_SECOND / 2);
 	int n = qMax(iSample - nSamplesToCenter, 0);
 	setSampleOffset(n);
 }
@@ -279,7 +280,7 @@ void ChartScope::setSelectionRange(int iSampleStart, int iSampleEnd)
 void ChartScope::setMousePosition(int iSample)
 {
 	double nMinutes = double(iSample) / (EAD_SAMPLES_PER_SECOND * 60);
-	int nPrecision = calcPrecision(m_nSecondsPerDivision / 60);
+	int nPrecision = calcPrecision(m_params.nSecondsPerDivision / 60);
 
 	QString s = tr("Pos: %0").arg(nMinutes, 0, 'f', nPrecision);
 	emit statusTextChanged(s);
@@ -309,7 +310,7 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		m_bRedraw = false;
 
 		m_params.size = sz;
-		m_params.nSampleOffset = m_nSampleOffset;
+		//m_params.nSampleOffset = m_nSampleOffset;
 
 		m_params.nCols = 0;
 		if (m_params.task == EadTask_Publish)
@@ -334,7 +335,7 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		{
 			m_chartS->secondsPerDivision() = anSecondsPerDivision[m_iSecondsPerDivision];
 		}*/
-		m_params.nSecondsPerDivision = m_nSecondsPerDivision;
+		//m_params.nSecondsPerDivision = m_nSecondsPerDivision;
 
 		m_pixmap->draw(m_params);
 
@@ -371,9 +372,9 @@ void ChartScope::updateScrollbar()
 		m_nScrollSingleStep = nSingleStep;
 		emit scrollSingleStepChanged(m_nScrollSingleStep);
 	}
-	if (m_nSampleOffset != m_iScrollValue)
+	if (m_params.nSampleOffset != m_iScrollValue)
 	{
-		m_iScrollValue = m_nSampleOffset;
+		m_iScrollValue = m_params.nSampleOffset;
 		emit scrollValueChanged(m_iScrollValue);
 	}
 }

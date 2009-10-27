@@ -9,6 +9,13 @@
 5		BUG: turning off verified peaks in publish mode doesn't work
 	x	click-and-scroll with the scroll wheel to drag the timeline
 4		display of standard deviation around average
+2		make ChartScope update the timebase string appropriately so that it gets displayed
+3		double-check whether the status line gets properly updated when there is a timebase change
+1		Mouse cursors:
+			dragging wave: SizeVerCursor
+			dragging marker: SizeHorCursor
+			dragging peak handle: SizeHorCursor
+			dragging timeline: SizeHorCursor
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	in publish mode: checkboxes for time/?? not saved between sessions, off by default (or remove this option?)
 	import of Autospike-CSV files and old EAG files
