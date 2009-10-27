@@ -375,6 +375,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 		{
 			//vwi->unchoosePeakAtDidx(info.didxChosenPeak);
 			m_bDragging = true;
+			setCursor(Qt::SizeHorCursor);
 		}
 		// Clicked on a detected peak:
 		else if (info.didxPossiblePeak >= 0)
@@ -385,6 +386,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 		else if (info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
 		{
 			m_bDragging = true;
+			setCursor(Qt::SizeHorCursor);
 		}
 		// Clicked on a wave:
 		else if (wave != NULL)
@@ -400,12 +402,14 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 				// REFACTOR: remove m_waveDrag and use m_clickInfo instead
 				//m_waveDrag = vwi->waveInfo();
 				m_nDragOrigDivisionOffset = vwi->divisionOffset();
+				setCursor(Qt::SizeVerCursor);
 			}
 		}
 		else if (rcWaveforms.contains(e->pos()))
 		{
 			m_bDragging = true;
 			m_bSelecting = true;
+			setCursor(Qt::IBeamCursor);
 			updateStatus();
 			update();
 		}
@@ -417,6 +421,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 	else if (e->button() == Qt::MidButton)
 	{
 		m_bDragging = true;
+		setCursor(Qt::SizeHorCursor);
 	}
 
 	updateStatus();
@@ -464,7 +469,8 @@ void ChartWidget::mouseReleaseEvent(QMouseEvent* e)
 	m_bDragging = false;
 	m_bSelecting = false;
 	
-	updateStatus();
+	// Call this to get the appropriate mouse cursor
+	mouseMoveEvent(e);
 }
 
 void ChartWidget::mouseMoveEvent(QMouseEvent* e)
