@@ -37,6 +37,10 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
+	qDebug() << QString::number(5.0, 'e', 1);
+	qDebug() << QString::number(5.0, 'f', 1);
+	qDebug() << QString::number(5.0, 'g', 1);
+
 	a.setWindowIcon(QIcon(":/images/GcEad.ico"));
 
 	Globals = new GlobalVars();

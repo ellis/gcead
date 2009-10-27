@@ -9,7 +9,7 @@
 5		BUG: turning off verified peaks in publish mode doesn't work
 	x	click-and-scroll with the scroll wheel to drag the timeline
 4		display of standard deviation around average
-2		make ChartScope update the timebase string appropriately so that it gets displayed
+	x	make ChartScope update the timebase string appropriately so that it gets displayed
 3		double-check whether the status line gets properly updated when there is a timebase change
 	x	Mouse cursors:
 		x	dragging wave: SizeVerCursor

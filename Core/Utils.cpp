@@ -17,6 +17,8 @@
 
 #include "Utils.h"
 
+#include <QtDebug>
+
 
 /// Volts per Division (in mV)
 const double g_anVoltsPerDivision[] =
@@ -33,24 +35,27 @@ const double g_anVoltsPerDivision[] =
 QString timestampString(double nSeconds, TimestampBase base)
 {
 	double n = nSeconds;
-	QString sSuffix;
+	QString sFormat;
 
 	switch (base)
 	{
 	case TimestampBase_Milli:
 		n *= 1000;
-		sSuffix = "ms";
+		sFormat = QObject::tr("%0 ms");
 		break;
 	case TimestampBase_Seconds:
-		sSuffix = "s";
+		sFormat = QObject::tr("%0 s");
 		break;
 	case TimestampBase_Minutes:
 		n /= 60;
-		sSuffix = "min";
+		sFormat = QObject::tr("%0 min");
 		break;
 	}
 
-	QString s = QString("%1 %2").arg(n, 0, 'f', 1).arg(sSuffix);
+	QString sN = QString::number(n, 'f', 1);
+	if (sN.endsWith(".0"))
+		sN = sN.left(sN.size() - 2);
+	QString s = sFormat.arg(sN);
 	return s;
 }
 

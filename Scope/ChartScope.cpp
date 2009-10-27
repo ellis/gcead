@@ -144,7 +144,7 @@ void ChartScope::setSecondsPerDivisionIndex(int i)
 		m_iSecondsPerDivision = i;
 		m_params.nSecondsPerDivision = anSecondsPerDivision[i];
 		emitParamsChanged();
-		emit timebaseChanged();
+		emit timebaseChanged(timebaseString());
 		updateScrollbar();
 	}
 	// FIXME: From ChartWidget, call this: updateStatus();

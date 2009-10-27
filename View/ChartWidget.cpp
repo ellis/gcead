@@ -72,9 +72,15 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 
 	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(update()));
 	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), m_lblRecording, SLOT(setVisible(bool)));
-	// FIXME: most of these will need to be changed -- ellis, 2009-10-25
+	connect(m_chartS, SIGNAL(timebaseChanged(QString)), m_lblSecondsPerDivision, SLOT(setText(QString)));
+	connect(m_chartS, SIGNAL(scrollMaxChanged(int)), this, SLOT(on_scope_scrollMaxChanged(int)));
+	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
+	connect(m_chartS, SIGNAL(scrollSingleStepChanged(int)), this, SLOT(on_scope_scrollSingleStepChanged(int)));
+	connect(m_chartS, SIGNAL(scrollValueChanged(int)), m_scrollbar, SLOT(setValue(int)));
+	// REFACTOR: it'd be nice to only use signals from ChartScope rather than from MainScope too -- ellis, 2009-10-25
 	connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
 	connect(m_timerUpdate, SIGNAL(timeout()), this, SLOT(on_timerUpdate_timeout()));
+	connect(m_scrollbar, SIGNAL(valueChanged(int)), m_chartS, SLOT(setSampleOffset(int)));
 }
 
 ChartWidget::~ChartWidget()
@@ -119,11 +125,6 @@ void ChartWidget::setupWidgets()
 
 	m_scrollbar = new QScrollBar(Qt::Horizontal, this);
 	m_scrollbar->setSingleStep(EAD_SAMPLES_PER_SECOND);
-	connect(m_chartS, SIGNAL(scrollMaxChanged(int)), this, SLOT(on_scope_scrollMaxChanged(int)));
-	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
-	connect(m_chartS, SIGNAL(scrollSingleStepChanged(int)), this, SLOT(on_scope_scrollSingleStepChanged(int)));
-	connect(m_chartS, SIGNAL(scrollValueChanged(int)), m_scrollbar, SLOT(setValue(int)));
-	connect(m_scrollbar, SIGNAL(valueChanged(int)), m_chartS, SLOT(setSampleOffset(int)));
 
 	m_buttons->setCursor(Qt::ArrowCursor);
 	m_scrollbar->setCursor(Qt::ArrowCursor);
@@ -136,6 +137,7 @@ void ChartWidget::setupWidgets()
 		nWidth = qMax(nWidth, m_lblSecondsPerDivision->fontMetrics().width(s));
 	}
 	m_lblSecondsPerDivision->setMinimumWidth(nWidth);
+	m_lblSecondsPerDivision->setText(m_chartS->timebaseString());
 
 	m_lblRecording = new QLabel(tr("RECORDING"), this);
 	m_lblRecording->setStyleSheet(
@@ -249,72 +251,8 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 
 	if (m_chartS->isRedrawRequired())
 	{
-		/*
-		//int n = Globals->publisherSettings()->nPublisherPercentSize;
-		int nCols = 0;
-		QSize sz = calcPixmapSize();
-		if (m_mainS->taskType() == EadTask_Publish)
-		{
-			if (Globals->publisherSettings()->bPublishCols)
-				nCols = Globals->publisherSettings()->nPublishCols;
-		}
-		
-		PublisherSettings* pub = Globals->publisherSettings();
-		bool bOverrideTimebase = (m_mainS->taskType() == EadTask_Publish && pub->bPublishTimebase);
-
-		ChartPixmapParams params;
-		params.file = m_chartS->file();
-		params.view = m_chartS->view();
-		params.task = m_mainS->taskType();
-		params.peakMode = m_mainS->peakMode();
-		params.nPeakModeRecId = m_scope->peakModeRecId();
-		params.nCols = nCols;
-		params.size = sz;
-		params.nSampleOffset = m_chartS->sampleOffset();
-		params.vwiHilight = m_vwiHilight;
-		if (m_task == EadTask_Publish)
-		{
-			params.elements = pub->publisherChartElements;
-		}
-		// Check whether we need to hide the wave comments
-		else
-		{
-			if (!Globals->viewSettings()->bShowWaveComments)
-				params.elements &= ~ChartElement_WaveComments;
-		}
-		if (bOverrideTimebase)
-		{
-			params.nSecondsPerDivision = pub->nPublishTimebase * 60;
-			m_chartS->secondsPerDivision() = params.nSecondsPerDivision;
-		}
-		else
-		{
-			m_chartS->secondsPerDivision() = ChartScope::anSecondsPerDivision[m_iSecondsPerDivision];
-		}
-		params.nSecondsPerDivision = m_chartS->secondsPerDivision();
-		m_pixmap->draw(params);
-
-		m_btnZoomIn->setEnabled(!bOverrideTimebase);
-		m_btnZoomOut->setEnabled(!bOverrideTimebase);
-		m_btnZoomFull->setEnabled(!bOverrideTimebase);
-		m_lblSecondsPerDivision->setText(timebaseString());
-		*/
 		QSize sz = calcPixmapSize();
 		m_chartS->draw(sz);
-
-		/*int nSamplesPerPage = int(m_chartS->secondsPerDivision() * EAD_SAMPLES_PER_SECOND * m_pixmap->params().nCols);
-		m_scrollbar->setPageStep(nSamplesPerPage);
-		m_scrollbar->setSingleStep(nSamplesPerPage / m_pixmap->params().nCols);
-
-		// Total number of samples in the dataset
-		int nSamples = m_chartS->sampleCount();
-
-		int nMaxScroll = nSamples - nSamplesPerPage;
-		if (nMaxScroll < 0)
-			nMaxScroll = m_chartS->sampleOffset();
-		m_scrollbar->setMaximum(nMaxScroll);
-		m_scrollbar->setValue(m_chartS->sampleOffset());
-		*/
 
 		QRect rcScroll(m_rcPixmapMax.left(), m_rcPixmapMax.top() + sz.height(), sz.width(), 20);
 		if (rcScroll != m_scrollbar->geometry())

@@ -52,7 +52,7 @@ public:
 
 signals:
 	void paramsChanged();
-	void timebaseChanged();
+	void timebaseChanged(const QString& s);
 	void statusTextChanged(const QString& s);
 	void recordingLabelVisibleChanged(bool bVisible);
 	void scrollMaxChanged(int iScrollMax);
