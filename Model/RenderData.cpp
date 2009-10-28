@@ -118,3 +118,71 @@ void RenderData::render(ViewWaveInfo* vwi, int tidxStart_, int nPixels_, double 
 		}
 	}
 }
+
+void RenderData::renderStd(ViewWaveInfo* vwi, int tidxStart_, int nPixels_, double nSamplesPerPixel_)
+{
+	CHECK_PARAM_RET(vwi != NULL);
+	CHECK_PARAM_RET(vwi->wave() != NULL && vwi->isVisible());
+
+	setup(vwi, tidxStart_, nPixels_, nSamplesPerPixel_);
+
+	pixels.resize(nPixels);
+	if (nPixels == 0)
+		return;
+
+	const WaveInfo* wave = vwi->wave();
+	const double* data = wave->std.constData() + didxFirst;
+	const double* avedata = wave->display.constData() + didxFirst;
+	MinMax* pixdata = pixels.data();
+
+	if (nSamplesPerPixel > 1)
+	{
+		int iSample = didxFirst;
+		for (int iPixel = 0; iPixel < nPixels; iPixel++)
+		{
+			int iSampleLast = int((iPixel + 1) * nSamplesPerPixel + 0.5) + didxFirst - 1;
+			if (iSampleLast > didxLast)
+				iSampleLast = didxLast;
+
+			double n = *avedata;
+			double less = n - *data;
+			double more = n + *data;
+			double nMin = less;
+			double nMax = more;
+			while (iSample < iSampleLast)
+			{
+				iSample++;
+				n = *++avedata;
+				double nStd = *++data;
+				less = n - nStd;
+				more = n + nStd;
+				if (less < nMin)
+					nMin = less;
+				else if (more > nMax)
+					nMax = more;
+			}
+
+			pixdata->yBot = nMin;
+			pixdata->yTop = nMax;
+			pixdata++;
+
+			iSample++;
+			data++;
+			avedata++;
+		}
+	}
+	else
+	{
+		for (int iPixel = 0; iPixel < nPixels; iPixel++)
+		{
+			int iSample = int((iPixel + 1) * nSamplesPerPixel + 0.5) + didxFirst - 1;
+			if (iSample > didxLast)
+				iSample = didxLast;
+
+			double n = (data[iSample - didxFirst] + avedata[iSample - didxFirst]); // Need to subtract didxFirst here because we offset data by didxFirst above
+			pixdata->yBot = n;
+			pixdata->yTop = n;
+			pixdata++;
+		}
+	}
+}

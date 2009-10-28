@@ -44,6 +44,8 @@ void ChartPixmap::ChartWaveInfo::clearRenderData()
 {
 	delete render;
 	render = NULL;
+	delete renderStd;
+	renderStd = NULL;
 }
 
 ChartPixmap::Params::Params(const ChartPixmapParams& user)
@@ -422,7 +424,12 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 
 	// NOTE: Make sure we have "render" allocated before returning, because other functions currently assume that it's not NULL -- ellis, 2008-06-26
 	if (cwi->render == NULL)
+	{
 		cwi->render = new RenderData();
+		// If this is an averaged wave
+		if (cwi->vwi->wave()->recId() == 0)
+			cwi->renderStd = new RenderData();
+	}
 	RenderData* render = cwi->render;
 
 	if (wave->display.size() == 0)
@@ -447,6 +454,8 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		render->nPixels != renderCheck.nPixels)
 	{
 		render->render(vwi, m_params.nSampleOffset, xWidth, p.nXToIndexFactor);
+		if (cwi->renderStd != NULL)
+			cwi->renderStd->renderStd(vwi, m_params.nSampleOffset, xWidth, p.nXToIndexFactor);
 	}
 
 	//
@@ -488,20 +497,33 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 	}
 }
 
-void ChartPixmap::drawWaveformRough(QPainter& painter, ChartWaveInfo* cwi)
+void ChartPixmap::drawWaveformRough(QPainter& painter, const ChartWaveInfo* cwi)
 {
-	ViewWaveInfo* vwi = cwi->vwi;
+	const ViewWaveInfo* vwi = cwi->vwi;
 	const WaveInfo* wave = vwi->wave();
-	RenderData* render = cwi->render;
+
+	QColor clrWave = color((wave->recId() >= 1) ? ChartColor_Wave : ChartColor_WaveAve);
+	if (m_file->newRec() != NULL && wave->recId() == m_file->newRec()->id())
+		clrWave = color(ChartColor_WaveRec);
+
+	// If this is an averaged wave
+	if (wave->recId() == 0)
+	{
+		QColor clrStd(255, 0, 0, 100);
+		drawWaveformRough(painter, vwi, cwi->renderStd, clrStd);
+	}
+
+	drawWaveformRough(painter, vwi, cwi->render, clrWave);
+}
+
+void ChartPixmap::drawWaveformRough(QPainter& painter, const ViewWaveInfo* vwi, const RenderData* render, const QColor& clr)
+{
 	int yTop = p.rcBorder.top() + int(vwi->divisionOffset() * p.nDivisionSize);
 	double nDataToYFactor = p.nDivisionSize / vwi->voltsPerDivision();
 
 	const MinMax* pixdata = render->pixels.constData();
 
-	QColor clrWave = color((wave->recId() >= 1) ? ChartColor_Wave : ChartColor_WaveAve);
-	if (m_file->newRec() != NULL && wave->recId() == m_file->newRec()->id())
-		clrWave = color(ChartColor_WaveRec);
-	painter.setPen(clrWave);
+	painter.setPen(clr);
 
 	double n = pixdata->yBot;
 	int y = yTop - int(n * nDataToYFactor);

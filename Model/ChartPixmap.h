@@ -157,6 +157,8 @@ private:
 		QPointer<ViewWaveInfo> vwi;
 		/// List of y-coordinates where pixels were drawn for each wave
 		RenderData* render;
+		/// List of y-coordinates for standard deviation (only used on averaged waves)
+		RenderData* renderStd;
 		/// List of rects where wave names are drawn
 		QRect rcName;
 		/// List of rects where user can click on ADD to choose a peak
@@ -165,7 +167,7 @@ private:
 		QList< QPair<QRect, int> > arcPeaksChosen;
 
 		ChartWaveInfo()
-			: render(NULL)
+			: render(NULL), renderStd(NULL)
 		{
 		}
 
@@ -185,7 +187,8 @@ private:
 	QColor color(ChartColor color);
 	void drawGrid(QPainter& painter);
 	void drawWaveform(QPainter& painter, ChartWaveInfo* vwi);
-	void drawWaveformRough(QPainter& painter, ChartWaveInfo* vwi);
+	void drawWaveformRough(QPainter& painter, const ChartWaveInfo* vwi);
+	void drawWaveformRough(QPainter& painter, const ViewWaveInfo* vwi, const RenderData* render, const QColor& clr);
 	void drawWaveformSmooth(QPainter& painter, ChartWaveInfo* vwi);
 	void drawWaveformDigital(QPainter& painter, ChartWaveInfo* vwi);
 	void drawWaveName(QPainter& painter, ChartWaveInfo* vwi, bool bHilight);

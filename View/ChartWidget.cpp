@@ -254,7 +254,7 @@ void ChartWidget::paintEvent(QPaintEvent* e)
 
 	QPainter painter(this);
 
-	painter.fillRect(rect(), Qt::white);
+	painter.fillRect(e->rect(), Qt::white);
 
 	if (m_chartS->isRedrawRequired())
 	{

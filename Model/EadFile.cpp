@@ -17,6 +17,8 @@
 
 #include "EadFile.h"
 
+#include <math.h>
+
 #include <QtDebug>
 #include <QDataStream>
 #include <QDomDocument>
@@ -675,7 +677,6 @@ void EadFile::updateAveWaves()
 void EadFile::updateAveWave(WaveType type)
 {
 	WaveInfo* ave = m_recs[0]->wave(type);
-	ave->display.clear();
 
 	// Get list of relevant waves to build the averaged waveform
 	QList<WaveInfo*> waves;
@@ -705,6 +706,7 @@ void EadFile::updateAveWave(WaveType type)
 
 	QVector<quint8> anWavesPerSample(nSamples);
 	ave->display.resize(nSamples);
+	ave->display.fill(0);
 
 	// Sum up all channels into the average wave
 	foreach (WaveInfo* wave, waves)
@@ -726,6 +728,32 @@ void EadFile::updateAveWave(WaveType type)
 	// Divide through to get the average
 	for (int i = 0; i < ave->display.size(); i++)
 		ave->display[i] /= anWavesPerSample[i];
+
+	// Start calculating standard deviation
+	ave->std.resize(nSamples);
+	ave->std.fill(0);
+	foreach (WaveInfo* wave, waves)
+	{
+		// Start at a sample index greater than 0 if the wave is shifted to the left
+		int i0 = 0;
+		if (wave->shift() < 0)
+			i0 = -wave->shift();
+
+		for (int i = i0; i < wave->display.size(); i++)
+		{
+			int iShifted = i + wave->shift();
+			double n = wave->display[i];
+			double m = ave->display[iShifted];
+			double d = n - m;
+			double squared = d * d;
+			ave->std[iShifted] += squared;
+			anWavesPerSample[iShifted]++;
+		}
+	}
+
+	// Divide through and take the square root to get the standard deviation
+	for (int i = 0; i < ave->display.size(); i++)
+		ave->std[i] = sqrt(ave->std[i] / anWavesPerSample[i]);
 }
 
 void EadFile::updateDisplay()

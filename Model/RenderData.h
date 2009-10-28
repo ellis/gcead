@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2009  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 class ViewWaveInfo;
 
 
+/// Holds the min and max y values for a given x-coordinate
 struct MinMax
 {
 	double yBot, yTop;
@@ -39,23 +40,8 @@ struct MinMax
 	}
 };
 
-/*
-struct MinMax
-{
-	short yBot, yTop;
 
-	MinMax()
-		: yBot(0), yTop(0)
-	{
-	}
-
-	MinMax(short yBot, short yTop)
-		: yBot(yBot), yTop(yTop)
-	{
-	}
-};
-*/
-
+/// Class to calculate rendering points for wave for fast rendering later.
 class RenderData
 {
 public:
@@ -84,8 +70,8 @@ public:
 
 	void setup(ViewWaveInfo* wave, int tidxStart, int nPixels, double nSamplesPerPixel);
 	void render(ViewWaveInfo* wave, int tidxStart, int nPixels, double nSamplesPerPixel);
-
-private:
+	/// Render the standard deviation area around the average
+	void renderStd(ViewWaveInfo* wave, int tidxStart, int nPixels, double nSamplesPerPixel);
 };
 
 #endif

@@ -115,6 +115,8 @@ public:
 	double nRawToVoltageFactor;
 	/// Display data
 	QVector<double> display;
+	/// Standard deviation for averaged waves
+	QVector<double> std;
 	/// List of possible peaks
 	QList<WavePeakInfo> peaks0;
 	/// List of chosen peaks
