@@ -20,7 +20,7 @@
 
 PublisherSettings::PublisherSettings()
 {
-	publisherChartElements = ChartElement_AxisTime | ChartElement_Grid | ChartElement_WaveNames | ChartElement_WaveComments | ChartElement_Peaks;
+	publisherChartElements = ChartElement_AxisTime | ChartElement_Grid | ChartElement_WaveNames | ChartElement_WaveComments | ChartElement_Markers | ChartElement_StdDev;
 
 	bPublishCols = false;
 	nPublishCols = 10;

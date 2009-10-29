@@ -32,44 +32,6 @@ void checkFailure(const char* sFile, int iLine)
 	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
 }
 
-#include <QPainter>
-#include <QTime>
-extern short g_anChannel1[3999];
-class X : public QWidget
-{
-	void paintEvent(QPaintEvent* e)
-	{
-		Q_UNUSED(e);
-
-		double w = 500.0;
-		double h = 100.0;
-		double max = 12000;
-
-		QPainter painter(this);
-
-		qDebug() << "A:" << QTime::currentTime().msec();
-
-		QPointF points[3999 * 2];
-		for (int i = 0; i < 3999; i++)
-		{
-			double x = i * w / 3999;
-			double y = h - g_anChannel1[i] / max * h;
-			points[i] = QPointF(x, y);
-		}
-
-		qDebug() << "B:" << QTime::currentTime().msec();
-			painter.drawPolyline(points, 3999);
-		/*
-		for (int i = 0; i < 1000; i++)
-			painter.drawPolyline(points, 3999);
-		qDebug() << "C:" << QTime::currentTime().msec();
-		for (int i = 0; i < 1000; i++)
-			painter.drawPolygon(points, 3999);
-			*/
-		qDebug() << "D:" << QTime::currentTime().msec();
-	}
-};
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

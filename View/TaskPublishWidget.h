@@ -60,7 +60,8 @@ private slots:
 	void on_chkTime_clicked();
 	void on_chkNames_clicked();
 	void on_chkComments_clicked();
-	void on_chkPeaks_clicked();
+	void on_chkMarkers_clicked();
+	void on_chkStdDev_clicked();
 	void on_chkWidth_clicked();
 	void on_edtWidth_valueChanged(int n);
 	void on_chkTimebase_clicked();
@@ -90,7 +91,8 @@ private:
 	QCheckBox* m_chkTime;
 	QCheckBox* m_chkNames;
 	QCheckBox* m_chkComments;
-	QCheckBox* m_chkPeaks;
+	QCheckBox* m_chkMarkers;
+	QCheckBox* m_chkStdDev;
 	QCheckBox* m_chkWidth;
 	QSpinBox* m_edtWidth;
 	QCheckBox* m_chkTimebase;

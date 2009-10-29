@@ -92,8 +92,9 @@ enum ChartElement
 	ChartElement_AxisTime = 0x02,
 	ChartElement_WaveNames = 0x04,
 	ChartElement_WaveComments = 0x08,
-	ChartElement_Peaks = 0x10,
-	ChartElement_SmoothWaves = 0x20,
+	ChartElement_Markers = 0x10,
+	/// Display standard deviation lines around averaged waves
+	ChartElement_StdDev = 0x20,
 };
 Q_DECLARE_FLAGS(ChartElements, ChartElement);
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChartElements);

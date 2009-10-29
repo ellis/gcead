@@ -463,11 +463,12 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 	//
 
 	// Is this the FID for which we should display peaks?
+	bool bShowMarkers = false;
 	bool bPeakFid = false;
 	EadPeakMode peakMode = m_params.peakMode;
 	if (m_params.task == EadTask_Review && wave->type == WaveType_FID && wave->recId() == m_params.nPeakModeRecId && peakMode != EadPeakMode_Hide)
 		bPeakFid = true;
-	else if (m_params.task == EadTask_Publish && m_params.elements.testFlag(ChartElement_Peaks))
+	else if (m_params.task == EadTask_Publish && m_params.elements.testFlag(ChartElement_Markers))
 	{
 		bPeakFid = true;
 		peakMode = EadPeakMode_Verified;
@@ -479,7 +480,7 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 
 	if (wave->type == WaveType_Digital)
 		drawWaveformDigital(painter, cwi);
-	else if (m_params.elements.testFlag(ChartElement_SmoothWaves) || m_params.task == EadTask_Publish || render->nSamplesPerPixel < 1)
+	else if (m_params.task == EadTask_Publish || render->nSamplesPerPixel < 1)
 		drawWaveformSmooth(painter, cwi);
 	else
 		drawWaveformRough(painter, cwi);
@@ -489,7 +490,7 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		drawPossiblePeaks(painter, cwi);
 
 	// Mark peaks of averaged FID waves (but not in Publish task)
-	if (peakMode != EadPeakMode_Hide)
+	if (m_params.elements.testFlag(ChartElement_Markers) && peakMode != EadPeakMode_Hide)
 	{
 		drawPeakTimes(painter, cwi);
 		if (wave->type == WaveType_FID)
@@ -565,7 +566,6 @@ void ChartPixmap::drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* cwi
 	const WaveInfo* wave = vwi->wave();
 	const RenderData* render = cwi->render;
 	int yTop = p.rcBorder.top() + int(vwi->divisionOffset() * p.nDivisionSize);
-	int xWidth = p.rcBorder.right() - p.rcBorder.left();
 	double nDataToYFactor = p.nDivisionSize / vwi->voltsPerDivision();
 
 	int xStart = p.rcBorder.left() + render->xOffset;
@@ -574,7 +574,7 @@ void ChartPixmap::drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* cwi
 	// NOTE: antialiasing is currently VERY expensive.  Way too expensive (.5s to draw small graphs).
 	// So this check is here in case this function was only called because nSamplesPerPixel < 1.
 	//  -- ellis, 2008-08-29
-	if (m_params.elements.testFlag(ChartElement_SmoothWaves) || m_params.task == EadTask_Publish)
+	if (m_params.task == EadTask_Publish)
 		painter.setRenderHint(QPainter::Antialiasing, true);
 
 	if (wave->recId() == 0)
@@ -600,7 +600,7 @@ void ChartPixmap::drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* cwi
 	painter.setPen(clrWave);
 	painter.drawPolyline(line, render->nPixels);
 
-	if (m_params.elements.testFlag(ChartElement_SmoothWaves) || m_params.task == EadTask_Publish)
+	if (m_params.task == EadTask_Publish)
 		painter.setRenderHint(QPainter::Antialiasing, false);
 
 	delete[] line;
@@ -608,11 +608,12 @@ void ChartPixmap::drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* cwi
 
 void ChartPixmap::drawWaveformStd(QPainter& painter, const ChartWaveInfo* cwi)
 {
+	if (!m_params.elements.testFlag(ChartElement_StdDev))
+		return;
+
 	const ViewWaveInfo* vwi = cwi->vwi;
-	const WaveInfo* wave = vwi->wave();
 	const RenderData* render = cwi->render;
 	int yTop = p.rcBorder.top() + int(vwi->divisionOffset() * p.nDivisionSize);
-	int xWidth = p.rcBorder.right() - p.rcBorder.left();
 	double nDataToYFactor = p.nDivisionSize / vwi->voltsPerDivision();
 
 	int xStart = p.rcBorder.left() + render->xOffset;

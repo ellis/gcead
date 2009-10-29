@@ -7,6 +7,8 @@
 	x	Add the vertical marker line to the area that is detected as part of the marker, not just the text
 	x	Detect mouse-over-marker even when not in edit mode
 5		BUG: turning off verified peaks in publish mode doesn't work
+			connect to settingsChanged() signal somehow
+			only show markers conditionally
 	x	click-and-scroll with the scroll wheel to drag the timeline
 4		display of standard deviation around average
 		x	create a common function for rough and smooth which just draws polylines

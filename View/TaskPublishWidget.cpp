@@ -97,11 +97,13 @@ void TaskPublishWidget::setupWidgets()
 	m_chkComments->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_WaveComments));
 	connect(m_chkComments, SIGNAL(clicked()), this, SLOT(on_chkComments_clicked()));
 
-	m_chkPeaks = new QCheckBox(tr("Verified peaks"));
-	m_chkPeaks->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Peaks));
-	connect(m_chkPeaks, SIGNAL(clicked()), this, SLOT(on_chkPeaks_clicked()));
+	m_chkMarkers = new QCheckBox(tr("Markers"));
+	m_chkMarkers->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Markers));
+	connect(m_chkMarkers, SIGNAL(clicked()), this, SLOT(on_chkMarkers_clicked()));
 
-	//QCheckBox* m_chkSensitivity = new QCheckBox(tr(";
+	m_chkStdDev = new QCheckBox(tr("Standard deviation"));
+	m_chkStdDev->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_StdDev));
+	connect(m_chkStdDev, SIGNAL(clicked()), this, SLOT(on_chkStdDev_clicked()));
 
 	m_chkWidth = new QCheckBox(tr("Specify width"));
 	m_chkWidth->setChecked(Globals->publisherSettings()->bPublishCols);
@@ -132,7 +134,8 @@ void TaskPublishWidget::setupWidgets()
 	grid->addWidget(m_chkTime, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkNames, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkComments, iRow++, 0, 1, 2);
-	grid->addWidget(m_chkPeaks, iRow++, 0, 1, 2);
+	grid->addWidget(m_chkMarkers, iRow++, 0, 1, 2);
+	grid->addWidget(m_chkStdDev, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkWidth, iRow, 0);
 	grid->addWidget(m_edtWidth, iRow++, 1);
 	grid->addWidget(m_chkTimebase, iRow, 0);
@@ -328,9 +331,15 @@ void TaskPublishWidget::on_chkComments_clicked()
 	emit settingsChanged();
 }
 
-void TaskPublishWidget::on_chkPeaks_clicked()
+void TaskPublishWidget::on_chkMarkers_clicked()
 {
-	setChartElement(ChartElement_Peaks, m_chkPeaks->isChecked());
+	setChartElement(ChartElement_Markers, m_chkMarkers->isChecked());
+	emit settingsChanged();
+}
+
+void TaskPublishWidget::on_chkStdDev_clicked()
+{
+	setChartElement(ChartElement_StdDev, m_chkStdDev->isChecked());
 	emit settingsChanged();
 }
 
