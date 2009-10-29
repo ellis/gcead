@@ -10,7 +10,7 @@
 			connect to settingsChanged() signal somehow
 		x	only show markers conditionally
 	x	click-and-scroll with the scroll wheel to drag the timeline
-4		display of standard deviation around average
+	x	display of standard deviation around average
 		x	create a common function for rough and smooth which just draws polylines
 		x	make sure that it works when zoomed in to 100ms too.
 		x	publish option to hide the standard deviation lines
