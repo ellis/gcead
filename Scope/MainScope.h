@@ -74,8 +74,8 @@ public:
 	void setComment(const QString& s);
 
 	/// Current peak mode
-	EadPeakMode peakMode() const { return m_chart->params().peakMode; }
-	void setPeakMode(EadPeakMode peakMode);
+	EadMarkerMode peakMode() const { return m_chart->params().peakMode; }
+	void setPeakMode(EadMarkerMode peakMode);
 	
 	/// The rec ID for which the peak mode applies (-1 if no record is selected)
 	int peakModeRecId() const { return m_chart->params().nPeakModeRecId; }
@@ -96,7 +96,7 @@ signals:
 	void commentChanged(const QString& sComment);
 	void taskTypeChanged(EadTask taskType);
 	void viewTypeChanged(EadView viewType);
-	void peakModeChanged(EadPeakMode peakMode);
+	void peakModeChanged(EadMarkerMode peakMode);
 	void windowTitleChanged(const QString& sWindowTitle);
 	void isWindowModifiedChanged(bool bWindowModified);
 	void isRecordingChanged(bool bRecording);

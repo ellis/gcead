@@ -63,9 +63,9 @@ void GlobalVars::readSettings()
 
 	settings.beginGroup("Publish");
 	m_publisherSettings->publisherChartElements = (ChartElements) settings.value("ElementFlags", (int) m_publisherSettings->publisherChartElements).toInt();
-	m_publisherSettings->bPublishCols = settings.value("bGraphCols", false).toBool();
+	//m_publisherSettings->bPublishCols = settings.value("bGraphCols", false).toBool();
 	m_publisherSettings->nPublishCols = settings.value("nGraphCols", 10).toInt();
-	m_publisherSettings->bPublishTimebase = settings.value("bGraphTimebase", false).toBool();
+	//m_publisherSettings->bPublishTimebase = settings.value("bGraphTimebase", false).toBool();
 	m_publisherSettings->nPublishTimebase = settings.value("nGraphTimebase", 1).toInt();
 	m_publisherSettings->bPublishHeight = settings.value("bGraphHeight", false).toBool();
 	m_publisherSettings->nPublishSize = settings.value("nGraphHeight", 500).toInt();
@@ -123,9 +123,9 @@ void GlobalVars::writeSettings()
 
 	settings.beginGroup("Publish");
 	settings.setValue("ElementFlags", (int) m_publisherSettings->publisherChartElements);
-	settings.setValue("bGraphCols", m_publisherSettings->bPublishCols);
+	//settings.setValue("bGraphCols", m_publisherSettings->bPublishCols);
 	settings.setValue("nGraphCols", m_publisherSettings->nPublishCols);
-	settings.setValue("bGraphTimebase", m_publisherSettings->bPublishTimebase);
+	//settings.setValue("bGraphTimebase", m_publisherSettings->bPublishTimebase);
 	settings.setValue("nGraphTimebase", m_publisherSettings->nPublishTimebase);
 	settings.setValue("bGraphHeight", m_publisherSettings->bPublishHeight);
 	settings.setValue("nGraphHeight", m_publisherSettings->nPublishSize);

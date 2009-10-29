@@ -27,7 +27,7 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.file = NULL;
 	m_params.view = NULL;
 	m_params.task = EadTask_Review;
-	m_params.peakMode = EadPeakMode_Verified;
+	m_params.peakMode = EadMarkerMode_Verified;
 	m_params.nPeakModeRecId = 0;
 
 	//m_nSampleOffset = 0; // REFACTOR: Do we need this?  Couldn't we use m_params.nSampleOffset instead?  PARTIAL ANSWER: this separation was used to let the user set a custom time unit in publishing, and then switch back to the "view" time scale later -- ellis, 2009-10-27
@@ -91,7 +91,7 @@ void ChartScope::setTask(EadTask task)
 	}
 }
 
-void ChartScope::setPeakMode(EadPeakMode peakMode)
+void ChartScope::setPeakMode(EadMarkerMode peakMode)
 {
 	if (peakMode != m_params.peakMode)
 	{

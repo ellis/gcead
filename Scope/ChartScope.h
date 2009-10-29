@@ -22,7 +22,7 @@ public:
 	void setFile(EadFile* file);
 	void setView(ViewInfo* view);
 	void setTask(EadTask task);
-	void setPeakMode(EadPeakMode peakMode);
+	void setPeakMode(EadMarkerMode peakMode);
 	void setPeakModeRecId(int id);
 	void setRecordingOn(bool b);
 
@@ -89,7 +89,7 @@ private:
 	//QPointer<EadFile> m_file;
 	//QPointer<ViewInfo> m_view;
 	//EadTask m_task;
-	//EadPeakMode m_peakMode;
+	//EadMarkerMode m_peakMode;
 
 	/// Scroll offset
 	//int m_nSampleOffset;

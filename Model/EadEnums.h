@@ -44,16 +44,16 @@ Q_ENUMS(EadView);
 
 
 /// Mode for handling peak viewing and editing
-enum EadPeakMode
+enum EadMarkerMode
 {
 	/// Don't show peaks
-	EadPeakMode_Hide,
+	EadMarkerMode_Hide,
 	/// View selected and automatically detected peaks
-	EadPeakMode_Detected,
+	EadMarkerMode_Detected,
 	/// View only the user-selected peaks
-	EadPeakMode_Verified,
+	EadMarkerMode_Verified,
 	/// Edit peaks
-	EadPeakMode_Edit,
+	EadMarkerMode_Edit,
 };
 
 

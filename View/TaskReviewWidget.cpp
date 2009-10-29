@@ -58,7 +58,7 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 {
 	m_scope = scope;
 	m_scope->
-	connect(m_scope, SIGNAL(peakModeChanged(EadPeakMode)), this, SLOT(on_scope_peakModeChanged()));
+	connect(m_scope, SIGNAL(peakModeChanged(EadMarkerMode)), this, SLOT(on_scope_peakModeChanged()));
 
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -685,8 +685,8 @@ void TaskReviewWidget::setAllVisible(bool bVisible)
 
 void TaskReviewWidget::on_scope_peakModeChanged()
 {
-	EadPeakMode peakMode = m_scope->peakMode();
-	bool bShowTip = (peakMode == EadPeakMode_Edit && m_scope->peakModeRecId() >= 0);
+	EadMarkerMode peakMode = m_scope->peakMode();
+	bool bShowTip = (peakMode == EadMarkerMode_Edit && m_scope->peakModeRecId() >= 0);
 	m_lblPeakTip->setVisible(bShowTip);
 	if (bShowTip)
 	{

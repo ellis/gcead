@@ -48,7 +48,7 @@ public:
 	QPointer<EadFile> file;
 	QPointer<ViewInfo> view;
 	EadTask task;
-	EadPeakMode peakMode;
+	EadMarkerMode peakMode;
 	int nPeakModeRecId;
 	QSize size;
 	int nCols;
@@ -193,7 +193,7 @@ private:
 	void drawWaveformDigital(QPainter& painter, ChartWaveInfo* vwi);
 	void drawWaveName(QPainter& painter, ChartWaveInfo* vwi, bool bHilight);
 	void drawPossiblePeaks(QPainter& painter, ChartWaveInfo* vwi);
-	void drawPeakTimes(QPainter& painter, ChartWaveInfo* vwi);
+	void drawMarkerTimes(QPainter& painter, ChartWaveInfo* vwi);
 	void drawAreaLines(QPainter& painter, ChartWaveInfo* vwi);
 	void drawAreaHandles(QPainter& painter, ChartWaveInfo* vwi);
 	QRect rectOfAreaHandle(ViewWaveInfo* vwi, int didx) const;

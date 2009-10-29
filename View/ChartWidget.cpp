@@ -343,7 +343,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 		else if (wave != NULL)
 		{
 			// If the user Ctrl+clicks on the selected FID wave while in peak editing mode:
-			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadPeakMode_Edit && wave->recId() == m_chartS->params().nPeakModeRecId)
+			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && wave->recId() == m_chartS->params().nPeakModeRecId)
 			{
 				addPeak(vwi, m_ptClickPixmap.x());
 			}
@@ -466,7 +466,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		}
 		else if (wave != NULL)
 		{
-			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadPeakMode_Edit && wave == m_pixmap->waveOfPeaks())
+			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && wave == m_pixmap->waveOfPeaks())
 			{
 				setCursor(Qt::PointingHandCursor);
 			}
@@ -506,7 +506,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		{
 			Qt::CursorShape shape = Qt::OpenHandCursor;
 
-			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadPeakMode_Edit && info.vwi->wave() == m_pixmap->waveOfPeaks())
+			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && info.vwi->wave() == m_pixmap->waveOfPeaks())
 				shape = Qt::PointingHandCursor;
 
 			setCursor(shape);

@@ -8,12 +8,12 @@
 	x	Detect mouse-over-marker even when not in edit mode
 5		BUG: turning off verified peaks in publish mode doesn't work
 			connect to settingsChanged() signal somehow
-			only show markers conditionally
+		x	only show markers conditionally
 	x	click-and-scroll with the scroll wheel to drag the timeline
 4		display of standard deviation around average
 		x	create a common function for rough and smooth which just draws polylines
 		x	make sure that it works when zoomed in to 100ms too.
-			publish option to hide the standard deviation lines
+		x	publish option to hide the standard deviation lines
 	x	make ChartScope update the timebase string appropriately so that it gets displayed
 	x	update status line when there is a timebase change
 	x	Mouse cursors:
@@ -23,7 +23,7 @@
 		x	dragging timeline: SizeHorCursor
 		x	selecting: IBeamCursor
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-	in publish mode: checkboxes for time/?? not saved between sessions, off by default (or remove this option?)
+x	in publish mode: checkboxes for time not saved between sessions, off by default (or remove this option?)
 	import of Autospike-CSV files and old EAG files
 	Add tooltips to the Peak buttons in the toolbar
 	Add more instructions about markers

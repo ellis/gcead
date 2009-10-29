@@ -185,7 +185,7 @@ void MainScope::setComment(const QString& s)
 	}
 }
 
-void MainScope::setPeakMode(EadPeakMode peakMode)
+void MainScope::setPeakMode(EadMarkerMode peakMode)
 {
 	m_chart->setPeakMode(peakMode);
 	emit peakModeChanged(peakMode);
@@ -520,22 +520,22 @@ void MainScope::on_actions_viewWaveComments_triggered()
 
 void MainScope::on_actions_viewHidePeaks_triggered()
 {
-	setPeakMode(EadPeakMode_Hide);
+	setPeakMode(EadMarkerMode_Hide);
 }
 
 void MainScope::on_actions_viewDetectedPeaks_triggered()
 {
-	setPeakMode(EadPeakMode_Detected);
+	setPeakMode(EadMarkerMode_Detected);
 }
 
 void MainScope::on_actions_viewVerifiedPeaks_triggered()
 {
-	setPeakMode(EadPeakMode_Verified);
+	setPeakMode(EadMarkerMode_Verified);
 }
 
 void MainScope::on_actions_viewEditPeaks_triggered()
 {
-	setPeakMode(EadPeakMode_Edit);
+	setPeakMode(EadMarkerMode_Edit);
 }
 
 void MainScope::on_actions_recordRecord_triggered()

@@ -463,19 +463,26 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 	//
 
 	// Is this the FID for which we should display peaks?
-	bool bShowMarkers = false;
+	bool bShowMarkers = (m_params.task == EadTask_Publish && m_params.elements.testFlag(ChartElement_Markers)) ||
+		(m_params.task == EadTask_Review && m_params.peakMode != EadMarkerMode_Hide);
 	bool bPeakFid = false;
-	EadPeakMode peakMode = m_params.peakMode;
-	if (m_params.task == EadTask_Review && wave->type == WaveType_FID && wave->recId() == m_params.nPeakModeRecId && peakMode != EadPeakMode_Hide)
-		bPeakFid = true;
-	else if (m_params.task == EadTask_Publish && m_params.elements.testFlag(ChartElement_Markers))
+	EadMarkerMode peakMode = EadMarkerMode_Hide;
+	if (bShowMarkers && wave->type == WaveType_FID)
 	{
-		bPeakFid = true;
-		peakMode = EadPeakMode_Verified;
+		if (m_params.task == EadTask_Publish)
+		{
+			bPeakFid = true;
+			peakMode = EadMarkerMode_Verified;
+		}
+		else if (wave->recId() == m_params.nPeakModeRecId)
+		{
+			bPeakFid = true;
+			peakMode = m_params.peakMode;
+		}
 	}
 
 	// Mark possible peaks of averaged FID waves
-	if (bPeakFid && peakMode == EadPeakMode_Edit)
+	if (peakMode == EadMarkerMode_Edit)
 		drawAreaHandles(painter, cwi);
 
 	if (wave->type == WaveType_Digital)
@@ -486,13 +493,12 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		drawWaveformRough(painter, cwi);
 
 	// Mark possible peaks of averaged FID waves
-	if (bPeakFid && (peakMode == EadPeakMode_Detected || peakMode == EadPeakMode_Edit))
+	if (peakMode == EadMarkerMode_Detected || peakMode == EadMarkerMode_Edit)
 		drawPossiblePeaks(painter, cwi);
 
-	// Mark peaks of averaged FID waves (but not in Publish task)
-	if (m_params.elements.testFlag(ChartElement_Markers) && peakMode != EadPeakMode_Hide)
+	if (bShowMarkers)
 	{
-		drawPeakTimes(painter, cwi);
+		drawMarkerTimes(painter, cwi);
 		if (wave->type == WaveType_FID)
 			drawAreaLines(painter, cwi);
 	}
@@ -795,7 +801,7 @@ void ChartPixmap::drawPossiblePeaks(QPainter& painter, ChartWaveInfo* cwi)
 		// Decide what text to draw on top of the peak
 		QString sText;
 		QRect rcText;
-		if (m_params.peakMode == EadPeakMode_Edit)
+		if (m_params.peakMode == EadMarkerMode_Edit)
 			sText = QObject::tr("Add");
 		else
 		{
@@ -816,7 +822,7 @@ void ChartPixmap::drawPossiblePeaks(QPainter& painter, ChartWaveInfo* cwi)
 	}
 }
 
-void ChartPixmap::drawPeakTimes(QPainter& painter, ChartWaveInfo* cwi)
+void ChartPixmap::drawMarkerTimes(QPainter& painter, ChartWaveInfo* cwi)
 {
 	ViewWaveInfo* vwi = cwi->vwi;
 
@@ -998,7 +1004,7 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 	if (xCenter < 0 || yCenter < 0 || ptPixmap.x() > p.rcBorder.right() || ptPixmap.y() > p.rcBorder.bottom())
 		return;
 
-	//bool bPeaks = (m_params.task == EadTask_Review && m_params.peakMode == EadPeakMode_Edit);
+	//bool bPeaks = (m_params.task == EadTask_Review && m_params.peakMode == EadMarkerMode_Edit);
 
 	//if (bPeaks)
 	{
@@ -1116,7 +1122,7 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 		info->vwi = vwiWave;
 
 		// Check whether we're over an area handle
-		bool bPeakEdit = (m_params.task == EadTask_Review && m_params.peakMode == EadPeakMode_Edit);
+		bool bPeakEdit = (m_params.task == EadTask_Review && m_params.peakMode == EadMarkerMode_Edit);
 		if (bPeakEdit)
 		{
 			const WaveInfo* wave = vwiWave->wave();

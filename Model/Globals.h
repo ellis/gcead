@@ -58,7 +58,7 @@ public slots:
 	void setLastDir(const QString& sLastDir);
 
 signals:
-	void peakModeChanged(EadPeakMode peakMode);
+	void peakModeChanged(EadMarkerMode peakMode);
 
 private:
 	QString m_sLastDir;
