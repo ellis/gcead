@@ -78,7 +78,7 @@ private slots:
 	void actions_fileExit_triggered();
 	void on_actHelpAbout_triggered();
 
-	void on_cmbPeakFid_activated();
+	void cmbPeakFid_activated();
 
 private:
 	Ui::MainWindowClass ui;

@@ -627,8 +627,11 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		{
 			actSettings = new QAction(tr("Settings..."), &menu);
 			menu.addAction(actSettings);
-			if (wave->type == WaveType_FID)
+			if (wave->type == WaveType_FID) {
 				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
+				QAction* act = m_mainS->actions()->viewEditPeaks;
+				actAddMarker->setEnabled(act->isEnabled() && act->isChecked());
+			}
 			else
 				actAddMarker = new QAction(tr("Add Time Marker"), &menu);
 			menu.addAction(actAddMarker);
@@ -662,9 +665,12 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		}
 		else if (act == actRemoveMarker)
 		{
-			CHECK_ASSERT_NORET(info.iChosenPeak >= 0);
-			if (info.iChosenPeak >= 0)
-				vwi->unchoosePeakAtIndex(info.iChosenPeak);
+			int i = -1;
+			if (info.iChosenPeak >= 0) i = info.iChosenPeak;
+			else if (info.iLeftAreaHandle >= 0) i = info.iLeftAreaHandle;
+			else if (info.iRightAreaHandle >= 0) i = info.iRightAreaHandle;
+			if (i >= 0)
+				vwi->unchoosePeakAtIndex(i);
 		}
 	}
 

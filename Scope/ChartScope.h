@@ -47,7 +47,6 @@ public:
 
 	int sampleCount();
 
-	void redraw();
 	const ChartPixmap* draw(const QSize& sz);
 
 signals:
@@ -62,6 +61,7 @@ signals:
 
 public slots:
 	void setSampleOffset(int nSampleOffset);
+	void redraw();
 	void zoomOut();
 	void zoomIn();
 	void zoomFull();

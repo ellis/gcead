@@ -1,29 +1,4 @@
-	ChartWidget:
-	x	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
-		right-click menu:
-		x	implement Settings
-			should "Add time Marker" should be disabled if not in edit mode?
-6			"Add Peak Marker" should be disabled if not in edit mode
-	x	Add the vertical marker line to the area that is detected as part of the marker, not just the text
-	x	Detect mouse-over-marker even when not in edit mode
-5		BUG: turning off verified peaks in publish mode doesn't work
-			connect to settingsChanged() signal somehow
-		x	only show markers conditionally
-	x	click-and-scroll with the scroll wheel to drag the timeline
-	x	display of standard deviation around average
-		x	create a common function for rough and smooth which just draws polylines
-		x	make sure that it works when zoomed in to 100ms too.
-		x	publish option to hide the standard deviation lines
-	x	make ChartScope update the timebase string appropriately so that it gets displayed
-	x	update status line when there is a timebase change
-	x	Mouse cursors:
-		x	dragging wave: SizeVerCursor
-		x	dragging marker: SizeHorCursor
-		x	dragging peak handle: SizeHorCursor
-		x	dragging timeline: SizeHorCursor
-		x	selecting: IBeamCursor
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-x	in publish mode: checkboxes for time not saved between sessions, off by default (or remove this option?)
 	import of Autospike-CSV files and old EAG files
 	Add tooltips to the Peak buttons in the toolbar
 	Add more instructions about markers
@@ -43,6 +18,26 @@ x	View menu: zoom in/out/full
 x	Let user scroll chart with the mouse wheel
 x	View menu: scroll -> scroll page right/left, scroll division left/right
 x	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
+x	in publish mode: checkboxes for time not saved between sessions, off by default (or remove this option?)
+x	ChartWidget:
+	x	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
+	x	right-click menu
+	x	Add the vertical marker line to the area that is detected as part of the marker, not just the text
+	x	Detect mouse-over-marker even when not in edit mode
+	x	BUG: turning off verified peaks in publish mode doesn't work
+	x	click-and-scroll with the scroll wheel to drag the timeline
+	x	display of standard deviation around average
+		x	create a common function for rough and smooth which just draws polylines
+		x	make sure that it works when zoomed in to 100ms too.
+		x	publish option to hide the standard deviation lines
+	x	make ChartScope update the timebase string appropriately so that it gets displayed
+	x	update status line when there is a timebase change
+	x	Mouse cursors:
+		x	dragging wave: SizeVerCursor
+		x	dragging marker: SizeHorCursor
+		x	dragging peak handle: SizeHorCursor
+		x	dragging timeline: SizeHorCursor
+		x	selecting: IBeamCursor
 
 
 
@@ -77,12 +72,6 @@ x	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
 	x	svn:ignore relevant directories/files
 	x	set proper app version number
 
-Link for info about writing a MatLab plugin
-	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf
-
-
-?	Resolve: what units should GcDelay be in?  Timeshifting is done 1 second at a time...
-?	RecordDialog: start recording on trigger
 	
 	testing
 		Verify that all menu actions are connected
@@ -90,8 +79,6 @@ Link for info about writing a MatLab plugin
 	user documentation
 	programmer documentation
 	open-source it
-		setup sourceforge svn
-		import into sourceforge svn
 		upload EXEs to sourceforge
 
 FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possible
@@ -109,6 +96,7 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 	EadFile: returned more detailed information when load/save fail (and show it to user)
 	Globals: set whether File or Print output was last selected (variables already exist in PublisherSettings, and they are loaded and saved in Globals)
 	MainScope: only enable m_actions->fileExportRetentionData when the user has set/verified peaks
+	MainScope: add undo/redo
 	MainWindow: Beep when done recording?
 	PanelTabs: consider choosing equal widths for tabs, if space allows
 	PanelTabs: draw shadow around active tab?
@@ -127,9 +115,14 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 	WaveEditorWidget: add a wave color?
 	WaveEditorWidget: let user edit name
 
-	Refactor: ChartScope: create a chart scope and use it for ChartWidget (rename ChartWidget to ChartView then)
+	Refactor: ChartPixmap: remove knowledge of the current EadTask (perform task-specific logic via other variables)
+	Refactor: ChartScope: remove knowledge of the current EadTask (perform task-specific logic via other variables)
 	Refactor: MainScope: move File|Open Recent from MainWindow to MainScope
+	Refactor: Task*Scope: create scope classes for the Task widgets too
 	Refactor: Rename widgets for the right side: View*Widget
 	Refactor: only call Globals->file()->updateAveWaves() from ViewInfo?
 	Refactor: WaveInfo: vwiUser is a HACK, see if we can improve this
 	Refactor: TaskReviewWidget: figure out a way to use WaveEditorWidget instead of painting everything ourselves, but still maintain smooth drawing
+
+Link for info about writing a MatLab plugin
+	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf

@@ -114,7 +114,7 @@ void MainWindow::setupWidgets()
 	m_taskStack->setCurrentIndex(1);
 
 	//connect(m_taskRecord, SIGNAL(updateRecordings()), m_chart, SLOT(updateRecordings()));
-	connect(m_taskPublish, SIGNAL(settingsChanged()), m_chart, SLOT(repaintChart()));
+	connect(m_taskPublish, SIGNAL(settingsChanged()), m_scope->chart(), SLOT(redraw()));
 
 	//
 	// Setup view widgets
@@ -247,7 +247,7 @@ void MainWindow::setupActions()
 	connect(actions->fileExportRetentionData, SIGNAL(triggered()), this, SLOT(actions_fileExportRetentionData_triggered()));
 	connect(actions->fileExit, SIGNAL(triggered()), this, SLOT(actions_fileExit_triggered()));
 	connect(actions->viewChartRecording, SIGNAL(changed()), this, SLOT(actions_viewChartRecording_changed()));
-	connect(m_cmbPeakFid, SIGNAL(activated(int)), this, SLOT(on_cmbPeakFid_activated()));
+	connect(m_cmbPeakFid, SIGNAL(activated(int)), this, SLOT(cmbPeakFid_activated()));
 }
 
 void MainWindow::readSettings()
@@ -453,7 +453,7 @@ void MainWindow::on_actHelpAbout_triggered()
 	QMessageBox::about(this, tr(APPNAME), s);
 }
 
-void MainWindow::on_cmbPeakFid_activated()
+void MainWindow::cmbPeakFid_activated()
 {
 	int iItem = m_cmbPeakFid->currentIndex();
 	int id = m_cmbPeakFid->itemData(iItem).toInt();
