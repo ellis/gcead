@@ -188,8 +188,8 @@ private:
 	void drawGrid(QPainter& painter);
 	void drawWaveform(QPainter& painter, ChartWaveInfo* vwi);
 	void drawWaveformRough(QPainter& painter, const ChartWaveInfo* vwi);
-	void drawWaveformRough(QPainter& painter, const ViewWaveInfo* vwi, const RenderData* render, const QColor& clr);
 	void drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* vwi);
+	void drawWaveformStd(QPainter& painter, const ChartWaveInfo* cwi);
 	void drawWaveformDigital(QPainter& painter, ChartWaveInfo* vwi);
 	void drawWaveName(QPainter& painter, ChartWaveInfo* vwi, bool bHilight);
 	void drawPossiblePeaks(QPainter& painter, ChartWaveInfo* vwi);

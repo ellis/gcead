@@ -179,9 +179,11 @@ void RenderData::renderStd(ViewWaveInfo* vwi, int tidxStart_, int nPixels_, doub
 			if (iSample > didxLast)
 				iSample = didxLast;
 
-			double n = (data[iSample - didxFirst] + avedata[iSample - didxFirst]); // Need to subtract didxFirst here because we offset data by didxFirst above
-			pixdata->yBot = n;
-			pixdata->yTop = n;
+			double n = avedata[iSample - didxFirst]; // Need to subtract didxFirst here because we offset data by didxFirst above
+			double nStd = data[iSample - didxFirst];
+			double less = n - nStd;
+			pixdata->yBot = n - nStd;
+			pixdata->yTop = n + nStd;
 			pixdata++;
 		}
 	}

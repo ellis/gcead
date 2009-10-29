@@ -501,6 +501,7 @@ void ChartPixmap::drawWaveformRough(QPainter& painter, const ChartWaveInfo* cwi)
 {
 	const ViewWaveInfo* vwi = cwi->vwi;
 	const WaveInfo* wave = vwi->wave();
+	const RenderData* render = cwi->render;
 
 	QColor clrWave = color((wave->recId() >= 1) ? ChartColor_Wave : ChartColor_WaveAve);
 	if (m_file->newRec() != NULL && wave->recId() == m_file->newRec()->id())
@@ -508,22 +509,14 @@ void ChartPixmap::drawWaveformRough(QPainter& painter, const ChartWaveInfo* cwi)
 
 	// If this is an averaged wave
 	if (wave->recId() == 0)
-	{
-		QColor clrStd(255, 0, 0, 100);
-		drawWaveformRough(painter, vwi, cwi->renderStd, clrStd);
-	}
+		drawWaveformStd(painter, cwi);
 
-	drawWaveformRough(painter, vwi, cwi->render, clrWave);
-}
-
-void ChartPixmap::drawWaveformRough(QPainter& painter, const ViewWaveInfo* vwi, const RenderData* render, const QColor& clr)
-{
 	int yTop = p.rcBorder.top() + int(vwi->divisionOffset() * p.nDivisionSize);
 	double nDataToYFactor = p.nDivisionSize / vwi->voltsPerDivision();
 
 	const MinMax* pixdata = render->pixels.constData();
 
-	painter.setPen(clr);
+	painter.setPen(clrWave);
 
 	double n = pixdata->yBot;
 	int y = yTop - int(n * nDataToYFactor);
@@ -584,49 +577,17 @@ void ChartPixmap::drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* cwi
 	if (m_params.elements.testFlag(ChartElement_SmoothWaves) || m_params.task == EadTask_Publish)
 		painter.setRenderHint(QPainter::Antialiasing, true);
 
-	// If this is an averaged wave
-	QPoint* line = new QPoint[render->nPixels];
-
-	QPoint* pt = NULL;
 	if (wave->recId() == 0)
-	{
-		painter.setPen(QColor(255, 0, 0, 100));
-
-		const MinMax* pixdata;
-		int x;
-
-		pixdata = cwi->renderStd->pixels.constData();
-		x = xStart;
-		pt = line;
-		while (x < xEnd)
-		{
-			int y0 = yTop - int(pixdata->yBot * nDataToYFactor); // Lower side (greater y-coordinate)
-			*pt++ = QPoint(x, y0);
-			x++;
-			pixdata++;
-		}
-		painter.drawPolyline(line, render->nPixels);
-
-		pixdata = cwi->renderStd->pixels.constData();
-		x = xStart;
-		pt = line;
-		while (x < xEnd)
-		{
-			int y1 = yTop - int(pixdata->yTop * nDataToYFactor); // Upper side (lesser y-coordinate)
-			*pt++ = QPoint(x, y1);
-			x++;
-			pixdata++;
-		}
-		painter.drawPolyline(line, render->nPixels);
-	}
+		drawWaveformStd(painter, cwi);
 
 	QColor clrWave = color((wave->recId() >= 1) ? ChartColor_Wave : ChartColor_WaveAve);
 	if (m_file->newRec() != NULL && wave->recId() == m_file->newRec()->id())
 		clrWave = color(ChartColor_WaveRec);
 
+	QPoint* line = new QPoint[render->nPixels];
+	QPoint* pt = line;
 	const MinMax* pixdata = render->pixels.constData();
 	int x = xStart;
-	pt = line;
 	while (x < xEnd)
 	{
 		int y0 = yTop - int(pixdata->yBot * nDataToYFactor); // Lower side (greater y-coordinate)
@@ -641,6 +602,54 @@ void ChartPixmap::drawWaveformSmooth(QPainter& painter, const ChartWaveInfo* cwi
 
 	if (m_params.elements.testFlag(ChartElement_SmoothWaves) || m_params.task == EadTask_Publish)
 		painter.setRenderHint(QPainter::Antialiasing, false);
+
+	delete[] line;
+}
+
+void ChartPixmap::drawWaveformStd(QPainter& painter, const ChartWaveInfo* cwi)
+{
+	const ViewWaveInfo* vwi = cwi->vwi;
+	const WaveInfo* wave = vwi->wave();
+	const RenderData* render = cwi->render;
+	int yTop = p.rcBorder.top() + int(vwi->divisionOffset() * p.nDivisionSize);
+	int xWidth = p.rcBorder.right() - p.rcBorder.left();
+	double nDataToYFactor = p.nDivisionSize / vwi->voltsPerDivision();
+
+	int xStart = p.rcBorder.left() + render->xOffset;
+	int xEnd = xStart + render->nPixels;
+
+	QPoint* line = new QPoint[render->nPixels];
+	QPoint* pt = NULL;
+	painter.setPen(QColor(255, 0, 0, 100));
+
+	const MinMax* pixdata;
+	int x;
+
+	pixdata = cwi->renderStd->pixels.constData();
+	x = xStart;
+	pt = line;
+	while (x < xEnd)
+	{
+		int y0 = yTop - int(pixdata->yBot * nDataToYFactor); // Lower side (greater y-coordinate)
+		*pt++ = QPoint(x, y0);
+		x++;
+		pixdata++;
+	}
+	painter.drawPolyline(line, render->nPixels);
+
+	pixdata = cwi->renderStd->pixels.constData();
+	x = xStart;
+	pt = line;
+	while (x < xEnd)
+	{
+		int y1 = yTop - int(pixdata->yTop * nDataToYFactor); // Upper side (lesser y-coordinate)
+		*pt++ = QPoint(x, y1);
+		x++;
+		pixdata++;
+	}
+	painter.drawPolyline(line, render->nPixels);
+
+	delete[] line;
 }
 
 void ChartPixmap::drawWaveformDigital(QPainter& painter, ChartWaveInfo* cwi)
