@@ -57,7 +57,8 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 	: TaskWidget(parent)
 {
 	m_scope = scope;
-	m_scope->
+	//m_scope->
+	connect(m_scope, SIGNAL(waveListChanged()), this, SLOT(on_scope_waveListChanged()));
 	connect(m_scope, SIGNAL(peakModeChanged(EadMarkerMode)), this, SLOT(on_scope_peakModeChanged()));
 
 	setAttribute(Qt::WA_OpaquePaintEvent);
@@ -103,6 +104,7 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 
 void TaskReviewWidget::setupItems(EadFile* file)
 {
+	//qDebug() << "setupItems";
 	m_file = file;
 
 	// Clear all group items
@@ -492,6 +494,8 @@ void TaskReviewWidget::paintGroupBackground(QPainter& p, const QString& sTitle, 
 
 void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 {
+	CHECK_PRECOND_RET(item.vwi != NULL);
+
 	ViewWaveInfo* vwi = item.vwi;
 	const WaveInfo* wave = vwi->wave();
 
@@ -513,7 +517,7 @@ void TaskReviewWidget::paintGroupItem(QPainter& p, const ItemInfo& item)
 	p.setFont(font);
 
 	// Draw edit icon to the right of the name
-	int flagsExtra = item.vwi->editorFlags & (WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Timeshift);
+	int flagsExtra = vwi->editorFlags & (WaveEditorFlag_Comment | WaveEditorFlag_Invert | WaveEditorFlag_Timeshift);
 	if (flagsExtra != 0) {
 		rc = paintPixmap(p, m_pixEdit, xEdit, rc.top());
 		m_arcEdit[&item] = rc;
@@ -680,6 +684,13 @@ void TaskReviewWidget::setAllVisible(bool bVisible)
 			}
 		}
 	}
+	update();
+}
+
+void TaskReviewWidget::on_scope_waveListChanged()
+{
+	//qDebug() << "TaskReviewWidget::on_scope_waveListChanged";
+	m_bLayout = true;
 	update();
 }
 

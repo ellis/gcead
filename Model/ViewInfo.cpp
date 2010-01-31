@@ -246,6 +246,7 @@ ViewWaveInfo* ViewInfo::addExtraWave(WaveInfo* wave)
 
 void ViewInfo::clearWaves()
 {
+	//qDebug() << "ViewInfo::clearWaves()";
 	qDeleteAll(m_vwis);
 	m_vwis.clear();
 }

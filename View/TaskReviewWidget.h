@@ -24,6 +24,7 @@
 #include <QWidget>
 
 #include <EadEnums.h>
+#include <ViewInfo.h>
 
 #include "TaskWidget.h"
 
@@ -36,7 +37,6 @@ class QVBoxLayout;
 
 class EadFile;
 class MainScope;
-class ViewWaveInfo;
 class WaveInfo;
 
 
@@ -69,7 +69,7 @@ private:
 
 	struct ItemInfo
 	{
-		ViewWaveInfo* vwi;
+		QPointer<ViewWaveInfo> vwi;
 		ItemMode mode; // REFACTOR: Use vwi->editorFlags instead
 		QRect rc;
 
@@ -109,6 +109,7 @@ private slots:
 	void on_cmbFid_activated();
 	void on_btnShowAll_clicked();
 	void on_btnHideAll_clicked();
+	void on_scope_waveListChanged();
 	void on_scope_peakModeChanged();
 
 private:

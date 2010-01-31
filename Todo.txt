@@ -1,5 +1,5 @@
-	BUG: start program, start recording, discard recording, click on checkbox to show EAD Average: shouldn't crash
-	BUG: when recording, incoming data should be displayed on the chart
+x	BUG: start program, start recording, discard recording, click on checkbox to show EAD Average: shouldn't crash
+x	BUG: when recording, incoming data should be displayed on the chart
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of Autospike-CSV files and old EAG files
 	Add tooltips to the Peak buttons in the toolbar

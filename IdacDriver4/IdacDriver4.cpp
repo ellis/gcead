@@ -408,7 +408,7 @@ static void iso_transfer_cb(struct libusb_transfer *transfer)
 {
         int iTransfer = (int) (size_t) transfer->user_data;
 	g_abIsoTransferDone[iTransfer] = true;
-	qDebug() << "iso_transfer_cb" << iTransfer;
+	//qDebug() << "iso_transfer_cb" << iTransfer;
 }
 
 /// @returns libusb error code

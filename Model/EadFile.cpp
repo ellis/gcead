@@ -537,20 +537,32 @@ bool EadFile::exportRetentionData(const QString& sFilename /*, EadFile::ExportFo
 	return true;
 }
 
-RecInfo* EadFile::createNewRecording()
+void EadFile::createNewRecording()
 {
 	// FIXME: for debug only
 	if (m_newRec != NULL)
 		qDebug() << "Woops";
-	CHECK_PRECOND_RETVAL(m_newRec == NULL, m_newRec);
+	CHECK_PRECOND_RET(m_newRec == NULL);
 
 	m_newRec = new RecInfo(m_recs.size());
 	
-	return m_newRec;
+	ViewInfo* view = viewInfo(EadView_Recording);
+	// Update the "Recording" view & save pointers for convenience
+	view->clearWaves();
+	view->addWave(m_newRec->ead());
+	view->addWave(m_newRec->fid());
+	view->addWave(m_newRec->digital());
+
+	// Set time of recording to now
+	m_newRec->setTimeOfRecording(QDateTime::currentDateTime());
+
+	emit waveListChanged();
 }
 
 void EadFile::discardNewRecording()
 {
+	//qDebug() << "EadFile::discardNewRecording()";
+
 	delete m_newRec;
 	m_newRec = 0;
 
@@ -562,6 +574,8 @@ void EadFile::discardNewRecording()
 
 void EadFile::saveNewRecording()
 {
+	//qDebug() << "EadFile::saveNewRecording()";
+
 	RecInfo* rec = m_newRec;
 
 	m_recs << m_newRec;

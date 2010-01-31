@@ -65,7 +65,10 @@ public:
 	bool exportRetentionData(const QString& sFilename /*, ExportFormat format*/);
 
 	RecInfo* newRec() { return m_newRec; }
-	RecInfo* createNewRecording();
+	/// Allocate new recording objects and add them to the recording view.
+	/// viewInfo(EadView_Recording).vwis() will then have at indexes
+	/// 0, 1, and 2 the ead, fid, and digital waves.
+	void createNewRecording();
 	void discardNewRecording();
 	/// Place m_newRec into m_recs and set m_newRec = NULL
 	void saveNewRecording();

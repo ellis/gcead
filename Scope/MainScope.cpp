@@ -17,6 +17,7 @@
 
 #include "MainScope.h"
 
+#include <QtDebug>
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
@@ -106,6 +107,10 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->recordSave, SIGNAL(triggered()), this, SLOT(on_actions_recordSave_triggered()));
 	connect(m_actions->recordDiscard, SIGNAL(triggered()), this, SLOT(on_actions_recordDiscard_triggered()));
 	connect(m_actions->recordHardwareConnect, SIGNAL(triggered()), this, SLOT(on_actions_recordHardwareConnect_triggered()));
+
+	EadFile* file = m_file;
+	m_file = NULL;
+	setFile(file);
 }
 
 MainScope::~MainScope()
@@ -550,16 +555,12 @@ void MainScope::on_actions_recordRecord_triggered()
 	{
 		m_file->discardNewRecording();
 
-		RecInfo* rec = m_file->createNewRecording();
+		m_file->createNewRecording();
 		ViewInfo* view = m_file->viewInfo(EadView_Recording);
-		// Update the "Recording" view & save pointers for convenience
-		view->clearWaves();
-		m_vwiEad = view->addWave(rec->ead());
-		m_vwiFid = view->addWave(rec->fid());
-		m_vwiDig = view->addWave(rec->digital());
-
-		// Set time of recording to now
-		rec->setTimeOfRecording(QDateTime::currentDateTime());
+		// Save pointers for convenience
+		m_vwiEad = view->vwis()[0];
+		m_vwiFid = view->vwis()[1];
+		m_vwiDig = view->vwis()[2];
 
 		int nDelaySamplesFid = Globals->idacSettings()->nGcDelay_ms / (1000 / EAD_SAMPLES_PER_SECOND);
 		m_vwiFid->setShift(-nDelaySamplesFid);
