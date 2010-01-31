@@ -68,7 +68,7 @@ void RecordHandler::calcRawToVoltageFactors(int iChan, int& nNum, int& nDen)
 		* 1000; // 1000 milli volts (1 volt) is full range
 
 	// FIXME: for debug  only
-	qDebug() << "nNum:" << nNum << "nDen:" << nDen;
+	//qDebug() << "nNum:" << nNum << "nDen:" << nDen;
 }
 
 bool RecordHandler::check()

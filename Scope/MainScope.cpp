@@ -667,8 +667,6 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 		// Delete ViewWaveInfos
 		if (m_file != NULL)
 		{
-			ViewInfo* view = m_file->viewInfo(EadView_Recording);
-			view->clearWaves();
 			// Delete RecInfo/WaveInfo
 			m_file->discardNewRecording();
 		}

@@ -31,7 +31,10 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.nPeakModeRecId = 0;
 
 	//m_nSampleOffset = 0; // REFACTOR: Do we need this?  Couldn't we use m_params.nSampleOffset instead?  PARTIAL ANSWER: this separation was used to let the user set a custom time unit in publishing, and then switch back to the "view" time scale later -- ellis, 2009-10-27
-	m_iScrollMax = 0;
+        m_iScrollMax = 0;
+        m_iScrollValue = 0;
+        m_nScrollPageStep = 1;
+        m_nScrollSingleStep = 1;
 
 	m_bRedraw = true;
 
