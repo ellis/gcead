@@ -406,7 +406,7 @@ static bool g_abIsoTransferDone[ISOCHRONOUS_CONTEXT_COUNT];
 
 static void iso_transfer_cb(struct libusb_transfer *transfer)
 {
-	int iTransfer = (int) transfer->user_data;
+        int iTransfer = (int) (size_t) transfer->user_data;
 	g_abIsoTransferDone[iTransfer] = true;
 	qDebug() << "iso_transfer_cb" << iTransfer;
 }
@@ -415,7 +415,7 @@ static void iso_transfer_cb(struct libusb_transfer *transfer)
 static int wait_for_iso_transfer(libusb_transfer* transfer)
 {
 	int r = 0;
-	int iTransfer = (int) transfer->user_data;
+        int iTransfer = (int) (size_t) transfer->user_data;
 
 	while (!g_abIsoTransferDone[iTransfer])
 	{
@@ -569,7 +569,7 @@ void IdacDriver4::sampleLoop()
 	bool bOverflow = false;
 	while (bSamplingPrev)
 	{
-		bool bSamplingNow = m_bSampling;
+		bool bSamplingNow = (m_bSampling && !bOverflow);
 		for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
 		{
 			ret = iso_reap(i);
@@ -582,14 +582,16 @@ void IdacDriver4::sampleLoop()
 				// TODO: abort if ret < 0 -- ellis, 2009-04-20
 			}
 
-			bOverflow = processSampledData(i, ret, bOverflow);
+			if (!bOverflow) {
+				bOverflow = processSampledData(i, ret);
 
-			if (bSamplingNow)
-			{
-				ret = iso_submit(i);
-				CHECK_USBRESULT_NORET(ret);
-				if (ret < 0) {
-					printf("isochronous submit returned %d\n", ret);
+				if (bSamplingNow)
+				{
+					ret = iso_submit(i);
+					CHECK_USBRESULT_NORET(ret);
+					if (ret < 0) {
+						printf("isochronous submit returned %d\n", ret);
+					}
 				}
 			}
 		}
@@ -597,11 +599,16 @@ void IdacDriver4::sampleLoop()
 	}
 
 	setIsoXferEnabled(false);
+
+	// TODO: Consider restarting if bOverflow == true && m_bSampling == true -- ellis, 2010-01-24
 }
 
-bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived, bool bOverflow) {
+bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
+	bool bOverflow = false;
 	int nPackets = (nBytesReceived > 0) ? (nBytesReceived / 600) : 0;
 
+	// FIXME: this variable is for debug only -- ellis, 2010-01-24
+	quint16* pEnd = (quint16*) (isobuf + 4800 * ISOCHRONOUS_CONTEXT_COUNT);
 	for (int iPacket = 0; iPacket < nPackets; iPacket++)
 	{
 		quint16* pBuffer = (quint16*) (isobuf + 4800 * iTransfer + 600 * iPacket);
@@ -609,6 +616,10 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived, bool bOv
 		int nWords = nBytes / 2;
 		for (int iWord = 0; iWord < nWords; iWord++)
 		{
+			// FIXME: for debug only -- ellis, 2010-01-24
+			if (pBuffer == pEnd) {
+				qDebug() << "processSampledData: iTransfer:" << iTransfer << "iPacket:" << iPacket << "nWords:" << nWords << "iWord:" << iWord;
+			}
 			// Read little-endian word
 			quint16 wData = *pBuffer++;
 
@@ -616,7 +627,7 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived, bool bOv
 			bool bParsed = IdacChannelState.ParseSample(wData, cds, cdStatus, actualSettings());
 
 			//printf("i:%d\t%d\t%d\t%d\t%x\n", iPacket, iWord, cds.uChannel, (int) bParsed, wData);
-			if (bParsed && !bOverflow)
+			if (bParsed)
 			{
 				// A sample was produced
 				if (g_nSamplesInBuffer < g_nSampleMax - 1)
@@ -643,6 +654,7 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived, bool bOv
 					bOverflow = true;
 					m_bSampling = false;
 					printf("OVERFLOW\n");
+					break;
 				}
 				/*
 				if (cds.uChannel == 1)// && !bPrinted)

@@ -33,6 +33,7 @@ IdacProxy::IdacProxy(IdacDriverManager* manager, QObject* parent)
 
 	m_state = IdacState_None;
 	m_errors = 0;
+        m_bAvailable = false;
 
 	m_cmdRequested = IdacCommand_None;
 	m_cmdQueued = IdacCommand_None;
