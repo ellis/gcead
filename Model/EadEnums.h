@@ -108,6 +108,7 @@ enum LoadSaveResult
 	LoadSaveResult_WrongFormat,
 	LoadSaveResult_VersionTooLow,
 	LoadSaveResult_VersionTooHigh,
+	LoadSaveResult_ImportedOldEad,
 	LoadSaveResult_DataCorrupt,
 };
 

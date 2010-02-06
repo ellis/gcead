@@ -31,6 +31,7 @@
 class QDataStream;
 class QDomDocument;
 class QDomElement;
+class QFile;
 
 
 class EadFile : public QObject
@@ -59,6 +60,7 @@ public:
 	const QList<RecInfo*>& recs() const { return m_recs; }
 	ViewInfo* viewInfo(EadView view);
 	
+	void clear();
 	bool saveAs(const QString& sFilename);
 	LoadSaveResult load(const QString& sFilename);
 	bool exportData(const QString& sFilename /*, ExportFormat format*/);
@@ -114,6 +116,8 @@ private:
 	void createViewWaveNode(QDomDocument& doc, QDomElement& parent, ViewWaveInfo *vwi);
 	void saveData(QDataStream& str);
 
+	LoadSaveResult loadOld(QDataStream& str);
+	LoadSaveResult loadCurrent(QDataStream& str);
 	void loadRecNode(QDomElement& elem);
 	void loadWaveNode(QDomElement& elem, WaveInfo* wave);
 	void loadPeakNode(QDomElement& elem, WaveInfo* wave);

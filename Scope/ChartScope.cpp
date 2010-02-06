@@ -1,5 +1,6 @@
 #include "ChartScope.h"
 
+#include <Check.h>
 #include <EadEnums.h>
 #include <Globals.h>
 #include <PublisherSettings.h>
@@ -185,9 +186,12 @@ int ChartScope::sampleCount()
 		foreach (ViewWaveInfo* vwi, m_params.view->vwis())
 		{
 			const WaveInfo* wave = vwi->wave();
-			int n = wave->display.size() + wave->shift();
-			if (n > nSamples)
-				nSamples = n;
+			CHECK_ASSERT_NORET(wave != NULL);
+			if (wave != NULL) {
+				int n = wave->display.size() + wave->shift();
+				if (n > nSamples)
+					nSamples = n;
+			}
 		}
 	}
 	// If the current view is empty, look in the whole file

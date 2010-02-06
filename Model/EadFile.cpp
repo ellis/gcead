@@ -48,7 +48,9 @@ EadFile::EadFile()
 EadFile::~EadFile()
 {
 	qDeleteAll(m_views);
+	m_views.clear();
 	qDeleteAll(m_recs);
+	m_recs.clear();
 	delete m_newRec;
 }
 
@@ -65,6 +67,28 @@ void EadFile::setComment(const QString& s)
 		m_sComment = s;
 		m_bDirty = true;
 		emit dirtyChanged();
+	}
+}
+
+void EadFile::clear()
+{
+	// Clear all but EadView_Averages
+	for (int i = EadView_EADs; i <= EadView_Recording; i++)
+		m_views[i]->clearWaves();
+
+	// Clear all but averages
+	while (m_recs.size() > 1) {
+		delete m_recs[1];
+		m_recs.removeAt(1);
+	}
+
+	m_sFilename.clear();
+	m_sComment.clear();
+	m_bDirty = false;
+	if (m_newRec)
+	{
+		delete m_newRec;
+		m_newRec = NULL;
 	}
 }
 
@@ -110,19 +134,129 @@ bool EadFile::saveAs(const QString& sFilename)
 
 LoadSaveResult EadFile::load(const QString& sFilename)
 {
-	QDomDocument doc("ead");
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly))
 		return LoadSaveResult_CouldNotOpen;
 
 	QDataStream str(&file);
-	
+
+	blockSignals(true);
+
+	clear();
+
 	// Check that this is really and EAD file
 	char sFormatId[4];
 	str.readRawData(sFormatId, 4);
-	if (QString("EAD") != sFormatId)
-		return LoadSaveResult_WrongFormat;
 
+	LoadSaveResult result;
+	// If this is the old EAD format:
+	if (QString(sFormatId).startsWith("BcV"))
+		result = loadOld(str);
+	// If this is the current EAD format:
+	else if (QString("EAD") == sFormatId)
+		result = loadCurrent(str);
+	else
+		result = LoadSaveResult_WrongFormat;
+
+	updateDisplay();
+	updateViewInfo();
+	updateAveWaves();
+
+	// Perform FID peak detection && calculation of verified peak areas
+	for (int i = 0; i < m_recs.count(); i++)
+	{
+		RecInfo* rec = m_recs[i];
+		rec->fid()->findFidPeaks();
+		rec->fid()->calcPeakAreas();
+	}
+
+	if (result == LoadSaveResult_Ok)
+		m_sFilename = sFilename;
+
+	m_bDirty = false;
+
+	blockSignals(false);
+
+	emit waveListChanged();
+
+	return result;
+}
+
+static int getInt(char* data_) {
+	uchar* data = (uchar*) data_;
+	int n = 0;
+	n |= data[0];
+	n |= data[1] << 8;
+	n |= data[2] << 16;
+	n |= data[3] << 24;
+	return n;
+}
+
+LoadSaveResult EadFile::loadOld(QDataStream& str)
+{
+	char data[4];
+
+	bool bFoundStart = false;
+	bool bDone = false;
+	const QString sSeek = "BcDataSet";
+	QString s;
+	while (!bFoundStart && !bDone) {
+		char c;
+		int n = str.readRawData(&c, 1);
+		if (n <= 0)
+			return LoadSaveResult_DataCorrupt;
+		s = s.right(sSeek.length() - 1) + c;
+		// If we've found the string we're scanning for:
+		if (s == sSeek) {
+			for (int i = 0; i < 7; i++) {
+				str.readRawData(&c, 1);
+			}
+			bDone = true;
+		}
+	}
+
+	//createAveWaves();
+
+	RecInfo* rec = new RecInfo(1);
+	WaveInfo* wave = rec->ead();
+
+	str.readRawData(data, 4);
+	int nSamples = getInt(data);
+	wave->nRawToVoltageFactorDen *= 2048;
+	wave->nRawToVoltageFactor = double(wave->nRawToVoltageFactorNum) / wave->nRawToVoltageFactorDen;
+	wave->raw.resize(nSamples * 10);
+	for (int i = 0; i < nSamples; i++) {
+		str.readRawData(data, 4);
+		int n = -getInt(data);
+		for (int j = 0; j < 10; j++)
+			wave->raw[i * 10 + j] = (short) n;
+	}
+
+	// Skip 11 bytes
+	wave = rec->fid();
+	for (int i = 0; i < 11; i++) {
+		char c;
+		str.readRawData(&c, 1);
+	}
+	str.readRawData(data, 4);
+	nSamples = getInt(data);
+	wave->nRawToVoltageFactorDen *= 2048;
+	wave->nRawToVoltageFactor = double(wave->nRawToVoltageFactorNum) / wave->nRawToVoltageFactorDen;
+	wave->raw.resize(nSamples * 10);
+	for (int i = 0; i < nSamples; i++) {
+		str.readRawData(data, 4);
+		int n = -getInt(data);
+		for (int j = 0; j < 10; j++)
+			wave->raw[i * 10 + j] = (short) n;
+	}
+
+	m_recs << rec;
+
+	return LoadSaveResult_ImportedOldEad;
+}
+
+LoadSaveResult EadFile::loadCurrent(QDataStream& str)
+{
 	// Check the file format version
 	qint32 nVersion;
 	str >> nVersion;
@@ -136,10 +270,9 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 	// Read in the XML
 	QString xml;
 	str >> xml;
+	QDomDocument doc("ead");
 	if (!doc.setContent(xml))
 		return LoadSaveResult_DataCorrupt;
-
-	blockSignals(true);
 
 	m_sComment = doc.documentElement().attribute("comment");
 
@@ -175,25 +308,6 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 		}
 	}
 
-	updateDisplay();
-	updateViewInfo();
-	updateAveWaves();
-
-	// Perform FID peak detection && calculation of verified peak areas
-	for (int i = 0; i < m_recs.count(); i++)
-	{
-		RecInfo* rec = m_recs[i];
-		rec->fid()->findFidPeaks();
-		rec->fid()->calcPeakAreas();
-	}
-
-	m_sFilename = sFilename;
-	m_bDirty = false;
-
-	blockSignals(false);
-
-	emit waveListChanged();
-
 	return LoadSaveResult_Ok;
 }
 
@@ -204,7 +318,6 @@ void EadFile::createRecNode(QDomDocument& doc, QDomElement& parent, RecInfo* rec
 	
 	elem.setAttribute("id", rec->id());
 	elem.setAttribute("time", rec->timeOfRecording().toTime_t());
-	//elem.setAttribute("shift", rec->shift());
 
 	foreach (WaveInfo* wave, rec->waves())
 		createWaveNode(doc, elem, wave);
@@ -214,11 +327,9 @@ void EadFile::loadRecNode(QDomElement& elem)
 {
 	int id = elem.attribute("id").toInt();
 	uint nSeconds = elem.attribute("time").toUInt();
-	//int nShift = elem.attribute("shift").toInt();
 	
 	RecInfo* rec = new RecInfo(id);
 	rec->setTimeOfRecording(QDateTime::fromTime_t(nSeconds));
-	//rec->setShift(nShift);
 
 	QDomNodeList waves = elem.elementsByTagName("wave");
 	for (int i = 0; i < waves.size(); i++)

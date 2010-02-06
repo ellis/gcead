@@ -407,6 +407,11 @@ void MainScope::open(const QString& _sFilename)
 	{
 		setFile(file);
 	}
+	else if (result == LoadSaveResult_ImportedOldEad)
+	{
+		setFile(file);
+		m_ui->showWarning(tr("You have imported a project from an old version of GcEad.  In order to preserve your changes, you may wish to save this project under a different filename."));
+	}
 	else
 	{
 		delete file;

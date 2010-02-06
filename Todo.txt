@@ -1,12 +1,40 @@
 x	BUG: start program, start recording, discard recording, click on checkbox to show EAD Average: shouldn't crash
 x	BUG: when recording, incoming data should be displayed on the chart
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-	import of Autospike-CSV files and old EAG files
+	import of Autospike-CSV files
+	import of old EAG files
+	x	EAD wave
+	x	FID wave
+2		scaling factors
 	Add tooltips to the Peak buttons in the toolbar
 	Add more instructions about markers
 		Click on "Add"
 		CTRL-Click or Right-Click
 	File comment dialog needs to be wider, and it should be multiline
+	Installation routine
+		Prohibit 64bit installation
+		Install USB filter
+		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
+		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
+	In record mode, when data gets to end of screen, use page-right instead of zoom-out
+	Display time till recording done
+	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
+	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
+5	Create unit tests
+		load sample project
+		open
+		save
+		views
+		charts
+		zooming
+		scrolling
+		edit/show wave comments
+		peaks
+		recording
+		hiding/unhiding waves
+		moving waves around on the chart
+		adding/removing extra waves from charts
+		inverting a wave
 
 
 DONE:
@@ -128,3 +156,16 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 
 Link for info about writing a MatLab plugin
 	www.mathworks.com/access/helpdesk/help/pdf_doc/daq/adaptorkit.pdf
+
+FILE FORMAT FROM OLD EAD PROGRAM (EXAMPLE1.EAD):
+	04E2: BcDataSet<CR><NL><6F><BF><02><00>
+	04F2: <9F><0F><00><00>: size
+	04F6: EAD data start
+	4372: EAD data end, then FID stuff
+	      <42><43><02><00>... (11 bytes)
+	437D: <9F><0F><00><00>: size
+	81FD: FID data end
+	0x02BF = 703
+	0x0002BF6F = 180079
+	81FD: 
+
