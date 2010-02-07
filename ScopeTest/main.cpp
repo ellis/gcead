@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008, 2009, 2010  Ellis Whitehead
+ * Copyright (C) 2010  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,61 +27,16 @@
 #include <Scope/MainScope.h>
 #include <Scope/MainScopeUi.h>
 
+#include "TestBase.h"
 
-class TestUi : public MainScopeUi
+
+class TestActions : public TestBase
 {
 public:
-	QString s;
-	QMessageBox::StandardButton btn;
-
-	QString sInformation, sWarning, sError, sStatus;
-	QString sLastDir, sCurrentFilename, sComment;
-
-	void clear() {
-		s = sInformation = sWarning = sError = sStatus = QString();
-	}
-
-	virtual QString getFileOpenFilename(const QString& sLastDir) { this->sLastDir = sLastDir; return s; }
-	virtual QString getFileSaveAsFilename(const QString& sCurrentFilename) { this->sCurrentFilename = sCurrentFilename; return s; }
-	/// Let user edit the file comment
-	virtual QString getComment(const QString& sComment) { this->sComment = sComment; return s; }
-	/// Return QMessageBox::Save, QMessageBox::Discard, or QMessageBox::Cancel
-	virtual QMessageBox::StandardButton warnAboutUnsavedChanged() { return btn; }
-	/// Pose a question to the user in dialog-box form and get an answer back
-	virtual QMessageBox::StandardButton question(const QString&, const QString& /*text*/, QMessageBox::StandardButtons, QMessageBox::StandardButton) { return btn; }
-	/// Show user this information and prompt for acknowledgement
-	virtual void showInformation(const QString& sTitle, const QString& sInformation) { Q_UNUSED(sTitle); this->sInformation = sInformation; }
-	/// Show user this warning message and prompt for acknowledgement
-	virtual void showWarning(const QString& sWarning) { this->sWarning = sWarning; }
-	/// Show user an error message and prompt for acknowledgement
-	virtual void showError(const QString& sTitle, const QString& sError) { Q_UNUSED(sTitle); this->sError = sError; }
-	/// Show status message (does not require user acknowledgement)
-	virtual void showStatusMessage(const QString& sStatus) { this->sStatus = sStatus; }
-
-	/// Wait for hardware to become available before proceeding.
-	/// @param bCloseOnAvailable if true, the dialog will automatically close as soon as the hardware becomes available.
-	/// @returns true if the hardware is now available, false if user clicks on "Cancel" while waiting.
-	virtual bool waitForHardware(IdacProxy* /*idac*/, bool /*bCloseOnAvailable*/) { return false; }
-	/// Let the user configure/setup recording
-	/// @returns true if recording should be initiated
-	virtual bool showRecordPreview(IdacProxy* idac) { Q_UNUSED(idac); return false; }
-	/// Let the user set the recording options
-	virtual void showRecordOptions(IdacProxy* idac) { Q_UNUSED(idac); }
-};
-
-
-class Test1
-{
-public:
-	Test1()
+	TestActions()
 	{
-		ui = new TestUi;
-		//IdacProxy* idac = IdacFactory::getProxy();
-		scope = new MainScope(ui, NULL);
-		sz = scope->chart()->pixmap()->sizeForAvailableArea(QSize(300, 400), 10);
-		iStep = 0;
-
 		Actions* actions = scope->actions();
+
 		QString sFilename;
 
 		// Load sample project
@@ -89,7 +44,7 @@ public:
 		QString sFilenameAves = snap("AVEs");
 		// Chart: EADs
 		actions->viewChartEads->trigger();
-		snap("EADs");
+		QString sFilenameEads = snap("EADs");
 		// Chart: FIDs
 		actions->viewChartFids->trigger();
 		snap("FIDs");
@@ -99,6 +54,10 @@ public:
 		// Chart: AVEs
 		actions->viewChartAverages->trigger();
 		compare("AVEs", sFilenameAves);
+
+		EadFile* file = scope->file();
+		ViewInfo* viewEad = file->viewInfo(EadView_EADs);
+		WaveInfo* waveFidAve = file->recs()[0]->fid();
 
 		//
 		// ZOOMING AND SCROLLING
@@ -149,7 +108,7 @@ public:
 		actions->viewWaveComments->setChecked(true);
 		compare("ALL", sFilenameAll);
 
-		ViewWaveInfo* vwiEad1All = scope->file()->viewInfo(EadView_All)->allVwis()[0];
+		ViewWaveInfo* vwiEad1All = scope->file()->viewInfo(EadView_All)->allVwis()[2];
 
 		// Add a comment
 		vwiEad1All->setComment("sample comment");
@@ -169,6 +128,7 @@ public:
 		//
 
 		actions->viewChartAverages->trigger();
+		compare("ALL", sFilenameAves);
 
 		// Hide peaks (shouldn't change anything visually)
 		actions->viewHidePeaks->trigger();
@@ -192,84 +152,57 @@ public:
 		// Show detected peaks
 		actions->viewDetectedPeaks->trigger();
 		snap("PeaksDetected1");
+
+		actions->viewHidePeaks->trigger();
+		compare("AVEs", sFilenameAves);
+
+		//
+		// WAVE VISIBILITY
+		//
+
+		actions->viewChartAll->trigger();
+		compare("ALL", sFilenameAll);
+
+		// Hide all waves
+		foreach (ViewWaveInfo* vwi, scope->file()->viewInfo(EadView_All)->allVwis())
+			vwi->setVisible(false);
+		snapAndContrast("HideAll", sFilenameAll);
+		// Show them again
+		foreach (ViewWaveInfo* vwi, scope->file()->viewInfo(EadView_All)->allVwis())
+			vwi->setVisible(true);
+		compare("ALL", sFilenameAll);
+
+		//
+		// EXTRA WAVES
+		//
+
+		actions->viewChartEads->trigger();
+		compare("EADs", sFilenameEads);
+
+		// Select FID 1
+		viewEad->setUserWave(waveFidAve);
+		sFilename = snapAndContrast("ShowFidAve", sFilenameEads);
+		// Move the extra wave
+		viewEad->vwiUser.setDivisionOffset(8);
+		snapAndContrast("MoveFidAve", sFilename);
+		// Remove extra wave
+		viewEad->setUserWave(NULL);
+		compare("HideFID1", sFilenameEads);
+
+		//
+		// INVERTING WAVES
+		//
+
+		actions->viewChartAll->trigger();
+		compare("ALL", sFilenameAll);
+
+		// Invert
+		vwiEad1All->invert();
+		snapAndContrast("Invert", sFilenameAll);
+		// Un-invert
+		vwiEad1All->invert();
+		compare("Uninvert", sFilenameAll);
 	}
-
-	~Test1()
-	{
-		//delete ui; // ui is deleted by MainScope
-		delete scope;
-	}
-
-
-private:
-	/// Construct a filename
-	QString getFilename(const QString& sLabel)
-	{
-		iStep++;
-		QString sFilename = QString("1-%0-%1.png").arg(iStep, 3, 10, QChar('0')).arg(sLabel);
-		return sFilename;
-	}
-
-	/// Get a chart snapshot
-	QImage getImage()
-	{
-		const ChartPixmap* cp = scope->chart()->pixmap();
-		scope->chart()->draw(sz);
-
-		QRect rc = cp->borderRect();
-		rc.adjust(-1, -1, 1, 1);
-		QImage image = cp->pixmap().toImage().copy(rc);
-		return image;
-	}
-
-	/// Save chart snapshot to disk and return the filename
-	QString snap(const QString& sLabel)
-	{
-		QString sFilename = getFilename(sLabel);
-		QImage image = getImage();
-		image.save(sFilename);
-
-		return sFilename;
-	}
-
-	QString snapAndContrast(const QString& sLabel, const QString& sFilenameContrast)
-	{
-		QString sFilename = getFilename(sLabel);
-		QImage image = getImage();
-		image.save(sFilename);
-
-		compare(image, sFilename, sFilenameContrast, false);
-
-		return sFilename;
-	}
-
-	bool compare(const QImage& image, const QString& sFilename, const QString& sFilenameContrast, bool bExpectEqual)
-	{
-		QImage orig(sFilenameContrast);
-		bool bEqual = (image == orig);
-		if (bEqual != bExpectEqual) {
-			qDebug() << "Comparison to" << sFilenameContrast << "failed.  See" << sFilename;
-			return false;
-		}
-		return true;
-	}
-
-	void compare(const QString& sLabel, const QString& sFilenameContrast, bool bExpectEqual = true)
-	{
-		QString sFilename = getFilename(sLabel);
-		QImage image = getImage();
-
-		if (!compare(image, sFilename, sFilenameContrast, bExpectEqual))
-			image.save(sFilename);
-	}
-
-	void contrast(const QString& sLabel, const QString& sFilename) { compare(sLabel, sFilename, false); }
-
-private:
-	TestUi* ui;
-	MainScope* scope;
-	QSize sz;
-	int iStep;
 };
 
 static QString sImagePrefix;
@@ -287,7 +220,7 @@ int main(int argc, char *argv[])
 
 	Globals = new GlobalVars();
 
-	Test1();
+	TestActions();
 
 	//a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	//int ret = a.exec();

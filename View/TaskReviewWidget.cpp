@@ -712,10 +712,6 @@ void TaskReviewWidget::selectExtraWave(WaveInfo* wave)
 
 	ViewInfo* view = m_file->viewInfo(m_scope->viewType());
 	view->setUserWave(wave);
-	
-	// Use the default position information
-	if (wave != NULL)
-		view->posExtra = wave->pos;
 
 	setupItems(m_file);
 }

@@ -86,5 +86,8 @@ QMAKE_EXTRA_TARGETS += idac2hex \
     idac4hex
 POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex \
     $${DESTDIR}/idc4fpga.hex
+HEADERS += \
+	TestBase.h
 SOURCES += \
-    ./main.cpp
+	TestBase.cpp \
+	./main.cpp

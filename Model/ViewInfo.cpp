@@ -257,13 +257,18 @@ void ViewInfo::setUserWave(WaveInfo* wave)
 	setEditorFlags(&vwiUser);
 	// Can't change visibility of the user-selected wave
 	vwiUser.editorFlags &= ~WaveEditorFlag_Visible;
+	// Use the default position information
+	if (wave != NULL)
+		posExtra = wave->pos;
 	emitChanged(ViewChangeEvent_Paint);
 }
 
 void ViewInfo::setEditorFlags(ViewWaveInfo* vwi)
 {
+	if (vwi->wave() == NULL)
+		vwi->editorFlags = 0;
 	// If this is an averaged waveform
-	if (vwi->wave()->recId() == 0)
+	else if (vwi->wave()->recId() == 0)
 	{
 		// If this is the "Averages" view:
 		if (m_viewType == EadView_Averages)

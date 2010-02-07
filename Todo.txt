@@ -21,6 +21,7 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	Display time till recording done
 2	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
 3	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
+?	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
 x	BUG: View | Show wave comments: doesn't work in View mode.
 1	Create unit tests
 	x	load sample project
@@ -29,21 +30,25 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 	x	scrolling
 	x	edit/show wave comments
 	.	peaks
-		hiding/unhiding waves
-		adding/removing extra waves from charts
-		inverting a wave
+	x	hiding/unhiding waves
+	x	adding/removing extra waves from charts
+	x	inverting a wave
 		save
+			moving waves around on the chart
+			position of extra wave
+			visibility status
+			comments
+			verified peaks
 		open
-		views
-		moving waves around on the chart
-		recording
 		publishing
+		recording
 		loading/saving settings
 8	Run unit tests in GUI
 		separate View and ViewMain
 		create ViewTest
 		run with valgrind
 10	Create new installer for Windows
+		update version number too
 
 
 DONE:
