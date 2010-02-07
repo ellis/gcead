@@ -533,7 +533,7 @@ static int iso_reap(int iTransfer)
 {
 	int ret = 0;
 #ifdef WIN32
-	ret = usb_reap_async(isourb[i], 5000);
+	ret = usb_reap_async(isourb[iTransfer], 5000);
 #else
 	libusb_transfer* transfer = iso_transfer[iTransfer];
 	ret = wait_for_iso_transfer(transfer);
