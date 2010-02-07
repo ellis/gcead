@@ -205,8 +205,86 @@ public:
 	}
 };
 
-static QString sImagePrefix;
 
+class TestSaving : public TestBase
+{
+public:
+	TestSaving()
+	{
+		Actions* actions = scope->actions();
+
+		QString sFilename;
+
+		// Load sample project
+		actions->fileLoadSampleProject->trigger();
+
+		EadFile* file = scope->file();
+		ViewInfo* viewAve = file->viewInfo(EadView_Averages);
+		ViewInfo* viewEad = file->viewInfo(EadView_EADs);
+		ViewInfo* viewFid = file->viewInfo(EadView_FIDs);
+		ViewInfo* viewAll = file->viewInfo(EadView_All);
+		ViewWaveInfo* vwiAveFid = viewAve->vwis()[1];
+		ViewWaveInfo* vwiEadEad1 = viewEad->vwis()[0];
+		ViewWaveInfo* vwiFidFid1 = viewFid->vwis()[0];
+		WaveInfo* waveFidAve = file->recs()[0]->fid();
+
+		//
+		// Chart: Aves
+		//
+
+		// Validate a detected peak on the FID wave
+		vwiAveFid->choosePeakAtDidx(vwiAveFid->wave()->peaks0[1].middle.i);
+
+		//
+		// Chart: EADs
+		//
+
+		// Add comment to EAD1
+		vwiEadEad1->setComment("first EAD");
+		// Invert EAD1
+		vwiEadEad1->invert();
+		// Set FID Ave as extra wave
+		viewEad->setUserWave(waveFidAve);
+		// Change position of extra wave
+		viewEad->vwiUser.setDivisionOffset(7.5);
+
+		//
+		// Chart: FIDs
+		//
+
+		// Move FID1 up
+		vwiFidFid1->setDivisionOffset(8);
+
+		//
+		// Chart: All
+		//
+
+		// Hide half of the waves
+		for (int i = 0; i < viewAll->allVwis().size(); i += 2)
+			viewAll->allVwis()[i]->setVisible(false);
+
+		actions->viewChartAverages->trigger();
+		QString sFilenameAve = snap("Ave");
+		actions->viewChartEads->trigger();
+		QString sFilenameEad = snap("Ead");
+		actions->viewChartFids->trigger();
+		QString sFilenameFid = snap("Fid");
+		actions->viewChartAll->trigger();
+		QString sFilenameAll = snap("All");
+
+		scope->save("test.ead");
+		scope->open("test.ead");
+
+		actions->viewChartAverages->trigger();
+		compare("Ave", sFilenameAve);
+		actions->viewChartEads->trigger();
+		compare("Ead", sFilenameEad);
+		actions->viewChartFids->trigger();
+		compare("Fid", sFilenameFid);
+		actions->viewChartAll->trigger();
+		compare("All", sFilenameAll);
+	}
+};
 
 
 void checkFailure(const char* sFile, int iLine)
@@ -220,7 +298,8 @@ int main(int argc, char *argv[])
 
 	Globals = new GlobalVars();
 
-	TestActions();
+	//TestActions();
+	TestSaving();
 
 	//a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	//int ret = a.exec();

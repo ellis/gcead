@@ -330,9 +330,8 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		// Check whether we need to hide the wave comments
 		else
 		{
-			if (Globals->viewSettings()->bShowWaveComments)
-				m_params.elements |= ChartElement_WaveComments;
-			else
+			m_params.elements |= ChartElement_AxisTime | ChartElement_Grid | ChartElement_Markers | ChartElement_StdDev | ChartElement_WaveComments | ChartElement_WaveNames;
+			if (!Globals->viewSettings()->bShowWaveComments)
 				m_params.elements &= ~ChartElement_WaveComments;
 		}
 		/*if (bOverrideTimebase)

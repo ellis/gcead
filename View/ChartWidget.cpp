@@ -371,6 +371,8 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 	}
 	else if (e->button() == Qt::MidButton)
 	{
+		m_clickInfo.iLeftAreaHandle = m_clickInfo.iRightAreaHandle = m_clickInfo.iChosenPeak = -1;
+		m_clickInfo.vwi = NULL;
 		m_bDragging = true;
 		setCursor(Qt::SizeHorCursor);
 	}

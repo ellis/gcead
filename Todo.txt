@@ -19,9 +19,9 @@ x	BUG: when recording, incoming data should be displayed on the chart
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
 	In record mode, when data gets to end of screen, use page-right instead of zoom-out
 	Display time till recording done
-2	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
-3	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
-?	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
+x	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
+x	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
+x	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
 x	BUG: View | Show wave comments: doesn't work in View mode.
 1	Create unit tests
 	x	load sample project
@@ -33,13 +33,9 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 	x	hiding/unhiding waves
 	x	adding/removing extra waves from charts
 	x	inverting a wave
-		save
-			moving waves around on the chart
-			position of extra wave
-			visibility status
-			comments
-			verified peaks
-		open
+	.	save/load
+			file comment
+			BUG: in Chart:All, EAG Ave doesn't remain hidden
 		publishing
 		recording
 		loading/saving settings
