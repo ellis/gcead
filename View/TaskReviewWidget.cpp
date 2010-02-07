@@ -100,7 +100,7 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 			"<i>Add marker:</i> Ctrl-Click on an EAD wave<br/>"
 			"<i>Add peak:</i> Ctrl-Click on an FID wave<br/>"
 			"<i>Adjust postition:</i> click and drag to move the marker or the area handles<br/>"
-			"<i>Remove:</i>right-click on a peak or marker and select &quot;Remove&quot;"
+			"<i>Remove:</i> right-click on a peak or marker and select &quot;Remove&quot;"
 			));
 	m_lblPeakTip->setWordWrap(true);
 	m_lblPeakTip->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);

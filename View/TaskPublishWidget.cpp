@@ -416,9 +416,10 @@ void TaskPublishWidget::on_btnSave_clicked()
 	{
 		int nWidth = m_chart->width();
 		int nHeight = m_chart->height();
-		if (Globals->publisherSettings()->nPublishSize > 0)
+		if (Globals->publisherSettings()->bPublishHeight && Globals->publisherSettings()->nPublishSize > 0)
 		{
-			nWidth = 1000000;
+			double nFactor = double(Globals->publisherSettings()->nPublishSize) / nHeight;
+			nWidth = int(nWidth * nFactor + 0.5);
 			nHeight = Globals->publisherSettings()->nPublishSize;
 		}
 		QSize size(nWidth, nHeight);

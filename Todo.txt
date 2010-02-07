@@ -19,6 +19,7 @@ x	Add more instructions about markers
 		Install USB filter
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
+	SVG saving: fix the height and width in order to eliminate all that extra blank space.
 	In record mode, when data gets to end of screen, use page-right instead of zoom-out
 	Display time till recording done
 x	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
