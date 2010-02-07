@@ -133,7 +133,7 @@ private slots:
 	void on_actions_viewChartFids_triggered();
 	void on_actions_viewChartAll_triggered();
 	void on_actions_viewChartRecording_triggered();
-	void on_actions_viewWaveComments_triggered();
+	void on_actions_viewWaveComments_toggled();
 	void on_actions_viewHidePeaks_triggered();
 	void on_actions_viewDetectedPeaks_triggered();
 	void on_actions_viewVerifiedPeaks_triggered();

@@ -74,8 +74,9 @@ class Test1
 public:
 	Test1()
 	{
+		TestUi* ui = new TestUi;
 		//IdacProxy* idac = IdacFactory::getProxy();
-		scope = new MainScope(new TestUi, NULL);
+		scope = new MainScope(ui, NULL);
 		sz = scope->chart()->pixmap()->sizeForAvailableArea(QSize(300, 400), 10);
 		iStep = 0;
 
@@ -96,7 +97,7 @@ public:
 		QString sFilenameAll = snap("ALL");
 		// Chart: AVEs
 		actions->viewChartAverages->trigger();
-		compare(sFilenameAves);
+		compare("AVEs", sFilenameAves);
 
 		//
 		// ZOOMING AND SCROLLING
@@ -113,9 +114,9 @@ public:
 		sFilename = snap("ScrollPageLeft");
 		// Try to scroll further to the left (should fail)
 		actions->viewScrollPageLeft->trigger();
-		compare(sFilename);
+		compare("ScrollPageLeft", sFilename);
 		actions->viewScrollDivLeft->trigger();
-		compare(sFilename);
+		compare("ScrollPageLeft", sFilename);
 		// Scroll division right
 		actions->viewScrollDivRight->trigger();
 		snap("ScrollDivRight");
@@ -126,9 +127,9 @@ public:
 		sFilename = snap("ScrollRight");
 		// Try to scroll further to the right (should fail)
 		actions->viewScrollDivRight->trigger();
-		compare(sFilename);
+		compare("ScrollRight", sFilename);
 		actions->viewScrollPageRight->trigger();
-		compare(sFilename);
+		compare("ScrollRight", sFilename);
 		// Zoom out 4 times
 		actions->viewZoomOut->trigger();
 		actions->viewZoomOut->trigger();
@@ -137,61 +138,125 @@ public:
 		snap("ZoomOut");
 		// Zoom full (should be same as sFilenameAves)
 		actions->viewZoomFull->trigger();
-		compare(sFilenameAll);
+		compare("ALL", sFilenameAll);
+
+		//
+		// Wave comments
+		//
+
+		actions->viewChartAll->trigger();
+		actions->viewWaveComments->setChecked(true);
+		compare("ALL", sFilenameAll);
+
+		ViewWaveInfo* vwiEad1All = scope->file()->viewInfo(EadView_All)->allVwis()[0];
+
+		// Add a comment
+		vwiEad1All->setComment("sample comment");
+		QString sFilenameComment = snapAndContrast("WaveComment", sFilenameAll);
+		// Hide comments
+		actions->viewWaveComments->toggle();
+		compare("WaveCommentsOff", sFilenameAll);
+		// Turn comments on again
+		actions->viewWaveComments->toggle();
+		compare("WaveCommentsOn", sFilenameComment);
+		// Hide comments again
+		actions->viewWaveComments->toggle();
+		compare("WaveCommentsOff", sFilenameAll);
 
 		//
 		// PEAKS
 		//
 
 		actions->viewChartAverages->trigger();
+
 		// Hide peaks (shouldn't change anything visually)
 		actions->viewHidePeaks->trigger();
-		compare(sFilenameAves);
+		compare("AVEs", sFilenameAves);
 		// Show detected peaks
 		actions->viewDetectedPeaks->trigger();
-		snap("PeaksDetected");
+		snapAndContrast("PeaksDetected", sFilenameAves);
 		// Edit peaks
 		actions->viewEditPeaks->trigger();
 		snap("PeaksEdit");
 		// Validate a detected peak on the FID wave
 		ViewWaveInfo* vwi = scope->file()->viewInfo(EadView_Averages)->vwis()[1];
-		qDebug() << "middle.i:" << vwi->wave()->peaks0[1].middle.i;
 		vwi->choosePeakAtDidx(vwi->wave()->peaks0[1].middle.i);
-		snap("PeakValidated");
+		snap("PeaksEdit1");
+		// Hide peaks
+		actions->viewHidePeaks->trigger();
+		compare("AVEs", sFilenameAves);
+		// Verified peaks
+		actions->viewVerifiedPeaks->trigger();
+		snap("PeaksVerified1");
+		// Show detected peaks
+		actions->viewDetectedPeaks->trigger();
+		snap("PeaksDetected1");
 	}
 
 
 private:
-	/// Return the filename saved to
-	QString snap(const QString& sLabel)
+	/// Construct a filename
+	QString getFilename(const QString& sLabel)
 	{
 		iStep++;
 		QString sFilename = QString("1-%0-%1.png").arg(iStep, 3, 10, QChar('0')).arg(sLabel);
+		return sFilename;
+	}
 
+	/// Get a chart snapshot
+	QImage getImage()
+	{
 		const ChartPixmap* cp = scope->chart()->pixmap();
 		scope->chart()->draw(sz);
 
 		QRect rc = cp->borderRect();
 		rc.adjust(-1, -1, 1, 1);
 		QImage image = cp->pixmap().toImage().copy(rc);
+		return image;
+	}
+
+	/// Save chart snapshot to disk and return the filename
+	QString snap(const QString& sLabel)
+	{
+		QString sFilename = getFilename(sLabel);
+		QImage image = getImage();
 		image.save(sFilename);
 
 		return sFilename;
 	}
 
-	bool compare(const QString& sFilename)
+	QString snapAndContrast(const QString& sLabel, const QString& sFilenameContrast)
 	{
-		const ChartPixmap* cp = scope->chart()->pixmap();
-		scope->chart()->draw(sz);
+		QString sFilename = getFilename(sLabel);
+		QImage image = getImage();
+		image.save(sFilename);
 
-		QRect rc = cp->borderRect();
-		rc.adjust(-1, -1, 1, 1);
-		QImage image = cp->pixmap().toImage().copy(rc);
+		compare(image, sFilename, sFilenameContrast, false);
 
-		QImage orig(sFilename);
-		if (image != orig)
-			qDebug() << "Comparison to" << sFilename << "failed!";
+		return sFilename;
 	}
+
+	bool compare(const QImage& image, const QString& sFilename, const QString& sFilenameContrast, bool bExpectEqual)
+	{
+		QImage orig(sFilenameContrast);
+		bool bEqual = (image == orig);
+		if (bEqual != bExpectEqual) {
+			qDebug() << "Comparison to" << sFilenameContrast << "failed.  See" << sFilename;
+			return false;
+		}
+		return true;
+	}
+
+	void compare(const QString& sLabel, const QString& sFilenameContrast, bool bExpectEqual = true)
+	{
+		QString sFilename = getFilename(sLabel);
+		QImage image = getImage();
+
+		if (!compare(image, sFilename, sFilenameContrast, bExpectEqual))
+			image.save(sFilename);
+	}
+
+	void contrast(const QString& sLabel, const QString& sFilename) { compare(sLabel, sFilename, false); }
 
 private:
 	MainScope* scope;

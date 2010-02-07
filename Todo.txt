@@ -5,7 +5,8 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	import of old EAG files
 	x	EAD wave
 	x	FID wave
-		scaling factors
+9		scaling factors
+		comments
 5	Add tooltips to the Peak buttons in the toolbar
 6	Add more instructions about markers
 		Click on "Add"
@@ -20,14 +21,14 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	Display time till recording done
 2	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
 3	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
-4	BUG: View | Show wave comments: doesn't work in View mode.
+x	BUG: View | Show wave comments: doesn't work in View mode.
 1	Create unit tests
 	x	load sample project
 	x	charts
 	x	zooming
 	x	scrolling
-		edit/show wave comments
-		peaks
+	x	edit/show wave comments
+	.	peaks
 		hiding/unhiding waves
 		adding/removing extra waves from charts
 		inverting a wave
@@ -36,11 +37,13 @@ x	BUG: when recording, incoming data should be displayed on the chart
 		views
 		moving waves around on the chart
 		recording
+		publishing
+		loading/saving settings
 8	Run unit tests in GUI
 		separate View and ViewMain
 		create ViewTest
 		run with valgrind
-9	Create new installer for Windows
+10	Create new installer for Windows
 
 
 DONE:

@@ -44,7 +44,8 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 
 	m_ui = ui;
 	m_idac = idac;
-	connect(m_idac, SIGNAL(isAvailableChanged(bool)), this, SLOT(on_idac_isAvailable()));
+	if (m_idac != NULL)
+		connect(m_idac, SIGNAL(isAvailableChanged(bool)), this, SLOT(on_idac_isAvailable()));
 
 	m_actions = new Actions(this);
 	m_file = new EadFile;
@@ -97,7 +98,7 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->viewScrollDivRight, SIGNAL(triggered()), m_chart, SLOT(scrollDivRight()));
 	connect(m_actions->viewScrollPageLeft, SIGNAL(triggered()), m_chart, SLOT(scrollPageLeft()));
 	connect(m_actions->viewScrollPageRight, SIGNAL(triggered()), m_chart, SLOT(scrollPageRight()));
-	connect(m_actions->viewWaveComments, SIGNAL(triggered()), this, SLOT(on_actions_viewWaveComments_triggered()));
+	connect(m_actions->viewWaveComments, SIGNAL(toggled(bool)), this, SLOT(on_actions_viewWaveComments_toggled()));
 	connect(m_actions->viewHidePeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewHidePeaks_triggered()));
 	connect(m_actions->viewDetectedPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewDetectedPeaks_triggered()));
 	connect(m_actions->viewVerifiedPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewVerifiedPeaks_triggered()));
@@ -527,7 +528,7 @@ void MainScope::on_actions_viewChartFids_triggered() { setViewType(EadView_FIDs)
 void MainScope::on_actions_viewChartAll_triggered() { setViewType(EadView_All); }
 void MainScope::on_actions_viewChartRecording_triggered() { setViewType(EadView_Recording); }
 
-void MainScope::on_actions_viewWaveComments_triggered()
+void MainScope::on_actions_viewWaveComments_toggled()
 {
 	Globals->viewSettings()->bShowWaveComments = m_actions->viewWaveComments->isChecked();
 	m_chart->redraw();
