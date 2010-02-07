@@ -7,6 +7,7 @@ SUBDIRS = Core \
     IdacDriver2 \
     Idac \
     Scope \
+    ScopeTest \
     View
 OTHER_FILES += Todo.txt \
     UseCases.txt \

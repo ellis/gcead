@@ -222,6 +222,8 @@ void MainScope::setIsWindowModified(bool bWindowModified)
 
 void MainScope::setIsRecording(bool bRecording)
 {
+	CHECK_PRECOND_RET(m_idac != NULL);
+
 	if (bRecording != m_bRecording)
 	{
 		m_bRecording = bRecording;
@@ -263,7 +265,7 @@ void MainScope::updateActions()
 	m_actions->recordHardwareSettings->setEnabled(bHaveFile && !m_bRecording);
 	m_actions->recordSave->setEnabled(bHaveFile && m_bRecording);
 	m_actions->recordDiscard->setEnabled(bHaveFile && m_bRecording);
-	m_actions->recordHardwareConnect->setEnabled(!m_idac->isAvailable());
+	m_actions->recordHardwareConnect->setEnabled(m_idac != NULL && !m_idac->isAvailable());
 }
 
 void MainScope::updateWindowTitle()
@@ -340,6 +342,8 @@ void MainScope::updateRecentFileActions()
 
 bool MainScope::checkHardware()
 {
+	if (m_idac == NULL)
+		return false;
 	if (m_idac->isAvailable())
 		return true;
 	else
@@ -348,6 +352,7 @@ bool MainScope::checkHardware()
 
 void MainScope::on_idac_isAvailable()
 {
+	CHECK_PRECOND_RET(m_idac != NULL);
 	if (m_idac->isAvailable())
 	{
 		m_idac->loadDefaultChannelSettings(Globals->idacSettings()->channels);
@@ -609,6 +614,7 @@ void MainScope::on_actions_recordDiscard_triggered()
 
 void MainScope::on_actions_recordHardwareConnect_triggered()
 {
+	CHECK_PRECOND_RET(m_idac != NULL);
 	switch (m_idac->state())
 	{
 	case IdacState_None:
@@ -683,7 +689,7 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 
 void MainScope::on_recTimer_timeout()
 {
-	if (!m_recHandler->check() || !m_recHandler->convert())
+	if (m_recHandler == NULL || !m_recHandler->check() || !m_recHandler->convert())
 		return;
 
 	/*if (!m_bDataReceived)

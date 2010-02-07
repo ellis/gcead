@@ -5,12 +5,12 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	import of old EAG files
 	x	EAD wave
 	x	FID wave
-2		scaling factors
-	Add tooltips to the Peak buttons in the toolbar
-	Add more instructions about markers
+		scaling factors
+5	Add tooltips to the Peak buttons in the toolbar
+6	Add more instructions about markers
 		Click on "Add"
 		CTRL-Click or Right-Click
-	File comment dialog needs to be wider, and it should be multiline
+7	File comment dialog needs to be wider, and it should be multiline
 	Installation routine
 		Prohibit 64bit installation
 		Install USB filter
@@ -18,23 +18,29 @@ x	BUG: when recording, incoming data should be displayed on the chart
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
 	In record mode, when data gets to end of screen, use page-right instead of zoom-out
 	Display time till recording done
-	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
-	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
-5	Create unit tests
-		load sample project
-		open
-		save
-		views
-		charts
-		zooming
-		scrolling
+2	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
+3	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
+4	BUG: View | Show wave comments: doesn't work in View mode.
+1	Create unit tests
+	x	load sample project
+	x	charts
+	x	zooming
+	x	scrolling
 		edit/show wave comments
 		peaks
-		recording
 		hiding/unhiding waves
-		moving waves around on the chart
 		adding/removing extra waves from charts
 		inverting a wave
+		save
+		open
+		views
+		moving waves around on the chart
+		recording
+8	Run unit tests in GUI
+		separate View and ViewMain
+		create ViewTest
+		run with valgrind
+9	Create new installer for Windows
 
 
 DONE:
