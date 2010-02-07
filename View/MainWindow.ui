@@ -169,7 +169,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <resources>
-  <include location="Ead.qrc" />
+  <include location="View.qrc" />
  </resources>
  <connections/>
 </ui>

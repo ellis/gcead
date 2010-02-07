@@ -236,6 +236,7 @@ void MainWindow::setupActions()
 	//m_lblPeakFid = new QLabel(tr("Peak FID:"));
 	m_cmbPeakFid = new QComboBox(this);
 	m_cmbPeakFid->setEnabled(false);
+	m_cmbPeakFid->setToolTip(tr("Select an FID wave for peak editing"));
 	//ui.toolBar->addWidget(m_lblPeakFid);
 	ui.toolBar->addWidget(m_cmbPeakFid);
 	ui.toolBar->addSeparator();

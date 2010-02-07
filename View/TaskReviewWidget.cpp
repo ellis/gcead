@@ -94,7 +94,14 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 	connect(m_btnHideAll, SIGNAL(clicked()), this, SLOT(on_btnHideAll_clicked()));
 
 	m_lblPeakTip = new QLabel(this);
-	m_lblPeakTip->setText(tr("TIP: CTRL-click on the selected FID wave to mark a peak that was not automatically detected."));
+	m_lblPeakTip->setText(tr(
+			"<b>Edit Peaks:</b><br/>"
+			"<i>Verify a detected peak:</i> click on &quot;<span style='color:red'>Add</span>&quot;<br/>"
+			"<i>Add marker:</i> Ctrl-Click on an EAD wave<br/>"
+			"<i>Add peak:</i> Ctrl-Click on an FID wave<br/>"
+			"<i>Adjust postition:</i> click and drag to move the marker or the area handles<br/>"
+			"<i>Remove:</i>right-click on a peak or marker and select &quot;Remove&quot;"
+			));
 	m_lblPeakTip->setWordWrap(true);
 	m_lblPeakTip->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 	m_lblPeakTip->hide();
@@ -290,10 +297,8 @@ void TaskReviewWidget::layout(bool bLayoutItems)
 	// Position the FID hint
 	if (m_lblPeakTip->isVisible())
 	{
-		QRect rc(30, y, width() - 60, 40);
-		m_lblPeakTip->setGeometry(rc);
-		int nTipHeight = m_lblPeakTip->sizeHint().height();
-		rc.setHeight(nTipHeight);
+		int nTipHeight = m_lblPeakTip->heightForWidth(m_nWidthGroup);
+		QRect rc(nBorderGroup, y, m_nWidthGroup, nTipHeight);
 		m_lblPeakTip->setGeometry(rc);
 
 		y += nTipHeight;

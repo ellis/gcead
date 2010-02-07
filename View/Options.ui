@@ -73,7 +73,7 @@
          <string>Averages</string>
         </property>
         <property name="icon" >
-         <iconset resource="Ead.qrc" >:/images/stock_zoom-in.png</iconset>
+         <iconset resource="View.qrc" >:/images/stock_zoom-in.png</iconset>
         </property>
        </widget>
       </item>
@@ -146,7 +146,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="Ead.qrc" />
+  <include location="View.qrc" />
  </resources>
  <connections/>
 </ui>

@@ -5,13 +5,15 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	import of old EAG files
 	x	EAD wave
 	x	FID wave
-9		scaling factors
+3		scaling factors
+			new vmware image
+			install old EAD
 		comments
-5	Add tooltips to the Peak buttons in the toolbar
-6	Add more instructions about markers
+x	Add tooltips to the Peak buttons in the toolbar
+x	Add more instructions about markers
 		Click on "Add"
 		CTRL-Click or Right-Click
-7	File comment dialog needs to be wider, and it should be multiline
+	File comment dialog needs to be wider, and it should be multiline
 	Installation routine
 		Prohibit 64bit installation
 		Install USB filter
@@ -23,7 +25,7 @@ x	BUG: Load sample project; publish mode; view mode; now std dev is always shown
 x	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
 x	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
 x	BUG: View | Show wave comments: doesn't work in View mode.
-1	Create unit tests
+	Create unit tests
 	x	load sample project
 	x	charts
 	x	zooming
@@ -34,16 +36,19 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 	x	adding/removing extra waves from charts
 	x	inverting a wave
 	.	save/load
-			file comment
+			wave comment with XML special characters
+			file comment with XML special characters
 			BUG: in Chart:All, EAG Ave doesn't remain hidden
 		publishing
 		recording
 		loading/saving settings
-8	Run unit tests in GUI
+	Improve handling of IDAC overflow
+	Run unit tests in GUI
 		separate View and ViewMain
 		create ViewTest
 		run with valgrind
-10	Create new installer for Windows
+	Create new installer for Windows
+4		build EXE in Windows
 		update version number too
 
 
