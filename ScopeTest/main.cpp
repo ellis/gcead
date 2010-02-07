@@ -35,37 +35,38 @@ public:
 	QMessageBox::StandardButton btn;
 
 	QString sInformation, sWarning, sError, sStatus;
+	QString sLastDir, sCurrentFilename, sComment;
 
 	void clear() {
 		s = sInformation = sWarning = sError = sStatus = QString();
 	}
 
-	virtual QString getFileOpenFilename(const QString& sLastDir) { return s; }
-	virtual QString getFileSaveAsFilename(const QString& sCurrentFilename) { return s; }
+	virtual QString getFileOpenFilename(const QString& sLastDir) { this->sLastDir = sLastDir; return s; }
+	virtual QString getFileSaveAsFilename(const QString& sCurrentFilename) { this->sCurrentFilename = sCurrentFilename; return s; }
 	/// Let user edit the file comment
-	virtual QString getComment(const QString& sComment) { return s; }
+	virtual QString getComment(const QString& sComment) { this->sComment = sComment; return s; }
 	/// Return QMessageBox::Save, QMessageBox::Discard, or QMessageBox::Cancel
 	virtual QMessageBox::StandardButton warnAboutUnsavedChanged() { return btn; }
 	/// Pose a question to the user in dialog-box form and get an answer back
-	virtual QMessageBox::StandardButton question(const QString& title, const QString& text, QMessageBox::StandardButtons buttons = QMessageBox::Ok, QMessageBox::StandardButton defaultButton = QMessageBox::NoButton) { return btn; }
+	virtual QMessageBox::StandardButton question(const QString&, const QString& /*text*/, QMessageBox::StandardButtons, QMessageBox::StandardButton) { return btn; }
 	/// Show user this information and prompt for acknowledgement
-	virtual void showInformation(const QString& sTitle, const QString& sInformation) { this->sInformation = sInformation; }
+	virtual void showInformation(const QString& sTitle, const QString& sInformation) { Q_UNUSED(sTitle); this->sInformation = sInformation; }
 	/// Show user this warning message and prompt for acknowledgement
 	virtual void showWarning(const QString& sWarning) { this->sWarning = sWarning; }
 	/// Show user an error message and prompt for acknowledgement
-	virtual void showError(const QString& sTitle, const QString& sError) { this->sError = sError; }
+	virtual void showError(const QString& sTitle, const QString& sError) { Q_UNUSED(sTitle); this->sError = sError; }
 	/// Show status message (does not require user acknowledgement)
 	virtual void showStatusMessage(const QString& sStatus) { this->sStatus = sStatus; }
 
 	/// Wait for hardware to become available before proceeding.
 	/// @param bCloseOnAvailable if true, the dialog will automatically close as soon as the hardware becomes available.
 	/// @returns true if the hardware is now available, false if user clicks on "Cancel" while waiting.
-	virtual bool waitForHardware(IdacProxy* idac, bool bCloseOnAvailable) { return false; }
+	virtual bool waitForHardware(IdacProxy* /*idac*/, bool /*bCloseOnAvailable*/) { return false; }
 	/// Let the user configure/setup recording
 	/// @returns true if recording should be initiated
-	virtual bool showRecordPreview(IdacProxy* idac) { return false; }
+	virtual bool showRecordPreview(IdacProxy* idac) { Q_UNUSED(idac); return false; }
 	/// Let the user set the recording options
-	virtual void showRecordOptions(IdacProxy* idac) {}
+	virtual void showRecordOptions(IdacProxy* idac) { Q_UNUSED(idac); }
 };
 
 
@@ -74,7 +75,7 @@ class Test1
 public:
 	Test1()
 	{
-		TestUi* ui = new TestUi;
+		ui = new TestUi;
 		//IdacProxy* idac = IdacFactory::getProxy();
 		scope = new MainScope(ui, NULL);
 		sz = scope->chart()->pixmap()->sizeForAvailableArea(QSize(300, 400), 10);
@@ -193,6 +194,12 @@ public:
 		snap("PeaksDetected1");
 	}
 
+	~Test1()
+	{
+		//delete ui; // ui is deleted by MainScope
+		delete scope;
+	}
+
 
 private:
 	/// Construct a filename
@@ -259,6 +266,7 @@ private:
 	void contrast(const QString& sLabel, const QString& sFilename) { compare(sLabel, sFilename, false); }
 
 private:
+	TestUi* ui;
 	MainScope* scope;
 	QSize sz;
 	int iStep;
