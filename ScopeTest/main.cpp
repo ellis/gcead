@@ -298,8 +298,8 @@ int main(int argc, char *argv[])
 
 	Globals = new GlobalVars();
 
-	//TestActions();
-	TestSaving();
+	TestActions();
+	//TestSaving();
 
 	//a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	//int ret = a.exec();

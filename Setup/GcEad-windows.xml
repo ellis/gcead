@@ -1,7 +1,7 @@
 <project>
 	<shortName>GcEad</shortName>
-	<fullName>GC-EAD 2009</fullName>
-	<version>1.1</version>
+	<fullName>GC-EAD 2010</fullName>
+	<version>1.1.2</version>
 	<installerFilename></installerFilename>
 	<enableRollback>1</enableRollback>
 	<enableTimestamp>1</enableTimestamp>
@@ -69,6 +69,9 @@
 							<origin>../Installables/Windows/idac4_x64.cat</origin>
 						</distributionFile>
 						<distributionFile>
+							<origin>../Installables/Windows/libgcc_s_dw2-1.dll</origin>
+						</distributionFile>
+						<distributionFile>
 							<origin>../Installables/Windows/libusb0.dll</origin>
 						</distributionFile>
 						<distributionFile>
@@ -112,8 +115,8 @@
 			</folderList>
 			<desktopShortcutList>
 				<shortcut>
-					<name>GC-EAD 2009</name>
-					<comment>Run GC-EAD 2009</comment>
+					<name>GC-EAD 2010</name>
+					<comment>Run GC-EAD 2010</comment>
 					<windowsExec>${installdir}/GcEad.exe</windowsExec>
 					<windowsExecArgs></windowsExecArgs>
 					<windowsIcon>${installdir}/GcEad.ico</windowsIcon>
@@ -122,7 +125,7 @@
 			</desktopShortcutList>
 			<startMenuShortcutList>
 				<startMenuShortcut>
-					<name>GC-EAD 2009</name>
+					<name>GC-EAD 2010</name>
 					<comment>Gas Chromatography - Electroantennographic Detection</comment>
 					<windowsExec>${installdir}/GcEad.exe</windowsExec>
 					<windowsExecArgs></windowsExecArgs>
