@@ -123,9 +123,15 @@ void ChartScope::setRecordingOn(bool b)
 	if (b != m_bRecording) {
 		m_bRecording = b;
 
-		// If we're turning recording on, make sure the time starts at 0
+		// The scroll region is larger when recording
+		updateScrollbar();
+		// If we're turning recording on, make sure the recording time starts at 0
 		if (b == true)
 			setRecordingTime(0);
+		// When turning recording off, we need to re-adjust the scroll position
+		// to make sure that the user isn't scrolled past the data.
+		else
+			setSampleOffset(m_params.nSampleOffset);
 
 		// HACK: This is done because sometime when we [Discard] a recording and then [Record] a new one,
 		// we might get the same WaveInfo address allocated to us again, which would make ChartPixmap think
@@ -163,16 +169,6 @@ QString ChartScope::timebaseString() const
 	return timestampString(m_params.nSecondsPerDivision);
 }
 
-void ChartScope::forceSampleOffset(int nSampleOffset)
-{
-	if (nSampleOffset != m_params.nSampleOffset)
-	{
-		qDebug() << "forceSampleOffset:" << nSampleOffset;
-		m_params.nSampleOffset = nSampleOffset;
-		emitParamsChanged();
-	}
-}
-
 void ChartScope::setSampleOffset(int nSampleOffset)
 {
 	if (nSampleOffset > m_iScrollMax)
@@ -180,7 +176,11 @@ void ChartScope::setSampleOffset(int nSampleOffset)
 	if (nSampleOffset < 0)
 		nSampleOffset = 0;
 
-	forceSampleOffset(nSampleOffset);
+	if (nSampleOffset != m_params.nSampleOffset)
+	{
+		m_params.nSampleOffset = nSampleOffset;
+		emitParamsChanged();
+	}
 }
 
 void ChartScope::setSecondsPerDivisionIndex(int i)

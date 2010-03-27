@@ -40,8 +40,6 @@ public:
 	/// Get the recording time in seconds
 	int recordingTime() const { return m_nRecordingTime; }
 
-	/// Used during recording to set the sample offset without checking for scroll limits
-	void forceSampleOffset(int nSampleOffset);
 	void setSecondsPerDivisionIndex(int i);
 	/// Set seconds per division using the minimum value @param nMin
 	bool setSecondsPerDivisionMin(double nMin);

@@ -18,7 +18,8 @@ x	Add more instructions about markers
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
 	SVG saving: fix the height and width in order to eliminate all that extra blank space.
-2	In record mode, when data gets to end of screen, use page-right instead of zoom-out
+x	In record mode, when data gets to end of screen, use page-right instead of zoom-out
+x	After recording stop, re-adjust scrollbars and offset
 3	Add peak amplitude
 4	Think about merging recording from another EAD file
 		try export and import?

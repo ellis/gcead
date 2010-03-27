@@ -743,11 +743,11 @@ void MainScope::on_recTimer_timeout()
 	// Tell the chart to update when in Recording mode
 	if (viewType() == EadView_Recording) {
 		int nSampleLast = m_chart->pixmap()->lastSample();
-		if (nSamples > nSampleLast) {
-			qDebug() << "nSamples0:" << nSamples0 << "nSamples:" << nSamples << "nSampleFirst:" << m_chart->pixmap()->firstSample() << "nSampleLast:" << nSampleLast;
-		}
+		//if (nSamples > nSampleLast) {
+		//	qDebug() << "nSamples0:" << nSamples0 << "nSamples:" << nSamples << "nSampleFirst:" << m_chart->pixmap()->firstSample() << "nSampleLast:" << nSampleLast;
+		//}
 		if (nSamples0 <= nSampleLast && nSamples > nSampleLast) {
-			m_chart->forceSampleOffset(nSampleLast + 1);
+			m_chart->setSampleOffset(nSampleLast + 1);
 		}
 		m_chart->redraw();
 	}
