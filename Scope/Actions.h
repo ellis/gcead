@@ -55,16 +55,19 @@ public:
 	QAction* viewScrollPageLeft;
 	QAction* viewScrollPageRight;
 	QAction* viewWaveComments;
-	QAction* viewHidePeaks;
-	QAction* viewDetectedPeaks;
-	QAction* viewVerifiedPeaks;
-	QAction* viewEditPeaks;
 
 	QAction* recordRecord;
 	QAction* recordHardwareSettings;
 	QAction* recordSave;
 	QAction* recordDiscard;
 	QAction* recordHardwareConnect;
+
+	QAction* markersHide;
+	QAction* markersShowDetected;
+	QAction* markersShowVerified;
+	QAction* markersEditPeaks;
+	QAction* markersShowPeakPercent;
+	QAction* markersShowPeakAmplitude;
 };
 
 #endif

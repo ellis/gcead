@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008,2009  Ellis Whitehead
+ * Copyright (C) 2008,2009,2010  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,29 +115,6 @@ Actions::Actions(QObject *parent)
 	viewWaveComments = new QAction(tr("Show Wave &Comments"), this);
 	viewWaveComments->setCheckable(true);
 
-	group = new QActionGroup(this);
-	
-	viewHidePeaks = new QAction(tr("&Hide Peaks"), group);
-	viewHidePeaks->setCheckable(true);
-	viewHidePeaks->setIconText(tr("Hide"));
-	viewHidePeaks->setToolTip(tr("Hide peaks"));
-
-	viewDetectedPeaks = new QAction(tr("Show &Detected Peaks"), group);
-	viewDetectedPeaks->setCheckable(true);
-	viewDetectedPeaks->setIconText(tr("All"));
-	viewDetectedPeaks->setToolTip(tr("Show both verified and automatically detected peaks"));
-
-	viewVerifiedPeaks = new QAction(tr("Show &Verified Peaks"), group);
-	viewVerifiedPeaks->setCheckable(true);
-	viewVerifiedPeaks->setChecked(true);
-	viewVerifiedPeaks->setIconText(tr("Verified"));
-	viewVerifiedPeaks->setToolTip(tr("Show the peaks which you have manually verified"));
-
-	viewEditPeaks = new QAction(tr("&Edit Peaks"), group);
-	viewEditPeaks->setCheckable(true);
-	viewEditPeaks->setIconText(tr("Edit Peaks"));
-	viewEditPeaks->setToolTip(tr("Activate the mode for selecting peaks and adjusting their areas"));
-
 	//
 	// Record menu
 	//
@@ -154,4 +131,40 @@ Actions::Actions(QObject *parent)
 	recordDiscard = new QAction(tr("&Discard"), this);
 
 	recordHardwareConnect = new QAction(tr("&Connect to Hardware"), this);
+
+	//
+	// Markers menu
+	//
+
+
+	group = new QActionGroup(this);
+
+	markersHide = new QAction(tr("&Hide Markers"), group);
+	markersHide->setCheckable(true);
+	markersHide->setIconText(tr("Hide"));
+	markersHide->setToolTip(tr("Hide peaks"));
+
+	markersShowDetected = new QAction(tr("Show &Detected Peaks"), group);
+	markersShowDetected->setCheckable(true);
+	markersShowDetected->setIconText(tr("All"));
+	markersShowDetected->setToolTip(tr("Show both verified and automatically detected peaks"));
+
+	markersShowVerified = new QAction(tr("Show &Verified Markers"), group);
+	markersShowVerified->setCheckable(true);
+	markersShowVerified->setChecked(true);
+	markersShowVerified->setIconText(tr("Verified"));
+	markersShowVerified->setToolTip(tr("Show the peaks which you have manually verified"));
+
+	markersEditPeaks = new QAction(tr("&Edit Peaks"), group);
+	markersEditPeaks->setCheckable(true);
+	markersEditPeaks->setIconText(tr("Edit Peaks"));
+	markersEditPeaks->setToolTip(tr("Activate the mode for selecting peaks and adjusting their areas"));
+
+	group = new QActionGroup(this);
+
+	markersShowPeakPercent = new QAction(tr("Display Peak Area &Percentage"), group);
+	markersShowPeakPercent->setCheckable(true);
+
+	markersShowPeakAmplitude = new QAction(tr("Display Peak &Amplitude"), group);
+	markersShowPeakAmplitude->setCheckable(true);
 }

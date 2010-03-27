@@ -131,29 +131,29 @@ public:
 		compare("ALL", sFilenameAves);
 
 		// Hide peaks (shouldn't change anything visually)
-		actions->viewHidePeaks->trigger();
+		actions->markersHide->trigger();
 		compare("AVEs", sFilenameAves);
 		// Show detected peaks
-		actions->viewDetectedPeaks->trigger();
+		actions->markersShowDetected->trigger();
 		snapAndContrast("PeaksDetected", sFilenameAves);
 		// Edit peaks
-		actions->viewEditPeaks->trigger();
+		actions->markersEditPeaks->trigger();
 		snap("PeaksEdit");
 		// Validate a detected peak on the FID wave
 		ViewWaveInfo* vwi = scope->file()->viewInfo(EadView_Averages)->vwis()[1];
 		vwi->choosePeakAtDidx(vwi->wave()->peaks0[1].middle.i);
 		snap("PeaksEdit1");
 		// Hide peaks
-		actions->viewHidePeaks->trigger();
+		actions->markersHide->trigger();
 		compare("AVEs", sFilenameAves);
 		// Verified peaks
-		actions->viewVerifiedPeaks->trigger();
+		actions->markersShowVerified->trigger();
 		snap("PeaksVerified1");
 		// Show detected peaks
-		actions->viewDetectedPeaks->trigger();
+		actions->markersShowDetected->trigger();
 		snap("PeaksDetected1");
 
-		actions->viewHidePeaks->trigger();
+		actions->markersHide->trigger();
 		compare("AVEs", sFilenameAves);
 
 		//

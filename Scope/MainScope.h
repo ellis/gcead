@@ -132,16 +132,19 @@ private slots:
 	void on_actions_viewChartAll_triggered();
 	void on_actions_viewChartRecording_triggered();
 	void on_actions_viewWaveComments_toggled();
-	void on_actions_viewHidePeaks_triggered();
-	void on_actions_viewDetectedPeaks_triggered();
-	void on_actions_viewVerifiedPeaks_triggered();
-	void on_actions_viewEditPeaks_triggered();
 
 	void on_actions_recordRecord_triggered();
 	void on_actions_recordHardwareSettings_triggered();
 	void on_actions_recordSave_triggered();
 	void on_actions_recordDiscard_triggered();
 	void on_actions_recordHardwareConnect_triggered();
+
+	void on_actions_markersHide_triggered();
+	void on_actions_markersShowDetected_triggered();
+	void on_actions_markersShowVerified_triggered();
+	void on_actions_markersEditPeaks_triggered();
+	void on_actions_markersShowPeakPercent_toggled();
+
 	void on_recTimer_timeout();
 	void stopRecording(bool bSave, bool bAutoStop);
 

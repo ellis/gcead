@@ -29,6 +29,7 @@
 #include <Check.h>
 #include <Globals.h>
 #include <Utils.h>
+#include <ViewSettings.h>
 
 
 ChartPixmap::ChartPixmap()
@@ -878,8 +879,22 @@ void ChartPixmap::drawAreaLines(QPainter& painter, ChartWaveInfo* cwi)
 		int tidx1 = peak.didxMiddle + vwi->shift();
 		int x1 = sampleOffsetToX(tidx1);
 		int y1 = qMax(y0, y2) + 5;
-		int nPercent = int(peak.nPercent * 100 + 0.5);
-		QString s = QObject::tr("%0%").arg(nPercent);
+		QString s;
+		if (Globals->viewSettings()->bShowPeakPercent)
+		{
+			int nPercent = int(peak.nPercent * 100 + 0.5);
+			s = QObject::tr("%0%").arg(nPercent);
+		}
+		else
+		{
+			double n = peak.nAmplitude;
+			if (n >= 10)
+				s = QObject::tr("%0 mV").arg(n, 0, 'f', 0);
+			else if (n >= 1)
+				s = QObject::tr("%0 mV").arg(n, 0, 'g', 3);
+			else
+				s = QObject::tr("%0 mV").arg(n, 0, 'g', 2);
+		}
 		QRect rc(x1 - 100, y1, 201, 100);
 		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignTop, s);
 	}

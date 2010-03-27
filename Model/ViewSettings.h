@@ -26,10 +26,13 @@ class ViewSettings
 public:
 	/// Whether to show wave comments on the chart
 	bool bShowWaveComments;
+	/// Whether to show peak area percentage instead of peak amplitude
+	bool bShowPeakPercent;
 
 	ViewSettings()
 	{
 		bShowWaveComments = true;
+		bShowPeakPercent = true;
 	}
 };
 

@@ -212,11 +212,6 @@ void MainWindow::setupActions()
 	ui.mnuView->addMenu(mnu);
 	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewWaveComments);
-	ui.mnuView->addSeparator();
-	ui.mnuView->addAction(actions->viewHidePeaks);
-	ui.mnuView->addAction(actions->viewDetectedPeaks);
-	ui.mnuView->addAction(actions->viewVerifiedPeaks);
-	ui.mnuView->addAction(actions->viewEditPeaks);
 
 	ui.mnuRecord->addAction(actions->recordRecord);
 	ui.mnuRecord->addAction(actions->recordHardwareSettings);
@@ -225,13 +220,21 @@ void MainWindow::setupActions()
 	ui.mnuRecord->addSeparator();
 	ui.mnuRecord->addAction(actions->recordHardwareConnect);
 
+	ui.mnuMarkers->addAction(actions->markersHide);
+	ui.mnuMarkers->addAction(actions->markersShowDetected);
+	ui.mnuMarkers->addAction(actions->markersShowVerified);
+	ui.mnuMarkers->addAction(actions->markersEditPeaks);
+	ui.mnuMarkers->addSeparator();
+	ui.mnuMarkers->addAction(actions->markersShowPeakPercent);
+	ui.mnuMarkers->addAction(actions->markersShowPeakAmplitude);
+
 	ui.toolBar->addAction(actions->recordRecord);
 	ui.toolBar->addSeparator();
 	ui.toolBar->addWidget(new QLabel(tr("Markers:")));
-	ui.toolBar->addAction(actions->viewHidePeaks);
-	ui.toolBar->addAction(actions->viewDetectedPeaks);
-	ui.toolBar->addAction(actions->viewVerifiedPeaks);
-	ui.toolBar->addAction(actions->viewEditPeaks);
+	ui.toolBar->addAction(actions->markersHide);
+	ui.toolBar->addAction(actions->markersShowDetected);
+	ui.toolBar->addAction(actions->markersShowVerified);
+	ui.toolBar->addAction(actions->markersEditPeaks);
 	//m_lblPeakFid = new QLabel(tr("Peak FID:"));
 	m_cmbPeakFid = new QComboBox(this);
 	m_cmbPeakFid->setEnabled(false);

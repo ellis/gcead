@@ -73,6 +73,8 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 
 	updateRecentFileActions();
 	m_actions->viewWaveComments->setChecked(Globals->viewSettings()->bShowWaveComments);
+	m_actions->markersShowPeakPercent->setChecked(Globals->viewSettings()->bShowPeakPercent);
+	m_actions->markersShowPeakAmplitude->setChecked(!Globals->viewSettings()->bShowPeakPercent);
 
 	connect(m_actions->fileNew, SIGNAL(triggered()), this, SLOT(on_actions_fileNew_triggered()));
 	connect(m_actions->fileOpen, SIGNAL(triggered()), this, SLOT(on_actions_fileOpen_triggered()));
@@ -99,10 +101,11 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->viewScrollPageLeft, SIGNAL(triggered()), m_chart, SLOT(scrollPageLeft()));
 	connect(m_actions->viewScrollPageRight, SIGNAL(triggered()), m_chart, SLOT(scrollPageRight()));
 	connect(m_actions->viewWaveComments, SIGNAL(toggled(bool)), this, SLOT(on_actions_viewWaveComments_toggled()));
-	connect(m_actions->viewHidePeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewHidePeaks_triggered()));
-	connect(m_actions->viewDetectedPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewDetectedPeaks_triggered()));
-	connect(m_actions->viewVerifiedPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewVerifiedPeaks_triggered()));
-	connect(m_actions->viewEditPeaks, SIGNAL(triggered()), this, SLOT(on_actions_viewEditPeaks_triggered()));
+	connect(m_actions->markersHide, SIGNAL(triggered()), this, SLOT(on_actions_markersHide_triggered()));
+	connect(m_actions->markersShowDetected, SIGNAL(triggered()), this, SLOT(on_actions_markersShowDetected_triggered()));
+	connect(m_actions->markersShowVerified, SIGNAL(triggered()), this, SLOT(on_actions_markersShowVerified_triggered()));
+	connect(m_actions->markersEditPeaks, SIGNAL(triggered()), this, SLOT(on_actions_markersEditPeaks_triggered()));
+	connect(m_actions->markersShowPeakPercent, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShowPeakPercent_toggled()));
 	connect(m_actions->recordRecord, SIGNAL(triggered()), this, SLOT(on_actions_recordRecord_triggered()));
 	connect(m_actions->recordHardwareSettings, SIGNAL(triggered()), this, SLOT(on_actions_recordHardwareSettings_triggered()));
 	connect(m_actions->recordSave, SIGNAL(triggered()), this, SLOT(on_actions_recordSave_triggered()));
@@ -257,10 +260,10 @@ void MainScope::updateActions()
 	bool bView = (m_taskType == EadTask_Review);
 	m_actions->viewWaveComments->setEnabled(bView);
 	bool bPeaks = (bView && m_viewType != EadView_EADs);
-	m_actions->viewHidePeaks->setEnabled(bView);
-	m_actions->viewDetectedPeaks->setEnabled(bView);
-	m_actions->viewVerifiedPeaks->setEnabled(bView);
-	m_actions->viewEditPeaks->setEnabled(bPeaks);
+	m_actions->markersHide->setEnabled(bView);
+	m_actions->markersShowDetected->setEnabled(bView);
+	m_actions->markersShowVerified->setEnabled(bView);
+	m_actions->markersEditPeaks->setEnabled(bPeaks);
 
 	m_actions->recordRecord->setEnabled(bHaveFile && !m_bRecording);
 	m_actions->recordHardwareSettings->setEnabled(bHaveFile && !m_bRecording);
@@ -534,24 +537,30 @@ void MainScope::on_actions_viewWaveComments_toggled()
 	m_chart->redraw();
 }
 
-void MainScope::on_actions_viewHidePeaks_triggered()
+void MainScope::on_actions_markersHide_triggered()
 {
 	setPeakMode(EadMarkerMode_Hide);
 }
 
-void MainScope::on_actions_viewDetectedPeaks_triggered()
+void MainScope::on_actions_markersShowDetected_triggered()
 {
 	setPeakMode(EadMarkerMode_Detected);
 }
 
-void MainScope::on_actions_viewVerifiedPeaks_triggered()
+void MainScope::on_actions_markersShowVerified_triggered()
 {
 	setPeakMode(EadMarkerMode_Verified);
 }
 
-void MainScope::on_actions_viewEditPeaks_triggered()
+void MainScope::on_actions_markersEditPeaks_triggered()
 {
 	setPeakMode(EadMarkerMode_Edit);
+}
+
+void MainScope::on_actions_markersShowPeakPercent_toggled()
+{
+	Globals->viewSettings()->bShowPeakPercent = m_actions->markersShowPeakPercent->isChecked();
+	m_chart->redraw();
 }
 
 void MainScope::on_actions_recordRecord_triggered()

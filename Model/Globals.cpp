@@ -62,6 +62,10 @@ void GlobalVars::readSettings()
 	m_viewSettings->bShowWaveComments = settings.value("ShowWaveComments", true).toBool();
 	settings.endGroup();
 
+	settings.beginGroup("Markers");
+	m_viewSettings->bShowPeakPercent = settings.value("ShowPeakPercent", true).toBool();
+	settings.endGroup();
+
 	settings.beginGroup("Publish");
 	m_publisherSettings->publisherChartElements = (ChartElements) settings.value("ElementFlags", (int) m_publisherSettings->publisherChartElements).toInt();
 	//m_publisherSettings->bPublishCols = settings.value("bGraphCols", false).toBool();
@@ -120,6 +124,10 @@ void GlobalVars::writeSettings()
 
 	settings.beginGroup("View");
 	settings.setValue("ShowWaveComments", m_viewSettings->bShowWaveComments);
+	settings.endGroup();
+
+	settings.beginGroup("Markers");
+	settings.setValue("ShowPeakPercent", m_viewSettings->bShowPeakPercent);
 	settings.endGroup();
 
 	settings.beginGroup("Publish");

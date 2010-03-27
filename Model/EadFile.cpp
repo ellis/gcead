@@ -168,6 +168,7 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 		RecInfo* rec = m_recs[i];
 		rec->fid()->findFidPeaks();
 		rec->fid()->calcPeakAreas();
+		rec->fid()->calcPeakAmplitudes();
 	}
 
 	if (result == LoadSaveResult_Ok)
@@ -625,7 +626,7 @@ bool EadFile::exportRetentionData(const QString& sFilename /*, EadFile::ExportFo
 
 	QTextStream str(&file);
 
-	str << "\"Signal\",\"Minutes\",\"Percent\",\"Absolute\"" << endl;
+	str << "\"Signal\",\"Minutes\",\"Percent\",\"Absolute\",\"Amplitude\"" << endl;
 
 	// Find waves with peaks:
 	foreach (RecInfo* rec, m_recs)
@@ -640,7 +641,8 @@ bool EadFile::exportRetentionData(const QString& sFilename /*, EadFile::ExportFo
 					<< "\"" << wave->sName << "\","
 					<< (double(peak.didxMiddle) / (EAD_SAMPLES_PER_SECOND * 60)) << ','
 					<< peak.nPercent << ','
-					<< peak.nArea << endl;
+					<< peak.nArea << ','
+					<< peak.nAmplitude << endl;
 			}
 		}
 	}

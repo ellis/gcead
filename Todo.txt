@@ -20,9 +20,23 @@ x	Add more instructions about markers
 	SVG saving: fix the height and width in order to eliminate all that extra blank space.
 x	In record mode, when data gets to end of screen, use page-right instead of zoom-out
 x	After recording stop, re-adjust scrollbars and offset
-3	Add peak amplitude
+x	Add peak amplitude
+	x	Markers action
+	x	Markers menu
+	x	Peak options for choosing to display percent vs. amplitude
+	x	ChartPixmap should respect peak option
+	x	Load the user choice for peak percent vs. amplitude
+	x	Save the user choice for peak percent vs. amplitude
+	x	Make sure amplitude changes as we shift the handle
+	x	Save amplitude to retention data export
+	x	Display amplitude value and units nicely on chart
+	x	Calculate amplitude when .EAD loaded
+	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!
 4	Think about merging recording from another EAD file
 		try export and import?
+		import all records from another EAD file
+		but: also need to let user delete waves then?
+	"Load Sample Project...": remove "..."
 x	BUG: ChartPixmap::drawWaveformDigital, it's possible for it to lock up
 	Log CHECK_* messages
 x	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
@@ -36,6 +50,7 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 	x	scrolling
 	x	edit/show wave comments
 	.	peaks
+			show percentage vs amplitude
 	x	hiding/unhiding waves
 	x	adding/removing extra waves from charts
 	x	inverting a wave
@@ -51,6 +66,7 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 			chart updates during recording
 			proper scrolling as recording goes off current visible region
 		loading/saving settings
+			show peak percent vs amplitude
 	Improve handling of IDAC overflow
 	Run unit tests in GUI
 		separate View and ViewMain

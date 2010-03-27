@@ -150,8 +150,10 @@ void ViewWaveInfo::choosePeak(const WavePeakChosenInfo& peak)
 {
 	CHECK_PRECOND_RET(m_wave != NULL);
 
+	int iPeak = m_wave->peaksChosen.size();
 	m_wave->peaksChosen << peak;
-	m_wave->calcPeakArea(m_wave->peaksChosen.size() - 1);
+	m_wave->calcPeakAmplitude(iPeak);
+	m_wave->calcPeakArea(iPeak);
 	m_wave->calcAreaPercents();
 
 	emitChanged(ViewChangeEvent_Paint);

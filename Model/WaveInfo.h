@@ -70,13 +70,15 @@ public:
 	int didxRight;
 	double nArea;
 	double nPercent;
+	double nAmplitude;
 
 	WavePeakChosenInfo()
 	:	didxLeft(0),
 		didxMiddle(0),
 		didxRight(0),
 		nArea(0),
-		nPercent(0)
+		nPercent(0),
+		nAmplitude(0)
 	{
 	}
 };
@@ -149,8 +151,13 @@ public:
 	void unchoosePeakAtIndex(int i);
 	//void unchoosePeakAtDidx(int didx);
 
+	/// Calculate the peak amplitude
+	void calcPeakAmplitude(int iPeak);
 	/// Call this if you've changed the indexes of a peak in order to recalculate the area under the curve.
 	void calcPeakArea(int iPeak);
+	/// This calculates the amplitudes of all peaks and implicitly calls calcPeakAmplitude().
+	/// This method should be called when a WaveInfo object is loaded from storage.
+	void calcPeakAmplitudes();
 	/// This calculates the areas of all peaks and implicitly calls calcAreaPercents().
 	/// This method should be called when a WaveInfo object is loaded from storage.
 	void calcPeakAreas();

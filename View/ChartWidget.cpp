@@ -442,7 +442,8 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			marker.didxLeft += d;
 			marker.didxMiddle += d;
 			marker.didxRight += d;
-			info.vwi->waveInfo()->calcPeakArea(info.iRightAreaHandle);
+			info.vwi->waveInfo()->calcPeakAmplitude(info.iChosenPeak);
+			info.vwi->waveInfo()->calcPeakArea(info.iChosenPeak);
 			info.vwi->waveInfo()->calcAreaPercents();
 			m_chartS->redraw();
 		}
@@ -611,7 +612,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 			menu.addAction(actSettings);
 			if (wave->type == WaveType_FID) {
 				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
-				QAction* act = m_mainS->actions()->viewEditPeaks;
+				QAction* act = m_mainS->actions()->markersEditPeaks;
 				actAddMarker->setEnabled(act->isEnabled() && act->isChecked());
 			}
 			else
@@ -691,6 +692,7 @@ void ChartWidget::movePeakHandle(WaveInfo* wave, int iPeak, int didx, bool bLeft
 			didx = peak.didxMiddle + 10;
 		peak.didxRight = didx;
 	}
+	wave->calcPeakAmplitude(iPeak);
 	wave->calcPeakArea(iPeak);
 	wave->calcAreaPercents();
 	m_chartS->redraw();

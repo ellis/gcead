@@ -364,13 +364,16 @@ void WaveInfo::choosePeakAtDidx(int didx)
 		{
 			peaks0[i0].bEnabled = false;
 			
+			int iPeak = peaksChosen.size();
+
 			WavePeakChosenInfo peak;
 			peak.didxLeft = peaks0[i0].left.i;
 			peak.didxMiddle = peaks0[i0].middle.i;
 			peak.didxRight = peaks0[i0].right.i;
 			peaksChosen << peak;
 			
-			calcPeakArea(peaksChosen.size() - 1);
+			calcPeakAmplitude(iPeak);
+			calcPeakArea(iPeak);
 			calcAreaPercents();
 			return;
 		}
@@ -400,6 +403,31 @@ void WaveInfo::unchoosePeakAtIndex(int i)
 	}
 }
 
+void WaveInfo::calcPeakAmplitude(int iPeak)
+{
+	CHECK_PARAM_RET(iPeak >= 0 && iPeak < peaksChosen.size());
+
+	WavePeakChosenInfo& peak = peaksChosen[iPeak];
+
+	double nLeft = display[peak.didxLeft];
+	double nRight = display[peak.didxRight];
+
+	int didxMax = peak.didxLeft;
+	double nMax = nLeft;
+	// Find highest point
+	for (int didx = peak.didxLeft + 1; didx <= peak.didxRight; didx++)
+	{
+		double n = display[didx];
+		if (n > nMax) {
+			didxMax = didx;
+			nMax = n;
+		}
+	}
+
+	double nBottom = nLeft + (nRight - nLeft) / (peak.didxRight - peak.didxLeft + 1) * (didxMax - peak.didxLeft);
+	peak.nAmplitude = nMax - nBottom;
+}
+
 void WaveInfo::calcPeakArea(int iPeak)
 {
 	CHECK_PARAM_RET(iPeak >= 0 && iPeak < peaksChosen.size());
@@ -419,6 +447,12 @@ void WaveInfo::calcPeakArea(int iPeak)
 	nArea -= (nHeight * nWidth) / 2;
 
 	peak.nArea = nArea;
+}
+
+void WaveInfo::calcPeakAmplitudes()
+{
+	for (int i = 0; i < peaksChosen.size(); i++)
+		calcPeakAmplitude(i);
 }
 
 void WaveInfo::calcPeakAreas()
