@@ -103,8 +103,6 @@ signals:
 
 	void viewSettingChanged(const QString& sName);
 
-	void updateRecordings();
-
 private:
 	void setIsRecentFilesMenuEnabled(bool bEnabled);
 	void setIsWindowModified(bool bWindowModified);

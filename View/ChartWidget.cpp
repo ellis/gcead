@@ -79,9 +79,6 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
 	connect(m_chartS, SIGNAL(scrollSingleStepChanged(int)), this, SLOT(on_scope_scrollSingleStepChanged(int)));
 	connect(m_chartS, SIGNAL(scrollValueChanged(int)), m_scrollbar, SLOT(setValue(int)));
-	// REFACTOR: it'd be nice to only use signals from ChartScope rather than from MainScope too -- ellis, 2009-10-25
-	//connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
-	//connect(m_timerUpdate, SIGNAL(timeout()), this, SLOT(on_timerUpdate_timeout()));
 	connect(m_scrollbar, SIGNAL(valueChanged(int)), m_chartS, SLOT(setSampleOffset(int)));
 }
 
@@ -171,39 +168,6 @@ void ChartWidget::setStatusBar(QStatusBar* statusbar)
 		connect(m_chartS, SIGNAL(statusTextChanged(QString)), m_lblStatus, SLOT(setText(QString)));
 	}
 }
-
-/*
-void ChartWidget::updateRecordings()
-{
-	if (m_mainS->viewType() == EadView_Recording)
-	{
-		if (!m_timerUpdate->isActive())
-		{
-			m_chartS->redraw();
-			// REFACTOR: adjust timing so that fewer updates are done when we're zoomed out
-			//  enough that many data samples are drawn in a single pixel
-			// Update 10 times per second
-			m_timerUpdate->start(100);
-			m_nRecordingUpdates = 0;
-		}
-		else
-			m_nRecordingUpdates++;
-	}
-}
-
-void ChartWidget::on_timerUpdate_timeout()
-{
-	if (m_nRecordingUpdates > 0)
-	{
-		m_nRecordingUpdates = 0;
-		m_chartS->redraw();
-	}
-	else
-	{
-		m_timerUpdate->stop();
-	}
-}
-*/
 
 void ChartWidget::on_scope_timebaseChanged(const QString& s)
 {

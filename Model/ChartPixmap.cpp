@@ -689,6 +689,9 @@ void ChartPixmap::drawWaveformDigital(QPainter& painter, ChartWaveInfo* cwi)
 	// Draw rectangles on top of base line for HIGH states
 	while (x < xEnd)
 	{
+		// If pixdata->yTop == 0, then this loop will never exit
+		CHECK_ASSERT_RET(pixdata->yTop != 0);
+
 		int xLowStart = x;
 
 		// Skip to next HIGH-state

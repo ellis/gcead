@@ -49,10 +49,9 @@ void RenderData::setup(ViewWaveInfo* vwi, int tidxStart, int nPixels_, double nS
 	didxLast = qMin(didxLastRequested, vwi->wave()->display.size() - 1);
 
 	int iPixelFirst = int(didxFirst / nSamplesPerPixel);
-	int iPixelLast = int(didxLast / nSamplesPerPixel);
 
 	xOffset = iPixelFirst - iPixelFirstRequested;
-	nPixels = iPixelLast - iPixelFirst + 1;
+	nPixels = int((didxLast - didxFirst + 1) / nSamplesPerPixel);
 
 	if (nPixels < 0)
 		nPixels = 0;
@@ -95,13 +94,33 @@ void RenderData::render(ViewWaveInfo* vwi, int tidxStart_, int nPixels_, double 
 					nMax = n;
 			}
 
+			/*// FIXME: for debug only
+			if (nPixels > 1 && wave->type == WaveType_Digital) {
+				if (nMax > 0)
+					n *= 2;
+				if (nMin == 0 && nMax == 0)
+					nMin *= 2;
+			}
+			// ENDFIX*/
+
 			pixdata->yBot = nMin;
 			pixdata->yTop = nMax;
 			pixdata++;
 
-			iSample++;
-			data++;
+			if (iSample <= iSampleLast)
+			{
+				iSample++;
+				data++;
+			}
 		}
+
+		/*// FIXME: for debug only
+		if (nPixels > 1 && wave->type == WaveType_Digital) {
+			pixdata = &pixels.last();
+			if (pixdata->yBot == 0 && pixdata->yTop == 0)
+				iSample *= 2;
+		}
+		// ENDFIX*/
 	}
 	else
 	{

@@ -99,8 +99,11 @@ public:
 	int width() const { return m_pixmap.width(); }
 	const QRect& borderRect() const { return p.rcBorder; }
 
+	/// First sample index which fits onto the pixmap
 	int firstSample() const;
+	/// Middle sample index on pixmap
 	int centerSample() const;
+	/// Last sample index which fits onto the pixmap
 	int lastSample() const;
 
 	/// Calculate the size of the chart given the available area and number of columns

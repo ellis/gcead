@@ -1,5 +1,7 @@
 #include "ChartScope.h"
 
+#include <QtDebug>
+
 #include <Check.h>
 #include <EadEnums.h>
 #include <Globals.h>
@@ -161,6 +163,16 @@ QString ChartScope::timebaseString() const
 	return timestampString(m_params.nSecondsPerDivision);
 }
 
+void ChartScope::forceSampleOffset(int nSampleOffset)
+{
+	if (nSampleOffset != m_params.nSampleOffset)
+	{
+		qDebug() << "forceSampleOffset:" << nSampleOffset;
+		m_params.nSampleOffset = nSampleOffset;
+		emitParamsChanged();
+	}
+}
+
 void ChartScope::setSampleOffset(int nSampleOffset)
 {
 	if (nSampleOffset > m_iScrollMax)
@@ -168,11 +180,7 @@ void ChartScope::setSampleOffset(int nSampleOffset)
 	if (nSampleOffset < 0)
 		nSampleOffset = 0;
 
-	if (nSampleOffset != m_params.nSampleOffset)
-	{
-		m_params.nSampleOffset = nSampleOffset;
-		emitParamsChanged();
-	}
+	forceSampleOffset(nSampleOffset);
 }
 
 void ChartScope::setSecondsPerDivisionIndex(int i)
@@ -395,7 +403,12 @@ void ChartScope::updateScrollbar()
 	// Total number of samples in the dataset
 	int nSamples = sampleCount();
 
-	int iMax = nSamples - nPageStep;
+	int iMax = nSamples;
+	// In recording view, we can scroll so that the last sample is all the way on the left.
+	// Actually, ChartScope doesn't know if which view is active, so I'm just checking
+	// whether recording is on. -- ellis, 2010-03-27
+	if (!m_bRecording)
+		iMax -= nPageStep;
 	if (iMax < 0)
 		iMax = m_params.nSampleOffset;
 

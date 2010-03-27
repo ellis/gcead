@@ -683,9 +683,9 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 			// Delete RecInfo/WaveInfo
 			m_file->discardNewRecording();
 		}
-
-		emit updateRecordings();
 	}
+
+	m_chart->redraw();
 }
 
 void MainScope::on_recTimer_timeout()
@@ -699,6 +699,9 @@ void MainScope::on_recTimer_timeout()
 		on_spnMag_valueChanged();
 		updateStatus();
 	}*/
+
+	// Store number of samples before the data is added to wave
+	int nSamples0 = m_vwiEad->wave()->raw.size();
 
 	// Process digital signals (and handle trigger)
 	const QVector<short>& digital = m_recHandler->digitalRaw();
@@ -737,10 +740,15 @@ void MainScope::on_recTimer_timeout()
 			stopRecording(true, true);
 	}
 
-	if (viewType() == EadView_Recording)
-		m_chart->redraw();
-
-
 	// Tell the chart to update when in Recording mode
-	emit updateRecordings();
+	if (viewType() == EadView_Recording) {
+		int nSampleLast = m_chart->pixmap()->lastSample();
+		if (nSamples > nSampleLast) {
+			qDebug() << "nSamples0:" << nSamples0 << "nSamples:" << nSamples << "nSampleFirst:" << m_chart->pixmap()->firstSample() << "nSampleLast:" << nSampleLast;
+		}
+		if (nSamples0 <= nSampleLast && nSamples > nSampleLast) {
+			m_chart->forceSampleOffset(nSampleLast + 1);
+		}
+		m_chart->redraw();
+	}
 }

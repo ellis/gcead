@@ -113,7 +113,6 @@ void MainWindow::setupWidgets()
 	m_taskStack->addWidget(new TaskPanel(m_taskPublish));
 	m_taskStack->setCurrentIndex(1);
 
-	//connect(m_taskRecord, SIGNAL(updateRecordings()), m_chart, SLOT(updateRecordings()));
 	connect(m_taskPublish, SIGNAL(settingsChanged()), m_scope->chart(), SLOT(redraw()));
 
 	//

@@ -46,14 +46,6 @@ public:
 
 	void setStatusBar(QStatusBar* statusbar);
 
-	//EadFile* file() { return m_file; }
-
-	//const ChartPixmap* pixmap() const { return m_pixmap; }
-
-public slots:
-	/// Update waves in which recording is taking place
-	//void updateRecordings();
-
 // Overrides for QWidget
 protected:
 	void resizeEvent(QResizeEvent* e);

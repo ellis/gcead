@@ -19,13 +19,11 @@ x	Add more instructions about markers
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
 	SVG saving: fix the height and width in order to eliminate all that extra blank space.
 2	In record mode, when data gets to end of screen, use page-right instead of zoom-out
-1	Display time till recording done
-	x	recordingLabelTimeChanged(int nSeconds)
-		remove references to "updateRecordings()"
-		tooltip for recording label
 3	Add peak amplitude
 4	Think about merging recording from another EAD file
 		try export and import?
+x	BUG: ChartPixmap::drawWaveformDigital, it's possible for it to lock up
+	Log CHECK_* messages
 x	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
 x	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
 x	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
