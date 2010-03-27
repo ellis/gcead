@@ -25,6 +25,7 @@ public:
 	void setPeakMode(EadMarkerMode peakMode);
 	void setPeakModeRecId(int id);
 	void setRecordingOn(bool b);
+	void setRecordingTime(int nSeconds);
 
 	const ChartPixmapParams& params() { return m_params; }
 	const ChartPixmap* pixmap() { return m_pixmap; }
@@ -35,6 +36,9 @@ public:
 	double secondsPerDivision() const { return m_params.nSecondsPerDivision; }
 
 	bool isRedrawRequired() const { return m_bRedraw; }
+	bool isRecording() const { return m_bRecording; }
+	/// Get the recording time in seconds
+	int recordingTime() const { return m_nRecordingTime; }
 
 	void setSecondsPerDivisionIndex(int i);
 	/// Set seconds per division using the minimum value @param nMin
@@ -54,6 +58,7 @@ signals:
 	void timebaseChanged(const QString& s);
 	void statusTextChanged(const QString& s);
 	void recordingLabelVisibleChanged(bool bVisible);
+	void recordingLabelTextChanged(const QString& sText);
 	void scrollMaxChanged(int iScrollMax);
 	void scrollPageStepChanged(int nScrollPageStep);
 	void scrollSingleStepChanged(int nScrollSingleStep);
@@ -102,6 +107,10 @@ private:
 	int m_nScrollPageStep;
 	int m_nScrollSingleStep;
 	int m_iScrollValue;
+
+	bool m_bRecording;
+	int m_nRecordingTime;
+	QString m_sRecordingText;
 };
 
 #endif // CHARTSCOPE_H

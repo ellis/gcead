@@ -3,6 +3,7 @@
 #include <Check.h>
 #include <EadEnums.h>
 #include <Globals.h>
+#include <IdacDriver/IdacSettings.h>
 #include <PublisherSettings.h>
 #include <Utils.h>
 #include <ViewSettings.h>
@@ -31,13 +32,15 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.peakMode = EadMarkerMode_Verified;
 	m_params.nPeakModeRecId = 0;
 
-	//m_nSampleOffset = 0; // REFACTOR: Do we need this?  Couldn't we use m_params.nSampleOffset instead?  PARTIAL ANSWER: this separation was used to let the user set a custom time unit in publishing, and then switch back to the "view" time scale later -- ellis, 2009-10-27
-        m_iScrollMax = 0;
-        m_iScrollValue = 0;
-        m_nScrollPageStep = 1;
-        m_nScrollSingleStep = 1;
+	m_iScrollMax = 0;
+	m_iScrollValue = 0;
+	m_nScrollPageStep = 1;
+	m_nScrollSingleStep = 1;
 
 	m_bRedraw = true;
+
+	m_bRecording = false;
+	m_nRecordingTime = 0;
 
 	setSecondsPerDivisionIndex(16); // 50s/div
 }
@@ -115,11 +118,42 @@ void ChartScope::setPeakModeRecId(int id)
 
 void ChartScope::setRecordingOn(bool b)
 {
-	// HACK: This is done because sometime when we [Discard] a recording and then [Record] a new one,
-	// we might get the same WaveInfo address allocated to us again, which would make ChartPixmap think
-	// that it could still use the old RenderData. -- ellis, 2008-06-23
-	m_pixmap->clearRenderData();
-	emit recordingLabelVisibleChanged(b);
+	if (b != m_bRecording) {
+		m_bRecording = b;
+
+		// If we're turning recording on, make sure the time starts at 0
+		if (b == true)
+			setRecordingTime(0);
+
+		// HACK: This is done because sometime when we [Discard] a recording and then [Record] a new one,
+		// we might get the same WaveInfo address allocated to us again, which would make ChartPixmap think
+		// that it could still use the old RenderData. -- ellis, 2008-06-23
+		m_pixmap->clearRenderData();
+		emit recordingLabelVisibleChanged(b);
+	}
+}
+
+void ChartScope::setRecordingTime(int nSeconds)
+{
+	m_nRecordingTime = nSeconds;
+
+	QString sFormat;
+	double nMinutes;
+	if (Globals->idacSettings()->nRecordingDuration > 0) {
+		sFormat = "REMAINING: %1";
+		nMinutes = Globals->idacSettings()->nRecordingDuration - nSeconds / 60.0;
+	}
+	else
+	{
+		sFormat = "RECORDING: %1";
+		nMinutes = nSeconds / 60.0;
+	}
+
+	QString s = sFormat.arg(nMinutes, 0, 'f', 1);
+	if (s != m_sRecordingText) {
+		m_sRecordingText = s;
+		emit recordingLabelTextChanged(m_sRecordingText);
+	}
 }
 
 QString ChartScope::timebaseString() const

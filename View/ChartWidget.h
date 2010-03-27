@@ -52,7 +52,7 @@ public:
 
 public slots:
 	/// Update waves in which recording is taking place
-	void updateRecordings();
+	//void updateRecordings();
 
 // Overrides for QWidget
 protected:
@@ -68,6 +68,7 @@ protected:
 
 private:
 	void setupWidgets();
+	void layoutRecordingLabel();
 
 	QSize calcPixmapSize() const;
 
@@ -77,11 +78,12 @@ private:
 	void updateStatus();
 
 private slots:
-	void on_timerUpdate_timeout();
+	//void on_timerUpdate_timeout();
 	void on_scope_timebaseChanged(const QString& s);
 	void on_scope_scrollMaxChanged(int i);
 	void on_scope_scrollPageStepChanged(int n);
 	void on_scope_scrollSingleStepChanged(int n);
+	void on_scope_recordingLabelVisibleChanged(bool b);
 
 private:
 	MainScope* m_mainS;
@@ -122,8 +124,6 @@ private:
 
 	bool m_bForceStatusUpdate;
 
-	QTimer* m_timerUpdate;
-	int m_nRecordingUpdates;
 	WaveInfo* m_recordingEadWave;
 	WaveInfo* m_recordingFidWave;
 };

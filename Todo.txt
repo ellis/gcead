@@ -5,9 +5,7 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	import of old EAG files
 	x	EAD wave
 	x	FID wave
-3		scaling factors
-			new vmware image
-			install old EAD
+		scaling factors
 		comments
 x	Add tooltips to the Peak buttons in the toolbar
 x	Add more instructions about markers
@@ -20,8 +18,14 @@ x	Add more instructions about markers
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
 	SVG saving: fix the height and width in order to eliminate all that extra blank space.
-	In record mode, when data gets to end of screen, use page-right instead of zoom-out
-	Display time till recording done
+2	In record mode, when data gets to end of screen, use page-right instead of zoom-out
+1	Display time till recording done
+	x	recordingLabelTimeChanged(int nSeconds)
+		remove references to "updateRecordings()"
+		tooltip for recording label
+3	Add peak amplitude
+4	Think about merging recording from another EAD file
+		try export and import?
 x	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
 x	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
 x	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
@@ -42,6 +46,11 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 			BUG: in Chart:All, EAG Ave doesn't remain hidden
 		publishing
 		recording
+			recording label shown when recording starts
+			recording label updates during recording (RECORDING & REMAINING)
+			recording label hidden after recording done
+			chart updates during recording
+			proper scrolling as recording goes off current visible region
 		loading/saving settings
 	Improve handling of IDAC overflow
 	Run unit tests in GUI
@@ -49,7 +58,7 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 		create ViewTest
 		run with valgrind
 	Create new installer for Windows
-4		build EXE in Windows
+		build EXE in Windows
 		update version number too
 
 

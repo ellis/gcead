@@ -725,15 +725,21 @@ void MainScope::on_recTimer_timeout()
 	m_recHandler->calcRawToVoltageFactors(2, wave->nRawToVoltageFactorNum, wave->nRawToVoltageFactorDen);
 	wave->nRawToVoltageFactor = double(wave->nRawToVoltageFactorNum) / wave->nRawToVoltageFactorDen;
 
+	int nSamples = m_vwiEad->wave()->raw.size();
+	int nSeconds = nSamples / EAD_SAMPLES_PER_SECOND;
+	m_chart->setRecordingTime(nSeconds);
+
 	// Check for end of recording
 	if (Globals->idacSettings()->nRecordingDuration > 0)
 	{
-		int nSamples = m_vwiEad->wave()->raw.size();
-		int nSeconds = nSamples / EAD_SAMPLES_PER_SECOND;
 		int nMinutes = nSeconds / 60;
 		if (nMinutes >= Globals->idacSettings()->nRecordingDuration)
 			stopRecording(true, true);
 	}
+
+	if (viewType() == EadView_Recording)
+		m_chart->redraw();
+
 
 	// Tell the chart to update when in Recording mode
 	emit updateRecordings();

@@ -69,18 +69,19 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 
 	setupWidgets();
 
-	m_timerUpdate = new QTimer(this);
+	//m_timerUpdate = new QTimer(this);
 
 	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(update()));
-	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), m_lblRecording, SLOT(setVisible(bool)));
+	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), this, SLOT(on_scope_recordingLabelVisibleChanged(bool)));
+	connect(m_chartS, SIGNAL(recordingLabelTextChanged(QString)), m_lblRecording, SLOT(setText(QString)));
 	connect(m_chartS, SIGNAL(timebaseChanged(QString)), this, SLOT(on_scope_timebaseChanged(QString)));
 	connect(m_chartS, SIGNAL(scrollMaxChanged(int)), this, SLOT(on_scope_scrollMaxChanged(int)));
 	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
 	connect(m_chartS, SIGNAL(scrollSingleStepChanged(int)), this, SLOT(on_scope_scrollSingleStepChanged(int)));
 	connect(m_chartS, SIGNAL(scrollValueChanged(int)), m_scrollbar, SLOT(setValue(int)));
 	// REFACTOR: it'd be nice to only use signals from ChartScope rather than from MainScope too -- ellis, 2009-10-25
-	connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
-	connect(m_timerUpdate, SIGNAL(timeout()), this, SLOT(on_timerUpdate_timeout()));
+	//connect(m_mainS, SIGNAL(updateRecordings()), this, SLOT(updateRecordings()));
+	//connect(m_timerUpdate, SIGNAL(timeout()), this, SLOT(on_timerUpdate_timeout()));
 	connect(m_scrollbar, SIGNAL(valueChanged(int)), m_chartS, SLOT(setSampleOffset(int)));
 }
 
@@ -140,7 +141,7 @@ void ChartWidget::setupWidgets()
 	m_lblSecondsPerDivision->setMinimumWidth(nWidth);
 	m_lblSecondsPerDivision->setText(m_chartS->timebaseString());
 
-	m_lblRecording = new QLabel(tr("RECORDING"), this);
+	m_lblRecording = new QLabel(tr("  RECORDING: 99.9"), this);
 	m_lblRecording->setStyleSheet(
 		//"background-color: rgba(255, 127, 127, 127);"
 		"background-color: #fdd;"
@@ -171,6 +172,7 @@ void ChartWidget::setStatusBar(QStatusBar* statusbar)
 	}
 }
 
+/*
 void ChartWidget::updateRecordings()
 {
 	if (m_mainS->viewType() == EadView_Recording)
@@ -201,6 +203,7 @@ void ChartWidget::on_timerUpdate_timeout()
 		m_timerUpdate->stop();
 	}
 }
+*/
 
 void ChartWidget::on_scope_timebaseChanged(const QString& s)
 {
@@ -211,6 +214,14 @@ void ChartWidget::on_scope_timebaseChanged(const QString& s)
 void ChartWidget::on_scope_scrollMaxChanged(int i) { m_scrollbar->setMaximum(i); }
 void ChartWidget::on_scope_scrollPageStepChanged(int n) { m_scrollbar->setPageStep(n); }
 void ChartWidget::on_scope_scrollSingleStepChanged(int n) { m_scrollbar->setSingleStep(n); }
+
+void ChartWidget::on_scope_recordingLabelVisibleChanged(bool b)
+{
+	m_lblRecording->setVisible(b);
+	if (b) {
+		layoutRecordingLabel();
+	}
+}
 
 QSize ChartWidget::calcPixmapSize() const
 {
@@ -243,9 +254,14 @@ void ChartWidget::resizeEvent(QResizeEvent* e)
 	
 	m_scrollbar->setGeometry(rcScroll);
 
-	m_lblRecording->move(width() - m_lblRecording->width() - 20, 5);
+	layoutRecordingLabel();
 
 	m_chartS->redraw();
+}
+
+void ChartWidget::layoutRecordingLabel()
+{
+	m_lblRecording->move(width() - m_lblRecording->width() - 20, 5);
 }
 
 void ChartWidget::paintEvent(QPaintEvent* e)

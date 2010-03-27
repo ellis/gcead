@@ -73,6 +73,9 @@ extern void checkFailure(const char* sFile, int iLine);
 	/// Check a precondition, and return if the check fails
 	#define CHECK_PRECOND_RET(x) __CHECK_COND_RET(x)
 
+	/// Check a precondition, and return if the check fails
+	#define CHECK_PRECOND_NORET(x) __CHECK_COND_NORET(x)
+
 	/// Check a parameter for validity, and return the given value if the check fails
 	#define CHECK_PARAM_RETVAL(x, ret) __CHECK_COND_RETVAL(x, ret)
 
