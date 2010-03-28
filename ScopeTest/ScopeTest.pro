@@ -87,7 +87,13 @@ QMAKE_EXTRA_TARGETS += idac2hex \
 POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex \
     $${DESTDIR}/idc4fpga.hex
 HEADERS += \
-	TestBase.h
+	TestBase.h \
+	WaitForHardwareDialog.h \
+	RecordDialog.h \
+	TestRecording.h
 SOURCES += \
 	TestBase.cpp \
+	WaitForHardwareDialog.cpp \
+	RecordDialog.cpp \
+	TestRecording.cpp \
 	./main.cpp

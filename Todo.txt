@@ -1,5 +1,3 @@
-x	BUG: start program, start recording, discard recording, click on checkbox to show EAD Average: shouldn't crash
-x	BUG: when recording, incoming data should be displayed on the chart
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of Autospike-CSV files
 	import of old EAG files
@@ -7,42 +5,24 @@ x	BUG: when recording, incoming data should be displayed on the chart
 	x	FID wave
 		scaling factors
 		comments
-x	Add tooltips to the Peak buttons in the toolbar
-x	Add more instructions about markers
-		Click on "Add"
-		CTRL-Click or Right-Click
-	File comment dialog needs to be wider, and it should be multiline
+4	File comment dialog needs to be wider, and it should be multiline
 	Installation routine
 		Prohibit 64bit installation
 		Install USB filter
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
-	SVG saving: fix the height and width in order to eliminate all that extra blank space.
-x	In record mode, when data gets to end of screen, use page-right instead of zoom-out
-x	After recording stop, re-adjust scrollbars and offset
-x	Add peak amplitude
-	x	Markers action
-	x	Markers menu
-	x	Peak options for choosing to display percent vs. amplitude
-	x	ChartPixmap should respect peak option
-	x	Load the user choice for peak percent vs. amplitude
-	x	Save the user choice for peak percent vs. amplitude
-	x	Make sure amplitude changes as we shift the handle
-	x	Save amplitude to retention data export
-	x	Display amplitude value and units nicely on chart
-	x	Calculate amplitude when .EAD loaded
-	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!
-4	Think about merging recording from another EAD file
+5	SVG saving: fix the height and width in order to eliminate all that extra blank space.
+3	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!
+6	Think about merging recording from another EAD file
 		try export and import?
 		import all records from another EAD file
 		but: also need to let user delete waves then?
 	"Load Sample Project...": remove "..."
-x	BUG: ChartPixmap::drawWaveformDigital, it's possible for it to lock up
-	Log CHECK_* messages
-x	BUG: Load sample project; publish mode; view mode; now std dev is always shown.  What should the proper behavior be?
-x	BUG: load sample project; EADs; holding the middle mouse button shouldn't do anything.
-x	BUG: load sample project; EADs; choose FID Ave; choose No FID; shouldn't crash
-x	BUG: View | Show wave comments: doesn't work in View mode.
+.	Log CHECK_* messages
+2	Create hidden test routine to record lots of waves 
+		create a message loop and call exec()
+		on_btnRecord_clicked(): stop loop and exit with true
+		on_btnCancel_clicked(): stop loop and exit with false
 	Create unit tests
 	x	load sample project
 	x	charts
@@ -76,39 +56,21 @@ x	BUG: View | Show wave comments: doesn't work in View mode.
 		build EXE in Windows
 		update version number too
 
-
 DONE:
-x	let user set markers on EAD waves
-x	let user move peaks (and don't remove peaks by just clicking on them)
-x	ChartWidget: Double-clicking the wave brings up its settings dialog (will need to assign WaveEditorFlags in ViewWaveInfo from somewhere prior to TaskReviewView so that ChartWidget can get at the flags too)
-x	zoom in button shouldn't automatically have focus
-x	shortcuts for zoom in/out
-x	View menu: add actions for switching the view type
-x	View menu: zoom in/out/full
-x	Let user scroll chart with the mouse wheel
-x	View menu: scroll -> scroll page right/left, scroll division left/right
-x	MainWindow: move peak FID combobox from TaskReviewWidget to the toolbar
-x	in publish mode: checkboxes for time not saved between sessions, off by default (or remove this option?)
-x	ChartWidget:
-	x	BUG: for an FID marker, don't let user move peak region outside of where the marker was set
-	x	right-click menu
-	x	Add the vertical marker line to the area that is detected as part of the marker, not just the text
-	x	Detect mouse-over-marker even when not in edit mode
-	x	BUG: turning off verified peaks in publish mode doesn't work
-	x	click-and-scroll with the scroll wheel to drag the timeline
-	x	display of standard deviation around average
-		x	create a common function for rough and smooth which just draws polylines
-		x	make sure that it works when zoomed in to 100ms too.
-		x	publish option to hide the standard deviation lines
-	x	make ChartScope update the timebase string appropriately so that it gets displayed
-	x	update status line when there is a timebase change
-	x	Mouse cursors:
-		x	dragging wave: SizeVerCursor
-		x	dragging marker: SizeHorCursor
-		x	dragging peak handle: SizeHorCursor
-		x	dragging timeline: SizeHorCursor
-		x	selecting: IBeamCursor
-
+x	In record mode, when data gets to end of screen, use page-right instead of zoom-out
+x	After recording stop, re-adjust scrollbars and offset
+x	Add peak amplitude
+	x	Markers action
+	x	Markers menu
+	x	Peak options for choosing to display percent vs. amplitude
+	x	ChartPixmap should respect peak option
+	x	Load the user choice for peak percent vs. amplitude
+	x	Save the user choice for peak percent vs. amplitude
+	x	Make sure amplitude changes as we shift the handle
+	x	Save amplitude to retention data export
+	x	Display amplitude value and units nicely on chart
+	x	Calculate amplitude when .EAD loaded
+x	BUG: ChartPixmap::drawWaveformDigital, it's possible for it to lock up
 
 
 	INSTALLER:

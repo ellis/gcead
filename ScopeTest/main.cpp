@@ -19,21 +19,25 @@
 #include <QApplication>
 #include <QMutex>
 #include <QSettings>
+#include <QThread>
 
 #include <AppDefines.h>
 #include <Globals.h>
+#include <ViewSettings.h>
 #include <Idac/IdacFactory.h>
+#include <IdacDriver/IdacSettings.h>
 
 #include <Scope/MainScope.h>
 #include <Scope/MainScopeUi.h>
 
 #include "TestBase.h"
+#include "TestRecording.h"
 
 
 class TestActions : public TestBase
 {
 public:
-	TestActions()
+	TestActions() : TestBase(false)
 	{
 		Actions* actions = scope->actions();
 
@@ -209,7 +213,7 @@ public:
 class TestSaving : public TestBase
 {
 public:
-	TestSaving()
+	TestSaving() : TestBase(false)
 	{
 		Actions* actions = scope->actions();
 
@@ -287,6 +291,24 @@ public:
 };
 
 
+class MyThread : public QThread
+{
+public:
+	void run()
+	{
+		TestRecording();
+		exec();
+		QApplication::exit();
+	}
+};
+
+class MyWidget : public QWidget
+{
+public:
+
+};
+
+
 void checkFailure(const char* sFile, int iLine)
 {
 	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
@@ -298,15 +320,18 @@ int main(int argc, char *argv[])
 
 	Globals = new GlobalVars();
 
-	TestActions();
+	//TestActions();
 	//TestSaving();
+	TestRecording test;
+	//MyThread thread;
+	//thread.start();
 
 	//a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
-	//int ret = a.exec();
+	int ret = a.exec();
 
-	//IdacFactory::exitIdacThreads();
+	IdacFactory::exitIdacThreads();
 
 	delete Globals;
 
-	return 0;
+	return ret;
 }

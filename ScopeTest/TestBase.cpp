@@ -17,12 +17,40 @@
 
 #include "TestBase.h"
 
+#include <IdacFactory.h>
 
-TestBase::TestBase()
+#include "RecordDialog.h"
+#include "WaitForHardwareDialog.h"
+
+
+bool TestUi::waitForHardware(IdacProxy* idac, bool /*bCloseOnAvailable*/)
+{
+	if (idac == NULL)
+		return false;
+
+	WaitForHardwareDialog dlg(idac, false);
+	return dlg.exec();
+}
+
+bool TestUi::showRecordPreview(IdacProxy* idac)
+{
+	if (idac == NULL)
+		return false;
+
+	RecordDialog dlg(idac);
+	bool ret = dlg.exec();
+	qDebug() << "ret:" << ret;
+	return ret;
+}
+
+
+TestBase::TestBase(bool bIdac)
 {
 	ui = new TestUi;
-	//IdacProxy* idac = IdacFactory::getProxy();
-	scope = new MainScope(ui, NULL);
+	IdacProxy* idac = NULL;
+	if (bIdac)
+		idac = IdacFactory::getProxy();
+	scope = new MainScope(ui, idac);
 	sz = scope->chart()->pixmap()->sizeForAvailableArea(QSize(300, 400), 10);
 	iStep = 0;
 }

@@ -19,6 +19,7 @@
 #define __TEST_BASE_H
 
 #include <QtDebug>
+#include <QObject>
 #include <QSettings>
 
 #include <AppDefines.h>
@@ -39,6 +40,7 @@ public:
 
 	void clear() {
 		s = sInformation = sWarning = sError = sStatus = QString();
+		btn = QMessageBox::Yes;
 	}
 
 	virtual QString getFileOpenFilename(const QString& sLastDir) { this->sLastDir = sLastDir; return s; }
@@ -61,19 +63,19 @@ public:
 	/// Wait for hardware to become available before proceeding.
 	/// @param bCloseOnAvailable if true, the dialog will automatically close as soon as the hardware becomes available.
 	/// @returns true if the hardware is now available, false if user clicks on "Cancel" while waiting.
-	virtual bool waitForHardware(IdacProxy* /*idac*/, bool /*bCloseOnAvailable*/) { return false; }
+	virtual bool waitForHardware(IdacProxy* idac, bool bCloseOnAvailable);
 	/// Let the user configure/setup recording
 	/// @returns true if recording should be initiated
-	virtual bool showRecordPreview(IdacProxy* idac) { Q_UNUSED(idac); return false; }
+	virtual bool showRecordPreview(IdacProxy* idac);
 	/// Let the user set the recording options
 	virtual void showRecordOptions(IdacProxy* idac) { Q_UNUSED(idac); }
 };
 
 
-class TestBase
+class TestBase : public QObject
 {
 public:
-	TestBase();
+	TestBase(bool bIdac);
 	~TestBase();
 
 protected:
