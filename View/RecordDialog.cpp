@@ -18,6 +18,7 @@
 #include "RecordDialog.h"
 
 #include <QComboBox>
+#include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -25,7 +26,6 @@
 #include <QSpinBox>
 #include <QTimer>
 #include <QToolButton>
-#include <QVBoxLayout>
 
 #include <AppDefines.h>
 #include <Check.h>
@@ -210,7 +210,7 @@ void RecordDialog::getData()
 	ui.eadSignal->addSamples(m_handler->eadDisplay());
 	ui.fidSignal->addSamples(m_handler->fidDisplay());
 
-	if (iRecording >= 0)
+	if (iRecording >= 0 || QFile::exists("flag.TestRecording"))
 		accept();
 }
 

@@ -108,7 +108,8 @@ HEADERS += ./WaitCursor.h \
     ./MainWindow.h \
     ./WaveEditorWidget.h \
     ./WaveEditorDialog.h \
-    WaitForHardwareDialog.h
+    WaitForHardwareDialog.h \
+    TestRecording.h
 SOURCES += ./DataListItem.cpp \
     ./TaskReviewWidget.cpp \
     ./MainWindow.cpp \
@@ -130,7 +131,8 @@ SOURCES += ./DataListItem.cpp \
     ./TaskWidget.cpp \
     ./WaveEditorWidget.cpp \
     ./WaveEditorDialog.cpp \
-    WaitForHardwareDialog.cpp
+    WaitForHardwareDialog.cpp \
+    TestRecording.cpp
 
 # Forms
 FORMS += ./MainWindow.ui \

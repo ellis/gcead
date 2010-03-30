@@ -27,6 +27,7 @@
 #include <Idac/IdacFactory.h>
 
 #include "MainWindow.h"
+#include "TestRecording.h"
 
 
 void checkFailure(const char* sFile, int iLine)
@@ -66,6 +67,11 @@ int main(int argc, char *argv[])
 		w->showMaximized();
 	else
 		w->show();
+
+	if (true) {
+		TestRecording* test = new TestRecording(w->scope());
+		test->show();
+	}
 
 	// Open file from command line
 	if (argc >= 2)

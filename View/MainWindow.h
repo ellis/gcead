@@ -50,6 +50,8 @@ public:
 	MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~MainWindow();
 
+	MainScope* scope() { return m_scope; }
+
 	void open(const QString& sFilename);
 
 // QWidget overrides

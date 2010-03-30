@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <QApplication>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QSettings>
 #include <QTimer>
@@ -664,9 +665,9 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 		if (bAutoStop)
 		{
 			if (bSaved)
-				s = tr("The preset recording time has ellapsed, and your data has been automatically saved.");
+				s = tr("The preset recording time has elapsed, and your data has been automatically saved.");
 			else
-				m_ui->showWarning(tr("The preset recording time has ellapsed, but your data has not yet been saved to disk!"));
+				m_ui->showWarning(tr("The preset recording time has elapsed, but your data has not yet been saved to disk!"));
 		}
 		else
 		{
@@ -676,7 +677,7 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 				m_ui->showWarning(tr("WARNING: Your data has not yet been saved to disk!"));
 		}
 
-		if (!s.isEmpty())
+		if (!s.isEmpty() && !QFile::exists("flag.TestRecording"))
 			m_ui->showInformation(tr("Recording Finished"), s);
 	}
 	else
