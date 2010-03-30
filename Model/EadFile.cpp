@@ -687,6 +687,7 @@ void EadFile::discardNewRecording()
 
 void EadFile::saveNewRecording()
 {
+	CHECK_PRECOND_RET(m_newRec != NULL);
 	//qDebug() << "EadFile::saveNewRecording()";
 
 	RecInfo* rec = m_newRec;

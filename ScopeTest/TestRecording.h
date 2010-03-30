@@ -36,13 +36,14 @@ protected:
 
 private:
 	void run();
-	void record();
 
 private slots:
+	void record();
+	void save();
 	void on_scope_isRecordingChanged(bool bRecording);
 
 private:
-	//QTimer* m_
+	//QTimer* m_timerRecord;
 	int m_nRecordings;
 };
 

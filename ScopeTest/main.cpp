@@ -17,6 +17,7 @@
 
 #include <QtDebug>
 #include <QApplication>
+#include <QFile>
 #include <QMutex>
 #include <QSettings>
 #include <QThread>
@@ -312,6 +313,13 @@ public:
 void checkFailure(const char* sFile, int iLine)
 {
 	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
+
+	QFile file("ScopeTest.log");
+	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream out(&file);
+		out << "CHECK FAILURE: " << sFile << ", line " << iLine << "\n";
+	}
 }
 
 int main(int argc, char *argv[])

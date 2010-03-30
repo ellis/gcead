@@ -18,6 +18,7 @@
 #include "TestRecording.h"
 
 #include <QApplication>
+#include <QTimer>
 #include <QTimerEvent>
 
 #include <IdacDriver/IdacSettings.h>
@@ -28,6 +29,7 @@ TestRecording::TestRecording() : TestBase(true)
 	m_nRecordings = 0;
 
 	connect(scope, SIGNAL(isRecordingChanged(bool)), this, SLOT(on_scope_isRecordingChanged(bool)));
+	//connect(m_timerRecord, SIGNAL(timeout()), this, SLOT(record()));
 
 	startTimer(0);
 }
@@ -52,16 +54,24 @@ void TestRecording::run()
 void TestRecording::record()
 {
 	m_nRecordings++;
-	qDebug() << "RECORD #" << m_nRecordings;
-	scope->actions()->recordRecord->trigger();
+	if (m_nRecordings < 100) {
+		qDebug() << "RECORD #" << m_nRecordings;
+		scope->actions()->recordRecord->trigger();
+		QTimer::singleShot(10000, this, SLOT(save()));
+	}
+	else
+		QApplication::exit();
+}
+
+void TestRecording::save()
+{
+	scope->actions()->recordSave->trigger();
+	QTimer::singleShot(1000, this, SLOT(record()));
 }
 
 void TestRecording::on_scope_isRecordingChanged(bool bRecording)
 {
 	if (!bRecording) {
-		if (m_nRecordings < 3)
-			record();
-		else
-			QApplication::exit();
+		//QTimer::singleShot(1000, this, SLOT(record()));
 	}
 }
