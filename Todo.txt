@@ -21,8 +21,10 @@
 1	Log CHECK_* messages with time
 		Add mechanism to write more data to the log
 2	Create hidden test routine to record lots of waves 
-		Test in Windows
-		Test making 4 recordings; save file; close GeEad; reopen file; try recording more
+	x	Test in Windows
+	x	Test making 4 recordings; save file; close GeEad; reopen file; try recording more
+		Run longer recording tests in windows
+		Log USB error messages
 		What happens when trying to open file directly from explorer?
 	x	Run non-recording ScopeTests in valgrind
 	Create unit tests

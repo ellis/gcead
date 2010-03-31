@@ -613,12 +613,13 @@ void IdacDriver4::sampleLoop()
 		} while (m_bSampling && !bError && !bOverflow);
 
 		setIsoXferEnabled(false);
-		bRepeat = m_bSampling;
+		//bRepeat = m_bSampling;
 	} while (bRepeat);
 
 	// TODO: Consider restarting if bOverflow == true && m_bSampling == true -- ellis, 2010-01-24
 }
 
+#include <iostream>
 bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 	CHECK_PARAM_RETVAL(iTransfer >= 0 && iTransfer < ISOCHRONOUS_CONTEXT_COUNT, false);
 	if (nBytesReceived < 0 || nBytesReceived > 4800) {
@@ -630,17 +631,44 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 
 	int nPackets = (nBytesReceived > 0) ? (nBytesReceived / 600) : 0;
 
+	/*int m[8];
+	for (int i = 0; i < 8; i++) {
+		quint16* p = (quint16*) (isobuf + 4800 * iTransfer + 600 * i);
+		m[i] = *p;
+	}
+	qDebug() << nBytesReceived << ":" << m[0] << m[1] << m[2] << m[3] << m[4] << m[5] << m[6] << m[7];
+	*/
+
 	// FIXME: this variable is for debug only -- ellis, 2010-01-24
 	quint16* pEnd = (quint16*) (isobuf + 4800 * ISOCHRONOUS_CONTEXT_COUNT);
 	for (int iPacket = 0; iPacket < nPackets; iPacket++)
 	{
 		quint16* pBuffer = (quint16*) (isobuf + 4800 * iTransfer + 600 * iPacket);
 		int nBytes = *pBuffer++;
-		if (nBytes < 0 || nBytes > 600) {
-			qDebug() << "ERROR: nBytes =" << nBytes;
+		// Apparently, some upper bits are status bits, and if they are set, then
+		// the packet might not contain measurement data
+		if (nBytes > 598) {
+			nBytes = 0;
+			/*qDebug() << "ERROR: nBytes =" << nBytes << iTransfer << iPacket << nBytesReceived;
+			for (int j = 0; j < 299; j++) {
+				cerr << pBuffer[j] << " ";
+			}
+			cerr << endl;
+			*/
+			/*for (int i = 0; i < 8; i++) {
+				char* p = (char*) (isobuf + 4800 * iTransfer + 600 * i);
+				qDebug() << "\t" << i << (int)(*p);
+			}*/
+			break;
 		}
-		CHECK_ASSERT_RETVAL(nBytes >= 0, bOverflow);
-		CHECK_ASSERT_RETVAL(nBytes <= 600, bOverflow);
+		else {
+			//qDebug() << "OK";
+			/*for (int j = 0; j < 299; j++) {
+				cerr << pBuffer[j] << " ";
+			}
+			cerr << endl;*/
+		}
+		CHECK_ASSERT_RETVAL(nBytes <= 598, bOverflow);
 		int nWords = nBytes / 2;
 		for (int iWord = 0; iWord < nWords; iWord++)
 		{
