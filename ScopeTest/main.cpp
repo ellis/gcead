@@ -292,24 +292,6 @@ public:
 };
 
 
-class MyThread : public QThread
-{
-public:
-	void run()
-	{
-		TestRecording();
-		exec();
-		QApplication::exit();
-	}
-};
-
-class MyWidget : public QWidget
-{
-public:
-
-};
-
-
 void checkFailure(const char* sFile, int iLine)
 {
 	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
@@ -329,17 +311,15 @@ int main(int argc, char *argv[])
 	Globals = new GlobalVars();
 
 	//TestActions();
-	//TestSaving();
-	TestRecording test;
-	//MyThread thread;
-	//thread.start();
+	TestSaving();
 
-	//a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
-	int ret = a.exec();
-
-	IdacFactory::exitIdacThreads();
+	if (false) {
+		TestRecording test;
+		a.exec();
+		IdacFactory::exitIdacThreads();
+	}
 
 	delete Globals;
 
-	return ret;
+	return 0;
 }

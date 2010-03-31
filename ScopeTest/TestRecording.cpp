@@ -47,7 +47,7 @@ void TestRecording::run()
 	ui->s = "ScopeTest.ead";
 	actions->fileSave->trigger();
 
-	Globals->idacSettings()->nRecordingDuration = 1;
+	Globals->idacSettings()->nRecordingDuration = 30;
 	record();
 }
 
@@ -57,7 +57,7 @@ void TestRecording::record()
 	if (m_nRecordings < 100) {
 		qDebug() << "RECORD #" << m_nRecordings;
 		scope->actions()->recordRecord->trigger();
-		QTimer::singleShot(10000, this, SLOT(save()));
+		QTimer::singleShot(10 * 1000, this, SLOT(save()));
 	}
 	else
 		QApplication::exit();
@@ -66,7 +66,7 @@ void TestRecording::record()
 void TestRecording::save()
 {
 	scope->actions()->recordSave->trigger();
-	QTimer::singleShot(1000, this, SLOT(record()));
+	QTimer::singleShot(2000, this, SLOT(record()));
 }
 
 void TestRecording::on_scope_isRecordingChanged(bool bRecording)

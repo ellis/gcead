@@ -18,11 +18,13 @@
 		import all records from another EAD file
 		but: also need to let user delete waves then?
 	"Load Sample Project...": remove "..."
-.	Log CHECK_* messages
+1	Log CHECK_* messages with time
+		Add mechanism to write more data to the log
 2	Create hidden test routine to record lots of waves 
-		create a message loop and call exec()
-		on_btnRecord_clicked(): stop loop and exit with true
-		on_btnCancel_clicked(): stop loop and exit with false
+		Test in Windows
+		Test making 4 recordings; save file; close GeEad; reopen file; try recording more
+		What happens when trying to open file directly from explorer?
+	x	Run non-recording ScopeTests in valgrind
 	Create unit tests
 	x	load sample project
 	x	charts

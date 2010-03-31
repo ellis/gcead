@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 	else
 		w->show();
 
-	if (true) {
+	if (QFile::exists("flag.TestRecording")) {
 		TestRecording* test = new TestRecording(w->scope());
 		test->show();
 	}

@@ -108,6 +108,9 @@ public:
 	/// Generate a list that combines both vwis() and vwiExtras()
 	QList<ViewWaveInfo*> allVwis();
 
+	/// Get pointer to ViewWaveInfo for a specific wave in this ViewInfo
+	ViewWaveInfo* getExtraWave(WaveInfo* wave);
+
 	/// Add a wave whose chart position is taken from the WaveInfo
 	ViewWaveInfo* addWave(WaveInfo* wave);
 	/// Add a wave whose chart position is given by this ViewInfo

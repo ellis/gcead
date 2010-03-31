@@ -311,6 +311,7 @@ void MainWindow::scope_taskTypeChanged(EadTask task)
 	m_paneltabs->setCurrentIndex((int) task);
 
 	// Might need to switch out of Recording view
+	// REFACTOR: This should be done in MainScope instead! -- ellis, 2010-03-31
 	if (task == EadTask_Publish && m_scope->viewType() == EadView_Recording)
 		m_scope->setViewType(EadView_Averages);
 	else

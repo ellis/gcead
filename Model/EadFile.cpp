@@ -125,7 +125,7 @@ bool EadFile::saveAs(const QString& sFilename)
 	str << xml;
 	saveData(str);
 
-	qDebug() << "XML:" << endl << xml;
+	//qDebug() << "XML:" << endl << xml;
 
 	m_sFilename = sFilename;
 	m_bDirty = false;
@@ -523,15 +523,18 @@ void EadFile::loadViewWaveNode(QDomElement& elem, ViewInfo* view, bool bExtra)
 	QString sWaveType = elem.attribute("type");
 	WaveType type = getNodeNameWaveType(sWaveType);
 
-	if (recId < 0 || recId >= m_recs.size())
-		return;
+	CHECK_ASSERT_RET(recId >= 0 && recId < m_recs.size());
 
 	RecInfo* rec = m_recs[recId];
 	WaveInfo* wave = rec->wave(type);
 
 	ViewWaveInfo* vwi = NULL;
 	if (bExtra)
-		vwi = view->addExtraWave(wave);
+	{
+		vwi = view->getExtraWave(wave);
+		if (vwi == NULL)
+			vwi = view->addExtraWave(wave);
+	}
 	else
 	{
 		view->setUserWave(wave);

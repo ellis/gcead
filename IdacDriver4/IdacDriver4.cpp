@@ -463,6 +463,8 @@ void IdacDriver4::sampleInit()
 	int pipeId = device()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
 
 	isobuf = new char[nBufSize];
+	for (int i = 0; i < nBufSize; i++)
+		isobuf[i] = -1;
 
 	// Setup
 	for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
@@ -583,6 +585,10 @@ void IdacDriver4::sampleLoop()
 			}
 
 			if (!bOverflow) {
+				if (ret > 4800) {
+					qDebug() << "ERROR: ret =" << ret;
+				}
+
 				bOverflow = processSampledData(i, ret);
 
 				if (bSamplingNow)
@@ -604,7 +610,14 @@ void IdacDriver4::sampleLoop()
 }
 
 bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
+	CHECK_PARAM_RETVAL(iTransfer >= 0 && iTransfer < ISOCHRONOUS_CONTEXT_COUNT, false);
+	if (nBytesReceived < 0 || nBytesReceived > 4800) {
+		qDebug() << "ERROR: nByteReceived =" << nBytesReceived;
+	}
+	CHECK_PARAM_RETVAL(nBytesReceived >= 0 && nBytesReceived <= 4800, false);
+
 	bool bOverflow = false;
+
 	int nPackets = (nBytesReceived > 0) ? (nBytesReceived / 600) : 0;
 
 	// FIXME: this variable is for debug only -- ellis, 2010-01-24
@@ -613,6 +626,11 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 	{
 		quint16* pBuffer = (quint16*) (isobuf + 4800 * iTransfer + 600 * iPacket);
 		int nBytes = *pBuffer++;
+		if (nBytes < 0 || nBytes > 600) {
+			qDebug() << "ERROR: nBytes =" << nBytes;
+		}
+		CHECK_ASSERT_RETVAL(nBytes >= 0, bOverflow);
+		CHECK_ASSERT_RETVAL(nBytes <= 600, bOverflow);
 		int nWords = nBytes / 2;
 		for (int iWord = 0; iWord < nWords; iWord++)
 		{

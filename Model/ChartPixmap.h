@@ -64,6 +64,9 @@ public:
 	{
 		file = NULL;
 		view = NULL;
+		task = EadTask_Review;
+		peakMode = EadMarkerMode_Verified;
+		nPeakModeRecId = 0;
 		nCols = CHART_ROWS;
 		nSampleOffset = 0;
 		nSecondsPerDivision = 50;

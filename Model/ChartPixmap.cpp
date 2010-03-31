@@ -34,6 +34,8 @@
 
 ChartPixmap::ChartPixmap()
 {
+	// Setup for consistency
+	updateDrawingParameters();
 }
 
 ChartPixmap::~ChartPixmap()
@@ -660,6 +662,7 @@ void ChartPixmap::drawWaveformStd(QPainter& painter, const ChartWaveInfo* cwi)
 	delete[] line;
 }
 
+//#include <iostream>
 void ChartPixmap::drawWaveformDigital(QPainter& painter, ChartWaveInfo* cwi)
 {
 	ViewWaveInfo* vwi = cwi->vwi;
@@ -696,7 +699,8 @@ void ChartPixmap::drawWaveformDigital(QPainter& painter, ChartWaveInfo* cwi)
 		int xLowStart = x;
 
 		// Skip to next HIGH-state
-		while (pixdata->yTop < 0 && x < xEnd)
+		//std::cerr << x << " ";
+		while (x < xEnd && pixdata->yTop < 0)
 		{
 			x++;
 			pixdata++;
@@ -712,7 +716,7 @@ void ChartPixmap::drawWaveformDigital(QPainter& painter, ChartWaveInfo* cwi)
 		}
 
 		// Skip to next LOW-state
-		while (pixdata->yTop > 0 && x < xEnd)
+		while (x < xEnd && pixdata->yTop > 0)
 		{
 			x++;
 			pixdata++;
@@ -731,6 +735,7 @@ void ChartPixmap::drawWaveformDigital(QPainter& painter, ChartWaveInfo* cwi)
 			painter.drawPolyline(line.constData(), line.size());
 		}
 	}
+	//std::cerr << std::endl;
 }
 
 void ChartPixmap::drawWaveName(QPainter& painter, ChartWaveInfo* cwi, bool bHilight)

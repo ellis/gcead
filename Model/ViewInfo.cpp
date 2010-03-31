@@ -224,6 +224,17 @@ ViewWaveInfo* ViewInfo::addWave(WaveInfo* wave)
 	return vwi;
 }
 
+ViewWaveInfo* ViewInfo::getExtraWave(WaveInfo* wave)
+{
+	// Only insert this if it's not already here
+	foreach (ViewWaveInfo* vwi, m_vwiExtras)
+	{
+		if (vwi->wave() == wave)
+			return vwi;
+	}
+	return NULL;
+}
+
 ViewWaveInfo* ViewInfo::addExtraWave(WaveInfo* wave)
 {
 	// Only insert this if it's not already here
