@@ -554,57 +554,67 @@ void IdacDriver4::sampleLoop()
 	int ret;
 
 	int iReap = 0;
+	bool bRepeat = false;
+	do {
+		bool abSubmitted[ISOCHRONOUS_CONTEXT_COUNT];
 
-	// Initial submits
-	for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
-	{
-		ret = iso_submit(i);
-		CHECK_USBRESULT_NORET(ret);
-		if (ret < 0)
-			printf("isochronous submit returned %d\n", ret);
-	}
-
-	setIsoXferEnabled(true);
-
-	// Now cycle between reaps and submits
-	bool bSamplingPrev = m_bSampling;
-	bool bOverflow = false;
-	while (bSamplingPrev)
-	{
-		bool bSamplingNow = (m_bSampling && !bOverflow);
+		// Initial submits
 		for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
 		{
-			ret = iso_reap(i);
+			ret = iso_submit(i);
 			CHECK_USBRESULT_NORET(ret);
-			iReap++;
-
 			if (ret < 0)
-			{
-				cout << "Reap " << (iReap - 1) << ", Buffer " << i << ": ISOCHRONOUS READ ret = " << ret << " " << usb_strerror() << endl;
-				// TODO: abort if ret < 0 -- ellis, 2009-04-20
-			}
+				printf("isochronous submit returned %d\n", ret);
+			abSubmitted[i] = true;
+		}
 
-			if (!bOverflow) {
-				if (ret > 4800) {
-					qDebug() << "ERROR: ret =" << ret;
+		setIsoXferEnabled(true);
+
+		// Now cycle between reaps and submits
+		bool bError = false;
+		bool bOverflow = false;
+
+		do
+		{
+			for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
+			{
+				CHECK_ASSERT_NORET(abSubmitted[i] == true);
+				ret = iso_reap(i);
+				CHECK_USBRESULT_NORET(ret);
+				iReap++;
+				abSubmitted[i] = false;
+
+				if (ret < 0)
+				{
+					cout << "Reap " << (iReap - 1) << ", Buffer " << i << ": ISOCHRONOUS READ ret = " << ret << " " << usb_strerror() << endl;
+					bError = true;
+					break;
 				}
 
 				bOverflow = processSampledData(i, ret);
+				if (bOverflow)
+					break;
 
-				if (bSamplingNow)
-				{
-					ret = iso_submit(i);
-					CHECK_USBRESULT_NORET(ret);
-					if (ret < 0) {
-						printf("isochronous submit returned %d\n", ret);
-					}
+				ret = iso_submit(i);
+				CHECK_USBRESULT_NORET(ret);
+				if (ret < 0) {
+					printf("isochronous submit returned %d\n", ret);
+					bError = true;
+					break;
 				}
+				abSubmitted[i] = true;
 			}
-		}
-		bSamplingPrev = bSamplingNow;
-	}
 
-	setIsoXferEnabled(false);
+			for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
+			{
+				if (abSubmitted[i])
+					iso_reap(i);
+			}
+		} while (m_bSampling && !bError && !bOverflow);
+
+		setIsoXferEnabled(false);
+		bRepeat = m_bSampling;
+	} while (bRepeat);
 
 	// TODO: Consider restarting if bOverflow == true && m_bSampling == true -- ellis, 2010-01-24
 }
@@ -612,7 +622,7 @@ void IdacDriver4::sampleLoop()
 bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 	CHECK_PARAM_RETVAL(iTransfer >= 0 && iTransfer < ISOCHRONOUS_CONTEXT_COUNT, false);
 	if (nBytesReceived < 0 || nBytesReceived > 4800) {
-		qDebug() << "ERROR: nByteReceived =" << nBytesReceived;
+		qDebug() << "ERROR: nBytesReceived =" << nBytesReceived;
 	}
 	CHECK_PARAM_RETVAL(nBytesReceived >= 0 && nBytesReceived <= 4800, false);
 

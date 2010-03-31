@@ -21,6 +21,7 @@
 #include <QMutex>
 #include <QSettings>
 #include <QTextStream>
+#include <QDateTime>
 
 #include <AppDefines.h>
 #include <Globals.h>
@@ -30,16 +31,22 @@
 #include "TestRecording.h"
 
 
-void checkFailure(const char* sFile, int iLine)
+void checkLog(const QString& s)
 {
-	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
-
 	QFile file("GcEad.log");
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QTextStream out(&file);
-		out << "CHECK FAILURE: " << sFile << ", line " << iLine << "\n";
+		out << QDateTime::currentDateTime().toString() << ": " << s << "\n";
 	}
+}
+
+void checkFailure(const char* sFile, int iLine, const char* s)
+{
+	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
+
+	QString sLog = QString("CHECK FAILURE: %1, line %2: %3").arg(sFile).arg(iLine).arg(s);
+	checkLog(sLog);
 }
 
 int main(int argc, char *argv[])

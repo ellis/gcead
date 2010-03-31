@@ -18,14 +18,20 @@
 #ifndef __CHECK_H
 #define __CHECK_H
 
+class QString;
+
 /// checkFailure() is called by the CHECK_* macros when a check fails
 /// This function will need to be implemented somewhere in the application code
 /// in order to handle a check failure sensibly.
-extern void checkFailure(const char* sFile, int iLine);
+extern void checkFailure(const char* sFile, int iLine, const char* s);
+
+extern void checkLog(const QString& s);
+
 
 
 // Only define checkFailure()
-#ifdef QT_NO_DEBUG
+//#ifdef QT_NO_DEBUG
+#if 0
 	#define __CHECK_COND_RETVAL(x, ret) \
 		{ if ((x) == false) { return (ret); } }
 	#define __CHECK_COND_RET(x) \
@@ -61,11 +67,11 @@ extern void checkFailure(const char* sFile, int iLine);
 		{ return; }
 #else
 	#define __CHECK_COND_RETVAL(x, ret) \
-		{ if ((x) == false) { checkFailure(__FILE__, __LINE__); return ret; } }
+		{ if ((x) == false) { checkFailure(__FILE__, __LINE__, #x); return ret; } }
 	#define __CHECK_COND_RET(x) \
-		{ if ((x) == false) { checkFailure(__FILE__, __LINE__); return; } }
+		{ if ((x) == false) { checkFailure(__FILE__, __LINE__, #x); return; } }
 	#define __CHECK_COND_NORET(x) \
-		{ if ((x) == false) { checkFailure(__FILE__, __LINE__); } }
+		{ if ((x) == false) { checkFailure(__FILE__, __LINE__, #x); } }
 
 	/// Check a precondition, and return the given value if the check fails
 	#define CHECK_PRECOND_RETVAL(x, ret) __CHECK_COND_RETVAL(x, ret)
@@ -92,10 +98,10 @@ extern void checkFailure(const char* sFile, int iLine);
 	#define CHECK_ASSERT_NORET(x) __CHECK_COND_NORET(x)
 
 	#define CHECK_FAILURE_RETVAL(ret) \
-		{ checkFailure(__FILE__, __LINE__); return (ret); }
+		{ checkFailure(__FILE__, __LINE__, ""); return (ret); }
 
 	#define CHECK_FAILURE_RET() \
-		{ checkFailure(__FILE__, __LINE__); return; }
+		{ checkFailure(__FILE__, __LINE__, ""); return; }
 #endif
 
 

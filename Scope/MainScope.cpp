@@ -591,8 +591,7 @@ void MainScope::on_actions_recordRecord_triggered()
 		// Enable and switch to the Recording view
 		m_actions->viewChartRecording->setEnabled(true);
 		setTaskType(EadTask_Review);
-		if (!QFile::exists("flag.TestRecording"))
-			setViewType(EadView_Recording);
+		setViewType(EadView_Recording);
 
 		setIsRecording(true);
 	}
@@ -760,7 +759,7 @@ void MainScope::on_recTimer_timeout()
 		if (nSamples0 <= nSampleLast && nSamples > nSampleLast) {
 			m_chart->setSampleOffset(nSampleLast + 1);
 		}
-		if (!QFile::exists("flag.TestRecording"))
+		//if (!QFile::exists("flag.TestRecording"))
 			m_chart->redraw();
 	}
 }

@@ -17,7 +17,7 @@ HEADERS += IdacDriver.h \
     Sample.h \
     Sleeper.h \
     IdacDriverUsb.h \
-    IdacDriverSamplingThread.h \
+	IdacDriverSamplingThread.h \
     IdacCaps.h
 SOURCES += IdacDriver.cpp \
     IdacDriverUsb.cpp
