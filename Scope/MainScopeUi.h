@@ -36,6 +36,7 @@ public:
 
 	virtual QString getFileOpenFilename(const QString& sLastDir) = 0;
 	virtual QString getFileSaveAsFilename(const QString& sCurrentFilename) = 0;
+	virtual QString getFileImportFilename(const QString& sLastDir) = 0;
 	/// Let user edit the file comment
 	virtual QString getComment(const QString& sComment) = 0;
 	/// Return QMessageBox::Save, QMessageBox::Discard, or QMessageBox::Cancel

@@ -63,6 +63,7 @@ public:
 	void clear();
 	bool saveAs(const QString& sFilename);
 	LoadSaveResult load(const QString& sFilename);
+	void importWaves(const EadFile* other);
 	bool exportData(const QString& sFilename /*, ExportFormat format*/);
 	bool exportRetentionData(const QString& sFilename /*, ExportFormat format*/);
 
@@ -94,20 +95,7 @@ signals:
 	void waveListChanged();
 
 private:
-	void addRec(RecInfo* rec);
-	//void addWave(WaveInfo* wave);
-	/// Create an empty EAD wave
-	//static WaveInfo* createEmptyEadWave(const QString& sNameSuffix = QString());
-	/// Create an empty FID wave
-	//static WaveInfo* createEmptyFidWave(const QString& sNameSuffix = QString());
-
-	/// Create an empty EAD wave and add it to the wave list
-	//WaveInfo* addEmptyEadWave(const QString& sNameSuffix = QString());
-	/// Create an empty FID wave and add it to the wave list
-	//WaveInfo* addEmptyFidWave(const QString& sNameSuffix = QString());
-
-	/// Add the waves to m_waves and give them names.
-	//void addAndNameWaves(QList<WaveInfo*> waves);
+	//void addRec(RecInfo* rec);
 
 	void createRecNode(QDomDocument& doc, QDomElement& parent, RecInfo* rec);
 	void createWaveNode(QDomDocument& doc, QDomElement& parent, WaveInfo* wave);
@@ -125,7 +113,7 @@ private:
 	/// @param bExtra true if this is an "extra" wave, false if it's the "user" wave
 	void loadViewWaveNode(QDomElement& elem, ViewInfo* view, bool bExtra);
 	//WaveInfo* createWave(WaveType type);
-	
+
 	void createAveWaves();
 	/// Create m_views
 	void createViewInfo();

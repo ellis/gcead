@@ -562,6 +562,26 @@ void EadFile::saveData(QDataStream& str)
 	}
 }
 
+void EadFile::importWaves(const EadFile* other)
+{
+	CHECK_PARAM_RET(other != NULL);
+	CHECK_PARAM_RET(other != this);
+
+	bool bSkip = true;
+	foreach (RecInfo* rec, other->recs()) {
+		if (bSkip) {
+			bSkip = false;
+			continue;
+		}
+
+		createNewRecording();
+		m_newRec->ead()->copyFrom(rec->ead());
+		m_newRec->fid()->copyFrom(rec->fid());
+		m_newRec->digital()->copyFrom(rec->digital());
+		saveNewRecording();
+	}
+}
+
 bool EadFile::exportData(const QString& sFilename /*, EadFile::ExportFormat format*/)
 {
 	QFile file(sFilename);

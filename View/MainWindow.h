@@ -75,6 +75,7 @@ private slots:
 	void updateReview();
 	void updateCmbPeakFid();
 
+	void actions_fileImport_triggered();
 	void actions_fileExportSignalData_triggered();
 	void actions_fileExportRetentionData_triggered();
 	void actions_fileExit_triggered();

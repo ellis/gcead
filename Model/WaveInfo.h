@@ -132,6 +132,8 @@ public:
 public:
 	WaveInfo(RecInfo* rec);
 
+	void copyFrom(const WaveInfo* other);
+
 	RecInfo* rec() { return m_rec; }
 	const RecInfo* rec() const { return m_rec; }
 	

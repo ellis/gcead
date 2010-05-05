@@ -57,6 +57,16 @@ QString MainWindowUi::getFileSaveAsFilename(const QString& sLastDir)
 	return sFilename;
 }
 
+QString MainWindowUi::getFileImportFilename(const QString& sLastDir)
+{
+	QString sFilename = QFileDialog::getOpenFileName(
+		m_widget,
+		QObject::tr("Import Wave from Another GC-EAD Project"),
+		sLastDir,
+		QObject::tr("GC-EAD files (*.ead)"));
+	return sFilename;
+}
+
 QString MainWindowUi::getComment(const QString& sComment)
 {
 	QDialog dlg(m_widget);

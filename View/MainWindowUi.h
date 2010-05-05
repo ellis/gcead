@@ -36,6 +36,7 @@ public:
 public:
 	QString getFileOpenFilename(const QString& sLastDir);
 	QString getFileSaveAsFilename(const QString& sCurrentFilename);
+	QString getFileImportFilename(const QString& sLastDir);
 	QString getComment(const QString& sComment);
 	QMessageBox::StandardButton warnAboutUnsavedChanged();
 	QMessageBox::StandardButton question(const QString& title, const QString& text, QMessageBox::StandardButtons buttons, QMessageBox::StandardButton defaultButton);

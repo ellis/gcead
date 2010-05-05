@@ -5,28 +5,19 @@
 	x	FID wave
 		scaling factors
 		comments
-x	File comment dialog needs to be wider, and it should be multiline
 	Installation routine
 		Prohibit 64bit installation
 		Install USB filter
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
-x	SVG saving: fix the height and width in order to eliminate all that extra blank space.
 6	Think about merging recording from another EAD file
-		try export and import?
-		import all records from another EAD file
+	?	import all records from another EAD file
+		test importing from both GcEad/2010 and the old EAD program
 		but: also need to let user delete waves then?
-	"Load Sample Project...": remove "..."
+x	"Load Sample Project...": remove "..."
 ?	Log CHECK_* messages with time
 	?	Shorter date/time format
 	x	Add mechanism to write more data to the log
-x	Create hidden test routine to record lots of waves 
-	x	Test in Windows
-	x	Test making 4 recordings; save file; close GeEad; reopen file; try recording more
-	x	Run longer recording tests in windows
-	x	Log USB error messages
-	x	Run non-recording ScopeTests in valgrind
-x	Show time elapsed instead of time remaining when recording
 *	Corraine's request is for EAD instead of FID
 	BUG?: What happens when trying to open file directly from explorer?
 	Create unit tests
@@ -44,6 +35,7 @@ x	Show time elapsed instead of time remaining when recording
 			wave comment with XML special characters
 			file comment with XML special characters
 			BUG: in Chart:All, EAG Ave doesn't remain hidden
+		importing from both GcEad/2010 and the old EAD program
 		publishing
 		recording
 			recording label shown when recording starts
@@ -77,6 +69,15 @@ x	Add peak amplitude
 	x	Display amplitude value and units nicely on chart
 	x	Calculate amplitude when .EAD loaded
 x	BUG: ChartPixmap::drawWaveformDigital, it's possible for it to lock up
+x	File comment dialog needs to be wider, and it should be multiline
+x	SVG saving: fix the height and width in order to eliminate all that extra blank space.
+x	Create hidden test routine to record lots of waves 
+	x	Test in Windows
+	x	Test making 4 recordings; save file; close GeEad; reopen file; try recording more
+	x	Run longer recording tests in windows
+	x	Log USB error messages
+	x	Run non-recording ScopeTests in valgrind
+x	Show time elapsed instead of time remaining when recording
 
 
 	INSTALLER:

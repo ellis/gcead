@@ -186,6 +186,7 @@ void MainWindow::setupActions()
 	ui.mnuFile->addSeparator();
 	ui.mnuFile->addAction(actions->fileComment);
 	ui.mnuFile->addSeparator();
+	ui.mnuFile->addAction(actions->fileImport);
 	ui.mnuFile->addAction(actions->fileExportSignalData);
 	ui.mnuFile->addAction(actions->fileExportRetentionData);
 	ui.mnuFile->addAction(actions->fileLoadSampleProject);
@@ -246,6 +247,7 @@ void MainWindow::setupActions()
 	m_lblComment = new QLabel;
 	ui.toolBar->addWidget(m_lblComment);
 
+	connect(actions->fileImport, SIGNAL(triggered()), this, SLOT(actions_fileImport_triggered()));
 	connect(actions->fileExportSignalData, SIGNAL(triggered()), this, SLOT(actions_fileExportSignalData_triggered()));
 	connect(actions->fileExportRetentionData, SIGNAL(triggered()), this, SLOT(actions_fileExportRetentionData_triggered()));
 	connect(actions->fileExit, SIGNAL(triggered()), this, SLOT(actions_fileExit_triggered()));
@@ -377,6 +379,11 @@ void MainWindow::updateCmbPeakFid()
 		iCmbPeakFid = 0;
 	}
 	m_cmbPeakFid->setCurrentIndex(iCmbPeakFid);
+}
+
+void MainWindow::actions_fileImport_triggered()
+{
+	CHECK_PRECOND_RET(m_scope->file() != NULL);
 }
 
 void MainWindow::actions_fileExportSignalData_triggered()

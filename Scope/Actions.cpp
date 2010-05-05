@@ -27,10 +27,10 @@ Actions::Actions(QObject *parent)
 	: QObject(parent)
 {
 	fileNew = new QAction(tr("&New"), this);
-	fileNew->setShortcut(tr("Ctrl+N"));
+	fileNew->setShortcut(QKeySequence::New);
 
-	fileOpen = new QAction(tr("&Open"), this);
-	fileOpen->setShortcut(tr("Ctrl+O"));
+	fileOpen = new QAction(tr("&Open..."), this);
+	fileOpen->setShortcut(QKeySequence::Open);
 
 	for (int i = 0; i < MAX_RECENT_FILES; i++)
 	{
@@ -41,23 +41,27 @@ Actions::Actions(QObject *parent)
 	}
 
 	fileSave = new QAction(tr("&Save"), this);
-	fileSave->setShortcut(tr("Ctrl+S"));
+	fileSave->setShortcut(QKeySequence::Save);
 
-	fileSaveAs = new QAction(tr("Save &As"), this);
+	fileSaveAs = new QAction(tr("Save &As..."), this);
+	fileSaveAs->setShortcut(QKeySequence::SaveAs);
 
 	fileComment = new QAction(tr("Edit File &Comment..."), this);
 	fileComment->setIcon(QIcon(":/images/comment-24x24.png"));
 	fileComment->setIconText(tr("Comment"));
 	fileComment->setToolTip(tr("Edit the general comment for the whole file"));
 
+	fileImport = new QAction(tr("Import Waves..."), this);
+	fileImport->setToolTip(tr("Import waves from another EAD file"));
+
 	fileExportSignalData = new QAction(tr("&Export Signal Data..."), this);
 
 	fileExportRetentionData = new QAction(tr("&Export Retention Data..."), this);
 
-	fileLoadSampleProject = new QAction(tr("&Load Sample Project..."), this);
+	fileLoadSampleProject = new QAction(tr("&Load Sample Project"), this);
 
 	fileExit = new QAction(tr("E&xit"), this);
-	fileExit->setShortcut(tr("Alt+F4"));
+	fileExit->setShortcut(QKeySequence::Quit);
 
 	//
 	// View Menu
@@ -135,7 +139,6 @@ Actions::Actions(QObject *parent)
 	//
 	// Markers menu
 	//
-
 
 	group = new QActionGroup(this);
 

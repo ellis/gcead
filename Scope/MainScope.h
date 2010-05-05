@@ -107,6 +107,7 @@ signals:
 	void viewSettingChanged(const QString& sName);
 
 private:
+	EadFile* load(const QString& sFilename, bool bImport);
 	void setIsRecentFilesMenuEnabled(bool bEnabled);
 	void setIsWindowModified(bool bWindowModified);
 	void setIsRecording(bool bRecording);
@@ -125,6 +126,7 @@ private slots:
 	bool on_actions_fileSave_triggered();
 	bool on_actions_fileSaveAs_triggered();
 	void on_actions_fileComment_triggered();
+	void on_actions_fileImport_triggered();
 	void on_actions_fileLoadSampleProject_triggered();
 
 	void on_actions_viewViewMode_triggered();

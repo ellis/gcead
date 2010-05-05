@@ -407,7 +407,7 @@ void MainScope::on_actions_fileOpen_triggered()
 	}
 }
 
-void MainScope::open(const QString& _sFilename)
+EadFile* MainScope::load(const QString& _sFilename, bool bImport)
 {
 	QString sFilename = _sFilename;
 
@@ -416,7 +416,7 @@ void MainScope::open(const QString& _sFilename)
 	{
 		m_ui->showWarning(tr("Project file could not be found:\n%1").arg(_sFilename));
 		m_ui->showStatusMessage(tr("Project file not found"));
-		return;
+		return NULL;
 	}
 	
 	sFilename = fi.absoluteFilePath();
@@ -428,18 +428,28 @@ void MainScope::open(const QString& _sFilename)
 
 	if (result == LoadSaveResult_Ok)
 	{
-		setFile(file);
+		; // Intentionally empty
 	}
 	else if (result == LoadSaveResult_ImportedOldEad)
 	{
-		setFile(file);
-		m_ui->showWarning(tr("You have imported a project from an old version of GcEad.  In order to preserve your changes, you may wish to save this project under a different filename."));
+		if (!bImport)
+			m_ui->showWarning(tr("You have imported a project from an old version of GcEad.  In order to preserve your changes, you may wish to save this project under a different filename."));
 	}
 	else
 	{
 		delete file;
 		m_ui->showWarning(tr("Project file could not be properly loaded:\n%1").arg(_sFilename));
 		m_ui->showStatusMessage(tr("Error loading project"));
+		file = NULL;
+	}
+	return file;
+}
+
+void MainScope::open(const QString& _sFilename)
+{
+	EadFile* file = load(_sFilename, false);
+	if (file != NULL) {
+		setFile(file);
 	}
 }
 
@@ -524,6 +534,18 @@ void MainScope::on_actions_fileComment_triggered()
 {
 	QString s = m_ui->getComment(m_file->comment());
 	setComment(s);
+}
+
+void MainScope::on_actions_fileImport_triggered()
+{
+	QString sFilename = m_ui->getFileImportFilename(Globals->lastDir());
+	if (!sFilename.isEmpty())
+	{
+		EadFile* file = load(sFilename, true);
+		if (file != NULL) {
+
+		}
+	}
 }
 
 void MainScope::on_actions_fileLoadSampleProject_triggered()

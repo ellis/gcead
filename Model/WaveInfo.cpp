@@ -39,6 +39,30 @@ WaveInfo::WaveInfo(RecInfo* rec)
 	m_nShift = 0;
 }
 
+void WaveInfo::copyFrom(const WaveInfo* other)
+{
+	CHECK_PARAM_RET(other != NULL);
+	CHECK_PARAM_RET(other != this);
+
+	raw.clear();
+	raw << other->raw;
+	nRawToVoltageFactorNum = other->nRawToVoltageFactor;
+	nRawToVoltageFactorDen = other->nRawToVoltageFactorDen;
+	nRawToVoltageFactor = other->nRawToVoltageFactor;
+	display.clear();
+	display << other->display;
+	std.clear();
+	std << other->std;
+	peaks0.clear();
+	peaks0 << other->peaks0;
+	peaksChosen.clear();
+	peaksChosen << other->peaksChosen;
+	type = other->type;
+	//sName;
+	sComment = other->sComment;
+	pos = other->pos;
+}
+
 int WaveInfo::recId() const
 {
 	return m_rec->id();
