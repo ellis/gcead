@@ -69,8 +69,11 @@ public:
 
 	bool isRecentFilesMenuEnabled() const { return m_bRecentFilesMenuEnabled; }
 
-	/// User comment for this file
-	const QString& comment() { return m_file->comment(); }
+	/// Get the user's comment for this file
+	const QString& comment() const { return m_file->comment(); }
+	/// Get the user's comment for this file in the format which it should be displayed in the toolbar
+	QString toolbarComment() const;
+	/// Set the user comment for this file
 	void setComment(const QString& s);
 
 	/// Current peak mode

@@ -5,28 +5,30 @@
 	x	FID wave
 		scaling factors
 		comments
-4	File comment dialog needs to be wider, and it should be multiline
+x	File comment dialog needs to be wider, and it should be multiline
 	Installation routine
 		Prohibit 64bit installation
 		Install USB filter
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
-5	SVG saving: fix the height and width in order to eliminate all that extra blank space.
-3	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!
+x	SVG saving: fix the height and width in order to eliminate all that extra blank space.
 6	Think about merging recording from another EAD file
 		try export and import?
 		import all records from another EAD file
 		but: also need to let user delete waves then?
 	"Load Sample Project...": remove "..."
-1	Log CHECK_* messages with time
-		Add mechanism to write more data to the log
-2	Create hidden test routine to record lots of waves 
+?	Log CHECK_* messages with time
+	?	Shorter date/time format
+	x	Add mechanism to write more data to the log
+x	Create hidden test routine to record lots of waves 
 	x	Test in Windows
 	x	Test making 4 recordings; save file; close GeEad; reopen file; try recording more
-		Run longer recording tests in windows
-		Log USB error messages
-		What happens when trying to open file directly from explorer?
+	x	Run longer recording tests in windows
+	x	Log USB error messages
 	x	Run non-recording ScopeTests in valgrind
+x	Show time elapsed instead of time remaining when recording
+*	Corraine's request is for EAD instead of FID
+	BUG?: What happens when trying to open file directly from explorer?
 	Create unit tests
 	x	load sample project
 	x	charts
@@ -122,6 +124,7 @@ FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possib
 	log errors to a log file
 
 FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement later
+	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!  Appears to be a Qt or KDE bug, because other applications have the same problem, and I think it might have worked correctly in windows -- 2010-05-05.
 	integrate RecordHandler into Idac/ or IdacDriver/ (and delete RecordHandler)
 	ChartPixmap: BUG: while recording, FID wave sometimes is displayed with a vertical line at the end (might have to zoom in to see the phenomenon)
 	ChartWidget: vertical "crosshair" line
@@ -133,6 +136,7 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 	Globals: set whether File or Print output was last selected (variables already exist in PublisherSettings, and they are loaded and saved in Globals)
 	MainScope: only enable m_actions->fileExportRetentionData when the user has set/verified peaks
 	MainScope: add undo/redo
+	MainWindow: when right-click on toolbar, don't give option to hide it
 	MainWindow: Beep when done recording?
 	PanelTabs: consider choosing equal widths for tabs, if space allows
 	PanelTabs: draw shadow around active tab?
@@ -145,6 +149,7 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 	TaskPublishWidget: pen width for signals (Peter's request)
 	TaskPublishWidget: color of signals (Peter's request)
 	TaskPublishWidget: when printing in black/white, need to make peak labels b/w too
+	TaskPublishWidget: Qt BUG: SVG painting doesn't clip signals above and below the viewbox properly
 	TaskReviewWidget: in Recording view, let user select any EAD/FID wave he wants (not just the averages)
 	TaskReviewWidget: allow adding comments to average waves
 	WaveEditorWidget: add a [Delete] command

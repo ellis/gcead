@@ -147,11 +147,11 @@ void ChartScope::setRecordingTime(int nSeconds)
 
 	QString sFormat;
 	double nMinutes;
-	if (Globals->idacSettings()->nRecordingDuration > 0) {
+	/*if (Globals->idacSettings()->nRecordingDuration > 0) {
 		sFormat = "REMAINING: %1";
 		nMinutes = Globals->idacSettings()->nRecordingDuration - nSeconds / 60.0;
 	}
-	else
+	else*/
 	{
 		sFormat = "RECORDING: %1";
 		nMinutes = nSeconds / 60.0;

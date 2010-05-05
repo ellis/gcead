@@ -402,9 +402,12 @@ void TaskPublishWidget::on_btnSave_clicked()
 
 	if (sFilename.toLower().endsWith(".svg"))
 	{
+		QSize sz = m_chart->size();
+		QRect viewBox = QRect(0, 0, sz.width(), sz.height());
 		QSvgGenerator svg;
 		svg.setFileName(sFilename);
-		svg.setSize(m_chart->size());
+		//svg.setSize(m_chart->size());
+		svg.setViewBox(viewBox);
 
 		ChartPixmapParams params;
 		setupChartPixmapParams(params, m_chart->size());

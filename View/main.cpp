@@ -37,7 +37,7 @@ void checkLog(const QString& s)
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QTextStream out(&file);
-		out << QDateTime::currentDateTime().toString() << ": " << s << "\n";
+		out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.mm") << ": " << s << "\n";
 	}
 }
 

@@ -320,7 +320,7 @@ void MainWindow::scope_taskTypeChanged(EadTask task)
 
 void MainWindow::scope_commentChanged()
 {
-	m_lblComment->setText(m_scope->comment());
+	m_lblComment->setText(m_scope->toolbarComment());
 }
 
 void MainWindow::actions_viewChartRecording_changed()

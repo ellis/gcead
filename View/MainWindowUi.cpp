@@ -17,10 +17,14 @@
 
 #include "MainWindowUi.h"
 
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QLabel>
 #include <QMainWindow>
+#include <QPlainTextEdit>
 #include <QStatusBar>
+#include <QVBoxLayout>
 
 #include "AppDefines.h"
 #include "RecordDialog.h"
@@ -55,13 +59,26 @@ QString MainWindowUi::getFileSaveAsFilename(const QString& sLastDir)
 
 QString MainWindowUi::getComment(const QString& sComment)
 {
-	QString s = QInputDialog::getText(
-		m_widget,
-		QObject::tr("Edit File Comment"),
-		QObject::tr("Comment:"),
-		QLineEdit::Normal,
-		sComment);
-	return s;
+	QDialog dlg(m_widget);
+	QVBoxLayout* layout = new QVBoxLayout;
+	QPlainTextEdit* edit = new QPlainTextEdit();
+	QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+	dlg.setWindowTitle(QObject::tr("Edit File Comment"));
+	edit->setPlainText(sComment);
+
+	layout->addWidget(new QLabel(QObject::tr("Comment:")));
+	layout->addWidget(edit);
+	layout->addWidget(buttons);
+	dlg.setLayout(layout);
+
+	QObject::connect(buttons, SIGNAL(accepted()), &dlg, SLOT(accept()));
+	QObject::connect(buttons, SIGNAL(rejected()), &dlg, SLOT(reject()));
+
+	if (dlg.exec())
+		return edit->toPlainText();
+	else
+		return sComment;
 }
 
 QMessageBox::StandardButton MainWindowUi::warnAboutUnsavedChanged()

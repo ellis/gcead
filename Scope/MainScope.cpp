@@ -186,12 +186,25 @@ void MainScope::setViewType(EadView viewType)
 	m_chart->setView(m_file->viewInfo(m_viewType));
 }
 
+QString MainScope::toolbarComment() const
+{
+	QString sDisplay = m_file->comment().trimmed();
+	int iNL = sDisplay.indexOf(QRegExp("[\n\r]"));
+	if (iNL > 0)
+		sDisplay = sDisplay.left(iNL) + "...";
+	return sDisplay;
+}
+
 void MainScope::setComment(const QString& s)
 {
 	if (s != m_file->comment())
 	{
 		m_file->setComment(s);
-		emit commentChanged(m_file->comment());
+		QString sDisplay = s.trimmed();
+		int iNL = sDisplay.indexOf(QRegExp("[\n\r]"));
+		if (iNL > 0)
+			sDisplay = sDisplay.left(iNL) + "...";
+		emit commentChanged(sDisplay);
 	}
 }
 
