@@ -19,6 +19,22 @@ x	"Load Sample Project...": remove "..."
 	?	Shorter date/time format
 	x	Add mechanism to write more data to the log
 *	Corraine's request is for EAD instead of FID
+	x	show time below on EAD waves
+	x	show amplitude on EAD waves
+	?	fix amplitude calculation
+	x	draw area bars on EAD waves when in Edit Peaks mode
+	?	place area markers further apart on creation
+	x	ctrl-click on EAD makes peak with area bars
+		Fix drag
+		Update instructions
+		Update other text (Peak? Marker?)
+		menu entries for:
+			show time only
+			show time & amplitude
+			show amplitude only
+		export EAG amplitude data
+	Export amplitude data
+	Screenshots for Peter's documentation
 	BUG?: What happens when trying to open file directly from explorer?
 	Create unit tests
 	x	load sample project

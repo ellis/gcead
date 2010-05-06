@@ -610,14 +610,14 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		{
 			actSettings = new QAction(tr("Settings..."), &menu);
 			menu.addAction(actSettings);
-			if (wave->type == WaveType_FID) {
+			if (wave->type == WaveType_EAD || wave->type == WaveType_FID)
+			{
 				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
 				QAction* act = m_mainS->actions()->markersEditPeaks;
-				actAddMarker->setEnabled(act->isEnabled() && act->isChecked());
+				//actAddMarker->setEnabled(act->isEnabled() && act->isChecked());
+				actAddMarker->setEnabled(act->isEnabled());
+				menu.addAction(actAddMarker);
 			}
-			else
-				actAddMarker = new QAction(tr("Add Time Marker"), &menu);
-			menu.addAction(actAddMarker);
 		}
 		else if (rcWaveforms.contains(e->pos()))
 		{
@@ -664,8 +664,8 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
 {
 	int didx1 = m_pixmap->xToCenterSample(vwi->wave(), x);
-	int didx0 = m_pixmap->xToCenterSample(vwi->wave(), x - 10);
-	int didx2 = m_pixmap->xToCenterSample(vwi->wave(), x + 10);
+	int didx0 = m_pixmap->xToCenterSample(vwi->wave(), x - 20);
+	int didx2 = m_pixmap->xToCenterSample(vwi->wave(), x + 20);
 
 	if (didx0 >= 0 && didx2 < vwi->wave()->display.size())
 	{

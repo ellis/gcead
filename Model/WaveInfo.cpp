@@ -396,8 +396,10 @@ void WaveInfo::choosePeakAtDidx(int didx)
 			peak.didxRight = peaks0[i0].right.i;
 			peaksChosen << peak;
 			
-			calcPeakAmplitude(iPeak);
-			calcPeakArea(iPeak);
+			if (type == WaveType_EAD)
+				calcPeakAmplitude(iPeak);
+			else if (type == WaveType_FID)
+				calcPeakArea(iPeak);
 			calcAreaPercents();
 			return;
 		}
@@ -436,20 +438,20 @@ void WaveInfo::calcPeakAmplitude(int iPeak)
 	double nLeft = display[peak.didxLeft];
 	double nRight = display[peak.didxRight];
 
-	int didxMax = peak.didxLeft;
-	double nMax = nLeft;
+	int didxMin = peak.didxLeft;
+	double nMin = nLeft;
 	// Find highest point
 	for (int didx = peak.didxLeft + 1; didx <= peak.didxRight; didx++)
 	{
 		double n = display[didx];
-		if (n > nMax) {
-			didxMax = didx;
-			nMax = n;
+		if (n < nMin) {
+			didxMin = didx;
+			nMin = n;
 		}
 	}
 
-	double nBottom = nLeft + (nRight - nLeft) / (peak.didxRight - peak.didxLeft + 1) * (didxMax - peak.didxLeft);
-	peak.nAmplitude = nMax - nBottom;
+	double nTop = nLeft + (nRight - nLeft) / (peak.didxRight - peak.didxLeft + 1) * (didxMin - peak.didxLeft);
+	peak.nAmplitude = nTop - nMin;
 }
 
 void WaveInfo::calcPeakArea(int iPeak)
