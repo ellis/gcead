@@ -17,6 +17,7 @@
 
 #include "MainWindow.h"
 
+#include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QFileDialog>
@@ -221,27 +222,30 @@ void MainWindow::setupActions()
 	ui.mnuRecord->addSeparator();
 	ui.mnuRecord->addAction(actions->recordHardwareConnect);
 
+	//ui.mnuMarkers->addAction(actions->markersShow);
 	ui.mnuMarkers->addAction(actions->markersHide);
-	ui.mnuMarkers->addAction(actions->markersShowDetected);
-	ui.mnuMarkers->addAction(actions->markersShowVerified);
-	ui.mnuMarkers->addAction(actions->markersEditPeaks);
+	ui.mnuMarkers->addAction(actions->markersEdit);
 	ui.mnuMarkers->addSeparator();
-	ui.mnuMarkers->addAction(actions->markersShowPeakPercent);
-	ui.mnuMarkers->addAction(actions->markersShowPeakAmplitude);
+	ui.mnuMarkers->addAction(actions->markersShowTime);
+	ui.mnuMarkers->addAction(actions->markersShowEadAmplitude);
+	ui.mnuMarkers->addAction(actions->markersShowFidArea);
 
 	ui.toolBar->addAction(actions->recordRecord);
 	ui.toolBar->addSeparator();
+
 	ui.toolBar->addWidget(new QLabel(tr("Markers:")));
 	ui.toolBar->addAction(actions->markersHide);
-	ui.toolBar->addAction(actions->markersShowDetected);
-	ui.toolBar->addAction(actions->markersShowVerified);
-	ui.toolBar->addAction(actions->markersEditPeaks);
+	ui.toolBar->addAction(actions->markersEdit);
 	//m_lblPeakFid = new QLabel(tr("Peak FID:"));
 	m_cmbPeakFid = new QComboBox(this);
 	m_cmbPeakFid->setEnabled(false);
 	m_cmbPeakFid->setToolTip(tr("Select an FID wave for peak editing"));
 	//ui.toolBar->addWidget(m_lblPeakFid);
 	ui.toolBar->addWidget(m_cmbPeakFid);
+	ui.toolBar->addSeparator();
+	ui.toolBar->addAction(actions->markersShowTime);
+	ui.toolBar->addAction(actions->markersShowEadAmplitude);
+	ui.toolBar->addAction(actions->markersShowFidArea);
 	ui.toolBar->addSeparator();
 	ui.toolBar->addAction(actions->fileComment);
 	m_lblComment = new QLabel;

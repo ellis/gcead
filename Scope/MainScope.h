@@ -111,6 +111,7 @@ private:
 	void setIsRecentFilesMenuEnabled(bool bEnabled);
 	void setIsWindowModified(bool bWindowModified);
 	void setIsRecording(bool bRecording);
+	void updateChartElements();
 	void updateWindowTitle();
 	void addRecentFile(const QString& sFilename);
 	void updateRecentFileActions();
@@ -144,11 +145,12 @@ private slots:
 	void on_actions_recordDiscard_triggered();
 	void on_actions_recordHardwareConnect_triggered();
 
-	void on_actions_markersHide_triggered();
-	void on_actions_markersShowDetected_triggered();
-	void on_actions_markersShowVerified_triggered();
-	void on_actions_markersEditPeaks_triggered();
-	void on_actions_markersShowPeakPercent_toggled();
+	//void on_actions_markersHide_triggered();
+	//void on_actions_markersShow_triggered();
+	//void on_actions_markersEdit_triggered();
+	void on_actions_markersHide_toggled(bool b);
+	void on_actions_markersEdit_toggled(bool b);
+	void on_actions_markersShow_triggered();
 
 	void on_recTimer_timeout();
 	void stopRecording(bool bSave, bool bAutoStop);

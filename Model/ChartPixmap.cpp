@@ -465,24 +465,8 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 	// Draw wave
 	//
 
-	// Is this the FID for which we should display peaks?
-	bool bShowMarkers = (m_params.task == EadTask_Publish && m_params.elements.testFlag(ChartElement_Markers)) ||
-		(m_params.task == EadTask_Review && m_params.peakMode != EadMarkerMode_Hide);
-	EadMarkerMode peakMode = EadMarkerMode_Hide;
-	if (bShowMarkers && (wave->type == WaveType_EAD || wave->type == WaveType_FID))
-	{
-		if (m_params.task == EadTask_Publish)
-		{
-			peakMode = EadMarkerMode_Verified;
-		}
-		else if (wave->recId() == m_params.nPeakModeRecId)
-		{
-			peakMode = m_params.peakMode;
-		}
-	}
-
 	// Mark area handles
-	if (peakMode == EadMarkerMode_Edit)
+	if (m_params.peakMode == EadMarkerMode_Edit)
 		drawAreaHandles(painter, cwi);
 
 	if (wave->type == WaveType_Digital)
@@ -493,13 +477,18 @@ void ChartPixmap::drawWaveform(QPainter& painter, ChartWaveInfo* cwi)
 		drawWaveformRough(painter, cwi);
 
 	// Mark possible peaks of averaged FID waves
-	if (wave->type == WaveType_FID && (peakMode == EadMarkerMode_Detected || peakMode == EadMarkerMode_Edit))
+	if (wave->type == WaveType_FID && m_params.peakMode == EadMarkerMode_Edit && wave->recId() == m_params.nPeakModeRecId)
 		drawPossiblePeaks(painter, cwi);
 
-	if (bShowMarkers)
+	if (m_params.elements.testFlag(ChartElement_Markers))
 	{
 		drawMarkerTimes(painter, cwi);
-		//if (wave->type == WaveType_FID)
+		bool bDrawLines = false;
+		if (wave->type == WaveType_EAD)
+			bDrawLines = m_params.elements.testFlag(ChartElement_MarkerEadAmplitude);
+		else if (wave->type == WaveType_FID)
+			bDrawLines = m_params.elements.testFlag(ChartElement_MarkerFidArea);
+		if (bDrawLines)
 			drawAreaLines(painter, cwi);
 	}
 }
@@ -853,16 +842,18 @@ void ChartPixmap::drawMarkerTimes(QPainter& painter, ChartWaveInfo* cwi)
 		int x = sampleOffsetToX(i);
 		int y = valueToY(vwi, vwi->wave()->display[info.didxMiddle]);
 		painter.drawLine(x, y, x, y + dyLine);
-
-		double nSeconds = double(i) / EAD_SAMPLES_PER_SECOND;
-		QString sTime = timestampString(nSeconds);
-		QRect rc(x - 100, y + dyText, 201, 100);
-		QRect rcTime;
-		painter.drawText(rc, Qt::AlignHCenter | flags, sTime, &rcTime);
-		rcTime.adjust(-3, -3, 3, 3);
-
-		cwi->arcPeaksChosen << QPair<QRect, int>(rcTime, iPeak);
 		cwi->arcPeaksChosen << QPair<QRect, int>(QRect(x - 2, y + dyLine, 5, 11), iPeak);
+
+		if (m_params.elements.testFlag(ChartElement_MarkerTime))
+		{
+			double nSeconds = double(i) / EAD_SAMPLES_PER_SECOND;
+			QString sTime = timestampString(nSeconds);
+			QRect rc(x - 100, y + dyText, 201, 100);
+			QRect rcTime;
+			painter.drawText(rc, Qt::AlignHCenter | flags, sTime, &rcTime);
+			rcTime.adjust(-3, -3, 3, 3);
+			cwi->arcPeaksChosen << QPair<QRect, int>(rcTime, iPeak);
+		}
 	}
 }
 

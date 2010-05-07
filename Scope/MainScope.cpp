@@ -74,8 +74,6 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 
 	updateRecentFileActions();
 	m_actions->viewWaveComments->setChecked(Globals->viewSettings()->bShowWaveComments);
-	m_actions->markersShowPeakPercent->setChecked(Globals->viewSettings()->bShowPeakPercent);
-	m_actions->markersShowPeakAmplitude->setChecked(!Globals->viewSettings()->bShowPeakPercent);
 
 	connect(m_actions->fileNew, SIGNAL(triggered()), this, SLOT(on_actions_fileNew_triggered()));
 	connect(m_actions->fileOpen, SIGNAL(triggered()), this, SLOT(on_actions_fileOpen_triggered()));
@@ -102,11 +100,11 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->viewScrollPageLeft, SIGNAL(triggered()), m_chart, SLOT(scrollPageLeft()));
 	connect(m_actions->viewScrollPageRight, SIGNAL(triggered()), m_chart, SLOT(scrollPageRight()));
 	connect(m_actions->viewWaveComments, SIGNAL(toggled(bool)), this, SLOT(on_actions_viewWaveComments_toggled()));
-	connect(m_actions->markersHide, SIGNAL(triggered()), this, SLOT(on_actions_markersHide_triggered()));
-	connect(m_actions->markersShowDetected, SIGNAL(triggered()), this, SLOT(on_actions_markersShowDetected_triggered()));
-	connect(m_actions->markersShowVerified, SIGNAL(triggered()), this, SLOT(on_actions_markersShowVerified_triggered()));
-	connect(m_actions->markersEditPeaks, SIGNAL(triggered()), this, SLOT(on_actions_markersEditPeaks_triggered()));
-	connect(m_actions->markersShowPeakPercent, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShowPeakPercent_toggled()));
+	connect(m_actions->markersHide, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersHide_toggled(bool)));
+	connect(m_actions->markersEdit, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersEdit_toggled(bool)));
+	connect(m_actions->markersShowTime, SIGNAL(triggered()), this, SLOT(on_actions_markersShow_triggered()));
+	connect(m_actions->markersShowEadAmplitude, SIGNAL(triggered()), this, SLOT(on_actions_markersShow_triggered()));
+	connect(m_actions->markersShowFidArea, SIGNAL(triggered()), this, SLOT(on_actions_markersShow_triggered()));
 	connect(m_actions->recordRecord, SIGNAL(triggered()), this, SLOT(on_actions_recordRecord_triggered()));
 	connect(m_actions->recordHardwareSettings, SIGNAL(triggered()), this, SLOT(on_actions_recordHardwareSettings_triggered()));
 	connect(m_actions->recordSave, SIGNAL(triggered()), this, SLOT(on_actions_recordSave_triggered()));
@@ -211,6 +209,7 @@ void MainScope::setComment(const QString& s)
 void MainScope::setPeakMode(EadMarkerMode peakMode)
 {
 	m_chart->setPeakMode(peakMode);
+	updateActions();
 	emit peakModeChanged(peakMode);
 }
 
@@ -273,17 +272,35 @@ void MainScope::updateActions()
 
 	bool bView = (m_taskType == EadTask_Review);
 	m_actions->viewWaveComments->setEnabled(bView);
-	bool bPeaks = (bView && m_viewType != EadView_EADs);
-	m_actions->markersHide->setEnabled(bView);
-	m_actions->markersShowDetected->setEnabled(bView);
-	m_actions->markersShowVerified->setEnabled(bView);
-	m_actions->markersEditPeaks->setEnabled(bPeaks);
+
+	bool bMarkersShow = (m_chart->params().peakMode != EadMarkerMode_Hide);
+	bool bMarkersEdit = (m_chart->params().peakMode == EadMarkerMode_Edit);
+	m_actions->markersHide->setEnabled(!bMarkersEdit);
+	m_actions->markersEdit->setEnabled(bMarkersShow);
+	m_actions->markersShowTime->setEnabled(bMarkersShow);
+	m_actions->markersShowEadAmplitude->setEnabled(bMarkersShow);
+	m_actions->markersShowFidArea->setEnabled(bMarkersShow);
 
 	m_actions->recordRecord->setEnabled(bHaveFile && !m_bRecording);
 	m_actions->recordHardwareSettings->setEnabled(bHaveFile && !m_bRecording);
 	m_actions->recordSave->setEnabled(bHaveFile && m_bRecording);
 	m_actions->recordDiscard->setEnabled(bHaveFile && m_bRecording);
 	m_actions->recordHardwareConnect->setEnabled(m_idac != NULL && !m_idac->isAvailable());
+
+	updateChartElements();
+}
+
+void MainScope::updateChartElements()
+{
+	m_chart->setChartElement(ChartElement_Grid, true);
+	m_chart->setChartElement(ChartElement_AxisTime, true);
+	m_chart->setChartElement(ChartElement_WaveNames, true);
+	m_chart->setChartElement(ChartElement_WaveComments, m_actions->viewWaveComments->isChecked());
+	m_chart->setChartElement(ChartElement_Markers, !m_actions->markersHide->isChecked());
+	m_chart->setChartElement(ChartElement_MarkerTime, m_actions->markersShowTime->isChecked());
+	m_chart->setChartElement(ChartElement_MarkerEadAmplitude, m_actions->markersShowEadAmplitude->isChecked());
+	m_chart->setChartElement(ChartElement_MarkerFidArea, m_actions->markersShowFidArea->isChecked());
+	m_chart->setChartElement(ChartElement_StdDev, true);
 }
 
 void MainScope::updateWindowTitle()
@@ -570,33 +587,29 @@ void MainScope::on_actions_viewChartRecording_triggered() { setViewType(EadView_
 void MainScope::on_actions_viewWaveComments_toggled()
 {
 	Globals->viewSettings()->bShowWaveComments = m_actions->viewWaveComments->isChecked();
-	m_chart->redraw();
+	updateChartElements();
 }
 
-void MainScope::on_actions_markersHide_triggered()
+void MainScope::on_actions_markersHide_toggled(bool b)
 {
-	setPeakMode(EadMarkerMode_Hide);
+	EadMarkerMode mode = (b) ? EadMarkerMode_Hide : EadMarkerMode_Show;
+	setPeakMode(mode);
 }
 
-void MainScope::on_actions_markersShowDetected_triggered()
+/*void MainScope::on_actions_markersShow_triggered()
 {
-	setPeakMode(EadMarkerMode_Detected);
+	setPeakMode(EadMarkerMode_Show);
+}*/
+
+void MainScope::on_actions_markersEdit_toggled(bool b)
+{
+	EadMarkerMode mode = (b) ? EadMarkerMode_Edit : EadMarkerMode_Show;
+	setPeakMode(mode);
 }
 
-void MainScope::on_actions_markersShowVerified_triggered()
+void MainScope::on_actions_markersShow_triggered()
 {
-	setPeakMode(EadMarkerMode_Verified);
-}
-
-void MainScope::on_actions_markersEditPeaks_triggered()
-{
-	setPeakMode(EadMarkerMode_Edit);
-}
-
-void MainScope::on_actions_markersShowPeakPercent_toggled()
-{
-	Globals->viewSettings()->bShowPeakPercent = m_actions->markersShowPeakPercent->isChecked();
-	m_chart->redraw();
+	updateChartElements();
 }
 
 void MainScope::on_actions_recordRecord_triggered()

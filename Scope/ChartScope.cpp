@@ -31,7 +31,7 @@ ChartScope::ChartScope(QObject* parent)
 	m_params.file = NULL;
 	m_params.view = NULL;
 	m_params.task = EadTask_Review;
-	m_params.peakMode = EadMarkerMode_Verified;
+	m_params.peakMode = EadMarkerMode_Show;
 	m_params.nPeakModeRecId = 0;
 
 	m_iScrollMax = 0;
@@ -43,6 +43,8 @@ ChartScope::ChartScope(QObject* parent)
 
 	m_bRecording = false;
 	m_nRecordingTime = 0;
+
+	m_chartElements |= (ChartElement) 0xffffffff;
 
 	setSecondsPerDivisionIndex(16); // 50s/div
 }
@@ -114,6 +116,15 @@ void ChartScope::setPeakModeRecId(int id)
 	if (id != m_params.nPeakModeRecId)
 	{
 		m_params.nPeakModeRecId = id;
+		emitParamsChanged();
+	}
+}
+
+void ChartScope::setChartElement(ChartElement e, bool b)
+{
+	if (b != m_chartElements.testFlag(e)) {
+		if (b) m_chartElements |= e;
+		else m_chartElements &= ~e;
 		emitParamsChanged();
 	}
 }
@@ -372,20 +383,8 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		// Check whether we need to hide the wave comments
 		else
 		{
-			m_params.elements |= ChartElement_AxisTime | ChartElement_Grid | ChartElement_Markers | ChartElement_StdDev | ChartElement_WaveComments | ChartElement_WaveNames;
-			if (!Globals->viewSettings()->bShowWaveComments)
-				m_params.elements &= ~ChartElement_WaveComments;
+			m_params.elements = m_chartElements;
 		}
-		/*if (bOverrideTimebase)
-		{
-			m_params.nSecondsPerDivision = pub->nPublishTimebase * 60;
-			m_chartS->secondsPerDivision() = m_params.nSecondsPerDivision;
-		}
-		else
-		{
-			m_chartS->secondsPerDivision() = anSecondsPerDivision[m_iSecondsPerDivision];
-		}*/
-		//m_params.nSecondsPerDivision = m_nSecondsPerDivision;
 
 		m_pixmap->draw(m_params);
 

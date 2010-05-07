@@ -64,11 +64,11 @@ public:
 	QAction* recordHardwareConnect;
 
 	QAction* markersHide;
-	QAction* markersShowDetected;
-	QAction* markersShowVerified;
-	QAction* markersEditPeaks;
-	QAction* markersShowPeakPercent;
-	QAction* markersShowPeakAmplitude;
+	//QAction* markersShow;
+	QAction* markersEdit;
+	QAction* markersShowTime;
+	QAction* markersShowEadAmplitude;
+	QAction* markersShowFidArea;
 };
 
 #endif

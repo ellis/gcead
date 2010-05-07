@@ -613,9 +613,9 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 			if (wave->type == WaveType_EAD || wave->type == WaveType_FID)
 			{
 				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
-				QAction* act = m_mainS->actions()->markersEditPeaks;
+				//QAction* act = m_mainS->actions()->markersEdit;
 				//actAddMarker->setEnabled(act->isEnabled() && act->isChecked());
-				actAddMarker->setEnabled(act->isEnabled());
+				//actAddMarker->setEnabled(act->isEnabled());
 				menu.addAction(actAddMarker);
 			}
 		}

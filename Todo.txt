@@ -25,7 +25,7 @@ x	"Load Sample Project...": remove "..."
 	x	draw area bars on EAD waves when in Edit Peaks mode
 	?	place area markers further apart on creation
 	x	ctrl-click on EAD makes peak with area bars
-		Fix drag
+		Fix drag?
 		Update instructions
 		Update other text (Peak? Marker?)
 		menu entries for:
@@ -33,6 +33,16 @@ x	"Load Sample Project...": remove "..."
 			show time & amplitude
 			show amplitude only
 		export EAG amplitude data
+		------
+		Peaks:
+			Hide
+			Show
+			Edit
+			Show time
+			Show FID area
+			Show EAD amplitude
+		Publish:
+			remove option to show/hide markers
 	Export amplitude data
 	Screenshots for Peter's documentation
 	BUG?: What happens when trying to open file directly from explorer?

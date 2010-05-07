@@ -24,6 +24,7 @@ public:
 	void setTask(EadTask task);
 	void setPeakMode(EadMarkerMode peakMode);
 	void setPeakModeRecId(int id);
+	void setChartElement(ChartElement e, bool b);
 	void setRecordingOn(bool b);
 	void setRecordingTime(int nSeconds);
 
@@ -111,6 +112,8 @@ private:
 	bool m_bRecording;
 	int m_nRecordingTime;
 	QString m_sRecordingText;
+
+	ChartElements m_chartElements;
 };
 
 #endif // CHARTSCOPE_H
