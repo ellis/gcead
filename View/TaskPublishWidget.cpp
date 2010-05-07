@@ -83,40 +83,39 @@ void TaskPublishWidget::setupWidgets()
 	
 	m_chkGrid = new QCheckBox(tr("Grid lines"));
 	m_chkGrid->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Grid));
+	m_chkGrid->setToolTip(tr("Uncheck to hide grid lines"));
 	connect(m_chkGrid, SIGNAL(clicked()), this, SLOT(on_chkGrid_clicked()));
 
 	m_chkTime = new QCheckBox(tr("Axis time"));
 	m_chkTime->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_AxisTime));
+	m_chkTime->setToolTip(tr("Uncheck to hide time labels on the X-axis"));
 	connect(m_chkTime, SIGNAL(clicked()), this, SLOT(on_chkTime_clicked()));
 
 	m_chkNames = new QCheckBox(tr("Wave names"));
 	m_chkNames->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_WaveNames));
+	m_chkNames->setToolTip(tr("Uncheck to hide wave names"));
 	connect(m_chkNames, SIGNAL(clicked()), this, SLOT(on_chkNames_clicked()));
-
-	m_chkComments = new QCheckBox(tr("Wave comments"));
-	m_chkComments->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_WaveComments));
-	connect(m_chkComments, SIGNAL(clicked()), this, SLOT(on_chkComments_clicked()));
-
-	m_chkMarkers = new QCheckBox(tr("Markers"));
-	m_chkMarkers->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Markers));
-	connect(m_chkMarkers, SIGNAL(clicked()), this, SLOT(on_chkMarkers_clicked()));
 
 	m_chkStdDev = new QCheckBox(tr("Standard deviation"));
 	m_chkStdDev->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_StdDev));
+	m_chkStdDev->setToolTip(tr("Uncheck to hide standard deviation lines around the average waves"));
 	connect(m_chkStdDev, SIGNAL(clicked()), this, SLOT(on_chkStdDev_clicked()));
 
-	m_chkWidth = new QCheckBox(tr("Specify width"));
+	m_chkWidth = new QCheckBox(tr("Width"));
 	m_chkWidth->setChecked(Globals->publisherSettings()->bPublishCols);
+	m_chkWidth->setToolTip(tr("Check to specify graph width in number of divisions"));
 	connect(m_chkWidth, SIGNAL(clicked()), this, SLOT(on_chkWidth_clicked()));
 
 	m_edtWidth = new QSpinBox();
 	m_edtWidth->setEnabled(m_chkWidth->isChecked());
 	m_edtWidth->setRange(10, 20);
 	m_edtWidth->setValue(Globals->publisherSettings()->nPublishCols);
+	m_edtWidth->setToolTip(tr("Specify graph width in number of divisions"));
 	connect(m_edtWidth, SIGNAL(valueChanged(int)), this, SLOT(on_edtWidth_valueChanged(int)));
 
-	m_chkTimebase = new QCheckBox(tr("Specify timebase"));
+	m_chkTimebase = new QCheckBox(tr("Timebase"));
 	m_chkTimebase->setChecked(Globals->publisherSettings()->bPublishTimebase);
+	m_chkTimebase->setToolTip(tr("Check to specify timebase of divisions"));
 	connect(m_chkTimebase, SIGNAL(clicked()), this, SLOT(on_chkTimebase_clicked()));
 
 	m_edtTimebase = new QSpinBox();
@@ -124,6 +123,7 @@ void TaskPublishWidget::setupWidgets()
 	m_edtTimebase->setRange(1, 20);
 	m_edtTimebase->setValue(Globals->publisherSettings()->nPublishCols);
 	m_edtTimebase->setSuffix("min");
+	m_edtTimebase->setToolTip(tr("Specify timebase of divisions"));
 	connect(m_edtTimebase, SIGNAL(valueChanged(int)), this, SLOT(on_edtTimebase_valueChanged(int)));
 
 	// Setup groupbox for file output
@@ -183,8 +183,9 @@ void TaskPublishWidget::setupWidgets()
 	// Items for "File output" group
 	//
 
-	m_chkSize = new QCheckBox(tr("Specify size (pixels)"));
+	m_chkSize = new QCheckBox(tr("Size (pixels)"));
 	m_chkSize->setChecked(Globals->publisherSettings()->bPublishHeight);
+	m_chkSize->setToolTip(tr("Check to specify graph size in pixels"));
 	connect(m_chkSize, SIGNAL(clicked()), this, SLOT(on_chkSize_clicked()));
 
 	m_edtSize = new QSpinBox();
@@ -192,6 +193,7 @@ void TaskPublishWidget::setupWidgets()
 	m_edtSize->setRange(100, 2000);
 	m_edtSize->setSingleStep(50);
 	m_edtSize->setValue(Globals->publisherSettings()->nPublishSize);
+	m_edtSize->setToolTip(tr("Specify graph size in pixels"));
 	connect(m_edtSize, SIGNAL(valueChanged(int)), this, SLOT(on_edtSize_valueChanged(int)));
 
 	m_btnSave = new QPushButton(QIcon(":/images/filesave-32x32.png"), tr("Save"));

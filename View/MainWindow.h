@@ -77,6 +77,7 @@ private slots:
 
 	void actions_fileImport_triggered();
 	void actions_fileExportSignalData_triggered();
+	void actions_fileExportAmplitudeData_triggered();
 	void actions_fileExportRetentionData_triggered();
 	void actions_fileExit_triggered();
 	void on_actHelpAbout_triggered();

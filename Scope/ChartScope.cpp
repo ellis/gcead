@@ -373,17 +373,16 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		//m_params.nSampleOffset = m_nSampleOffset;
 
 		m_params.nCols = 0;
+
+		m_params.elements = m_chartElements;
 		if (m_params.task == EadTask_Publish)
 		{
 			PublisherSettings* pub = Globals->publisherSettings();
-			m_params.elements = pub->publisherChartElements;
+			ChartElements mask = ChartElement_Grid | ChartElement_AxisTime | ChartElement_WaveNames | ChartElement_StdDev;
+			ChartElements e = pub->publisherChartElements;
+			m_params.elements &= ~mask | e;
 			if (pub->bPublishCols)
 				m_params.nCols = pub->nPublishCols;
-		}
-		// Check whether we need to hide the wave comments
-		else
-		{
-			m_params.elements = m_chartElements;
 		}
 
 		m_pixmap->draw(m_params);

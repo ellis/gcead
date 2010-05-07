@@ -65,6 +65,7 @@ public:
 	LoadSaveResult load(const QString& sFilename);
 	void importWaves(const EadFile* other);
 	bool exportData(const QString& sFilename /*, ExportFormat format*/);
+	bool exportAmplitudeData(const QString& sFilename /*, ExportFormat format*/);
 	bool exportRetentionData(const QString& sFilename /*, ExportFormat format*/);
 
 	RecInfo* newRec() { return m_newRec; }

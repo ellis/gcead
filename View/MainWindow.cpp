@@ -189,6 +189,7 @@ void MainWindow::setupActions()
 	ui.mnuFile->addSeparator();
 	ui.mnuFile->addAction(actions->fileImport);
 	ui.mnuFile->addAction(actions->fileExportSignalData);
+	ui.mnuFile->addAction(actions->fileExportAmplitudeData);
 	ui.mnuFile->addAction(actions->fileExportRetentionData);
 	ui.mnuFile->addAction(actions->fileLoadSampleProject);
 	ui.mnuFile->addSeparator();
@@ -253,6 +254,7 @@ void MainWindow::setupActions()
 
 	connect(actions->fileImport, SIGNAL(triggered()), this, SLOT(actions_fileImport_triggered()));
 	connect(actions->fileExportSignalData, SIGNAL(triggered()), this, SLOT(actions_fileExportSignalData_triggered()));
+	connect(actions->fileExportAmplitudeData, SIGNAL(triggered()), this, SLOT(actions_fileExportAmplitudeData_triggered()));
 	connect(actions->fileExportRetentionData, SIGNAL(triggered()), this, SLOT(actions_fileExportRetentionData_triggered()));
 	connect(actions->fileExit, SIGNAL(triggered()), this, SLOT(actions_fileExit_triggered()));
 	connect(actions->viewChartRecording, SIGNAL(changed()), this, SLOT(actions_viewChartRecording_changed()));
@@ -415,6 +417,35 @@ void MainWindow::actions_fileExportSignalData_triggered()
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	m_scope->file()->exportData(sFilename /*, EadFile::CSV*/);
+	QApplication::restoreOverrideCursor();
+}
+
+// REFACTOR: almost completely duplicates the above function
+void MainWindow::actions_fileExportAmplitudeData_triggered()
+{
+	CHECK_PRECOND_RET(m_scope->file() != NULL);
+
+	QString sFilename = QFileDialog::getSaveFileName(
+		this,
+		tr("Export EAD Amplitude Data"),
+		Globals->lastDir(),
+		tr("Comma Separated Values (*.csv)"));
+
+	if (sFilename.isEmpty())
+		return;
+
+	QFileInfo fi(sFilename);
+	if (fi.suffix().isEmpty())
+		sFilename += ".csv";
+
+	QMessageBox msg(QMessageBox::Information, tr("Exporting..."), tr("The amplitude data is currently being exported."));
+	msg.setStandardButtons(QMessageBox::NoButton);
+	msg.show();
+	// Let window repaint itself before we do the slow process of exporting
+	QApplication::processEvents();
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	m_scope->file()->exportAmplitudeData(sFilename /*, EadFile::CSV*/);
 	QApplication::restoreOverrideCursor();
 }
 

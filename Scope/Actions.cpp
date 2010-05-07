@@ -54,9 +54,11 @@ Actions::Actions(QObject *parent)
 	fileImport = new QAction(tr("Import Waves..."), this);
 	fileImport->setToolTip(tr("Import waves from another EAD file"));
 
-	fileExportSignalData = new QAction(tr("&Export Signal Data..."), this);
+	fileExportSignalData = new QAction(tr("Export Si&gnal Data..."), this);
 
-	fileExportRetentionData = new QAction(tr("&Export Retention Data..."), this);
+	fileExportAmplitudeData = new QAction(tr("Export Am&plitude Data..."), this);
+
+	fileExportRetentionData = new QAction(tr("Export Re&tention Data..."), this);
 
 	fileLoadSampleProject = new QAction(tr("&Load Sample Project"), this);
 

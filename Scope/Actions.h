@@ -37,6 +37,7 @@ public:
 	QAction* fileComment;
 	QAction* fileImport;
 	QAction* fileExportSignalData;
+	QAction* fileExportAmplitudeData;
 	QAction* fileExportRetentionData;
 	QAction* fileLoadSampleProject;
 	QAction* fileExit;
