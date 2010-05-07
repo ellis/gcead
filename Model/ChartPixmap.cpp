@@ -884,7 +884,8 @@ void ChartPixmap::drawAreaLines(QPainter& painter, ChartWaveInfo* cwi)
 		int tidx1 = peak.didxMiddle + vwi->shift();
 		int x1 = sampleOffsetToX(tidx1);
 		int y1 = qMax(y0, y2) + 5;
-		int yText, flags;
+		int yText = 0;
+		int flags = 0;
 		QString s;
 		if (vwi->wave()->type == WaveType_FID)
 		{
