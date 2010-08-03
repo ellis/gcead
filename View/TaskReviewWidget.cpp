@@ -95,12 +95,11 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 
 	m_lblPeakTip = new QLabel(this);
 	m_lblPeakTip->setText(tr(
-			"<b>Edit Peaks:</b><br/>"
+			"<b>Edit Markers:</b><br/>"
+			"<i>Custom marker:</i> Ctrl-Click on a wave<br/>"
 			"<i>Verify a detected peak:</i> click on &quot;<span style='color:red'>Add</span>&quot;<br/>"
-			"<i>Add marker:</i> Ctrl-Click on an EAD wave<br/>"
-			"<i>Add peak:</i> Ctrl-Click on an FID wave<br/>"
 			"<i>Adjust postition:</i> click and drag to move the marker or the area handles<br/>"
-			"<i>Remove:</i> right-click on a peak or marker and select &quot;Remove&quot;"
+			"<i>Remove:</i> right-click on marker and select &quot;Remove&quot;"
 			));
 	m_lblPeakTip->setWordWrap(true);
 	m_lblPeakTip->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);

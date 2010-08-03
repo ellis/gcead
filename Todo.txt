@@ -14,21 +14,11 @@
 	?	import all records from another EAD file
 		test importing from both GcEad/2010 and the old EAD program
 		but: also need to let user delete waves then?
-x	"Load Sample Project...": remove "..."
-?	Log CHECK_* messages with time
-	?	Shorter date/time format
-	x	Add mechanism to write more data to the log
-*	Corraine's request is for EAD instead of FID
-	x	show time below on EAD waves
-	x	show amplitude on EAD waves
-	?	fix amplitude calculation
-	x	draw area bars on EAD waves when in Edit Peaks mode
-	?	place area markers further apart on creation
-	x	ctrl-click on EAD makes peak with area bars
-		Fix drag?
-		Update instructions
-		Update other text (Peak? Marker?)
-?	Export EAG amplitude data
+*	Output the steigung of the EAD peak in the CSV file
+		amplitude
+		dauer
+		steigung nach unten
+		steigung nach oben
 	Screenshots for Peter's documentation
 	BUG?: What happens when trying to open file directly from explorer?
 	Create unit tests
@@ -56,6 +46,7 @@ x	"Load Sample Project...": remove "..."
 			proper scrolling as recording goes off current visible region
 		loading/saving settings
 			show peak percent vs amplitude
+	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	Improve handling of IDAC overflow
 	Run unit tests in GUI
 		separate View and ViewMain
@@ -64,6 +55,13 @@ x	"Load Sample Project...": remove "..."
 	Create new installer for Windows
 		build EXE in Windows
 		update version number too
+
+Windows 7 x64 USB:
+	http://www.jungo.com/st/wdusb.html#
+	http://www.thesycon.de/eng/usbio.shtml
+	Could WinUSB be used with IDAC2, or does the reset requirement (see IdacDriverUsb::sendFirmware) prevent this?
+	Could IDAC4 firmware be re-written to not use isochronous transfer, so that WinUSB could be used?
+	Could IDAC firmware be rewritten to implement a "Communication Class", in particular "Asynchronous Transfer Mode", and then use the standard Windows driver?
 
 DONE:
 x	In record mode, when data gets to end of screen, use page-right instead of zoom-out
@@ -89,6 +87,20 @@ x	Create hidden test routine to record lots of waves
 	x	Log USB error messages
 	x	Run non-recording ScopeTests in valgrind
 x	Show time elapsed instead of time remaining when recording
+x	"Load Sample Project...": remove "..."
+x	Log CHECK_* messages with time
+	x	Shorter date/time format
+	x	Add mechanism to write more data to the log
+x	Export EAG amplitude data
+x	Corraine's request is for EAD instead of FID
+	x	show time below on EAD waves
+	x	show amplitude on EAD waves
+	x	fix amplitude calculation
+	x	draw area bars on EAD waves when in Edit Peaks mode
+	x	place area markers further apart on creation
+	x	ctrl-click on EAD makes peak with area bars
+	x	Update instructions
+	x	Update other text (Peak? Marker?)
 
 
 	INSTALLER:
@@ -143,6 +155,7 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 ?	ChartWidget: BUG: zoom in three times, then zoom out twice, no data is shown anymore!
 	ChartWidget: When the user first presses Ctrl, update the mouse cursor if appropriate (i.e., about to set a peak)
 	ChartWidget: Don't let user zoom in on an empty document using mouse dragging
+	ChartWidget: when dragging markers, marker snaps to mouse-x instead of dragging smoothly
 	EadFile: returned more detailed information when load/save fail (and show it to user)
 	Globals: set whether File or Print output was last selected (variables already exist in PublisherSettings, and they are loaded and saved in Globals)
 	MainScope: only enable m_actions->fileExportRetentionData when the user has set/verified peaks
