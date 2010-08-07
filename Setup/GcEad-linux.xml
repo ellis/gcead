@@ -128,7 +128,7 @@
 			<name>idacusblinux</name>
 			<description>root: Register IDAC</description>
 			<canBeEdited>1</canBeEdited>
-			<detailedDescription>Register the IDAC USB hardware in /etc/udev/rules.de for users in the "plugdev" group to access the hardware.</detailedDescription>
+			<detailedDescription>Register the IDAC USB hardware in /etc/udev/rules.d/ for users in the "plugdev" group to access the hardware.</detailedDescription>
 			<selected>0</selected>
 			<show>1</show>
 			<folderList>

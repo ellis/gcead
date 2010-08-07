@@ -83,22 +83,32 @@ void TaskPublishWidget::setupWidgets()
 	
 	m_chkGrid = new QCheckBox(tr("Grid lines"));
 	m_chkGrid->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Grid));
-	m_chkGrid->setToolTip(tr("Uncheck to hide grid lines"));
+	m_chkGrid->setToolTip(tr("Check to show grid lines"));
 	connect(m_chkGrid, SIGNAL(clicked()), this, SLOT(on_chkGrid_clicked()));
 
 	m_chkTime = new QCheckBox(tr("Axis time"));
 	m_chkTime->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_AxisTime));
-	m_chkTime->setToolTip(tr("Uncheck to hide time labels on the X-axis"));
+	m_chkTime->setToolTip(tr("Check to show time labels on the X-axis"));
 	connect(m_chkTime, SIGNAL(clicked()), this, SLOT(on_chkTime_clicked()));
 
 	m_chkNames = new QCheckBox(tr("Wave names"));
 	m_chkNames->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_WaveNames));
-	m_chkNames->setToolTip(tr("Uncheck to hide wave names"));
+	m_chkNames->setToolTip(tr("Check to show wave names"));
 	connect(m_chkNames, SIGNAL(clicked()), this, SLOT(on_chkNames_clicked()));
+
+	m_chkComments = new QCheckBox(tr("Comments"));
+	m_chkComments->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_WaveComments));
+	m_chkComments->setToolTip(tr("Check to show wave comments"));
+	connect(m_chkComments, SIGNAL(clicked()), this, SLOT(on_chkComments_clicked()));
+
+	m_chkMarkers = new QCheckBox(tr("Markers"));
+	m_chkMarkers->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Markers));
+	m_chkMarkers->setToolTip(tr("Check to show markers"));
+	connect(m_chkMarkers, SIGNAL(clicked()), this, SLOT(on_chkMarkers_clicked()));
 
 	m_chkStdDev = new QCheckBox(tr("Standard deviation"));
 	m_chkStdDev->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_StdDev));
-	m_chkStdDev->setToolTip(tr("Uncheck to hide standard deviation lines around the average waves"));
+	m_chkStdDev->setToolTip(tr("Check to show standard deviation lines around the average waves"));
 	connect(m_chkStdDev, SIGNAL(clicked()), this, SLOT(on_chkStdDev_clicked()));
 
 	m_chkWidth = new QCheckBox(tr("Width"));

@@ -1,3 +1,15 @@
+	http://doc.trolltech.com/4.7-snapshot/declarativeui.html
+	2 decimal places for times
+	EAD markers:
+		change UI as discussed with Peter and Corainne
+		no time
+		thicker tick
+		for graphical display, see my hand-written notes
+	integrate filter code into GcEad
+	create mac installable
+	Screenshots for Peter's documentation
+	more unit tests
+	
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of Autospike-CSV files
 	import of old EAG files
@@ -19,8 +31,6 @@
 		dauer
 		steigung nach unten
 		steigung nach oben
-	Screenshots for Peter's documentation
-	BUG?: What happens when trying to open file directly from explorer?
 	Create unit tests
 	x	load sample project
 	x	charts

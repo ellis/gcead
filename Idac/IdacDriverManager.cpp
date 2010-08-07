@@ -70,7 +70,7 @@ void IdacDriverManager::findDevice()
 	usb_find_devices();
 
 	struct usb_device* device = findIdac();
-	if (device != m_device)
+	if (device != m_device || m_driver == NULL)
 	{
 		m_device = device;
 		createDriver();
