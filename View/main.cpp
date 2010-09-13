@@ -51,6 +51,9 @@ void checkFailure(const char* sFile, int iLine, const char* s)
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_WS_X11
+	QApplication::setGraphicsSystem("raster");
+#endif
 	QApplication a(argc, argv);
 
 	a.setWindowIcon(QIcon(":/images/GcEad.ico"));

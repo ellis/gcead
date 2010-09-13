@@ -1,10 +1,23 @@
-	http://doc.trolltech.com/4.7-snapshot/declarativeui.html
-	2 decimal places for times
+	fix IDAC4 packet which I don't know how to interpret
+?	2 decimal places for times
 	EAD markers:
 		change UI as discussed with Peter and Corainne
-		no time
-		thicker tick
+	x	no time
+	x	thicker tick
 		for graphical display, see my hand-written notes
+		BUG: can only be set on the AVE waves (for both EAD and FID)
+	x	For EAD markers, drag on tick marker instead of hypothetical marker text
+		when user drags marker
+			don't move the ends with it until user gets close to the ends
+		automation: when user ctrl-clicks on FID wave
+			search for upper peak in surrounding
+			search for up/slant in surrounding
+		automation: when user ctrl-clicks on EAD wave
+			set left handle at point of click
+			automatically search for lower peak in surrounding
+	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
+	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
+	When dragging selection area: if user presses ESC, then abort selection
 	integrate filter code into GcEad
 	create mac installable
 	Screenshots for Peter's documentation
@@ -56,7 +69,6 @@
 			proper scrolling as recording goes off current visible region
 		loading/saving settings
 			show peak percent vs amplitude
-	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	Improve handling of IDAC overflow
 	Run unit tests in GUI
 		separate View and ViewMain

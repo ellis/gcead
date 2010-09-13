@@ -649,12 +649,12 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 		// the packet might not contain measurement data
 		if (nBytes > 598) {
 			nBytes = 0;
-			/*qDebug() << "ERROR: nBytes =" << nBytes << iTransfer << iPacket << nBytesReceived;
+			qDebug() << "ERROR: nBytes =" << nBytes << iTransfer << iPacket << nBytesReceived;
 			for (int j = 0; j < 299; j++) {
 				cerr << pBuffer[j] << " ";
 			}
 			cerr << endl;
-			*/
+			cerr.flush();
 			/*for (int i = 0; i < 8; i++) {
 				char* p = (char*) (isobuf + 4800 * iTransfer + 600 * i);
 				qDebug() << "\t" << i << (int)(*p);

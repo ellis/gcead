@@ -52,7 +52,7 @@ QString timestampString(double nSeconds, TimestampBase base)
 		break;
 	}
 
-	QString sN = QString::number(n, 'f', 1);
+	QString sN = QString::number(n, 'f', 2);
 	if (sN.endsWith(".0"))
 		sN = sN.left(sN.size() - 2);
 	QString s = sFormat.arg(sN);

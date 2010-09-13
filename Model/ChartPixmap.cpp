@@ -833,7 +833,10 @@ void ChartPixmap::drawMarkerTimes(QPainter& painter, ChartWaveInfo* cwi)
 		flags = Qt::AlignBottom;
 	}
 
-	painter.setPen(Qt::blue);
+	QPen penOld = painter.pen();
+	QPen penNew(Qt::blue);
+	penNew.setWidth(3);
+	painter.setPen(penNew);
 	for (int iPeak = 0; iPeak < vwi->wave()->peaksChosen.size(); iPeak++)
 	{
 		const WavePeakChosenInfo& info = vwi->wave()->peaksChosen.at(iPeak);
@@ -841,10 +844,12 @@ void ChartPixmap::drawMarkerTimes(QPainter& painter, ChartWaveInfo* cwi)
 		int i = info.didxMiddle + vwi->shift();
 		int x = sampleOffsetToX(i);
 		int y = valueToY(vwi, vwi->wave()->display[info.didxMiddle]);
-		painter.drawLine(x, y, x, y + dyLine);
-		cwi->arcPeaksChosen << QPair<QRect, int>(QRect(x - 2, y + dyLine, 5, 11), iPeak);
+		int yTop = qMin(y, y + dyLine);
+		int yBot = qMax(y, y + dyLine);
+		painter.drawLine(x, yTop, x, yBot);
+		cwi->arcPeaksChosen << QPair<QRect, int>(QRect(x - 2, yTop, 5, 11), iPeak);
 
-		if (m_params.elements.testFlag(ChartElement_MarkerTime))
+		if (vwi->wave()->type == WaveType_FID && m_params.elements.testFlag(ChartElement_MarkerTime))
 		{
 			double nSeconds = double(i) / EAD_SAMPLES_PER_SECOND;
 			QString sTime = timestampString(nSeconds);
@@ -855,6 +860,7 @@ void ChartPixmap::drawMarkerTimes(QPainter& painter, ChartWaveInfo* cwi)
 			cwi->arcPeaksChosen << QPair<QRect, int>(rcTime, iPeak);
 		}
 	}
+	painter.setPen(penOld);
 }
 
 void ChartPixmap::drawAreaLines(QPainter& painter, ChartWaveInfo* cwi)
@@ -872,26 +878,37 @@ void ChartPixmap::drawAreaLines(QPainter& painter, ChartWaveInfo* cwi)
 		int x0 = sampleOffsetToX(i0);
 		int y0 = valueToY(vwi, data[peak.didxLeft]);
 
+		int i1 = peak.didxMiddle + vwi->shift();
+		int x1 = sampleOffsetToX(i1);
+		int y1 = valueToY(vwi, data[peak.didxMiddle]);
+
 		int i2 = peak.didxRight + vwi->shift();
 		int x2 = sampleOffsetToX(i2);
 		int y2 = valueToY(vwi, data[peak.didxRight]);
 
+		if (vwi->wave()->type == WaveType_EAD) {
+			x2 = x1;
+			y2 = y0;
+		}
+
 		QColor clr(0, 50, 255);
 		painter.setPen(clr);
-		painter.drawLine(x0, y0, x2, y2);
+		if (vwi->wave()->type == WaveType_EAD) {
+			painter.drawLine(x0, y0, x1, y0);
+			painter.drawLine(x1, y0, x1, y1);
+		}
+		else {
+			painter.drawLine(x0, y0, x2, y2);
+		}
 
 		// Draw area percentage
-		int tidx1 = peak.didxMiddle + vwi->shift();
-		int x1 = sampleOffsetToX(tidx1);
-		int y1 = qMax(y0, y2) + 5;
-		int yText = 0;
+		int yText = qMax(y0, y2) + 5;
 		int flags = 0;
 		QString s;
 		if (vwi->wave()->type == WaveType_FID)
 		{
 			int nPercent = int(peak.nPercent * 100 + 0.5);
 			s = QObject::tr("%0%").arg(nPercent);
-			yText = y1;
 			flags = Qt::AlignTop;
 		}
 		else if (vwi->wave()->type == WaveType_EAD)
@@ -930,9 +947,12 @@ void ChartPixmap::drawAreaHandles(QPainter& painter, ChartWaveInfo* cwi)
 		painter.drawRect(rc);
 		painter.fillRect(rc, clr);
 
-		rc = rectOfAreaHandle(vwi, peak.didxRight);
-		painter.drawRect(rc);
-		painter.fillRect(rc, clr);
+		// Only show the right handle for FID waves
+		if (vwi->wave()->type == WaveType_FID) {
+			rc = rectOfAreaHandle(vwi, peak.didxRight);
+			painter.drawRect(rc);
+			painter.fillRect(rc, clr);
+		}
 	}
 
 	painter.setPen(penOld);
@@ -1164,7 +1184,7 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 					info->iLeftAreaHandle = iPeak;
 					break;
 				}
-				else if (rectOfAreaHandle(vwiWave, peak.didxRight).contains(ptPixmap))
+				else if (wave->type == WaveType_FID && rectOfAreaHandle(vwiWave, peak.didxRight).contains(ptPixmap))
 				{
 					info->iRightAreaHandle = iPeak;
 					break;
