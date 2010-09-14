@@ -323,9 +323,10 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 		else if (wave != NULL)
 		{
 			// If the user Ctrl+clicks on the selected FID wave while in peak editing mode:
-			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && wave->recId() == m_chartS->params().nPeakModeRecId)
+			if (e->modifiers() == Qt::ControlModifier)
 			{
-				addPeak(vwi, m_ptClickPixmap.x());
+				if (wave->type == WaveType_FID || wave->type == WaveType_EAD)
+					addPeak(vwi, m_ptClickPixmap.x());
 			}
 			else
 			{
@@ -438,14 +439,24 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 			WavePeakChosenInfo& marker = wave->peaksChosen[info.iChosenPeak];
 			int x = e->pos().x() - m_rcPixmap.left();
 			int didx = m_pixmap->xToCenterSample(info.vwi->wave(), x);
-			int d = didx - marker.didxMiddle;
-			marker.didxLeft += d;
-			marker.didxMiddle += d;
-			marker.didxRight += d;
-			info.vwi->waveInfo()->calcPeakAmplitude(info.iChosenPeak);
-			info.vwi->waveInfo()->calcPeakArea(info.iChosenPeak);
-			info.vwi->waveInfo()->calcAreaPercents();
-			m_chartS->redraw();
+			//int d = didx - marker.didxMiddle;
+			//marker.didxLeft += d;
+			//marker.didxMiddle += d;
+			//marker.didxRight += d;
+			bool bOk = true;
+			bOk &= (didx > marker.didxLeft);
+			// Check the right side for FIDs too
+			if (wave->type == WaveType_FID)
+				bOk &= (didx < marker.didxRight);
+			if (bOk) {
+				marker.didxMiddle = didx;
+				if (wave->type == WaveType_EAD)
+					marker.didxRight = marker.didxMiddle;
+				info.vwi->waveInfo()->calcPeakAmplitude(info.iChosenPeak);
+				info.vwi->waveInfo()->calcPeakArea(info.iChosenPeak);
+				info.vwi->waveInfo()->calcAreaPercents();
+				m_chartS->redraw();
+			}
 		}
 		else if (wave != NULL)
 		{
@@ -663,18 +674,30 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 
 void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
 {
-	int didx1 = m_pixmap->xToCenterSample(vwi->wave(), x);
-	int didx0 = m_pixmap->xToCenterSample(vwi->wave(), x - 20);
-	int didx2 = m_pixmap->xToCenterSample(vwi->wave(), x + 20);
+	WaveInfo* wave = vwi->waveInfo();
 
-	if (didx0 >= 0 && didx2 < vwi->wave()->display.size())
-	{
-		WavePeakChosenInfo peak;
-		peak.didxLeft = didx0;
-		peak.didxMiddle = didx1;
-		peak.didxRight = didx2;
-		vwi->choosePeak(peak);
+	int didxLeft = m_pixmap->xToCenterSample(wave, x);
+	int didxRight = m_pixmap->xToCenterSample(wave, x + 40);
+
+	WavePeakChosenInfo peak;
+	peak.didxLeft = didxLeft;
+	peak.didxRight = didxRight;
+	peak.didxMiddle = (didxLeft + didxRight) / 2;
+
+	if (wave->type == WaveType_FID) {
+		WavePeakInfo peak0;
+		if (wave->findFidPeak(didxLeft, didxRight, &peak0)) {
+			peak.didxLeft = didxLeft;
+			peak.didxMiddle = peak0.middle.i;
+			peak.didxRight = peak0.right.i;
+		}
 	}
+	else if (wave->type == WaveType_EAD) {
+		peak.didxLeft = didxLeft;
+		peak.didxMiddle = wave->indexOfMin(didxLeft, didxRight);
+		peak.didxRight = peak.didxMiddle;
+	}
+	vwi->choosePeak(peak);
 }
 
 void ChartWidget::movePeakHandle(WaveInfo* wave, int iPeak, int didx, bool bLeft)

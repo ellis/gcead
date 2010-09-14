@@ -78,6 +78,7 @@ public:
 	void unchoosePeakAtIndex(int i);
 
 private:
+	void boundDidx(int& didx);
 	void emitChanged(ViewChangeEvents e);
 
 private:

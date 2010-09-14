@@ -147,6 +147,10 @@ public:
 	void calcDisplayData();
 
 	void findFidPeaks();
+	bool findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) const;
+
+	//int indexOfMax(int didxLeft, int didxRight) const;
+	int indexOfMin(int didxLeft, int didxRight) const;
 
 	int indexOfChosenPeakAtDidx(int didx) const;
 	void choosePeakAtDidx(int didx);
@@ -165,6 +169,9 @@ public:
 	void calcPeakAreas();
 	/// Calculate the area percents
 	void calcAreaPercents();
+
+private:
+	void findFidPeaks(const QList<WavePoint>& peaksAll, QList<WavePeakInfo>& peaks) const;
 
 private:
 	RecInfo* m_rec;

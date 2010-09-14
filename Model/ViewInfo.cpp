@@ -152,11 +152,25 @@ void ViewWaveInfo::choosePeak(const WavePeakChosenInfo& peak)
 
 	int iPeak = m_wave->peaksChosen.size();
 	m_wave->peaksChosen << peak;
+
+	WavePeakChosenInfo& p = m_wave->peaksChosen.last();
+	boundDidx(p.didxLeft);
+	boundDidx(p.didxMiddle);
+	boundDidx(p.didxRight);
+
 	m_wave->calcPeakAmplitude(iPeak);
 	m_wave->calcPeakArea(iPeak);
 	m_wave->calcAreaPercents();
 
 	emitChanged(ViewChangeEvent_Paint);
+}
+
+void ViewWaveInfo::boundDidx(int& didx)
+{
+	if (didx < 0)
+		didx = 0;
+	else if (didx >= m_wave->display.size())
+		didx = m_wave->display.size() - 1;
 }
 
 void ViewWaveInfo::choosePeakAtDidx(int didx)

@@ -131,8 +131,70 @@ void WaveInfo::findFidPeaks()
 		}
 	}
 
+	findFidPeaks(peaksAll, peaks0);
+}
+
+bool WaveInfo::findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) const
+{
+	CHECK_ASSERT_RETVAL(peak != NULL, false);
+
+	didxLeft = qMax(didxLeft, RADIUS);
+	didxRight = qMin(didxRight, display.size() - RADIUS - 1);
+
+	// REFACTOR: mostly duplicates code from above
+	// First find all maximums
+	QList<WavePoint> peaksAll;
+	const double* data = display.constData();
+	for (int i = didxLeft; i < didxRight; i++)
+	{
+		double n = data[i];
+		double nComp = n + 1e-10;
+
+		// Find whether there is a peak at 'i' with RADIUS samples
+		bool bMax = true;
+		for (int j = i - RADIUS; j < i; j++)
+		{
+			if (data[j] >= nComp)
+			{
+				bMax = false;
+				break;
+			}
+		}
+		for (int j = i + 1; j <= i + RADIUS; j++)
+		{
+			if (data[j] >= nComp)
+			{
+				bMax = false;
+				break;
+			}
+		}
+
+		if (bMax)
+		{
+			//qDebug() << "Peak:" << i << n;
+			peaksAll << WavePoint(i, n);
+			i += RADIUS / 2;
+		}
+	}
+
+	// Only keep the first peak
+	//while (peaksAll.size() > 1)
+	//	peaksAll.removeLast();
+
+	QList<WavePeakInfo> peaks;
+	findFidPeaks(peaksAll, peaks);
+
+	// Copy first detected peak
+	if (!peaks.isEmpty())
+		*peak = peaks[0];
+
+	return !peaks.isEmpty();
+}
+
+void WaveInfo::findFidPeaks(const QList<WavePoint>& peaksAll, QList<WavePeakInfo>& peaks) const
+{
 	WavePeakInfo info;
-	peaks0.clear();
+	peaks.clear();
 	foreach (WavePoint pt, peaksAll)
 	{
 		{
@@ -201,14 +263,14 @@ void WaveInfo::findFidPeaks()
 					nDecreasing++;
 
 				nPrev = n;
-				
+
 				double nFraction = double(nDecreasing) / nSamples;
 				if (i == display.size() - 1)
 					break;
 				if (nSamples > RADIUS / 2 && nFraction < 0.8)
 					break;
 			}
-			
+
 			double nMinThreshold = nMin + (pt.n - nMin) * 0.05;
 			for (i = pt.i + 1; i < iMin; i++)
 			{
@@ -238,9 +300,29 @@ void WaveInfo::findFidPeaks()
 			info.bEnabled = !bChosen;
 			info.middle = pt;
 			//qDebug() << "\tOK";
-			peaks0 << info;
+			peaks << info;
 		}
 	}
+}
+
+int WaveInfo::indexOfMin(int didxLeft, int didxRight) const
+{
+	if (didxLeft < 0)
+		didxLeft = 0;
+	if (didxRight >= display.size())
+		didxRight = display.size() - 1;
+
+	int iMin = didxLeft;
+	double nMin = display[didxLeft];
+	//double nStart = nMin;
+	for (int i = didxLeft + 1; i <= didxRight; i++) {
+		double n = display[i];
+		if (n < nMin)
+			nMin = display[i];
+		//else if (n > )
+	}
+
+	return iMin;
 }
 
 /*
