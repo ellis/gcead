@@ -876,15 +876,18 @@ void ChartPixmap::drawAreaLines(QPainter& painter, ChartWaveInfo* cwi)
 	{
 		int i0 = peak.didxLeft + vwi->shift();
 		int x0 = sampleOffsetToX(i0);
-		int y0 = valueToY(vwi, data[peak.didxLeft]);
+		double n0 = data[peak.didxLeft];
+		int y0 = valueToY(vwi, n0);
 
 		int i1 = peak.didxMiddle + vwi->shift();
 		int x1 = sampleOffsetToX(i1);
-		int y1 = valueToY(vwi, data[peak.didxMiddle]);
+		double n1 = data[peak.didxMiddle];
+		int y1 = valueToY(vwi, n1);
 
 		int i2 = peak.didxRight + vwi->shift();
 		int x2 = sampleOffsetToX(i2);
-		int y2 = valueToY(vwi, data[peak.didxRight]);
+		double n2 = data[peak.didxRight];
+		int y2 = valueToY(vwi, n2);
 
 		if (vwi->wave()->type == WaveType_EAD) {
 			x2 = x1;
@@ -914,13 +917,14 @@ void ChartPixmap::drawAreaLines(QPainter& painter, ChartWaveInfo* cwi)
 		else if (vwi->wave()->type == WaveType_EAD)
 		{
 			double n = peak.nAmplitude;
+			n = n0 - n1;
 			if (n >= 10)
 				s = QObject::tr("%0 mV").arg(n, 0, 'f', 0);
 			else if (n >= 1)
 				s = QObject::tr("%0 mV").arg(n, 0, 'g', 3);
 			else
 				s = QObject::tr("%0 mV").arg(n, 0, 'g', 2);
-			yText = qMin(y0, y2) - 100;
+			yText = qMin(y0, y1) - 100;
 			flags = Qt::AlignBottom;
 		}
 		QRect rc(x1 - 100, yText, 201, 100);

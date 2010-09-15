@@ -305,24 +305,47 @@ void WaveInfo::findFidPeaks(const QList<WavePoint>& peaksAll, QList<WavePeakInfo
 	}
 }
 
-int WaveInfo::indexOfMin(int didxLeft, int didxRight) const
+int WaveInfo::findNextMin(int didxLeft, int didxRight, int radius) const
 {
 	if (didxLeft < 0)
 		didxLeft = 0;
 	if (didxRight >= display.size())
 		didxRight = display.size() - 1;
+	if (radius < RADIUS)
+		radius = RADIUS;
 
-	int iMin = didxLeft;
-	double nMin = display[didxLeft];
-	//double nStart = nMin;
-	for (int i = didxLeft + 1; i <= didxRight; i++) {
-		double n = display[i];
-		if (n < nMin)
-			nMin = display[i];
-		//else if (n > )
+	const double* data = display.constData();
+	int iMin = -1;
+	double nMin = 0;
+	int diameter = radius + radius;
+
+	for (int didx0 = didxLeft; didx0 <= didxRight; didx0++) {
+		int didx1 = didx0 + diameter;
+
+		if (iMin < didx0) {
+			nMin = data[didx0];
+			// Find the minimum within the first 2*radius+1 samples
+			for (int i = didx0; i <= didx1; i++) {
+				double n = data[i];
+				if (n < nMin) {
+					nMin = n - 1e-10;
+					iMin = i;
+				}
+			}
+		}
+		else {
+			double n = data[didx1];
+			if (n < nMin) {
+				nMin = n - 1e-10;
+				iMin = didx1;
+			}
+		}
+
+		if (iMin == didx0 + radius)
+			return iMin;
 	}
 
-	return iMin;
+	return -1;
 }
 
 /*
@@ -517,23 +540,9 @@ void WaveInfo::calcPeakAmplitude(int iPeak)
 
 	WavePeakChosenInfo& peak = peaksChosen[iPeak];
 
-	double nLeft = display[peak.didxLeft];
-	double nRight = display[peak.didxRight];
-
-	int didxMin = peak.didxLeft;
-	double nMin = nLeft;
-	// Find highest point
-	for (int didx = peak.didxLeft + 1; didx <= peak.didxRight; didx++)
-	{
-		double n = display[didx];
-		if (n < nMin) {
-			didxMin = didx;
-			nMin = n;
-		}
-	}
-
-	double nTop = nLeft + (nRight - nLeft) / (peak.didxRight - peak.didxLeft + 1) * (didxMin - peak.didxLeft);
-	peak.nAmplitude = nTop - nMin;
+	double n0 = display[peak.didxLeft];
+	double n1 = display[peak.didxMiddle];
+	peak.nAmplitude = n0 - n1;
 }
 
 void WaveInfo::calcPeakArea(int iPeak)

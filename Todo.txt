@@ -1,21 +1,25 @@
-continue at ChartWidget.cpp:696
-
 	fix IDAC4 packet which I don't know how to interpret
-?	2 decimal places for times
+x	2 decimal places for times
 	EAD markers:
 	x	no time
 	x	thicker tick
-	?	for graphical display, see my hand-written notes
-	?	BUG: can only be set on the AVE waves (for both EAD and FID)
+	x	for graphical display, see my hand-written notes
+	x	BUG: can only be set on the AVE waves (for both EAD and FID)
 	x	For EAD markers, drag on tick marker instead of hypothetical marker text
-		when user drags marker
-		?	don't move the ends with it until user gets close to the ends
+	x	when user drags marker
+		x	don't move the ends with it until user gets close to the ends
 		automation: when user ctrl-clicks on FID wave
-		?	search for upper peak in surrounding
-		?	search for up/slant in surrounding
-		automation: when user ctrl-clicks on EAD wave
-			set left handle at point of click
-			automatically search for lower peak in surrounding
+		x	search for upper peak in surrounding
+		x	search for up/slant in surrounding
+			prevent searching past an existing selected peak
+			automatically remove autodetected peak
+	x	automation: when user ctrl-clicks on EAD wave
+		x	set left handle at point of click
+		x	automatically search for lower peak in surrounding
+			prevent searching past an existing selected peak
+	x	show correct mV value
+	x	CTRL-click only in marker edit mode
+	x	move markers only in marker edit mode
 	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	When dragging selection area: if user presses ESC, then abort selection
@@ -23,6 +27,10 @@ continue at ChartWidget.cpp:696
 	create mac installable
 	Screenshots for Peter's documentation
 	more unit tests
+	
+	Question for Peter:
+		should I drop "min" unit from time when the unit is minutes?
+		is the thicker tick what you had in mind?
 	
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of Autospike-CSV files
@@ -170,12 +178,11 @@ FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possib
 	add programmer documentation to IdacDriver* projects
 
 FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement later
+	Markers Edit; click Add; move marker; remove marker: autodetect of peak should be re-added?
 	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!  Appears to be a Qt or KDE bug, because other applications have the same problem, and I think it might have worked correctly in windows -- 2010-05-05.
 	integrate RecordHandler into Idac/ or IdacDriver/ (and delete RecordHandler)
-	ChartPixmap: BUG: while recording, FID wave sometimes is displayed with a vertical line at the end (might have to zoom in to see the phenomenon)
 	ChartWidget: vertical "crosshair" line
 	ChartWidget: When changing number of horizontal divisions in Publish task, move the scrollbar appropriately
-?	ChartWidget: BUG: zoom in three times, then zoom out twice, no data is shown anymore!
 	ChartWidget: When the user first presses Ctrl, update the mouse cursor if appropriate (i.e., about to set a peak)
 	ChartWidget: Don't let user zoom in on an empty document using mouse dragging
 	ChartWidget: when dragging markers, marker snaps to mouse-x instead of dragging smoothly

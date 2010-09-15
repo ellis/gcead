@@ -37,18 +37,18 @@ PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libIdac.a \
     $${DESTDIR}/libModel.a \
     $${DESTDIR}/libScope.a
-win32:LIBS += ../extern/win32/libusb.a
+win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \
     -L../release \
     -Wl,-Bstatic \
     -lstdc++ \
     -Wl,-Bdynamic \
-    ../extern/libusb-compat-0.1.3/libusb/.libs/libusb.a \
-    ../extern/libusb/libusb/.libs/libusb-1.0.a
+    $${PWD}/../extern/libusb-compat-0.1.3/libusb/.libs/libusb.a \
+    $${PWD}/../extern/libusb/libusb/.libs/libusb-1.0.a
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit \
-    ../extern/libusb-compat-0.1.3/libusb/.libs/libusb.a \
-    ../extern/libusb/libusb/.libs/libusb-1.0.a
+    $${PWD}/../extern/libusb-compat-0.1.3/libusb/.libs/libusb.a \
+    $${PWD}/../extern/libusb/libusb/.libs/libusb-1.0.a
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc
@@ -62,25 +62,25 @@ unix:pg {
 !macx:idac2hex.target = $${DESTDIR}/idc2fpga.hex
 macx:idac2hex.target = $${DESTDIR}/GcEad.app/Contents/MacOS/idc2fpga.hex
 win32:idac2hex.commands = ${COPY_FILE} \
-    ..\Installables\idc2fpga.hex \
+    $${PWD}\..\Installables\idc2fpga.hex \
     ${DESTDIR}
 unix:!macx:idac2hex.commands = ${COPY_FILE} \
-    ../Installables/idc2fpga.hex \
+    $${PWD}/../Installables/idc2fpga.hex \
     ${DESTDIR}
 macx:idac2hex.commands = ${COPY_FILE} \
-    ../Installables/idc2fpga.hex \
+    $${PWD}/../Installables/idc2fpga.hex \
     ${DESTDIR}/GcEad.app/Contents/MacOS
 
 # Copy IDAC4 hex file
 idac4hex.target = $${DESTDIR}/idc4fpga.hex
 win32:idac4hex.commands = ${COPY_FILE} \
-    ..\Installables\idc4fpga.hex \
+    $${PWD}\..\Installables\idc4fpga.hex \
     ${DESTDIR}
 unix:!macx:idac4hex.commands = ${COPY_FILE} \
-    ../Installables/idc4fpga.hex \
+    $${PWD}/../Installables/idc4fpga.hex \
     ${DESTDIR}
 macx:idac4hex.commands = ${COPY_FILE} \
-    ../Installables/idc4fpga.hex \
+    $${PWD}/../Installables/idc4fpga.hex \
     ${DESTDIR}/GcEad.app/Contents/MacOS
 QMAKE_EXTRA_TARGETS += idac2hex \
     idac4hex
