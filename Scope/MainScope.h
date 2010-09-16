@@ -78,7 +78,7 @@ public:
 
 	/// Current peak mode
 	EadMarkerMode peakMode() const { return m_chart->params().peakMode; }
-	void setPeakMode(EadMarkerMode peakMode);
+	void updatePeakMode();
 	
 	/// The rec ID for which the peak mode applies (-1 if no record is selected)
 	int peakModeRecId() const { return m_chart->params().nPeakModeRecId; }

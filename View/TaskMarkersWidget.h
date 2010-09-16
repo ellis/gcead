@@ -25,15 +25,18 @@ private:
 
 private slots:
 	void on_chkShowMarkers_toggled();
+	void on_actions_markersHide_toggled();
 
 private:
 	MainScope* m_scope;
 
 	QCheckBox* m_chkShowMarkers;
+	QGroupBox* m_grpFid;
 	QCheckBox* m_chkShowTime;
 	QCheckBox* m_chkShowArea;
-	QCheckBox* m_chkShowAmplitude;
 	QCheckBox* m_chkAutoDetect;
+	QGroupBox* m_grpEad;
+	QCheckBox* m_chkShowAmplitude;
 };
 
 #endif // TASKMARKERWIDGET_H

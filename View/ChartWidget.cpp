@@ -138,7 +138,7 @@ void ChartWidget::setupWidgets()
 	m_lblSecondsPerDivision->setMinimumWidth(nWidth);
 	m_lblSecondsPerDivision->setText(m_chartS->timebaseString());
 
-	m_lblRecording = new QLabel(tr("  RECORDING: 99.9"), this);
+	m_lblRecording = new QLabel(tr("  RECORDING: 99.99 "), this);
 	m_lblRecording->setStyleSheet(
 		//"background-color: rgba(255, 127, 127, 127);"
 		"background-color: #fdd;"

@@ -103,9 +103,9 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->viewWaveComments, SIGNAL(toggled(bool)), this, SLOT(on_actions_viewWaveComments_toggled()));
 	connect(m_actions->markersHide, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersHide_toggled(bool)));
 	connect(m_actions->markersEdit, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersEdit_toggled(bool)));
-	connect(m_actions->markersShowTime, SIGNAL(triggered()), this, SLOT(on_actions_markersShow_triggered()));
-	connect(m_actions->markersShowEadAmplitude, SIGNAL(triggered()), this, SLOT(on_actions_markersShow_triggered()));
-	connect(m_actions->markersShowFidArea, SIGNAL(triggered()), this, SLOT(on_actions_markersShow_triggered()));
+	connect(m_actions->markersShowTime, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_triggered()));
+	connect(m_actions->markersShowEadAmplitude, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_triggered()));
+	connect(m_actions->markersShowFidArea, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_triggered()));
 	connect(m_actions->recordRecord, SIGNAL(triggered()), this, SLOT(on_actions_recordRecord_triggered()));
 	connect(m_actions->recordHardwareSettings, SIGNAL(triggered()), this, SLOT(on_actions_recordHardwareSettings_triggered()));
 	connect(m_actions->recordSave, SIGNAL(triggered()), this, SLOT(on_actions_recordSave_triggered()));
@@ -161,6 +161,7 @@ void MainScope::setTaskType(EadTask taskType)
 		m_actions->viewPublishMode->setChecked(m_taskType == EadTask_Publish);
 
 		updateActions();
+		updatePeakMode();
 
 		emit taskTypeChanged(m_taskType);
 	}
@@ -208,8 +209,16 @@ void MainScope::setComment(const QString& s)
 	}
 }
 
-void MainScope::setPeakMode(EadMarkerMode peakMode)
+void MainScope::updatePeakMode()
 {
+	EadMarkerMode peakMode;
+	if (m_actions->markersHide->isChecked())
+		peakMode = EadMarkerMode_Hide;
+	else if (m_taskType == EadTask_Markers)
+		peakMode = EadMarkerMode_Edit;
+	else
+		peakMode = EadMarkerMode_Show;
+
 	m_chart->setPeakMode(peakMode);
 	updateActions();
 	emit peakModeChanged(peakMode);
@@ -596,8 +605,7 @@ void MainScope::on_actions_viewWaveComments_toggled()
 
 void MainScope::on_actions_markersHide_toggled(bool b)
 {
-	EadMarkerMode mode = (b) ? EadMarkerMode_Hide : EadMarkerMode_Show;
-	setPeakMode(mode);
+	updatePeakMode();
 }
 
 /*void MainScope::on_actions_markersShow_triggered()
@@ -607,8 +615,8 @@ void MainScope::on_actions_markersHide_toggled(bool b)
 
 void MainScope::on_actions_markersEdit_toggled(bool b)
 {
-	EadMarkerMode mode = (b) ? EadMarkerMode_Edit : EadMarkerMode_Show;
-	setPeakMode(mode);
+	//EadMarkerMode mode = (b) ? EadMarkerMode_Edit : EadMarkerMode_Show;
+	//setPeakMode(mode);
 }
 
 void MainScope::on_actions_markersShow_triggered()

@@ -1,4 +1,9 @@
 	fix IDAC4 packet which I don't know how to interpret
+		test manually triggered digital signal
+		why is digital signal randomly high?
+		test recording for a long time
+		check whether other IDAC4 programs also get occasional digital highs on channel 2
+		check whether other IDAC4 programs also get occasional signal drop-out on analog 1
 x	2 decimal places for times
 	EAD markers:
 	x	no time
@@ -24,9 +29,17 @@ x	2 decimal places for times
 		Remove "m_params.peakMode == EadMarkerMode_Edit" since we now have "m_params.task == EadTask_Markers"
 		create marker view
 		put marker controls in marker view
+		move FID listbox to marker view
+		remove actions->markersEdit
+		rename actions->markersHide -> show
 		remove marker controls from toolbar
 		remove TaskReviewWidget::on_scope_peakModeChanged()
+		make sure handles can be moved again
+		improve tab color
+		add unit tests
+?	Fix "RECORDING: ??.??" size
 	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
+	
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	When dragging selection area: if user presses ESC, then abort selection
 	integrate filter code into GcEad
