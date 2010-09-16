@@ -29,18 +29,17 @@ x	2 decimal places for times
 	x	Update "m_params.peakMode == EadMarkerMode_Edit" since we now have "m_params.task == EadTask_Markers"
 	x	create marker view
 	x	put marker controls in marker view
-	?	move FID listbox to marker view
-		remove actions->markersEdit
-		rename actions->markersHide -> show
-		remove marker controls from toolbar
+	x	move FID listbox to marker view
+	x	remove actions->markersEdit
+	x	rename actions->markersHide -> show
+	x	remove marker controls from toolbar
 		move TaskReviewWidget help text to TaskMarkersWidget
 		remove TaskReviewWidget::on_scope_peakModeChanged()
 	x	make sure handles can be moved again
-		improve tab color
-		add unit tests
-?	Fix "RECORDING: ??.??" size
+	x	improve tab color
 	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	
+?	Fix "RECORDING: ??.??" size
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	When dragging selection area: if user presses ESC, then abort selection
 	integrate filter code into GcEad
@@ -80,7 +79,10 @@ x	2 decimal places for times
 	x	scrolling
 	x	edit/show wave comments
 	.	peaks
-			show percentage vs amplitude
+			show time
+			show percentage
+			show amplitude
+			enter and leave markers mode
 	x	hiding/unhiding waves
 	x	adding/removing extra waves from charts
 	x	inverting a wave

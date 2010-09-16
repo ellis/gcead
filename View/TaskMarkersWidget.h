@@ -24,10 +24,9 @@ private:
 	void setupWidgets();
 
 private slots:
-	void on_chkShowMarkers_toggled();
 	void on_chkAutoDetect_toggled();
 	void on_cmbPeakFid_activated();
-	void on_actions_markersHide_toggled();
+	void on_actions_markersShow_toggled();
 	void on_scope_peakModeChanged();
 	void updateCmbPeakFid();
 

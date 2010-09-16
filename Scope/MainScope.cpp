@@ -101,11 +101,10 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	connect(m_actions->viewScrollPageLeft, SIGNAL(triggered()), m_chart, SLOT(scrollPageLeft()));
 	connect(m_actions->viewScrollPageRight, SIGNAL(triggered()), m_chart, SLOT(scrollPageRight()));
 	connect(m_actions->viewWaveComments, SIGNAL(toggled(bool)), this, SLOT(on_actions_viewWaveComments_toggled()));
-	connect(m_actions->markersHide, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersHide_toggled(bool)));
-	connect(m_actions->markersEdit, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersEdit_toggled(bool)));
-	connect(m_actions->markersShowTime, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_triggered()));
-	connect(m_actions->markersShowEadAmplitude, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_triggered()));
-	connect(m_actions->markersShowFidArea, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_triggered()));
+	connect(m_actions->markersShow, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_toggled(bool)));
+	connect(m_actions->markersShowTime, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShowX_triggered()));
+	connect(m_actions->markersShowFidArea, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShowX_triggered()));
+	connect(m_actions->markersShowEadAmplitude, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShowX_triggered()));
 	connect(m_actions->recordRecord, SIGNAL(triggered()), this, SLOT(on_actions_recordRecord_triggered()));
 	connect(m_actions->recordHardwareSettings, SIGNAL(triggered()), this, SLOT(on_actions_recordHardwareSettings_triggered()));
 	connect(m_actions->recordSave, SIGNAL(triggered()), this, SLOT(on_actions_recordSave_triggered()));
@@ -212,7 +211,7 @@ void MainScope::setComment(const QString& s)
 void MainScope::updatePeakMode()
 {
 	EadMarkerMode peakMode;
-	if (m_actions->markersHide->isChecked())
+	if (!m_actions->markersShow->isChecked())
 		peakMode = EadMarkerMode_Hide;
 	else if (m_taskType == EadTask_Markers)
 		peakMode = EadMarkerMode_Edit;
@@ -286,9 +285,6 @@ void MainScope::updateActions()
 	m_actions->viewWaveComments->setEnabled(bView);
 
 	bool bMarkersShow = (m_chart->params().peakMode != EadMarkerMode_Hide);
-	bool bMarkersEdit = (m_chart->params().peakMode == EadMarkerMode_Edit);
-	m_actions->markersHide->setEnabled(!bMarkersEdit);
-	m_actions->markersEdit->setEnabled(bMarkersShow);
 	m_actions->markersShowTime->setEnabled(bMarkersShow);
 	m_actions->markersShowEadAmplitude->setEnabled(bMarkersShow);
 	m_actions->markersShowFidArea->setEnabled(bMarkersShow);
@@ -308,7 +304,7 @@ void MainScope::updateChartElements()
 	m_chart->setChartElement(ChartElement_AxisTime, true);
 	m_chart->setChartElement(ChartElement_WaveNames, true);
 	m_chart->setChartElement(ChartElement_WaveComments, m_actions->viewWaveComments->isChecked());
-	m_chart->setChartElement(ChartElement_Markers, !m_actions->markersHide->isChecked());
+	m_chart->setChartElement(ChartElement_Markers, m_actions->markersShow->isChecked());
 	m_chart->setChartElement(ChartElement_MarkerTime, m_actions->markersShowTime->isChecked());
 	m_chart->setChartElement(ChartElement_MarkerEadAmplitude, m_actions->markersShowEadAmplitude->isChecked());
 	m_chart->setChartElement(ChartElement_MarkerFidArea, m_actions->markersShowFidArea->isChecked());
@@ -603,23 +599,12 @@ void MainScope::on_actions_viewWaveComments_toggled()
 	updateChartElements();
 }
 
-void MainScope::on_actions_markersHide_toggled(bool b)
+void MainScope::on_actions_markersShow_toggled(bool b)
 {
 	updatePeakMode();
 }
 
-/*void MainScope::on_actions_markersShow_triggered()
-{
-	setPeakMode(EadMarkerMode_Show);
-}*/
-
-void MainScope::on_actions_markersEdit_toggled(bool b)
-{
-	//EadMarkerMode mode = (b) ? EadMarkerMode_Edit : EadMarkerMode_Show;
-	//setPeakMode(mode);
-}
-
-void MainScope::on_actions_markersShow_triggered()
+void MainScope::on_actions_markersShowX_triggered()
 {
 	updateChartElements();
 }

@@ -73,7 +73,6 @@ private slots:
 	void scope_commentChanged();
 	void actions_viewChartRecording_changed();
 	void updateReview();
-	void updateCmbPeakFid();
 
 	void actions_fileImport_triggered();
 	void actions_fileExportSignalData_triggered();
@@ -81,8 +80,6 @@ private slots:
 	void actions_fileExportRetentionData_triggered();
 	void actions_fileExit_triggered();
 	void on_actHelpAbout_triggered();
-
-	void cmbPeakFid_activated();
 
 private:
 	Ui::MainWindowClass ui;
@@ -107,9 +104,6 @@ private:
 	TaskPublishWidget* m_taskPublish;
 	QStackedLayout* m_taskStack;
 	ChartWidget* m_chart;
-
-	//QLabel* m_lblPeakFid;
-	QComboBox* m_cmbPeakFid;
 
 	/// Seconds per division, for convenience
 	int m_nSecondsPerDivision;

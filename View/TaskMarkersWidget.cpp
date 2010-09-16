@@ -54,7 +54,7 @@ void TaskMarkersWidget::setupWidgets()
 
 	Actions* actions = m_scope->actions();
 
-	m_chkShowMarkers->setChecked(!actions->markersHide->isChecked());
+	m_chkShowMarkers->setChecked(actions->markersShow->isChecked());
 	m_chkShowTime->setChecked(actions->markersShowTime->isChecked());
 	m_chkShowArea->setChecked(actions->markersShowFidArea->isChecked());
 	m_chkShowAmplitude->setChecked(actions->markersShowEadAmplitude->isChecked());
@@ -62,13 +62,13 @@ void TaskMarkersWidget::setupWidgets()
 
 	m_cmbPeakFid->setToolTip(tr("Select an FID wave for peak editing"));
 
-	connect(m_chkShowMarkers, SIGNAL(toggled(bool)), this, SLOT(on_chkShowMarkers_toggled()));
-	//m_chkShowTime->addAction(m_scope->actions()->markersShowTime);
+	connect(m_chkShowMarkers, SIGNAL(toggled(bool)), actions->markersShow, SLOT(setChecked(bool)));
 	connect(m_chkShowTime, SIGNAL(toggled(bool)), actions->markersShowTime, SLOT(setChecked(bool)));
 	connect(m_chkShowArea, SIGNAL(toggled(bool)), actions->markersShowFidArea, SLOT(setChecked(bool)));
 	connect(m_chkAutoDetect, SIGNAL(toggled(bool)), this, SLOT(on_chkAutoDetect_toggled()));
 	connect(m_cmbPeakFid, SIGNAL(activated(int)), this, SLOT(on_cmbPeakFid_activated()));
 	connect(m_chkShowAmplitude, SIGNAL(toggled(bool)), actions->markersShowEadAmplitude, SLOT(setChecked(bool)));
+	connect(actions->markersShow, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_toggled()));
 	connect(actions->markersShowTime, SIGNAL(toggled(bool)), m_chkShowTime, SLOT(setChecked(bool)));
 	connect(actions->markersShowFidArea, SIGNAL(toggled(bool)), m_chkShowArea, SLOT(setChecked(bool)));
 	connect(actions->markersShowEadAmplitude, SIGNAL(toggled(bool)), m_chkShowAmplitude, SLOT(setChecked(bool)));
@@ -78,11 +78,6 @@ void TaskMarkersWidget::setupWidgets()
 	connect(m_scope, SIGNAL(viewTypeChanged(EadView)), this, SLOT(updateCmbPeakFid()));
 	connect(m_scope, SIGNAL(waveListChanged()), this, SLOT(updateCmbPeakFid()));
 	connect(m_scope, SIGNAL(peakModeChanged(EadMarkerMode)), this, SLOT(on_scope_peakModeChanged()));
-}
-
-void TaskMarkersWidget::on_chkShowMarkers_toggled()
-{
-	m_scope->actions()->markersHide->setChecked(!m_chkShowMarkers->isChecked());
 }
 
 void TaskMarkersWidget::on_chkAutoDetect_toggled()
@@ -105,9 +100,9 @@ void TaskMarkersWidget::on_cmbPeakFid_activated()
 		m_scope->setPeakModeRecId(m_idAutoDetect);
 }
 
-void TaskMarkersWidget::on_actions_markersHide_toggled()
+void TaskMarkersWidget::on_actions_markersShow_toggled()
 {
-	bool b = !m_scope->actions()->markersHide->isChecked();
+	bool b = m_scope->actions()->markersShow->isChecked();
 	m_chkShowMarkers->setCheckable(b);
 	m_grpFid->setEnabled(b);
 	m_grpEad->setEnabled(b);

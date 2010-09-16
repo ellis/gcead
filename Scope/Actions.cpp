@@ -147,21 +147,11 @@ Actions::Actions(QObject *parent)
 
 	//group = new QActionGroup(this);
 
-	markersHide = new QAction(tr("&Hide Markers"), this);
-	markersHide->setCheckable(true);
-	markersHide->setIconText(tr("Hide"));
-	markersHide->setToolTip(tr("Hide markers"));
-
-	/*markersShow = new QAction(tr("&Show Markers"), group);
+	markersShow = new QAction(tr("&Show Markers"), group);
 	markersShow->setCheckable(true);
+	markersShow->setChecked(true);
 	markersShow->setIconText(tr("Show"));
-	markersShow->setToolTip(tr("Show selected markers"));*/
-
-	markersEdit = new QAction(tr("&Edit Markers"), this);
-	markersEdit->setCheckable(true);
-	markersEdit->setIconText(tr("Edit"));
-	markersEdit->setToolTip(tr("Activate the mode for selecting peaks and adjusting their areas"));
-
+	markersShow->setToolTip(tr("Show selected markers"));
 
 	markersShowTime = new QAction(tr("Show &Timestamps"), this);
 	markersShowTime->setCheckable(true);
@@ -169,15 +159,15 @@ Actions::Actions(QObject *parent)
 	markersShowTime->setIconText(tr("Time"));
 	markersShowTime->setToolTip(tr("Show the timestamps for markers"));
 
-	markersShowEadAmplitude = new QAction(tr("Show EAD &Amplitude"), this);
-	markersShowEadAmplitude->setCheckable(true);
-	markersShowEadAmplitude->setChecked(true);
-	markersShowEadAmplitude->setIconText(tr("Amplitude"));
-	markersShowEadAmplitude->setToolTip(tr("Show the amplitude of EAD peaks"));
-
 	markersShowFidArea = new QAction(tr("Show &FID Area Percentage"), this);
 	markersShowFidArea->setCheckable(true);
 	markersShowFidArea->setChecked(true);
 	markersShowFidArea->setIconText(tr("Area"));
 	markersShowFidArea->setToolTip(tr("Show the area percentage of FID peaks"));
+
+	markersShowEadAmplitude = new QAction(tr("Show EAD &Amplitude"), this);
+	markersShowEadAmplitude->setCheckable(true);
+	markersShowEadAmplitude->setChecked(true);
+	markersShowEadAmplitude->setIconText(tr("Amplitude"));
+	markersShowEadAmplitude->setToolTip(tr("Show the amplitude of EAD peaks"));
 }

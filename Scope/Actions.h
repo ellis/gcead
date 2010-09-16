@@ -65,12 +65,10 @@ public:
 	QAction* recordDiscard;
 	QAction* recordHardwareConnect;
 
-	QAction* markersHide;
-	//QAction* markersShow;
-	QAction* markersEdit;
+	QAction* markersShow;
 	QAction* markersShowTime;
-	QAction* markersShowEadAmplitude;
 	QAction* markersShowFidArea;
+	QAction* markersShowEadAmplitude;
 };
 
 #endif

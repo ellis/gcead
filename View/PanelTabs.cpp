@@ -32,8 +32,9 @@ PanelTabs::PanelTabs(MainScope* scope, QWidget* parent)
 	m_scope = scope;
 
 	addTab(tr("View"), QColor(0xe0, 0xe0, 0xff));
-	addTab(tr("Markers"), QColor(0x70, 0x70, 0xff));
-	addTab(tr("Publish"), QColor(0xe0, 0xff, 0xe0));
+	addTab(tr("Markers"), QColor(0xe0, 0xe0, 0xff));
+	addTab(tr("Publish"), QColor(0xe0, 0xe0, 0xff));
+	//addTab(tr("Publish"), QColor(0xe0, 0xff, 0xe0));
 
 	connect(this, SIGNAL(tabClicked(int)), this, SLOT(on_tabClicked(int)));
 	connect(m_scope, SIGNAL(taskTypeChanged(EadTask)), this, SLOT(on_scope_taskTypeChanged(EadTask)));

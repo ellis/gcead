@@ -149,9 +149,8 @@ private slots:
 	//void on_actions_markersHide_triggered();
 	//void on_actions_markersShow_triggered();
 	//void on_actions_markersEdit_triggered();
-	void on_actions_markersHide_toggled(bool b);
-	void on_actions_markersEdit_toggled(bool b);
-	void on_actions_markersShow_triggered();
+	void on_actions_markersShow_toggled(bool b);
+	void on_actions_markersShowX_triggered();
 
 	void on_recTimer_timeout();
 	void stopRecording(bool bSave, bool bAutoStop);
