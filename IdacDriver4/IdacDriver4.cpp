@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 #include <QtDebug>
+#include <QCoreApplication>
 #include <QFile>
 #include <QMutex>
 #include <QThread>
@@ -198,7 +199,7 @@ void IdacDriver4::initUsbFirmware()
 
 void IdacDriver4::initDataFirmware()
 {
-	QString sFilename = "idc4fpga.hex";
+	QString sFilename = QCoreApplication::applicationDirPath() + "/idc4fpga.hex";
 
 	if (!claim())
 		return;

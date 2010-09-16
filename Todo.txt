@@ -37,7 +37,7 @@ x	2 decimal places for times
 	-	remove TaskReviewWidget::on_scope_peakModeChanged()
 	x	make sure handles can be moved again
 	x	improve tab color
-	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
+?	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	
 ?	Fix "RECORDING: ??.??" size
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically

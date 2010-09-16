@@ -22,6 +22,7 @@
 #include <usb.h>
 
 #include <QtDebug>
+#include <QCoreApplication>
 #include <QFile>
 #include <QMutex>
 #include <QThread>
@@ -160,7 +161,7 @@ void IdacDriver2::initUsbFirmware()
 
 void IdacDriver2::initDataFirmware()
 {
-	QString sFilename = "idc2fpga.hex";
+	QString sFilename = QCoreApplication::applicationDirPath() + "/idc2fpga.hex";
 	quint8 buffer[16];
 
 	if (!claim())
