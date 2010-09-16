@@ -30,6 +30,7 @@ void TaskMarkersWidget::setupWidgets()
 	m_cmbPeakFid = new QComboBox();
 	m_grpEad = new QGroupBox(tr("EAD"));
 	m_chkShowAmplitude = new QCheckBox(tr("Show amplitude"));
+	m_lblPeakTip = new QLabel(this);
 
 	QVBoxLayout* vbox;
 
@@ -49,6 +50,7 @@ void TaskMarkersWidget::setupWidgets()
 	layout->addWidget(m_chkShowMarkers);
 	layout->addWidget(m_grpFid);
 	layout->addWidget(m_grpEad);
+	layout->addWidget(m_lblPeakTip);
 	layout->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 	setLayout(layout);
 
@@ -61,6 +63,16 @@ void TaskMarkersWidget::setupWidgets()
 	m_chkAutoDetect->setChecked(true);
 
 	m_cmbPeakFid->setToolTip(tr("Select an FID wave for peak editing"));
+
+	m_lblPeakTip->setText(tr(
+			"<b>Marker tips:</b><br/><br/>"
+			"<i>Create marker:</i><br/> Ctrl-Click wave<br/><br/>"
+			"<i>Adjust postition:</i><br/> drag marker or handles<br/><br/>"
+			"<i>Remove:</i><br/> right-click marker, and<br/> select &quot;Remove&quot;<br/><br/>"
+			"<i>Verify a detected FID peak:</i><br/> click on &quot;<span style='color:red'>Add</span>&quot;"
+			));
+	m_lblPeakTip->setWordWrap(true);
+	m_lblPeakTip->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
 	connect(m_chkShowMarkers, SIGNAL(toggled(bool)), actions->markersShow, SLOT(setChecked(bool)));
 	connect(m_chkShowTime, SIGNAL(toggled(bool)), actions->markersShowTime, SLOT(setChecked(bool)));

@@ -6,6 +6,7 @@
 class QCheckBox;
 class QComboBox;
 class QGroupBox;
+class QLabel;
 
 class MainScope;
 
@@ -41,6 +42,7 @@ private:
 	QComboBox* m_cmbPeakFid;
 	QGroupBox* m_grpEad;
 	QCheckBox* m_chkShowAmplitude;
+	QLabel* m_lblPeakTip;
 
 	int m_idAutoDetect;
 };

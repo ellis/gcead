@@ -143,8 +143,6 @@ private:
 	QPushButton* m_btnShowAll;
 	QPushButton* m_btnHideAll;
 
-	QLabel* m_lblPeakTip;
-
 	GroupInfo m_groups[3];
 
 	bool m_bLayout;

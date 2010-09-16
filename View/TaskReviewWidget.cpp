@@ -93,18 +93,6 @@ TaskReviewWidget::TaskReviewWidget(MainScope* scope, QWidget* parent)
 	m_btnHideAll = new QPushButton(tr("Hide All"), this);
 	connect(m_btnHideAll, SIGNAL(clicked()), this, SLOT(on_btnHideAll_clicked()));
 
-	m_lblPeakTip = new QLabel(this);
-	m_lblPeakTip->setText(tr(
-			"<b>Edit Markers:</b><br/>"
-			"<i>Custom marker:</i> Ctrl-Click on a wave<br/>"
-			"<i>Verify a detected peak:</i> click on &quot;<span style='color:red'>Add</span>&quot;<br/>"
-			"<i>Adjust postition:</i> click and drag to move the marker or the area handles<br/>"
-			"<i>Remove:</i> right-click on marker and select &quot;Remove&quot;"
-			));
-	m_lblPeakTip->setWordWrap(true);
-	m_lblPeakTip->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-	m_lblPeakTip->hide();
-
 	layout(false);
 }
 
@@ -293,15 +281,6 @@ void TaskReviewWidget::layout(bool bLayoutItems)
 	m_btnHideAll->move(xCol1 + m_btnShowAll->sizeHint().width() + 10, y);
 	y += m_btnShowAll->sizeHint().height() + 15;
 
-	// Position the FID hint
-	if (m_lblPeakTip->isVisible())
-	{
-		int nTipHeight = m_lblPeakTip->heightForWidth(m_nWidthGroup);
-		QRect rc(nBorderGroup, y, m_nWidthGroup, nTipHeight);
-		m_lblPeakTip->setGeometry(rc);
-
-		y += nTipHeight;
-	}
 	y += 10;
 
 	m_nHeight = y;
@@ -701,8 +680,8 @@ void TaskReviewWidget::on_scope_waveListChanged()
 void TaskReviewWidget::on_scope_peakModeChanged()
 {
 	EadMarkerMode peakMode = m_scope->peakMode();
+	// TODO: Is this necessary anymore?  I removed the tip label... -- ellis, 2010-09-16
 	bool bShowTip = (peakMode == EadMarkerMode_Edit && m_scope->peakModeRecId() >= 0);
-	m_lblPeakTip->setVisible(bShowTip);
 	if (bShowTip)
 	{
 		m_bLayout = true;

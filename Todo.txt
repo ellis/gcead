@@ -33,8 +33,8 @@ x	2 decimal places for times
 	x	remove actions->markersEdit
 	x	rename actions->markersHide -> show
 	x	remove marker controls from toolbar
-		move TaskReviewWidget help text to TaskMarkersWidget
-		remove TaskReviewWidget::on_scope_peakModeChanged()
+	x	move TaskReviewWidget help text to TaskMarkersWidget
+	-	remove TaskReviewWidget::on_scope_peakModeChanged()
 	x	make sure handles can be moved again
 	x	improve tab color
 	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
