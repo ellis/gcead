@@ -1,9 +1,9 @@
 	fix IDAC4 packet which I don't know how to interpret
-		test manually triggered digital signal
-		why is digital signal randomly high?
-		test recording for a long time
-		check whether other IDAC4 programs also get occasional digital highs on channel 2
-		check whether other IDAC4 programs also get occasional signal drop-out on analog 1
+	x	test manually triggered digital signal
+	x	why is digital signal randomly high?
+	x	test recording for a long time
+	x	check whether other IDAC4 programs also get occasional digital highs on channel 2
+	x	check whether other IDAC4 programs also get occasional signal drop-out on analog 1
 x	2 decimal places for times
 	EAD markers:
 	x	no time

@@ -168,7 +168,7 @@ void ChartScope::setRecordingTime(int nSeconds)
 		nMinutes = nSeconds / 60.0;
 	}
 
-	QString s = sFormat.arg(nMinutes, 0, 'f', 1);
+	QString s = sFormat.arg(nMinutes, 0, 'f', 2);
 	if (s != m_sRecordingText) {
 		m_sRecordingText = s;
 		emit recordingLabelTextChanged(m_sRecordingText);
