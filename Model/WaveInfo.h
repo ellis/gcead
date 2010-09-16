@@ -150,7 +150,7 @@ public:
 	bool findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) const;
 
 	//int indexOfMax(int didxLeft, int didxRight) const;
-	int findNextMin(int didxLeft, int didxRight, int radius) const;
+	int findNextMin(int didxLeft, int didxRight) const;
 
 	int indexOfChosenPeakAtDidx(int didx) const;
 	void choosePeakAtDidx(int didx);

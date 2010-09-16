@@ -703,7 +703,7 @@ void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
 		}
 	}
 	else if (wave->type == WaveType_EAD) {
-		int didxMiddle = wave->findNextMin(didxLeft, didxEnd, radius);
+		int didxMiddle = wave->findNextMin(didxLeft, didxEnd);
 		if (didxMiddle >= 0) {
 			peak.didxMiddle = didxMiddle;
 			peak.didxRight = didxMiddle;

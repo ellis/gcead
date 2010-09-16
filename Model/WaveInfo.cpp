@@ -185,8 +185,20 @@ bool WaveInfo::findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) cons
 	findFidPeaks(peaksAll, peaks);
 
 	// Copy first detected peak
-	if (!peaks.isEmpty())
+	if (!peaks.isEmpty()) {
 		*peak = peaks[0];
+		// Make sure that we're not selecting an area which has already been chosen
+		foreach (const WavePeakChosenInfo& peakChosen, peaksChosen) {
+			if (peak->left.i <= peakChosen.didxLeft) {
+				if (peak->right.i <= peakChosen.didxLeft)
+					return false;
+			}
+			else {
+				if (peak->left.i <= peakChosen.didxRight)
+					return false;
+			}
+		}
+	}
 
 	return !peaks.isEmpty();
 }
@@ -305,31 +317,31 @@ void WaveInfo::findFidPeaks(const QList<WavePoint>& peaksAll, QList<WavePeakInfo
 	}
 }
 
-int WaveInfo::findNextMin(int didxLeft, int didxRight, int radius) const
+int WaveInfo::findNextMin(int didxLeft, int didxRight) const
 {
 	if (didxLeft < 0)
 		didxLeft = 0;
 	if (didxRight >= display.size())
 		didxRight = display.size() - 1;
-	if (radius < RADIUS)
-		radius = RADIUS;
+
+	const int radius = RADIUS;
 
 	const double* data = display.constData();
-	int iMin = -1;
+	int didxMin = -1;
 	double nMin = 0;
 	int diameter = radius + radius;
 
 	for (int didx0 = didxLeft; didx0 <= didxRight; didx0++) {
 		int didx1 = didx0 + diameter;
 
-		if (iMin < didx0) {
+		if (didxMin < didx0) {
 			nMin = data[didx0];
 			// Find the minimum within the first 2*radius+1 samples
 			for (int i = didx0; i <= didx1; i++) {
 				double n = data[i];
 				if (n < nMin) {
 					nMin = n - 1e-10;
-					iMin = i;
+					didxMin = i;
 				}
 			}
 		}
@@ -337,12 +349,19 @@ int WaveInfo::findNextMin(int didxLeft, int didxRight, int radius) const
 			double n = data[didx1];
 			if (n < nMin) {
 				nMin = n - 1e-10;
-				iMin = didx1;
+				didxMin = didx1;
 			}
 		}
 
-		if (iMin == didx0 + radius)
-			return iMin;
+		if (didxMin == didx0 + radius) {
+			// Make sure that we're not selecting an area which has already been chosen
+			foreach (const WavePeakChosenInfo& peak, peaksChosen) {
+				if (peak.didxLeft <= didxMin && didxMin <= peak.didxMiddle)
+					return -1;
+			}
+
+			return didxMin;
+		}
 	}
 
 	return -1;
