@@ -25,7 +25,11 @@ private:
 
 private slots:
 	void on_chkShowMarkers_toggled();
+	void on_chkAutoDetect_toggled();
+	void on_cmbPeakFid_activated();
 	void on_actions_markersHide_toggled();
+	void on_scope_peakModeChanged();
+	void updateCmbPeakFid();
 
 private:
 	MainScope* m_scope;
@@ -35,8 +39,11 @@ private:
 	QCheckBox* m_chkShowTime;
 	QCheckBox* m_chkShowArea;
 	QCheckBox* m_chkAutoDetect;
+	QComboBox* m_cmbPeakFid;
 	QGroupBox* m_grpEad;
 	QCheckBox* m_chkShowAmplitude;
+
+	int m_idAutoDetect;
 };
 
 #endif // TASKMARKERWIDGET_H
