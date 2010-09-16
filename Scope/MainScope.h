@@ -131,6 +131,7 @@ private slots:
 	void on_actions_fileLoadSampleProject_triggered();
 
 	void on_actions_viewViewMode_triggered();
+	void on_actions_viewMarkersMode_triggered();
 	void on_actions_viewPublishMode_triggered();
 	void on_actions_viewChartAverages_triggered();
 	void on_actions_viewChartEads_triggered();

@@ -35,8 +35,8 @@ class MainScope;
 class PanelTabs;
 class RecordHandler;
 class SuffixSpinBox;
+class TaskMarkersWidget;
 class TaskPublishWidget;
-class TaskRecordWidget;
 class TaskReviewWidget;
 class ViewTabs;
 class ViewWaveInfo;
@@ -101,6 +101,8 @@ private:
 	//TaskRecordWidget* m_taskRecord;
 	/// Tool widget for Review task
 	TaskReviewWidget* m_taskReview;
+	/// Tool widget for Markers task
+	TaskMarkersWidget* m_taskMarkers;
 	/// Tool widget for Publish task
 	TaskPublishWidget* m_taskPublish;
 	QStackedLayout* m_taskStack;

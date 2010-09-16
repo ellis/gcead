@@ -86,6 +86,7 @@ MainScope::MainScope(MainScopeUi* ui, IdacProxy* idac, QObject* parent)
 	//connect(m_actions->file, SIGNAL(triggered()), this, SLOT(on_actions_file()));
 	connect(m_actions->fileLoadSampleProject, SIGNAL(triggered()), this, SLOT(on_actions_fileLoadSampleProject_triggered()));
 	connect(m_actions->viewViewMode, SIGNAL(triggered()), this, SLOT(on_actions_viewViewMode_triggered()));
+	connect(m_actions->viewMarkersMode, SIGNAL(triggered()), this, SLOT(on_actions_viewMarkersMode_triggered()));
 	connect(m_actions->viewPublishMode, SIGNAL(triggered()), this, SLOT(on_actions_viewPublishMode_triggered()));
 	connect(m_actions->viewChartAverages, SIGNAL(triggered()), this, SLOT(on_actions_viewChartAverages_triggered()));
 	connect(m_actions->viewChartEads, SIGNAL(triggered()), this, SLOT(on_actions_viewChartEads_triggered()));
@@ -156,6 +157,7 @@ void MainScope::setTaskType(EadTask taskType)
 		m_taskType = taskType;
 
 		m_actions->viewViewMode->setChecked(m_taskType == EadTask_Review);
+		m_actions->viewMarkersMode->setChecked(m_taskType == EadTask_Markers);
 		m_actions->viewPublishMode->setChecked(m_taskType == EadTask_Publish);
 
 		updateActions();
@@ -271,7 +273,7 @@ void MainScope::updateActions()
 	m_actions->fileExportRetentionData->setEnabled(bHaveData);
 	m_actions->fileLoadSampleProject->setEnabled(!m_bRecording);
 
-	bool bView = (m_taskType == EadTask_Review);
+	bool bView = (m_taskType != EadTask_Publish);
 	m_actions->viewWaveComments->setEnabled(bView);
 
 	bool bMarkersShow = (m_chart->params().peakMode != EadMarkerMode_Hide);
@@ -577,6 +579,7 @@ void MainScope::on_actions_fileLoadSampleProject_triggered()
 }
 
 void MainScope::on_actions_viewViewMode_triggered() { setTaskType(EadTask_Review); }
+void MainScope::on_actions_viewMarkersMode_triggered() { setTaskType(EadTask_Markers); }
 void MainScope::on_actions_viewPublishMode_triggered() { setTaskType(EadTask_Publish); }
 
 void MainScope::on_actions_viewChartAverages_triggered() { setViewType(EadView_Averages); }

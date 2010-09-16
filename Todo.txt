@@ -20,6 +20,12 @@ x	2 decimal places for times
 	x	show correct mV value
 	x	CTRL-click only in marker edit mode
 	x	move markers only in marker edit mode
+	Marker view:
+		Remove "m_params.peakMode == EadMarkerMode_Edit" since we now have "m_params.task == EadTask_Markers"
+		create marker view
+		put marker controls in marker view
+		remove marker controls from toolbar
+		remove TaskReviewWidget::on_scope_peakModeChanged()
 	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	When dragging selection area: if user presses ESC, then abort selection

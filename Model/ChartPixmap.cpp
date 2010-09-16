@@ -1175,7 +1175,7 @@ void ChartPixmap::fillChartPointInfo(const QPoint& ptPixmap, ChartPointInfo* inf
 		info->vwi = vwiWave;
 
 		// Check whether we're over an area handle
-		bool bPeakEdit = (m_params.task == EadTask_Review && m_params.peakMode == EadMarkerMode_Edit);
+		bool bPeakEdit = (m_params.task == EadTask_Markers);
 		if (bPeakEdit)
 		{
 			const WaveInfo* wave = vwiWave->wave();

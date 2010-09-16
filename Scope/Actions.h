@@ -43,6 +43,7 @@ public:
 	QAction* fileExit;
 
 	QAction* viewViewMode;
+	QAction* viewMarkersMode;
 	QAction* viewPublishMode;
 	QAction* viewChartAverages;
 	QAction* viewChartEads;

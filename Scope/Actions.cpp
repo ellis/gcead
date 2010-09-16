@@ -76,6 +76,9 @@ Actions::Actions(QObject *parent)
 	viewViewMode->setCheckable(true);
 	viewViewMode->setChecked(true);
 	viewViewMode->setShortcut(tr("Ctrl+V"));
+	viewMarkersMode = new QAction(tr("&Markers Mode"), group);
+	viewMarkersMode->setCheckable(true);
+	viewMarkersMode->setShortcut(tr("Ctrl+M"));
 	viewPublishMode = new QAction(tr("&Publish Mode"), group);
 	viewPublishMode->setCheckable(true);
 	viewPublishMode->setShortcut(tr("Ctrl+P"));

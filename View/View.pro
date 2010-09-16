@@ -109,7 +109,8 @@ HEADERS += ./WaitCursor.h \
     ./WaveEditorWidget.h \
     ./WaveEditorDialog.h \
     WaitForHardwareDialog.h \
-    TestRecording.h
+    TestRecording.h \
+    TaskMarkersWidget.h
 SOURCES += ./DataListItem.cpp \
     ./TaskReviewWidget.cpp \
     ./MainWindow.cpp \
@@ -132,7 +133,8 @@ SOURCES += ./DataListItem.cpp \
     ./WaveEditorWidget.cpp \
     ./WaveEditorDialog.cpp \
     WaitForHardwareDialog.cpp \
-    TestRecording.cpp
+    TestRecording.cpp \
+    TaskMarkersWidget.cpp
 
 # Forms
 FORMS += ./MainWindow.ui \
@@ -143,4 +145,3 @@ FORMS += ./MainWindow.ui \
 # Resource file(s)
 RESOURCES += ./View.qrc
 macx:ICON = ../Installables/Mac/GcEad.icns
-

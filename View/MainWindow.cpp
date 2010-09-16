@@ -41,6 +41,7 @@
 #include "MainWindowUi.h"
 #include "PanelTabs.h"
 #include "RecordHandler.h"
+#include "TaskMarkersWidget.h"
 #include "TaskPanel.h"
 #include "TaskPublishWidget.h"
 #include "TaskReviewWidget.h"
@@ -104,13 +105,15 @@ void MainWindow::setupWidgets()
 	//m_taskRecord = new TaskRecordWidget(m_idac, m_chart);
 	//connect(m_taskRecord, SIGNAL(saveRecording(bool)), this, SIGNAL(saveRecording(bool)));
 
+	m_taskMarkers = new TaskMarkersWidget(m_scope);
+
 	m_taskPublish = new TaskPublishWidget(m_scope);
 	m_taskPublish->setChartWidget(m_chart);
 
 	m_taskStack = new QStackedLayout();
 	m_taskStack->setSpacing(0);
-	//m_taskStack->addWidget(new TaskPanel(m_taskRecord));
 	m_taskStack->addWidget(new TaskPanel(m_taskReview));
+	m_taskStack->addWidget(new TaskPanel(m_taskMarkers));
 	m_taskStack->addWidget(new TaskPanel(m_taskPublish));
 	m_taskStack->setCurrentIndex(1);
 
@@ -196,6 +199,7 @@ void MainWindow::setupActions()
 	ui.mnuFile->addAction(actions->fileExit);
 
 	ui.mnuView->addAction(actions->viewViewMode);
+	ui.mnuView->addAction(actions->viewMarkersMode);
 	ui.mnuView->addAction(actions->viewPublishMode);
 	ui.mnuView->addSeparator();
 	ui.mnuView->addAction(actions->viewChartAverages);
@@ -372,9 +376,8 @@ void MainWindow::updateCmbPeakFid()
 	}
 
 	bool bEnabled = (
-			m_scope->taskType() == EadTask_Review &&
-			m_scope->viewType() != EadView_EADs &&
-			m_scope->peakMode() == EadMarkerMode_Edit);
+			m_scope->taskType() == EadTask_Markers &&
+			m_scope->viewType() != EadView_EADs);
 	//m_lblPeakFid->setEnabled(bEnabled);
 	m_cmbPeakFid->setEnabled(bEnabled);
 
