@@ -62,7 +62,7 @@ unix:pg {
 !macx:idac2hex.target = $${DESTDIR}/idc2fpga.hex
 macx:idac2hex.target = $${DESTDIR}/GcEad.app/Contents/MacOS/idc2fpga.hex
 win32:idac2hex.commands = ${COPY_FILE} \
-    $${PWD}\..\Installables\idc2fpga.hex \
+    $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex \
     ${DESTDIR}
 unix:!macx:idac2hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc2fpga.hex \
@@ -74,7 +74,7 @@ macx:idac2hex.commands = ${COPY_FILE} \
 # Copy IDAC4 hex file
 idac4hex.target = $${DESTDIR}/idc4fpga.hex
 win32:idac4hex.commands = ${COPY_FILE} \
-    $${PWD}\..\Installables\idc4fpga.hex \
+    $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex \
     ${DESTDIR}
 unix:!macx:idac4hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc4fpga.hex \
