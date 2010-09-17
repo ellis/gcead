@@ -69,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 	connect(m_scope, SIGNAL(waveListChanged()), this, SLOT(updateReview()));
 	connect(m_scope, SIGNAL(taskTypeChanged(EadTask)), this, SLOT(scope_taskTypeChanged(EadTask)));
 	connect(m_scope, SIGNAL(viewTypeChanged(EadView)), this, SLOT(updateReview()));
-	connect(m_scope, SIGNAL(peakModeChanged(EadMarkerMode)), this, SLOT(updateCmbPeakFid()));
 	connect(m_scope, SIGNAL(commentChanged(const QString&)), this, SLOT(scope_commentChanged()));
 	connect(m_scope, SIGNAL(windowTitleChanged(const QString&)), this, SLOT(setWindowTitle(const QString&)));
 	connect(m_scope, SIGNAL(isWindowModifiedChanged(bool)), this, SLOT(setWindowModified(bool)));

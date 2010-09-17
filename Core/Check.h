@@ -25,7 +25,7 @@ class QString;
 /// in order to handle a check failure sensibly.
 extern void checkFailure(const char* sFile, int iLine, const char* s);
 
-extern void checkLog(const QString& s);
+extern void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage);
 
 
 

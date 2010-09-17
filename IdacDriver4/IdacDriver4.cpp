@@ -60,6 +60,12 @@ using namespace std;
 
 #define BOXSTRINGLENGTH 32
 
+#define ISO_CONTEXT_COUNT 8
+#define ISO_PACKETS_PER_TRANSFER 8
+#define ISO_PACKET_SIZE 600
+#define ISO_TRANSFER_SIZE (ISO_PACKETS_PER_TRANSFER * ISO_PACKET_SIZE)
+
+
 static bool IdacBoxString[IdacDriver4::IDAC_CHANNELCOUNT][BOXSTRINGLENGTH];
 
 // Bit positions for box string (IDACINT.H)
@@ -383,8 +389,6 @@ bool IdacDriver4::startSampling()
 	return true;
 }
 
-#define ISOCHRONOUS_CONTEXT_COUNT 8
-
 static IdacDriverSamplingThread* g_recordThread;
 static char* isobuf;
 static IdacDriver4Channel IdacChannelState(true); // Digital inputs are inverted
@@ -399,15 +403,15 @@ static int g_iSampleWrite;
 static QMutex g_sampleMutex;
 
 #ifdef WIN32
-static void* isourb[ISOCHRONOUS_CONTEXT_COUNT];
+static void* isourb[ISO_CONTEXT_COUNT];
 #else
-static libusb_transfer* iso_transfer[ISOCHRONOUS_CONTEXT_COUNT];
-static bool g_abIsoTransferDone[ISOCHRONOUS_CONTEXT_COUNT];
+static libusb_transfer* iso_transfer[ISO_CONTEXT_COUNT];
+static bool g_abIsoTransferDone[ISO_CONTEXT_COUNT];
 
 
 static void iso_transfer_cb(struct libusb_transfer *transfer)
 {
-        int iTransfer = (int) (size_t) transfer->user_data;
+	int iTransfer = (int) (size_t) transfer->user_data;
 	g_abIsoTransferDone[iTransfer] = true;
 	//qDebug() << "iso_transfer_cb" << iTransfer;
 }
@@ -460,36 +464,35 @@ static int wait_for_iso_transfer(libusb_transfer* transfer)
 
 void IdacDriver4::sampleInit()
 {
-	int nBufSize = 4800 * ISOCHRONOUS_CONTEXT_COUNT;
+	int nBufSize = ISO_TRANSFER_SIZE * ISO_CONTEXT_COUNT;
 	int pipeId = device()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
 
 	isobuf = new char[nBufSize];
+	// Initialize to -1's for debugging purposes
 	for (int i = 0; i < nBufSize; i++)
 		isobuf[i] = -1;
 
 	// Setup
-	for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
+	for (int i = 0; i < ISO_CONTEXT_COUNT; i++)
 	{
 #ifdef WIN32
 		isourb[i] = NULL;
-		int ret = usb_isochronous_setup_async(handle(), &isourb[i], pipeId, 600);
+		int ret = usb_isochronous_setup_async(handle(), &isourb[i], pipeId, ISO_PACKET_SIZE);
 		CHECK_USBRESULT_NORET(ret);
-		if (ret < 0)
-			printf("isochronous setup returned %d\n", ret);
 #else
-		libusb_transfer* transfer = libusb_alloc_transfer(ISOCHRONOUS_CONTEXT_COUNT);
+		libusb_transfer* transfer = libusb_alloc_transfer(ISO_CONTEXT_COUNT);
 		iso_transfer[i] = transfer;
 		libusb_fill_iso_transfer(
 			transfer,                    // transfer
 			handle()->handle,                        // dev_handle
 			pipeId,    // endpoint
-			(unsigned char*) isobuf + 4800 * i,                // buffer
-			4800,        // length
-			8,                            // num_iso_packets
+			(unsigned char*) isobuf + ISO_TRANSFER_SIZE * i,                // buffer
+			ISO_TRANSFER_SIZE,        // length
+			ISO_PACKETS_PER_TRANSFER,           // num_iso_packets
 			iso_transfer_cb,                        // callback
 			(void*) i,                        // user_data
 			5000);                       // timeout
-		libusb_set_iso_packet_lengths(transfer, 600);
+		libusb_set_iso_packet_lengths(transfer, ISO_PACKET_SIZE);
 #endif
 	}
 }
@@ -500,6 +503,10 @@ void IdacDriver4::sampleStart()
 
 	if (isobuf == NULL)
 		sampleInit();
+	// FIXME: for debug only
+	for (int i = 0; i < ISO_TRANSFER_SIZE * ISO_CONTEXT_COUNT; i++)
+		isobuf[i] = -1;
+	// ENDFIX
 
 	// Reset error flags
 	cdStatus = NULL_CDD32_STATUS;
@@ -512,10 +519,6 @@ void IdacDriver4::sampleStart()
 	g_nSamplesInBuffer = 0;
 	g_recordThread = new IdacDriverSamplingThread(this);
 	g_recordThread->start(QThread::TimeCriticalPriority);
-
-#ifndef WIN32
-	//g_isoQueue.clear();
-#endif
 }
 
 /// @returns libusb error code
@@ -523,7 +526,7 @@ static int iso_submit(int iTransfer)
 {
 	int ret = 0;
 #ifdef WIN32
-	ret = usb_submit_async(isourb[iTransfer], isobuf + 4800 * iTransfer, 4800);
+	ret = usb_submit_async(isourb[iTransfer], isobuf + ISO_TRANSFER_SIZE * iTransfer, ISO_TRANSFER_SIZE);
 #else
 	g_abIsoTransferDone[iTransfer] = false;
 	ret = libusb_submit_transfer(iso_transfer[iTransfer]);
@@ -554,129 +557,79 @@ void IdacDriver4::sampleLoop()
 {
 	int ret;
 
-	int iReap = 0;
-	bool bRepeat = false;
-	do {
-		bool abSubmitted[ISOCHRONOUS_CONTEXT_COUNT];
+	int iReapAttempt = 0;
+	int iReapSuccess = 0;
 
-		// Initial submits
-		for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
+	// Initial submits
+	for (int i = 0; i < ISO_CONTEXT_COUNT; i++)
+	{
+		ret = iso_submit(i);
+		CHECK_USBRESULT_NORET(ret);
+		if (ret < 0)
+			printf("isochronous submit returned %d\n", ret);
+	}
+
+	setIsoXferEnabled(true);
+
+	// Now cycle between reaps and submits
+	bool bSamplingPrev = m_bSampling;
+	while (bSamplingPrev)
+	{
+		bool bSamplingNow = m_bSampling;
+		for (int i = 0; i < ISO_CONTEXT_COUNT; i++)
 		{
-			ret = iso_submit(i);
-			CHECK_USBRESULT_NORET(ret);
-			if (ret < 0)
-				printf("isochronous submit returned %d\n", ret);
-			abSubmitted[i] = true;
-		}
+			ret = iso_reap(i);
+			//CHECK_USBRESULT_NORET(ret);
+			iReapAttempt++;
 
-		setIsoXferEnabled(true);
-
-		// Now cycle between reaps and submits
-		bool bError = false;
-		bool bOverflow = false;
-
-		do
-		{
-			for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
+			if (ret >= 0) {
+				iReapSuccess++;
+				processSampledData(i, ret);
+			}
+			else
 			{
-				CHECK_ASSERT_NORET(abSubmitted[i] == true);
-				ret = iso_reap(i);
-				CHECK_USBRESULT_NORET(ret);
-				iReap++;
-				abSubmitted[i] = false;
-
-				if (ret < 0)
-				{
-					cout << "Reap " << (iReap - 1) << ", Buffer " << i << ": ISOCHRONOUS READ ret = " << ret << " " << usb_strerror() << endl;
-					bError = true;
-					break;
+				if (ret != -5) {
+					CHECK_USBRESULT_NORET(ret);
 				}
+				//qDebug() << "Reap " << iReapSuccess << "/" << iReapAttempt << ", Buffer " << i << ": ISOCHRONOUS READ ret = " << ret;
+			}
 
-				bOverflow = processSampledData(i, ret);
-				if (bOverflow)
-					break;
-
+			if (bSamplingNow)
+			{
 				ret = iso_submit(i);
 				CHECK_USBRESULT_NORET(ret);
-				if (ret < 0) {
-					printf("isochronous submit returned %d\n", ret);
-					bError = true;
-					break;
-				}
-				abSubmitted[i] = true;
 			}
+		}
+		bSamplingPrev = bSamplingNow;
+	}
 
-			for (int i = 0; i < ISOCHRONOUS_CONTEXT_COUNT; i++)
-			{
-				if (abSubmitted[i])
-					iso_reap(i);
-			}
-		} while (m_bSampling && !bError && !bOverflow);
-
-		setIsoXferEnabled(false);
-		//bRepeat = m_bSampling;
-	} while (bRepeat);
-
-	// TODO: Consider restarting if bOverflow == true && m_bSampling == true -- ellis, 2010-01-24
+	setIsoXferEnabled(false);
 }
 
-#include <iostream>
 bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
-	CHECK_PARAM_RETVAL(iTransfer >= 0 && iTransfer < ISOCHRONOUS_CONTEXT_COUNT, false);
-	if (nBytesReceived < 0 || nBytesReceived > 4800) {
-		qDebug() << "ERROR: nBytesReceived =" << nBytesReceived;
-	}
-	CHECK_PARAM_RETVAL(nBytesReceived >= 0 && nBytesReceived <= 4800, false);
+	CHECK_ASSERT_NORET((nBytesReceived % ISO_PACKET_SIZE) == 0);
 
 	bool bOverflow = false;
+	int nPackets = (nBytesReceived > 0) ? (nBytesReceived / ISO_PACKET_SIZE) : 0;
 
-	int nPackets = (nBytesReceived > 0) ? (nBytesReceived / 600) : 0;
-
-	/*int m[8];
-	for (int i = 0; i < 8; i++) {
-		quint16* p = (quint16*) (isobuf + 4800 * iTransfer + 600 * i);
-		m[i] = *p;
-	}
-	qDebug() << nBytesReceived << ":" << m[0] << m[1] << m[2] << m[3] << m[4] << m[5] << m[6] << m[7];
-	*/
-
-	// FIXME: this variable is for debug only -- ellis, 2010-01-24
-	quint16* pEnd = (quint16*) (isobuf + 4800 * ISOCHRONOUS_CONTEXT_COUNT);
 	for (int iPacket = 0; iPacket < nPackets; iPacket++)
 	{
-		quint16* pBuffer = (quint16*) (isobuf + 4800 * iTransfer + 600 * iPacket);
+		quint16* pBuffer = (quint16*) (isobuf + ISO_TRANSFER_SIZE * iTransfer + ISO_PACKET_SIZE * iPacket);
 		int nBytes = *pBuffer++;
-		// Apparently, some upper bits are status bits, and if they are set, then
-		// the packet might not contain measurement data
-		if (nBytes > 598) {
-			nBytes = 0;
-			qDebug() << "ERROR: nBytes =" << nBytes << iTransfer << iPacket << nBytesReceived;
+		int nWords = nBytes / 2;
+
+		if (nBytes > ISO_PACKET_SIZE - 2) {
+			logUsbError(__FILE__, __LINE__, QString("Invalid data size: %0").arg(nBytes));
+			cerr << iTransfer << " " << iPacket << " " << nPackets << " " << nBytes << endl;
 			for (int j = 0; j < 299; j++) {
 				cerr << pBuffer[j] << " ";
 			}
-			cerr << endl;
 			cerr.flush();
-			/*for (int i = 0; i < 8; i++) {
-				char* p = (char*) (isobuf + 4800 * iTransfer + 600 * i);
-				qDebug() << "\t" << i << (int)(*p);
-			}*/
-			break;
+			continue;
 		}
-		else {
-			//qDebug() << "OK";
-			/*for (int j = 0; j < 299; j++) {
-				cerr << pBuffer[j] << " ";
-			}
-			cerr << endl;*/
-		}
-		CHECK_ASSERT_RETVAL(nBytes <= 598, bOverflow);
-		int nWords = nBytes / 2;
+
 		for (int iWord = 0; iWord < nWords; iWord++)
 		{
-			// FIXME: for debug only -- ellis, 2010-01-24
-			if (pBuffer == pEnd) {
-				qDebug() << "processSampledData: iTransfer:" << iTransfer << "iPacket:" << iPacket << "nWords:" << nWords << "iWord:" << iWord;
-			}
 			// Read little-endian word
 			quint16 wData = *pBuffer++;
 
@@ -709,8 +662,7 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 				else
 				{
 					bOverflow = true;
-					m_bSampling = false;
-					printf("OVERFLOW\n");
+					logUsbError(__FILE__, __LINE__, "BUFFER OVERRUN");
 					break;
 				}
 				/*

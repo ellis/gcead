@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
 #include <QtDebug>
 #include <QApplication>
 #include <QFile>
+#include <QFileInfo>
 #include <QMutex>
 #include <QSettings>
 #include <QTextStream>
@@ -31,22 +34,27 @@
 #include "TestRecording.h"
 
 
-void checkLog(const QString& s)
+void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage)
 {
 	QFile file("GcEad.log");
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
+		QFileInfo fi(sFile);
 		QTextStream out(&file);
-		out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.mm") << ": " << s << "\n";
+		QString s = QString("%0: %1 at %2:%3: %4")
+					.arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"))
+					.arg(sType)
+					.arg(fi.fileName())
+					.arg(iLine)
+					.arg(sMessage.trimmed());
+		out << s << "\n";
+		std::cerr << qPrintable(s) << std::endl;
 	}
 }
 
 void checkFailure(const char* sFile, int iLine, const char* s)
 {
-	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
-
-	QString sLog = QString("CHECK FAILURE: %1, line %2: %3").arg(sFile).arg(iLine).arg(s);
-	checkLog(sLog);
+	checkLog(sFile, iLine, "CHECK FAILURE", s);
 }
 
 int main(int argc, char *argv[])

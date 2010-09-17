@@ -39,8 +39,8 @@ void IdacDriver::init()
 
 void IdacDriver::addError(const QString& s)
 {
-	checkLog("IDAC ERROR: " + s);
-	cerr << "addError: " << qPrintable(s) << endl;
+	//checkLog("IDAC ERROR: " + s);
+	//cerr << "addError: " << qPrintable(s) << endl;
 	m_errorMutex.lock();
 	m_errors << s;
 	m_errorMutex.unlock();

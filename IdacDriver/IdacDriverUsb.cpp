@@ -36,7 +36,7 @@ IdacDriverUsb::IdacDriverUsb(struct usb_device* device, QObject* parent)
 	{
 		m_handle = usb_open(m_device);
 		if (m_handle == NULL)
-			logUsbError();
+			logUsbError(__FILE__, __LINE__, "Unable to open USB device");
 	}
 	else
 		m_handle = NULL;
@@ -67,11 +67,19 @@ IdacDriverUsb::~IdacDriverUsb()
 	}
 }
 
-void IdacDriverUsb::logUsbError()
+void IdacDriverUsb::logUsbError(const char* file, int line, int result)
 {
 	const char* s = usb_strerror();
-	if (s != NULL && *s != 0)
-		addError(tr("USB ERROR: %0").arg(s));
+	if (s != NULL && *s != 0) {
+		logUsbError(file, line, QString("USB ERROR %0: %1").arg(result).arg(s));
+	}
+}
+
+void IdacDriverUsb::logUsbError(const char* file, int line, const QString& s)
+{
+	QString s2 = s.trimmed();
+	addError(s2);
+	checkLog(file, line, "USB ERROR", s2);
 }
 
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
@@ -215,7 +223,7 @@ bool IdacDriverUsb::sendHexFile(QString sFilename)
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		addError(QString("File not found: %0").arg(sFilename));
+		logUsbError(__FILE__, __LINE__, QString("File not found: %0").arg(sFilename));
 		return false;
 	}
 
@@ -264,7 +272,7 @@ bool IdacDriverUsb::sendBinFile(QString sFilename)
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly))
 	{
-		addError(QString("File not found: %0").arg(sFilename));
+		logUsbError(__FILE__, __LINE__, QString("File not found: %0").arg(sFilename));
 		return false;
 	}
 

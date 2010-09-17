@@ -288,22 +288,26 @@ public:
 };
 
 
-void checkLog(const QString& s)
+void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage)
 {
 	QFile file("GcEad.log");
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QTextStream out(&file);
-		out << QDateTime::currentDateTime().toString() << ": " << s << "\n";
+		QString s = QString("%0: %1 at %2:%3: %4")
+					.arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"))
+					.arg(sFile)
+					.arg(iLine)
+					.arg(sType)
+					.arg(sMessage);
+		out << s << "\n";
+		qDebug() << s;
 	}
 }
 
 void checkFailure(const char* sFile, int iLine, const char* s)
 {
-	qDebug() << "CHECK FAILURE: " << sFile << ", line " << iLine;
-
-	QString sLog = QString("CHECK FAILURE: %1, line %2: %3").arg(sFile).arg(iLine).arg(s);
-	checkLog(sLog);
+	checkLog(sFile, iLine, "CHECK FAILURE", s);
 }
 
 int main(int argc, char *argv[])
