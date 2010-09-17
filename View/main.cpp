@@ -36,7 +36,7 @@
 
 void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage)
 {
-	QFile file("GcEad.log");
+	QFile file(QCoreApplication::applicationDirPath() + "/GcEad.log");
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QFileInfo fi(sFile);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	else
 		w->show();
 
-	if (QFile::exists("flag.TestRecording")) {
+	if (QFile::exists(QCoreApplication::applicationDirPath() + "/flag.TestRecording")) {
 		TestRecording* test = new TestRecording(w->scope());
 		test->show();
 	}

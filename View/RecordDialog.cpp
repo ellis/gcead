@@ -210,7 +210,7 @@ void RecordDialog::getData()
 	ui.eadSignal->addSamples(m_handler->eadDisplay());
 	ui.fidSignal->addSamples(m_handler->fidDisplay());
 
-	if (iRecording >= 0 || QFile::exists("flag.TestRecording"))
+	if (iRecording >= 0 || QFile::exists(QCoreApplication::applicationDirPath() + "/flag.TestRecording"))
 		accept();
 }
 

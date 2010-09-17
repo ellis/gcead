@@ -722,7 +722,7 @@ void MainScope::stopRecording(bool bSave, bool bAutoStop)
 				m_ui->showWarning(tr("WARNING: Your data has not yet been saved to disk!"));
 		}
 
-		if (!s.isEmpty() && !QFile::exists("flag.TestRecording"))
+		if (!s.isEmpty() && !QFile::exists(QCoreApplication::applicationDirPath() + "/flag.TestRecording"))
 			m_ui->showInformation(tr("Recording Finished"), s);
 	}
 	else

@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
 #include <QtDebug>
 #include <QApplication>
 #include <QFile>
+#include <QFileInfo>
 #include <QMutex>
 #include <QSettings>
 #include <QThread>
@@ -290,18 +293,19 @@ public:
 
 void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage)
 {
-	QFile file("GcEad.log");
+	QFile file(QCoreApplication::applicationDirPath() + "/GcEad.log");
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
+		QFileInfo fi(sFile);
 		QTextStream out(&file);
 		QString s = QString("%0: %1 at %2:%3: %4")
 					.arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"))
-					.arg(sFile)
-					.arg(iLine)
 					.arg(sType)
-					.arg(sMessage);
+					.arg(fi.fileName())
+					.arg(iLine)
+					.arg(sMessage.trimmed());
 		out << s << "\n";
-		qDebug() << s;
+		std::cerr << qPrintable(s) << std::endl;
 	}
 }
 
