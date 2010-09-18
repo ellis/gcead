@@ -1,4 +1,4 @@
-	fix IDAC4 packet which I don't know how to interpret
+x	fix IDAC4 packet which I don't know how to interpret
 	x	test manually triggered digital signal
 	x	why is digital signal randomly high?
 	x	test recording for a long time
@@ -37,10 +37,11 @@ x	2 decimal places for times
 	-	remove TaskReviewWidget::on_scope_peakModeChanged()
 	x	make sure handles can be moved again
 	x	improve tab color
-?	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
+x	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	
 ?	Fix "RECORDING: ??.??" size
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
+	BUG: Windows; start recording; close program; select discard twice; shouldn't crash
 	When dragging selection area: if user presses ESC, then abort selection
 	integrate filter code into GcEad
 	create mac installable
@@ -63,7 +64,7 @@ x	2 decimal places for times
 		Install USB filter
 		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
 		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
-6	Think about merging recording from another EAD file
+	Think about merging recording from another EAD file
 	?	import all records from another EAD file
 		test importing from both GcEad/2010 and the old EAD program
 		but: also need to let user delete waves then?

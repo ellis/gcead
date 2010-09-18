@@ -599,7 +599,7 @@ void MainScope::on_actions_viewWaveComments_toggled()
 	updateChartElements();
 }
 
-void MainScope::on_actions_markersShow_toggled(bool b)
+void MainScope::on_actions_markersShow_toggled(bool)
 {
 	updatePeakMode();
 }

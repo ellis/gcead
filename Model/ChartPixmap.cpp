@@ -499,6 +499,9 @@ void ChartPixmap::drawWaveformRough(QPainter& painter, const ChartWaveInfo* cwi)
 	const WaveInfo* wave = vwi->wave();
 	const RenderData* render = cwi->render;
 
+	if (render->nPixels <= 0)
+		return;
+
 	QColor clrWave = color((wave->recId() >= 1) ? ChartColor_Wave : ChartColor_WaveAve);
 	if (m_file->newRec() != NULL && wave->recId() == m_file->newRec()->id())
 		clrWave = color(ChartColor_WaveRec);
