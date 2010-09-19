@@ -42,6 +42,8 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 ?	Fix "RECORDING: ??.??" size
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	BUG: Windows; start recording; close program; select discard twice; shouldn't crash
+	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
+	MarkersWidget: why is there such a large bottom border?
 	When dragging selection area: if user presses ESC, then abort selection
 	integrate filter code into GcEad
 	create mac installable
