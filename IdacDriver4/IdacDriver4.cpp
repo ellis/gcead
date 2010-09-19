@@ -21,7 +21,7 @@
 
 #include <usb.h>
 
-#ifdef Q_WS_X11
+#if defined(Q_WS_X11) || defined(Q_WS_MAC)
 extern "C" {
 #include <libusb/libusb.h>
 //#undef _GNU_SOURCE // Supress a warning
@@ -383,9 +383,9 @@ bool IdacDriver4::startSampling()
 		}
 	}
 
-#ifndef Q_WS_MAC
+//#ifndef Q_WS_MAC
 	sampleStart();
-#endif
+//#endif
 	return true;
 }
 
