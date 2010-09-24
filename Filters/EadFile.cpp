@@ -27,6 +27,8 @@
 #include <QTextStream>
 
 #include "Check.h"
+#include "Filters.h"
+#include "Waveprocess.h"
 
 
 /// Channel 1 of fake EAD data
@@ -144,7 +146,7 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 
 	clear();
 
-	// Check that this is really an EAD file
+	// Check that this is really and EAD file
 	char sFormatId[4];
 	str.readRawData(sFormatId, 4);
 
@@ -157,6 +159,38 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 		result = loadCurrent(str);
 	else
 		result = LoadSaveResult_WrongFormat;
+
+        /*AJM testing*/
+
+
+                int i;
+
+                RecInfo* rec = m_recs[1];
+                WaveInfo* wave = rec->ead();
+
+                double *x;
+                int len = wave->raw.size();
+                x = new double[len];
+
+                for(i = 0; i < len; ++i)
+                {
+                    x[i] = (double)(wave->raw)[i];
+                }
+
+                //change type to select wiener (1) or matched (0) filtering or (2) do nothing.
+
+                int type = 2;
+
+                FilterData(type, x, len);
+
+                for(i = 0; i < len; ++i)
+                {
+                    (wave->raw)[i] = (short)x[i];
+                }
+
+                delete x;
+
+                /*end AJM testing*/
 
 	updateDisplay();
 	updateViewInfo();
@@ -181,6 +215,68 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 	emit waveListChanged();
 
 	return result;
+}
+
+void EadFile::FilterData(int type, double *x, int len)
+{
+    //blockSignals(true);
+
+    //noise model
+
+    int i;
+    double *xy;
+
+    for(i = 0;i < len; ++i)
+    {
+        x[i] /= 32768.0;
+    }
+
+    Filters *whitef = new Filters;
+    whitef->calcWhiteningFilterYW(x);
+
+    if(type == 0)
+    {
+        whitef->calcNWMFFilter();
+        xy = new double[whitef->get_NWMFlen()+len-1];
+        whitef->convolve_NWMF(x,len,xy);
+       // w.convolve(x, len, whitef->NWMFFilt, whitef->get_NWMFlen(), xy);
+        for(i = 0;i < len; ++i)
+        {
+            x[i] = xy[i+31768];  //FFTLEN - placement of peak @ 10 sec....  this is only temporary
+            x[i] *= 32768.0;
+        }
+        delete xy;
+    }
+    else if(type == 1)
+    {
+         whitef->calcWienerFilter();
+         xy = new double[whitef->get_wienerFiltlen()+len-1];
+         whitef->convolve_wiener(x,len,xy);
+       //  w.convolve(x, len, whitef->wienerFilt, 32768, xy);
+         for(i = 0;i < len; ++i)
+         {
+             x[i] = xy[i+16384];  //FFTLEN/2 this is only temporary
+             x[i] *= 32768.0;
+         }
+         delete xy;
+    }
+    else if(type == 2)
+    {
+        for(i = 0;i < len; ++i)
+        {
+            x[i] *= 32768.0;
+        }
+    }
+
+    delete whitef;
+
+    //updateDisplay();
+    //updateViewInfo();
+    //updateAveWaves();
+
+    //blockSignals(false);
+    //emit waveListChanged();
+
 }
 
 static int getInt(char* data_) {

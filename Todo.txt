@@ -53,6 +53,7 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 	Question for Peter:
 		should I drop "min" unit from time when the unit is minutes?
 		is the thicker tick what you had in mind?
+		import of .aspk files?  Soon we should consider adding more advanced file handling.
 	
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of Autospike-CSV files
@@ -120,44 +121,6 @@ Windows 7 x64 USB:
 	Could IDAC firmware be rewritten to implement a "Communication Class", in particular "Asynchronous Transfer Mode", and then use the standard Windows driver?
 
 DONE:
-x	In record mode, when data gets to end of screen, use page-right instead of zoom-out
-x	After recording stop, re-adjust scrollbars and offset
-x	Add peak amplitude
-	x	Markers action
-	x	Markers menu
-	x	Peak options for choosing to display percent vs. amplitude
-	x	ChartPixmap should respect peak option
-	x	Load the user choice for peak percent vs. amplitude
-	x	Save the user choice for peak percent vs. amplitude
-	x	Make sure amplitude changes as we shift the handle
-	x	Save amplitude to retention data export
-	x	Display amplitude value and units nicely on chart
-	x	Calculate amplitude when .EAD loaded
-x	BUG: ChartPixmap::drawWaveformDigital, it's possible for it to lock up
-x	File comment dialog needs to be wider, and it should be multiline
-x	SVG saving: fix the height and width in order to eliminate all that extra blank space.
-x	Create hidden test routine to record lots of waves 
-	x	Test in Windows
-	x	Test making 4 recordings; save file; close GeEad; reopen file; try recording more
-	x	Run longer recording tests in windows
-	x	Log USB error messages
-	x	Run non-recording ScopeTests in valgrind
-x	Show time elapsed instead of time remaining when recording
-x	"Load Sample Project...": remove "..."
-x	Log CHECK_* messages with time
-	x	Shorter date/time format
-	x	Add mechanism to write more data to the log
-x	Export EAG amplitude data
-x	Corraine's request is for EAD instead of FID
-	x	show time below on EAD waves
-	x	show amplitude on EAD waves
-	x	fix amplitude calculation
-	x	draw area bars on EAD waves when in Edit Peaks mode
-	x	place area markers further apart on creation
-	x	ctrl-click on EAD makes peak with area bars
-	x	Update instructions
-	x	Update other text (Peak? Marker?)
-
 
 	INSTALLER:
 		MAC:

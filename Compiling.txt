@@ -1,26 +1,24 @@
-Date: 2009-05-02, 2010-08-03
+Date: 2009-05-02, 2010-08-03, 2010-09-23
 
 1) libusb
 
-make -f libusb.mak
+linux: make -f libusb.mak
+mac: make -f libusbmac.mak
+windows: pre-compiled libraries already provided
 
 2) gcead
 
-I built the project with the Qt SDK for Qt 4.5.1 and Qt Creator 1.1.
-
-If you also use the Qt SDK, I might suggest building the project from within 
-Qt Creator in order to avoid conflicts with Qt tools and libraries installed
-elsewhere on your system.
+I built the project with the Qt SDK for Qt 4.6 and Qt Creator 2.0.
 
 You will find the final program, GcEad, in either the debug/ or release/
 subfolders.
 
 See Notes.txt for programmer notes.
 
-3) register USB device in linux
+3) register USB device (on linux only)
 
 sudo cp Installables/Linux/60-syntech.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 
 unplug IDAC from USB port if it's plugged in
-plug in IDAC into USB port
+plug in IDAC back into the USB port
