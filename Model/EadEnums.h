@@ -26,6 +26,7 @@
 enum EadTask
 {
 	EadTask_Review,
+	EadTask_Filter,
 	EadTask_Markers,
 	EadTask_Publish,
 };
@@ -113,5 +114,22 @@ enum LoadSaveResult
 	LoadSaveResult_ImportedOldEad,
 	LoadSaveResult_DataCorrupt,
 };
+
+/// Filter types
+enum FilterMode
+{
+	FilterMode_Off,
+	FilterMode_Default,
+	FilterMode_Advanced
+};
+Q_ENUMS(FilterType);
+
+/// Filter types
+enum FilterType
+{
+	FilterType_1,
+	FilterType_2
+};
+Q_ENUMS(FilterType);
 
 #endif

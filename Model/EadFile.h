@@ -23,6 +23,7 @@
 #include <QPair>
 
 #include "EadEnums.h"
+#include "FilterInfo.h"
 #include "RecInfo.h"
 #include "WaveInfo.h"
 #include "ViewInfo.h"
@@ -37,6 +38,9 @@ class QFile;
 class EadFile : public QObject
 {
 	Q_OBJECT
+
+	Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
+
 public:
 	/*
 	/// File format for export
@@ -77,6 +81,11 @@ public:
 	/// Place m_newRec into m_recs and set m_newRec = NULL
 	void saveNewRecording();
 
+	FilterMode filterMode() const { return m_filterMode; }
+	void setFilterMode(FilterMode mode);
+	void addFilter(FilterInfo* filter);
+	const QList<FilterInfo*>& filters() const;
+
 	/// Force a recalculation of the averaged waves
 	void updateAveWaves();
 
@@ -94,6 +103,8 @@ signals:
 	void dirtyChanged();
 	/// Emitted when a wave is added or removed from the file
 	void waveListChanged();
+	/// Emitted when the filter mode is changed
+	void filterModeChanged();
 
 private:
 	//void addRec(RecInfo* rec);
@@ -115,6 +126,9 @@ private:
 	void loadViewWaveNode(QDomElement& elem, ViewInfo* view, bool bExtra);
 	//WaveInfo* createWave(WaveType type);
 
+	/// Create the default filters
+	void createFiltersDefault();
+	/// Create the record 0 waves which are used for storing the averages
 	void createAveWaves();
 	/// Create m_views
 	void createViewInfo();
@@ -136,6 +150,10 @@ private:
 	/// True when the file has changed since being saved
 	bool m_bDirty;
 	RecInfo* m_newRec;
+	FilterMode m_filterMode;
+	QList<FilterInfo*> m_filtersOff;
+	QList<FilterInfo*> m_filtersDefault;
+	QList<FilterInfo*> m_filtersAdvanced;
 };
 
 #endif

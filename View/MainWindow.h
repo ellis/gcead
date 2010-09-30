@@ -35,6 +35,7 @@ class MainScope;
 class PanelTabs;
 class RecordHandler;
 class SuffixSpinBox;
+class TaskFilterWidget;
 class TaskMarkersWidget;
 class TaskPublishWidget;
 class TaskReviewWidget;
@@ -98,6 +99,8 @@ private:
 	//TaskRecordWidget* m_taskRecord;
 	/// Tool widget for Review task
 	TaskReviewWidget* m_taskReview;
+	/// Tool widget for Filter task
+	TaskFilterWidget* m_taskFilter;
 	/// Tool widget for Markers task
 	TaskMarkersWidget* m_taskMarkers;
 	/// Tool widget for Publish task

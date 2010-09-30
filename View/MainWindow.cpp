@@ -41,6 +41,7 @@
 #include "MainWindowUi.h"
 #include "PanelTabs.h"
 #include "RecordHandler.h"
+#include "TaskFilterWidget.h"
 #include "TaskMarkersWidget.h"
 #include "TaskPanel.h"
 #include "TaskPublishWidget.h"
@@ -104,6 +105,8 @@ void MainWindow::setupWidgets()
 	//m_taskRecord = new TaskRecordWidget(m_idac, m_chart);
 	//connect(m_taskRecord, SIGNAL(saveRecording(bool)), this, SIGNAL(saveRecording(bool)));
 
+	m_taskFilter = new TaskFilterWidget(m_scope);
+
 	m_taskMarkers = new TaskMarkersWidget(m_scope);
 
 	m_taskPublish = new TaskPublishWidget(m_scope);
@@ -112,6 +115,7 @@ void MainWindow::setupWidgets()
 	m_taskStack = new QStackedLayout();
 	m_taskStack->setSpacing(0);
 	m_taskStack->addWidget(new TaskPanel(m_taskReview));
+	m_taskStack->addWidget(new TaskPanel(m_taskFilter));
 	m_taskStack->addWidget(new TaskPanel(m_taskMarkers));
 	m_taskStack->addWidget(new TaskPanel(m_taskPublish));
 	m_taskStack->setCurrentIndex(1);

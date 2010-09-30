@@ -5,8 +5,12 @@ DEFINES += QT_XML_LIB QT_SVG_LIB
 INCLUDEPATH += . .. ../Core
 DEPENDPATH += . .. ../Core
 
-HEADERS += AppDefines.h ChartPixmap.h EadEnums.h EadFile.h Globals.h PublisherSettings.h RecInfo.h RenderData.h ViewInfo.h ViewSettings.h WaveInfo.h
-SOURCES += ChartPixmap.cpp EadFile.cpp FakeData.cpp Globals.cpp PublisherSettings.cpp RecInfo.cpp RenderData.cpp ViewInfo.cpp WaveInfo.cpp
+HEADERS += AppDefines.h ChartPixmap.h EadEnums.h EadFile.h Globals.h PublisherSettings.h RecInfo.h RenderData.h ViewInfo.h ViewSettings.h WaveInfo.h \
+    FilterInfo.h \
+    PropertyRowModel.h
+SOURCES += ChartPixmap.cpp EadFile.cpp FakeData.cpp Globals.cpp PublisherSettings.cpp RecInfo.cpp RenderData.cpp ViewInfo.cpp WaveInfo.cpp \
+    FilterInfo.cpp \
+    PropertyRowModel.cpp
 
 CONFIG(debug, debug|release) {
     DESTDIR = ../debug

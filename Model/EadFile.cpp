@@ -38,7 +38,9 @@ extern short g_anChannel2[3999];
 EadFile::EadFile()
 {
 	m_newRec = NULL;
+	m_filterMode = FilterMode_Off;
 
+	createFiltersDefault();
 	createAveWaves();
 	createViewInfo();
 
@@ -218,7 +220,7 @@ LoadSaveResult EadFile::loadOld(QDataStream& str)
 
 	//createAveWaves();
 
-	RecInfo* rec = new RecInfo(1);
+	RecInfo* rec = new RecInfo(this, 1);
 	WaveInfo* wave = rec->ead();
 
 	str.readRawData(data, 4);
@@ -329,7 +331,7 @@ void EadFile::loadRecNode(QDomElement& elem)
 	int id = elem.attribute("id").toInt();
 	uint nSeconds = elem.attribute("time").toUInt();
 	
-	RecInfo* rec = new RecInfo(id);
+	RecInfo* rec = new RecInfo(this, id);
 	rec->setTimeOfRecording(QDateTime::fromTime_t(nSeconds));
 
 	QDomNodeList waves = elem.elementsByTagName("wave");
@@ -709,7 +711,7 @@ void EadFile::createNewRecording()
 		qDebug() << "Woops";
 	CHECK_PRECOND_RET(m_newRec == NULL);
 
-	m_newRec = new RecInfo(m_recs.size());
+	m_newRec = new RecInfo(this, m_recs.size());
 	
 	ViewInfo* view = viewInfo(EadView_Recording);
 	// Update the "Recording" view & save pointers for convenience
@@ -759,11 +761,47 @@ void EadFile::saveNewRecording()
 	emit dirtyChanged();
 }
 
+void EadFile::setFilterMode(FilterMode mode)
+{
+	if (mode != m_filterMode) {
+		m_filterMode = mode;
+		emit filterModeChanged();
+	}
+}
+
+void EadFile::addFilter(FilterInfo* filter)
+{
+	CHECK_PRECOND_RET(m_filterMode == FilterMode_Advanced);
+	CHECK_PARAM_RET(filter != NULL);
+	CHECK_PARAM_RET(filter->parent() == this);
+
+	m_filtersAdvanced << filter;
+}
+
+const QList<FilterInfo*>& EadFile::filters() const
+{
+	switch (m_filterMode) {
+	case FilterMode_Off: return m_filtersOff;
+	case FilterMode_Default: return m_filtersDefault;
+	case FilterMode_Advanced: return m_filtersAdvanced;
+	}
+	return m_filtersOff;
+}
+
+void EadFile::createFiltersDefault()
+{
+	CHECK_PRECOND_RET(m_filtersDefault.size() == 0);
+
+	Filter1Info* f1 = new Filter1Info(this);
+	f1->setWidth(100);
+	m_filtersDefault << f1;
+}
+
 void EadFile::createAveWaves()
 {
 	CHECK_PRECOND_RET(m_recs.size() == 0);
 
-	RecInfo* rec = new RecInfo(0);
+	RecInfo* rec = new RecInfo(this, 0);
 
 	WaveInfo* wave = rec->ead();
 	wave->sName = tr("EAD AVE");
@@ -968,7 +1006,7 @@ void EadFile::createFakeData()
 		createAveWaves();
 	}
 
-	RecInfo* rec = new RecInfo(1);
+	RecInfo* rec = new RecInfo(this, 1);
 	rec->setTimeOfRecording(QDateTime::currentDateTime());
 	m_recs << rec;
 
@@ -988,7 +1026,7 @@ void EadFile::createFakeData()
 	wave->nRawToVoltageFactor = 1.0/1500;
 	createFakeData2(wave, g_anChannel2, 3999, 0);
 
-	rec = new RecInfo(2);
+	rec = new RecInfo(this, 2);
 	rec->setTimeOfRecording(QDateTime::currentDateTime());
 	m_recs << rec;
 	createFakeData3(5, QList<float>() << .8 << 1.3);

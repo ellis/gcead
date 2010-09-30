@@ -17,8 +17,11 @@
 
 #include "RecInfo.h"
 
+#include "EadFile.h"
 
-RecInfo::RecInfo(int id)
+
+RecInfo::RecInfo(EadFile* file, int id)
+	: QObject(file), m_file(file)
 {
 	m_id = id;
 	m_nShift = 0;

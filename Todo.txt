@@ -40,6 +40,35 @@ x	2 decimal places for times
 x	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
 	
 ?	Fix "RECORDING: ??.??" size
+	Filters:
+		Continue at EadFile.cpp:991
+		add attributes to root node of EAD file:
+			pver: program version which wrote this file
+			wver: version of xml format which was written (integer)
+			rver: minimum version of the xml format reader which can read this XML
+			display some message to user if trying to open/save an older XML version
+			display some message to user if trying to open/save a newer XML version
+		create filter task widget
+		create variables to indicate filtering
+		add Filters project to .pro file
+		add function calls to perform filtering in WaveInfo::calcDisplayData()
+		when filtering is enabled/disabled:
+			recalculate display
+			recalculate peaks
+			redraw graph
+		options:
+			off
+			on (default)
+			on (advanced)
+			
+			view by filter
+				Filter name:
+					settings, if any
+					waves it applies to
+				Add Filter Type: [Smoothing, matching, ?]
+			view by wave
+				
+	Add libusbmac.mak
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	BUG: Windows; start recording; close program; select discard twice; shouldn't crash
 	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
@@ -49,6 +78,42 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 	create mac installable
 	Screenshots for Peter's documentation
 	more unit tests
+	
+	Model/View:
+		EadFile:
+			QUndoStack undoStack
+			Commands:
+				RecordingWavesCreate
+				RecordingWavesKeep
+				RecordingWavesDiscard
+				WaveNameChange
+				WaveVisibleToggle
+				WaveSensitivityChange
+				WaveOffsetChange
+				WaveShiftChange
+				WaveInvertToggle
+				WaveCommentChange
+			getWaveTableModel()
+		WaveTableModel: QAbstractTableModel
+			recId
+			type
+			name
+			comments
+			offset
+			sensitivity
+			shift
+			visible[5] (for each view)
+			pos[5] (for each view)
+		ViewWaveTableModel: QAbstractTableModel
+			(everything from WaveTableModel)
+			category
+			visible
+		PropertyTableModel: QAbstractTableModel
+			takes a list of QObjects and a list of property names
+		ViewWaveListView: QAbstractItemView
+			takes a ViewWaveTableModel and displays them
+		FiltersScope: QAbstractTableModel
+			
 	
 	Question for Peter:
 		should I drop "min" unit from time when the unit is minutes?
@@ -152,7 +217,8 @@ DONE:
 	x	copyright notices in all files
 	x	svn:ignore relevant directories/files
 	x	set proper app version number
-
+		update webpages:
+			rsync -aiv [files] whiteh12,gcead@web.sourceforge.net:htdocs/
 	
 	testing
 		Verify that all menu actions are connected
@@ -161,6 +227,10 @@ DONE:
 	programmer documentation
 	open-source it
 		upload EXEs to sourceforge
+
+FUTURE STUFF suggested by Peter:
+	Import .aspk files (along with dialog to select which waves)
+	Add band-pass filter from EAD program
 
 FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possible
 	add programmer documentation to IdacDriver* projects
@@ -221,4 +291,5 @@ FILE FORMAT FROM OLD EAD PROGRAM (EXAMPLE1.EAD):
 	0x02BF = 703
 	0x0002BF6F = 180079
 	81FD: 
+
 
