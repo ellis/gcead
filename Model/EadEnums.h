@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2010  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,6 +114,15 @@ enum LoadSaveResult
 	LoadSaveResult_ImportedOldEad,
 	LoadSaveResult_DataCorrupt,
 };
+
+/// Type of wave (EAD, FID, or digital)
+enum WaveType
+{
+	WaveType_EAD,
+	WaveType_FID,
+	WaveType_Digital,
+};
+Q_ENUMS(WaveType);
 
 /// Filter types
 enum FilterMode

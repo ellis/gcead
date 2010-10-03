@@ -21,9 +21,8 @@
 #include <QObject>
 #include <QPointer>
 
+#include "EadEnums.h"
 #include "WaveInfo.h"
-
-#include <EadEnums.h>
 
 
 class EadFile;
@@ -101,6 +100,8 @@ public:
 	~ViewInfo();
 
 	EadView viewType() const { return m_viewType; }
+
+	EadFile* file() const;
 
 	/// Get the list of standard waves in this view
 	const QList<ViewWaveInfo*>& vwis() { return m_vwis; }

@@ -1,12 +1,31 @@
+/**
+ * Copyright (C) 2010  Ellis Whitehead
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef FILTERINFO_H
 #define FILTERINFO_H
 
+#include <QList>
 #include <QObject>
 
 #include "EadEnums.h"
 
 
 class EadFile;
+class WaveInfo;
 
 
 class FilterInfo : public QObject
@@ -15,6 +34,7 @@ class FilterInfo : public QObject
 
 	Q_PROPERTY(FilterType type READ type CONSTANT)
 	Q_PROPERTY(QString name READ name CONSTANT)
+	Q_PROPERTY(WaveType waveType READ waveType WRITE setWaveType NOTIFY waveTypeChanged)
 
 public:
 	FilterInfo(EadFile *file);
@@ -24,13 +44,24 @@ public:
 	virtual FilterType type() const = 0;
 	virtual QString name() const = 0;
 
+	WaveType waveType() const { return m_waveType; }
+	const QList<WaveInfo*>& waves() const { return m_waves; }
+
 signals:
+	void waveTypeChanged();
+	void wavesChanged();
 
 public slots:
+	void setWaveType(WaveType waveType);
+	void addWave(WaveInfo* wave);
+	void removeWave(WaveInfo* wave);
 
 private:
 	EadFile* const m_file;
+	WaveType m_waveType;
+	QList<WaveInfo*> m_waves;
 };
+
 
 class Filter1Info : public FilterInfo
 {

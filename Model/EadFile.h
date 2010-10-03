@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2010  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,6 +91,7 @@ public:
 
 	void updateDisplay();
 	void updateDisplay(RecInfo* rec);
+	void updateDisplay(const QList<WaveInfo*>& waves);
 	void updateDisplay(WaveInfo* wave);
 
 	void createFakeData();

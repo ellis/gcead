@@ -22,6 +22,7 @@
 #include <Check.h>
 #include <EadEnums.h>
 
+#include "FilterInfo.h"
 #include "RecInfo.h"
 
 
@@ -79,7 +80,7 @@ void WaveInfo::setShift(int nShift)
 	m_nShift = nShift;
 }
 
-void WaveInfo::calcDisplayData()
+void WaveInfo::calcDisplayData(const QList<FilterInfo*> filters)
 {
 	const short* orig = raw.constData();
 	

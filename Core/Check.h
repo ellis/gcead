@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2010  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ extern void checkLog(const char* sFile, int iLine, const QString& sType, const Q
 	/// Check a precondition, and return if the check fails
 	#define CHECK_PRECOND_RET(x) __CHECK_COND_RET(x)
 
-	/// Check a precondition, and return if the check fails
+	/// Check a precondition and continue without returning
 	#define CHECK_PRECOND_NORET(x) __CHECK_COND_NORET(x)
 
 	/// Check a parameter for validity, and return the given value if the check fails
@@ -89,6 +89,9 @@ extern void checkLog(const char* sFile, int iLine, const QString& sType, const Q
 
 	/// Check a parameter for validity, and return if the check fails
 	#define CHECK_PARAM_RET(x) __CHECK_COND_RET(x)
+
+	/// Check a parameter for validity and continue without returning
+	#define CHECK_PARAM_NORET(x) __CHECK_COND_NORET(x)
 
 	/// Check a condition for validity, and return the given value if the check fails
 	#define CHECK_ASSERT_RETVAL(x, ret) __CHECK_COND_RETVAL(x, ret)

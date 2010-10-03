@@ -41,17 +41,10 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 	
 ?	Fix "RECORDING: ??.??" size
 	Filters:
-		Continue at EadFile.cpp:991
-		add attributes to root node of EAD file:
-			pver: program version which wrote this file
-			wver: version of xml format which was written (integer)
-			rver: minimum version of the xml format reader which can read this XML
-			display some message to user if trying to open/save an older XML version
-			display some message to user if trying to open/save a newer XML version
 		create filter task widget
 		create variables to indicate filtering
-		add Filters project to .pro file
-		add function calls to perform filtering in WaveInfo::calcDisplayData()
+1		add Filters project to .pro file
+2		add function calls to perform filtering in WaveInfo::calcDisplayData()
 		when filtering is enabled/disabled:
 			recalculate display
 			recalculate peaks
@@ -67,6 +60,12 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 					waves it applies to
 				Add Filter Type: [Smoothing, matching, ?]
 			view by wave
+		add attributes to root node of EAD file:
+			pver: program version which wrote this file
+			wver: version of xml format which was written (integer)
+			rver: minimum version of the xml format reader which can read this XML
+			display some message to user if trying to open/save an older XML version
+			display some message to user if trying to open/save a newer XML version
 				
 	Add libusbmac.mak
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
@@ -113,7 +112,25 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 		ViewWaveListView: QAbstractItemView
 			takes a ViewWaveTableModel and displays them
 		FiltersScope: QAbstractTableModel
-			
+		-----------------------
+		Other thoughts about separating data from display and control more thoroughly
+		Think of the storable data in terms of database tables
+		each column of each row emits a change signal
+		when the column of a row changes, the row emits a columnChanged() signal
+		rows know nothing about their tables or parent objects
+		tables capture all columnChanged() signals and emits rowColumnChanged()
+		------
+		when a wave is added/removed to a filter, the display of that wave should be recalculated
+		------
+		Pure storage data tables:
+		Project (settings, comment, pver, rver, wver)
+		Waves (waveId*, recId, waveType, name, comment, offset, sensitivity, shift)
+		Views (viewId*)
+		ViewWaves (viewId + waveId*, visible, pos)
+		Filters (filterId*, filterType, waveType)
+		FilterWaves (filterId + waveId*)
+		Filter1s (filter1 settings)
+		
 	
 	Question for Peter:
 		should I drop "min" unit from time when the unit is minutes?

@@ -976,7 +976,6 @@ void EadFile::updateAveWave(WaveType type)
 
 void EadFile::updateDisplay()
 {
-	// Add default waves to the other views
 	for (int i = 1; i < m_recs.count(); i++)
 	{
 		RecInfo* rec = m_recs[i];
@@ -987,10 +986,19 @@ void EadFile::updateDisplay()
 void EadFile::updateDisplay(RecInfo* rec)
 {
 	CHECK_PARAM_RET(rec != NULL);
+	updateDisplay(rec->waves());
+}
 
-	rec->ead()->calcDisplayData();
-	rec->fid()->calcDisplayData();
-	rec->digital()->calcDisplayData();
+void EadFile::updateDisplay(const QList<WaveInfo*>& waves)
+{
+	foreach (WaveInfo* wave, waves)
+		updateDisplay(wave);
+}
+
+void EadFile::updateDisplay(WaveInfo* wave)
+{
+	CHECK_PARAM_RET(wave != NULL);
+	wave->calcDisplayData(filters());
 }
 
 void EadFile::createFakeData()

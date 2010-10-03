@@ -131,7 +131,7 @@ void ViewWaveInfo::invert()
 	// Invert the display data
 	m_wave->nRawToVoltageFactorNum *= -1;
 	m_wave->nRawToVoltageFactor *= -1;
-	m_wave->calcDisplayData();
+	m_view->file()->updateDisplay(m_wave);
 
 	// If this is an FID, we'll have to recalculate the peaks
 	if (m_wave->type == WaveType_FID)
@@ -217,6 +217,8 @@ ViewInfo::~ViewInfo()
 	qDeleteAll(m_posExtras);
 	qDeleteAll(m_vwiExtras);
 }
+
+EadFile* ViewInfo::file() const { return m_file.data(); }
 
 QList<ViewWaveInfo*> ViewInfo::allVwis()
 {

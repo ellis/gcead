@@ -23,16 +23,13 @@
 #include <QString>
 #include <QVector>
 
+#include "EadEnums.h"
 
+
+class FilterInfo;
 class RecInfo;
 
 
-enum WaveType
-{
-	WaveType_EAD,
-	WaveType_FID,
-	WaveType_Digital,
-};
 const int WaveTypeCount = WaveType_Digital + 1;
 
 
@@ -144,7 +141,7 @@ public:
 	void setShift(int nShift);
 
 	/// Convert the raw data to display data
-	void calcDisplayData();
+	void calcDisplayData(const QList<FilterInfo*> filters);
 
 	void findFidPeaks();
 	bool findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) const;
