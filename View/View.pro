@@ -29,13 +29,15 @@ LIBS += -lCore \
     -lIdacDriver2 \
     -lIdacDriver \
     -lModel \
-    -lScope
+	-lFilters \
+	-lScope
 PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libIdacDriver.a \
     $${DESTDIR}/libIdacDriver2.a \
     $${DESTDIR}/libIdacDriver4.a \
-    $${DESTDIR}/libIdac.a \
-    $${DESTDIR}/libModel.a \
+	$${DESTDIR}/libIdac.a \
+	$${DESTDIR}/libFilters.a \
+	$${DESTDIR}/libModel.a \
     $${DESTDIR}/libScope.a
 win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \

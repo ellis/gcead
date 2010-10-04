@@ -1,5 +1,5 @@
 
-#include "Autocov.h"
+#include "AutoCov.h"
 #include <math.h>
 #include <stdio.h>
 

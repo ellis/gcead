@@ -26,7 +26,7 @@
 #include "EadEnums.h"
 
 
-class FilterInfo;
+class FilterTesterInfo;
 class RecInfo;
 
 
@@ -141,7 +141,7 @@ public:
 	void setShift(int nShift);
 
 	/// Convert the raw data to display data
-	void calcDisplayData(const QList<FilterInfo*> filters);
+	void calcDisplayData(const QList<FilterTesterInfo*> filters);
 
 	void findFidPeaks();
 	bool findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) const;

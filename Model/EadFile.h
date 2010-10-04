@@ -39,7 +39,7 @@ class EadFile : public QObject
 {
 	Q_OBJECT
 
-	Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
+	//Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
 
 public:
 	/*
@@ -81,10 +81,11 @@ public:
 	/// Place m_newRec into m_recs and set m_newRec = NULL
 	void saveNewRecording();
 
-	FilterMode filterMode() const { return m_filterMode; }
-	void setFilterMode(FilterMode mode);
-	void addFilter(FilterInfo* filter);
-	const QList<FilterInfo*>& filters() const;
+	//FilterMode filterMode() const { return m_filterMode; }
+	//void setFilterMode(FilterMode mode);
+	//void addFilter(FilterInfo* filter);
+	//const QList<FilterInfo*>& filters() const;
+	const QList<FilterTesterInfo*>& filters() const { return m_filters; }
 
 	/// Force a recalculation of the averaged waves
 	void updateAveWaves();
@@ -128,7 +129,7 @@ private:
 	//WaveInfo* createWave(WaveType type);
 
 	/// Create the default filters
-	void createFiltersDefault();
+	//void createFiltersDefault();
 	/// Create the record 0 waves which are used for storing the averages
 	void createAveWaves();
 	/// Create m_views
@@ -151,10 +152,11 @@ private:
 	/// True when the file has changed since being saved
 	bool m_bDirty;
 	RecInfo* m_newRec;
-	FilterMode m_filterMode;
-	QList<FilterInfo*> m_filtersOff;
-	QList<FilterInfo*> m_filtersDefault;
-	QList<FilterInfo*> m_filtersAdvanced;
+	//FilterMode m_filterMode;
+	//QList<FilterInfo*> m_filtersOff;
+	//QList<FilterInfo*> m_filtersDefault;
+	//QList<FilterInfo*> m_filtersAdvanced;
+	QList<FilterTesterInfo*> m_filters;
 };
 
 #endif

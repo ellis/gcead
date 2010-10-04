@@ -99,9 +99,17 @@ public:
     std::string msg;
 
     static void make_assertion(bool bClause)
-        { if(!bClause) throw ap_error(); };
+	{
+		if(!bClause) {
+			throw ap_error();
+		}
+	}
     static void make_assertion(bool bClause, const char *msg)
-        { if(!bClause) throw ap_error(msg); };
+	{
+		if(!bClause) {
+			throw ap_error(msg);
+		}
+	}
 private:
 };
 
@@ -155,8 +163,8 @@ public:
 };
 
 const complex operator/(const complex& lhs, const complex& rhs);
-const bool operator==(const complex& lhs, const complex& rhs);
-const bool operator!=(const complex& lhs, const complex& rhs);
+bool operator==(const complex& lhs, const complex& rhs);
+bool operator!=(const complex& lhs, const complex& rhs);
 const complex operator+(const complex& lhs);
 const complex operator-(const complex& lhs);
 const complex operator+(const complex& lhs, const complex& rhs);
@@ -171,7 +179,7 @@ const complex operator*(const double& lhs, const complex& rhs);
 const complex operator/(const complex& lhs, const complex& rhs);
 const complex operator/(const double& lhs, const complex& rhs);
 const complex operator/(const complex& lhs, const double& rhs);
-const double abscomplex(const complex &z);
+double abscomplex(const complex &z);
 const complex conj(const complex &z);
 const complex csqr(const complex &z);
 

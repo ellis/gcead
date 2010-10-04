@@ -80,7 +80,7 @@ void WaveInfo::setShift(int nShift)
 	m_nShift = nShift;
 }
 
-void WaveInfo::calcDisplayData(const QList<FilterInfo*> filters)
+void WaveInfo::calcDisplayData(const QList<FilterTesterInfo*> filters)
 {
 	const short* orig = raw.constData();
 	
@@ -92,6 +92,13 @@ void WaveInfo::calcDisplayData(const QList<FilterInfo*> filters)
 		double n = *orig++;
 		n *= nRawToVoltageFactor;
 		*changed++ = n;
+	}
+
+	foreach (FilterInfo* filter, filters) {
+		//if (filter->waves().contains(this)) {
+		if (filter->waveType() == this->type) {
+			filter->filter(display);
+		}
 	}
 }
 

@@ -17,6 +17,8 @@
 
 #include "PanelTabs.h"
 
+#include <QCoreApplication>
+#include <QFile>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
@@ -32,10 +34,11 @@ PanelTabs::PanelTabs(MainScope* scope, QWidget* parent)
 	m_scope = scope;
 
 	addTab(tr("View"), QColor(0xe0, 0xe0, 0xff));
-	addTab(tr("Filter"), QColor(0xe0, 0xe0, 0xff));
 	addTab(tr("Markers"), QColor(0xe0, 0xe0, 0xff));
-	addTab(tr("Publish"), QColor(0xe0, 0xe0, 0xff));
 	//addTab(tr("Publish"), QColor(0xe0, 0xff, 0xe0));
+	addTab(tr("Publish"), QColor(0xe0, 0xe0, 0xff));
+	if (QFile::exists(QCoreApplication::applicationDirPath() + "/flag.Filter"))
+		addTab(tr("Filter"), QColor(0xe0, 0xe0, 0xff));
 
 	connect(this, SIGNAL(tabClicked(int)), this, SLOT(on_tabClicked(int)));
 	connect(m_scope, SIGNAL(taskTypeChanged(EadTask)), this, SLOT(on_scope_taskTypeChanged(EadTask)));

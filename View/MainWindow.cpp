@@ -115,9 +115,9 @@ void MainWindow::setupWidgets()
 	m_taskStack = new QStackedLayout();
 	m_taskStack->setSpacing(0);
 	m_taskStack->addWidget(new TaskPanel(m_taskReview));
-	m_taskStack->addWidget(new TaskPanel(m_taskFilter));
 	m_taskStack->addWidget(new TaskPanel(m_taskMarkers));
 	m_taskStack->addWidget(new TaskPanel(m_taskPublish));
+	m_taskStack->addWidget(new TaskPanel(m_taskFilter));
 	m_taskStack->setCurrentIndex(1);
 
 	connect(m_taskPublish, SIGNAL(settingsChanged()), m_scope->chart(), SLOT(redraw()));

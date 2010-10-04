@@ -29,7 +29,7 @@ const double ap::minrealnumber  = 1E-300;
 /********************************************************************
 ap::complex operations
 ********************************************************************/
-const bool ap::operator==(const ap::complex& lhs, const ap::complex& rhs)
+bool ap::operator==(const ap::complex& lhs, const ap::complex& rhs)
 {
     volatile double x1 = lhs.x;
     volatile double x2 = rhs.x;
@@ -38,7 +38,7 @@ const bool ap::operator==(const ap::complex& lhs, const ap::complex& rhs)
     return x1==x2 && y1==y2;
 }
 
-const bool ap::operator!=(const ap::complex& lhs, const ap::complex& rhs)
+bool ap::operator!=(const ap::complex& lhs, const ap::complex& rhs)
 { return !(lhs==rhs); }
 
 const ap::complex ap::operator+(const ap::complex& lhs)
@@ -121,7 +121,7 @@ const ap::complex ap::operator/(const double& lhs, const ap::complex& rhs)
 const ap::complex ap::operator/(const ap::complex& lhs, const double& rhs)
 { return ap::complex(lhs.x/rhs, lhs.y/rhs); }
 
-const double ap::abscomplex(const ap::complex &z)
+double ap::abscomplex(const ap::complex &z)
 {
     double w;
     double xabs;

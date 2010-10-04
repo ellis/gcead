@@ -26,9 +26,9 @@
 enum EadTask
 {
 	EadTask_Review,
-	EadTask_Filter,
 	EadTask_Markers,
 	EadTask_Publish,
+	EadTask_Filter,
 };
 Q_ENUMS(EadTask);
 

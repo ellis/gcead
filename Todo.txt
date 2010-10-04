@@ -1,75 +1,19 @@
-x	fix IDAC4 packet which I don't know how to interpret
-	x	test manually triggered digital signal
-	x	why is digital signal randomly high?
-	x	test recording for a long time
-	x	check whether other IDAC4 programs also get occasional digital highs on channel 2
-	x	check whether other IDAC4 programs also get occasional signal drop-out on analog 1
-x	2 decimal places for times
-	EAD markers:
-	x	no time
-	x	thicker tick
-	x	for graphical display, see my hand-written notes
-	x	BUG: can only be set on the AVE waves (for both EAD and FID)
-	x	For EAD markers, drag on tick marker instead of hypothetical marker text
-	x	when user drags marker
-		x	don't move the ends with it until user gets close to the ends
-		automation: when user ctrl-clicks on FID wave
-		x	search for upper peak in surrounding
-		x	search for up/slant in surrounding
-			prevent searching past an existing selected peak
-			automatically remove autodetected peak
-	x	automation: when user ctrl-clicks on EAD wave
-		x	set left handle at point of click
-		x	automatically search for lower peak in surrounding
-			prevent searching past an existing selected peak
-	x	show correct mV value
-	x	CTRL-click only in marker edit mode
-	x	move markers only in marker edit mode
-	Marker view:
-	x	Update "m_params.peakMode == EadMarkerMode_Edit" since we now have "m_params.task == EadTask_Markers"
-	x	create marker view
-	x	put marker controls in marker view
-	x	move FID listbox to marker view
-	x	remove actions->markersEdit
-	x	rename actions->markersHide -> show
-	x	remove marker controls from toolbar
-	x	move TaskReviewWidget help text to TaskMarkersWidget
-	-	remove TaskReviewWidget::on_scope_peakModeChanged()
-	x	make sure handles can be moved again
-	x	improve tab color
-x	Windows: Double-click on .EAD file from different directory than GcEad.exe, and see whether IDAC can still be accessed.
-	
 ?	Fix "RECORDING: ??.??" size
 	Filters:
-		create filter task widget
-		create variables to indicate filtering
-1		add Filters project to .pro file
-2		add function calls to perform filtering in WaveInfo::calcDisplayData()
-		when filtering is enabled/disabled:
-			recalculate display
-			recalculate peaks
+x		create filter task widget
+x		create variables to indicate filtering
+x		add Filters project to .pro file
+x		add function calls to perform filtering in WaveInfo::calcDisplayData()
+.		when filtering is enabled/disabled:
+		x	recalculate display
+		x	recalculate peaks
+		x	recalculate averages
 			redraw graph
-		options:
-			off
-			on (default)
-			on (advanced)
-			
-			view by filter
-				Filter name:
-					settings, if any
-					waves it applies to
-				Add Filter Type: [Smoothing, matching, ?]
-			view by wave
-		add attributes to root node of EAD file:
-			pver: program version which wrote this file
-			wver: version of xml format which was written (integer)
-			rver: minimum version of the xml format reader which can read this XML
-			display some message to user if trying to open/save an older XML version
-			display some message to user if trying to open/save a newer XML version
+	Import CSV file from Autospike (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 				
 	Add libusbmac.mak
 	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
-	BUG: Windows; start recording; close program; select discard twice; shouldn't crash
+	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
 	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
 	MarkersWidget: why is there such a large bottom border?
 	When dragging selection area: if user presses ESC, then abort selection
@@ -186,6 +130,12 @@ x	Windows: Double-click on .EAD file from different directory than GcEad.exe, an
 			proper scrolling as recording goes off current visible region
 		loading/saving settings
 			show peak percent vs amplitude
+	add attributes to root node of EAD file:
+		pver: program version which wrote this file
+		wver: version of xml format which was written (integer)
+		rver: minimum version of the xml format reader which can read this XML
+		display some message to user if trying to open/save an older XML version
+		display some message to user if trying to open/save a newer XML version
 	Improve handling of IDAC overflow
 	Run unit tests in GUI
 		separate View and ViewMain

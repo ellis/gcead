@@ -19,7 +19,9 @@
 #define FILTERINFO_H
 
 #include <QList>
+#include <QVariantMap>
 #include <QObject>
+#include <QVector>
 
 #include "EadEnums.h"
 
@@ -43,6 +45,7 @@ public:
 
 	virtual FilterType type() const = 0;
 	virtual QString name() const = 0;
+	virtual void filter(QVector<double>& data) = 0;
 
 	WaveType waveType() const { return m_waveType; }
 	const QList<WaveInfo*>& waves() const { return m_waves; }
@@ -63,6 +66,7 @@ private:
 };
 
 
+/*
 class Filter1Info : public FilterInfo
 {
 	Q_OBJECT
@@ -76,6 +80,7 @@ public:
 public:
 	FilterType type() const;
 	QString name() const;
+	void filter(QVector<double>& data);
 
 public:
 	double width() const { return m_nWidth; }
@@ -86,6 +91,37 @@ signals:
 
 private:
 	double m_nWidth;
+};
+*/
+
+
+class FilterTesterInfo : public FilterInfo
+{
+	Q_OBJECT
+
+public:
+	FilterTesterInfo(EadFile* file, WaveType waveType);
+
+// FilterInfo overrides
+public:
+	FilterType type() const;
+	QString name() const;
+	void filter(QVector<double>& data);
+
+public:
+	//WaveType waveType() const { return m_waveType; }
+	int filterCount() const;
+
+	int filterId() const { return m_filterId; }
+	/// Set which filter to use.
+	/// @param filterId 0 means no filter.  filterId must be <= filterCount()
+	void setFilterId(int filterId);
+	QVariantMap& properties(int filterId) { return m_properties[filterId]; }
+
+private:
+	//const WaveType m_waveType;
+	int m_filterId;
+	QList<QVariantMap> m_properties;
 };
 
 #endif // FILTERINFO_H

@@ -199,7 +199,7 @@ If Plan is a:
 *************************************************************************/
 void ftbaseexecuteplan(ap::real_1d_array& a,
      int aoffset,
-     int n,
+	 int /*n*/,
      ftplan& plan)
 {
     int stackptr;
@@ -396,12 +396,12 @@ void ftbaseexecuteplanrec(ap::real_1d_array& a,
         
         //
         // Cooley-Tukey FHT plan:
-        // * transpose                    \
+		// * transpose                    |
         // * smaller FHT's                |
         // * pre-process                  |
         // * multiply by twiddle factors  | corresponds to multiplication by H1
         // * post-process                 |
-        // * transpose again              /
+		// * transpose again              |
         // * multiply by H2 (smaller FHT's)
         // * final transposition
         //
@@ -771,7 +771,7 @@ Factorization is chosen depending on task type and codelets we have.
   -- ALGLIB --
      Copyright 01.05.2009 by Bochkanov Sergey
 *************************************************************************/
-void ftbasefactorize(int n, int tasktype, int& n1, int& n2)
+void ftbasefactorize(int n, int /*tasktype*/, int& n1, int& n2)
 {
     int j;
 
@@ -1161,7 +1161,7 @@ static void ftbaseprecomputeplanrec(ftplan& plan,
      int stackptr)
 {
     int i;
-    int idx;
+	//int idx;
     int n1;
     int n2;
     int n;

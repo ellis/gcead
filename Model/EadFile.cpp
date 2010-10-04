@@ -38,9 +38,13 @@ extern short g_anChannel2[3999];
 EadFile::EadFile()
 {
 	m_newRec = NULL;
-	m_filterMode = FilterMode_Off;
 
-	createFiltersDefault();
+	//m_filterMode = FilterMode_Off;
+	//m_filterMode = FilterMode_Default;
+	//createFiltersDefault();
+	m_filters << new FilterTesterInfo(this, WaveType_EAD);
+	m_filters << new FilterTesterInfo(this, WaveType_FID);
+
 	createAveWaves();
 	createViewInfo();
 
@@ -761,10 +765,11 @@ void EadFile::saveNewRecording()
 	emit dirtyChanged();
 }
 
-void EadFile::setFilterMode(FilterMode mode)
+/*void EadFile::setFilterMode(FilterMode mode)
 {
 	if (mode != m_filterMode) {
 		m_filterMode = mode;
+		updateDisplay();
 		emit filterModeChanged();
 	}
 }
@@ -792,10 +797,10 @@ void EadFile::createFiltersDefault()
 {
 	CHECK_PRECOND_RET(m_filtersDefault.size() == 0);
 
-	Filter1Info* f1 = new Filter1Info(this);
-	f1->setWidth(100);
-	m_filtersDefault << f1;
-}
+	//Filter1Info* f1 = new Filter1Info(this);
+	//f1->setWidth(100);
+	//m_filtersDefault << f1;
+}*/
 
 void EadFile::createAveWaves()
 {

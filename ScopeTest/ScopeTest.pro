@@ -25,6 +25,7 @@ LIBS += -L$${DESTDIR}
 LIBS += \
 	-lScope \
 	-lModel \
+	-lFilters \
 	-lIdac \
     -lIdacDriver4 \
     -lIdacDriver2 \
@@ -35,8 +36,9 @@ PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libIdacDriver2.a \
     $${DESTDIR}/libIdacDriver4.a \
     $${DESTDIR}/libIdac.a \
-    $${DESTDIR}/libModel.a \
-    $${DESTDIR}/libScope.a
+	$${DESTDIR}/libFilters.a \
+	$${DESTDIR}/libModel.a \
+	$${DESTDIR}/libScope.a
 win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \
     -L../release \
