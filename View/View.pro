@@ -116,7 +116,8 @@ HEADERS += ./WaitCursor.h \
     TestRecording.h \
     TaskMarkersWidget.h \
     TaskFilterWidget.h \
-    TaskFilterWidgetModel.h
+    TaskFilterWidgetModel.h \
+    ImportRecordDialog.h
 SOURCES += ./DataListItem.cpp \
     ./TaskReviewWidget.cpp \
     ./MainWindow.cpp \
@@ -142,7 +143,8 @@ SOURCES += ./DataListItem.cpp \
     TestRecording.cpp \
     TaskMarkersWidget.cpp \
     TaskFilterWidget.cpp \
-    TaskFilterWidgetModel.cpp
+    TaskFilterWidgetModel.cpp \
+    ImportRecordDialog.cpp
 
 # Forms
 FORMS += ./MainWindow.ui \

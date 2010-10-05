@@ -25,6 +25,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QStackedLayout>
+#include <QTextStream>
 
 #include <WaveInfo.h>
 #include <Idac/IdacFactory.h>
@@ -331,9 +332,74 @@ void MainWindow::updateReview()
 		m_taskReview->setupItems(m_scope->file());
 }
 
+// REFACTOR: This belongs in MainScope
 void MainWindow::actions_fileImport_triggered()
 {
 	CHECK_PRECOND_RET(m_scope->file() != NULL);
+
+	// REFACTOR: This HACK obvious belongs somewhere else
+	static QString sLastDir;
+	if (sLastDir.isEmpty())
+		sLastDir = Globals->lastDir();
+
+	QString sFilename = QFileDialog::getOpenFileName(
+		m_widget,
+		QObject::tr("Import Wave from Another Project"),
+		sLastDir,
+		QObject::tr("GC-EAD files (*.ead);;AutoSpike ASC files (*.asc)"));
+
+	if (sFilename.isEmpty())
+		return;
+
+	QFileInfo fi(sFilename);
+	if (fi.suffix().toLower() == "ead") {
+		EadFile file2;
+		if (file2.load(sFilename) == LoadSaveResult_Ok) {
+			m_scope->file()->importWaves(&file2);
+		}
+		else {
+			QMessageBox::critical(this, tr("Error loading file"), tr("Unable to open the file."));
+		}
+	}
+	else if (fi.suffix().toLower() == "asc") {
+		importAsc(sFilename);
+	}
+	else {
+		QMessageBox::warning(this, tr("Unknown file extension"), tr("The file you selected has an unrecognized extension."));
+	}
+}
+
+LoadSaveResult MainWindow::importAsc(const QString &sFilename)
+{
+	QFile file(sFilename);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		return LoadSaveResult_CouldNotOpen;
+
+	QTextStream str(&file);
+
+	QString sLine;
+	sLine = str.readLine().trimmed();
+	if (sLine != ";AutoSpike-32 ASCII File")
+		return LoadSaveResult_WrongFormat;
+
+	QStringList asNames;
+	QString sNamePrefix = "; Wave data Signal ";
+	while (!str.atEnd()) {
+		sLine = str.readLine().trimmed();
+		if (sLine.startsWith(sNamePrefix)) {
+			QString sName = sLine.mid(sNamePrefix.size());
+			asNames << sName;
+		}
+	}
+
+	/*
+	; Wave data Signal Mix43-1
+	; Rec. Factor 116.364313
+	; Sample rate 20.0
+	; Format :<time>         <Value>
+	*/
+	sLine.
+
 }
 
 void MainWindow::actions_fileExportSignalData_triggered()
