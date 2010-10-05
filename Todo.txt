@@ -1,4 +1,8 @@
 ?	Fix "RECORDING: ??.??" size
+x	Feedback 1 from Ian
+x	don't let user add markers with right-click menu unless in Markers mode
+3	Import CSV file from Autospike (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
+	Think about feedback 4 from Ian
 	Filters:
 x		create filter task widget
 x		create variables to indicate filtering
@@ -9,15 +13,14 @@ x		add function calls to perform filtering in WaveInfo::calcDisplayData()
 		x	recalculate peaks
 		x	recalculate averages
 			redraw graph
-	Import CSV file from Autospike (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 				
 	Add libusbmac.mak
-	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
+x	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
-	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
-	MarkersWidget: why is there such a large bottom border?
-	When dragging selection area: if user presses ESC, then abort selection
-	integrate filter code into GcEad
+x	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
+x	MarkersWidget: why is there such a large bottom border?
+x	When dragging selection area: if user presses ESC, then abort selection
+x	integrate filter code into GcEad
 	create mac installable
 	Screenshots for Peter's documentation
 	more unit tests
@@ -88,11 +91,6 @@ x		add function calls to perform filtering in WaveInfo::calcDisplayData()
 	x	FID wave
 		scaling factors
 		comments
-	Installation routine
-		Prohibit 64bit installation
-		Install USB filter
-		http://support.bitrock.com/article/how-do-i-make-the-installer-display-an-error-message-to-the-user-under-certain-circumstances
-		http://support.bitrock.com/article/execute-specific-actions-for-a-platform-using-a-platformtest-rule
 	Think about merging recording from another EAD file
 	?	import all records from another EAD file
 		test importing from both GcEad/2010 and the old EAD program

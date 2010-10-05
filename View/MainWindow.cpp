@@ -432,7 +432,7 @@ void MainWindow::on_actHelpAbout_triggered()
 	QString s;
 	s = tr(
 			"<h2>%0 %1 (%2)</h2>"
-			"<p>Copyright &copy; 2008 Syntech</p>"
+			"<p>Copyright &copy; 2010 Syntech</p>"
 			"<p>Data acquisition for Gas Chromatograph with EAD.</p>"
 			"<p>For use with the Syntech IDAC series of Data Acquisition Systems.</p>"
 			"<p>SYNTECH<br/>Equipment and Research<br/>Hansjakobstrasse 14<br/>79199 KIRCHZARTEN<br/>Germany</p>"

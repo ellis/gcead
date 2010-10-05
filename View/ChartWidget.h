@@ -51,6 +51,7 @@ protected:
 	void resizeEvent(QResizeEvent* e);
 	void paintEvent(QPaintEvent* e);
 	void leaveEvent(QEvent* e);
+	void keyPressEvent(QKeyEvent* e);
 	void mousePressEvent(QMouseEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
 	void mouseMoveEvent(QMouseEvent* e);
@@ -61,6 +62,7 @@ protected:
 private:
 	void setupWidgets();
 	void layoutRecordingLabel();
+	void updateMouseCursor(Qt::KeyboardModifiers modifiers);
 
 	QSize calcPixmapSize() const;
 

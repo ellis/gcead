@@ -51,7 +51,7 @@ void TaskMarkersWidget::setupWidgets()
 	layout->addWidget(m_grpFid);
 	layout->addWidget(m_grpEad);
 	layout->addWidget(m_lblPeakTip);
-	layout->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+	layout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 	setLayout(layout);
 
 	Actions* actions = m_scope->actions();
@@ -115,7 +115,7 @@ void TaskMarkersWidget::on_cmbPeakFid_activated()
 void TaskMarkersWidget::on_actions_markersShow_toggled()
 {
 	bool b = m_scope->actions()->markersShow->isChecked();
-	m_chkShowMarkers->setCheckable(b);
+	m_chkShowMarkers->setChecked(b);
 	m_grpFid->setEnabled(b);
 	m_grpEad->setEnabled(b);
 }

@@ -39,7 +39,7 @@ TaskPanel::TaskPanel(TaskWidget* viewport, QWidget* parent)
 
 	m_scrollbar = new QScrollBar(Qt::Vertical, this);
 	m_scrollbar->setSingleStep(10);
-	connect(m_scrollbar, SIGNAL(actionTriggered(int)), this, SLOT(on_scrollbar_actionTriggered()));
+	connect(m_scrollbar, SIGNAL(valueChanged(int)), this, SLOT(on_scrollbar_actionTriggered()));
 }
 
 QSize TaskPanel::sizeHint() const
@@ -111,7 +111,7 @@ void TaskPanel::performLayout()
 	m_scrollbar->setVisible(bScrollbar);
 
 	// Size the TaskWidget
-	QRect rcViewport(x, -yScroll, width() - x, yScroll + height());
+	QRect rcViewport(x, -yScroll, width() - x, nViewportHeight);
 	m_viewport->setGeometry(rcViewport);
 	nPreferredWidth += m_viewport->sizeHint().width();
 

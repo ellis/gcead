@@ -145,9 +145,7 @@ Actions::Actions(QObject *parent)
 	// Markers menu
 	//
 
-	//group = new QActionGroup(this);
-
-	markersShow = new QAction(tr("&Show Markers"), group);
+	markersShow = new QAction(tr("&Show Markers"), this);
 	markersShow->setCheckable(true);
 	markersShow->setChecked(true);
 	markersShow->setIconText(tr("Show"));

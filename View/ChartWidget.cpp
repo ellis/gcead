@@ -279,6 +279,23 @@ void ChartWidget::leaveEvent(QEvent* e)
 	m_chartS->setHilight(NULL);
 }
 
+void ChartWidget::keyPressEvent(QKeyEvent* e)
+{
+	// Escape key pressed
+	if (e->modifiers() == 0 && e->key() == Qt::Key_Escape) {
+		// Selecting:
+		if (m_bDragging && m_bSelecting) {
+			m_bDragging = false;
+			m_bSelecting = false;
+
+			// Call this to get the appropriate mouse cursor
+			updateMouseCursor(e->modifiers());
+
+			update();
+		}
+	}
+}
+
 void ChartWidget::mousePressEvent(QMouseEvent* e)
 {
 	QRect rcWaveforms = m_rcPixmap;
@@ -422,7 +439,8 @@ void ChartWidget::mouseReleaseEvent(QMouseEvent* e)
 
 void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 {
-	m_ptMouseWidget = e->pos();
+	const QPoint& pos = e->pos();
+	m_ptMouseWidget = pos;
 	m_ptMousePixmap = m_ptMouseWidget - m_rcPixmap.topLeft();
 
 	if (m_bDragging)
@@ -442,7 +460,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		}
 		else if (info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
 		{
-			int x = e->pos().x() - m_rcPixmap.left();
+			int x = pos.x() - m_rcPixmap.left();
 			int didx = m_pixmap->xToCenterSample(wave, x);
 			int iPeak = qMax(info.iLeftAreaHandle, info.iRightAreaHandle);
 			movePeakHandle(wave, iPeak, didx, (info.iLeftAreaHandle >= 0));
@@ -450,7 +468,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		else if (info.iChosenPeak >= 0)
 		{
 			WavePeakChosenInfo& marker = wave->peaksChosen[info.iChosenPeak];
-			int x = e->pos().x() - m_rcPixmap.left();
+			int x = pos.x() - m_rcPixmap.left();
 			int didx = m_pixmap->xToCenterSample(info.vwi->wave(), x);
 			// Bound didx
 			if (didx < marker.didxLeft + 1)
@@ -469,6 +487,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		}
 		else if (wave != NULL)
 		{
+			// REFACTOR: I don't know what this statement is doing here -- ellis, 2010-10-04
 			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && wave == m_pixmap->waveOfPeaks())
 			{
 				setCursor(Qt::PointingHandCursor);
@@ -496,30 +515,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 	}
 	else
 	{
-		ChartPointInfo info;
-		QPoint ptPixmap = e->pos() - m_rcPixmap.topLeft();
-		m_pixmap->fillChartPointInfo(ptPixmap, &info);
-		m_chartS->setHilight(info.vwi);
-		
-		if (info.didxPossiblePeak >= 0 || info.iChosenPeak >= 0 || info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
-		{
-			setCursor(Qt::PointingHandCursor);
-		}
-		else if (info.vwi != NULL)
-		{
-			Qt::CursorShape shape = Qt::OpenHandCursor;
-
-			if (e->modifiers() == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && info.vwi->wave() == m_pixmap->waveOfPeaks())
-				shape = Qt::PointingHandCursor;
-
-			setCursor(shape);
-		}
-		else if (m_rcPixmap.contains(e->pos()))
-		{
-			setCursor(Qt::CrossCursor);
-		}
-		else
-			unsetCursor();
+		updateMouseCursor(e->modifiers());
 	}
 
 	updateStatus();
@@ -578,9 +574,20 @@ void ChartWidget::mouseDoubleClickEvent(QMouseEvent* e)
 
 void ChartWidget::wheelEvent(QWheelEvent* e)
 {
-	// Each 'click' of the scroll wheel produces a delta of 120
-	int nDivs = e->delta() / 120;
-	m_chartS->scrollDivs(-nDivs);
+	bool bDraggingWithMiddleMouseButton = false;
+	if (m_bDragging) {
+		const ChartPointInfo& info = m_clickInfo;
+		ViewWaveInfo* vwi = info.vwi;
+		WaveInfo* wave = (vwi != NULL) ? vwi->waveInfo() : NULL;
+		bDraggingWithMiddleMouseButton = (wave == NULL);
+	}
+
+	// Suppress mouse wheel event if the user is already dragging the timeline by clicking and dragging the mouse wheel button
+	if (!bDraggingWithMiddleMouseButton) {
+		// Each 'click' of the scroll wheel produces a delta of 120
+		int nDivs = e->delta() / 120;
+		m_chartS->scrollDivs(-nDivs);
+	}
 }
 
 void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
@@ -630,7 +637,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		{
 			actSettings = new QAction(tr("Settings..."), &menu);
 			menu.addAction(actSettings);
-			if (wave->type == WaveType_EAD || wave->type == WaveType_FID)
+			if (m_chartS->params().task == EadTask_Markers && (wave->type == WaveType_EAD || wave->type == WaveType_FID))
 			{
 				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
 				//QAction* act = m_mainS->actions()->markersEdit;
@@ -679,6 +686,35 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 
 	e->accept();
 	updateStatus();
+}
+
+void ChartWidget::updateMouseCursor(Qt::KeyboardModifiers modifiers)
+{
+	QPoint pos = m_ptMouseWidget;
+	ChartPointInfo info;
+	QPoint ptPixmap = pos - m_rcPixmap.topLeft();
+	m_pixmap->fillChartPointInfo(ptPixmap, &info);
+	m_chartS->setHilight(info.vwi);
+
+	if (info.didxPossiblePeak >= 0 || info.iChosenPeak >= 0 || info.iLeftAreaHandle >= 0 || info.iRightAreaHandle >= 0)
+	{
+		setCursor(Qt::PointingHandCursor);
+	}
+	else if (info.vwi != NULL)
+	{
+		Qt::CursorShape shape = Qt::OpenHandCursor;
+
+		if (modifiers == Qt::ControlModifier && m_chartS->params().peakMode == EadMarkerMode_Edit && info.vwi->wave() == m_pixmap->waveOfPeaks())
+			shape = Qt::PointingHandCursor;
+
+		setCursor(shape);
+	}
+	else if (m_rcPixmap.contains(pos))
+	{
+		setCursor(Qt::CrossCursor);
+	}
+	else
+		unsetCursor();
 }
 
 void ChartWidget::addPeak(ViewWaveInfo* vwi, int x)
