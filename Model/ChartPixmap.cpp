@@ -905,6 +905,13 @@ void ChartPixmap::drawMarkerType_EadPeak(QPainter &painter, ChartWaveInfo *cwi, 
 	if (peak.type == MarkerType_EadPeakXYZ) {
 		CHECK_PRECOND_RET(peak.didxs.size() == 3);
 		painter.drawLine(pts[0], pts[2]);
+
+		int nReturnTime = double(didxs[2] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
+		s = timestampString(nReturnTime);
+
+		int yText = qMin(pts[0].y(), pts[2].y()) - 5;
+		QRect rc(pts[1].x() - 100, yText - 100, 201, 100);
+		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, s);
 	}
 
 	// Mark area handles
@@ -932,6 +939,7 @@ void ChartPixmap::drawMarkerType_FidPeak(QPainter& painter, ChartWaveInfo* cwi, 
 
 	// Draw line and text representing the peak area
 	if (m_params.elements.testFlag(ChartElement_MarkerFidArea)) {
+		painter.setPen(color(ChartColor_Marker));
 		painter.drawLine(pts[0], pts[2]);
 
 		int nPercent = int(peak.nPercent * 100 + 0.5);
@@ -944,7 +952,7 @@ void ChartPixmap::drawMarkerType_FidPeak(QPainter& painter, ChartWaveInfo* cwi, 
 
 	// Mark area handles
 	if (m_params.peakMode == EadMarkerMode_Edit) {
-		for (int iDidx = 0; iDidx < 0; iDidx++)
+		for (int iDidx = 0; iDidx < pts.size(); iDidx++)
 			drawMarkerHandle(painter, cwi, iPeak, iDidx, pts[iDidx]);
 	}
 
@@ -974,7 +982,7 @@ void ChartPixmap::drawMarkerTime(QPainter& painter, ChartWaveInfo* cwi, int iPea
 	int x = pt.x();
 	int y = pt.y();
 	painter.drawLine(x, y - 10, x, y);
-	cwi->arcPeaksChosen << MarkerRect(QRect(x - 2, y - 10, 5, 11), iPeak, iDidx);
+	//cwi->arcPeaksChosen << MarkerRect(QRect(x - 2, y - 10, 5, 11), iPeak, iDidx);
 	painter.setPen(clr);
 
 	// Draw time label on top of tick
@@ -982,11 +990,11 @@ void ChartPixmap::drawMarkerTime(QPainter& painter, ChartWaveInfo* cwi, int iPea
 	{
 		double nSeconds = double(tidx) / EAD_SAMPLES_PER_SECOND;
 		QString sTime = timestampString(nSeconds);
-		QRect rc(x - 100, y - 10, 201, 100);
+		QRect rc(x - 100, y - 111, 201, 100);
 		QRect rcTime;
 		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, sTime, &rcTime);
-		rcTime.adjust(-3, -3, 3, 3);
-		cwi->arcPeaksChosen << MarkerRect(rcTime, iPeak, iDidx);
+		//rcTime.adjust(-3, -3, 3, 3);
+		//cwi->arcPeaksChosen << MarkerRect(rcTime, iPeak, iDidx);
 	}
 
 	painter.setPen(penOld);

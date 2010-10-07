@@ -323,7 +323,20 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 		{
 			// If the user Ctrl+clicks on the selected FID wave while in peak editing mode:
 			if (wave != NULL && m_chartS->params().peakMode == EadMarkerMode_Edit) {
-				addMarker(vwi, m_ptClickPixmap.x());
+				if (info.iChosenPeak < 0)
+					addMarker(vwi, m_ptClickPixmap.x());
+				else if (wave->peaksChosen[info.iChosenPeak].type == MarkerType_EadPeakXY) {
+					WavePeakChosenInfo& marker = vwi->waveInfo()->peaksChosen[info.iChosenPeak];
+					QList<int>& didxs = marker.didxs;
+					CHECK_ASSERT_NORET(didxs.size() == 2);
+					if (didxs.size() == 2) {
+						int d = didxs[1] - didxs[0];
+						int didx2 = didxs[1] + d;
+						didxs << didx2;
+						marker.type = MarkerType_EadPeakXYZ;
+						m_chartS->redraw();
+					}
+				}
 			}
 		}
 		else {

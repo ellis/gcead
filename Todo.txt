@@ -21,18 +21,26 @@ BIG STUFF FOR FUTURE:
 	?	don't offer digital import
 	Ian's "x" and "z" measurements
 	x	add MarkerType to peak data (TimeFidPeak, EadPeakXY, EadPeakXYZ)
-	?	set marker type on new peaks which user creates
+	x	set marker type on new peaks which user creates
 	x	draw EAD peak lines DOWN&RIGHT instead of RIGHT&DOWN
-	?	draw amplitude to the left the line
-	?	draw the duration to peak to the left of the mark
+	.	draw amplitude to the left the line
+	x	draw the duration to peak below the bottom line
 		add context-menu option to add 'z' measurement
-		ctrl-click existing xy marker to make it xyz
-	?	draw z line directly
+	x	ctrl-click existing xy marker to make it xyz
+			make sure chart is redrawn
+		context menu: add a time marker
+	x	draw z line directly
+	x	draw time span over z line
 		test export of amplitude and retention data again
-		
+	x	BUG FID peaks: handles are missing
+	x	BUG FID peaks: place time at top
+	x	BUG FID peaks: area line and text are red; should be blue
 		FUTURE: for recordings with digital waves, could we try to autodetect EAD peaks?
-	Time markers?
-	Save 
+	TaskMarkers:
+		Show FID Peaks: show time, show area
+		Show EAD Peaks: show amplitude, show time span(s)
+		Show Time Markers
+	show voltage of current wave in status bar
 	Add libusbmac.mak
 
 ?	Fix "RECORDING: ??.??" size
