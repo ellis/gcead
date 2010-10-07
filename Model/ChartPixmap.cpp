@@ -906,7 +906,7 @@ void ChartPixmap::drawMarkerType_EadPeak(QPainter &painter, ChartWaveInfo *cwi, 
 		CHECK_PRECOND_RET(peak.didxs.size() == 3);
 		painter.drawLine(pts[0], pts[2]);
 
-		int nReturnTime = double(didxs[2] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
+		double nReturnTime = double(didxs[2] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
 		s = timestampString(nReturnTime);
 
 		int yText = qMin(pts[0].y(), pts[2].y()) - 5;
