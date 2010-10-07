@@ -17,6 +17,9 @@
 
 #include "MainWindow.h"
 
+#include <math.h>
+
+#include <QtDebug>
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -36,8 +39,8 @@
 #include "ChartWidget.h"
 #include "Check.h"
 #include "EadFile.h"
-#include "MainWindow.h"
 #include "Globals.h"
+#include "ImportRecordDialog.h"
 #include "MainScope.h"
 #include "MainWindowUi.h"
 #include "PanelTabs.h"
@@ -337,16 +340,16 @@ void MainWindow::actions_fileImport_triggered()
 {
 	CHECK_PRECOND_RET(m_scope->file() != NULL);
 
-	// REFACTOR: This HACK obvious belongs somewhere else
+	// REFACTOR: This HACK obviously belongs somewhere else
 	static QString sLastDir;
 	if (sLastDir.isEmpty())
 		sLastDir = Globals->lastDir();
 
 	QString sFilename = QFileDialog::getOpenFileName(
-		m_widget,
+		this,
 		QObject::tr("Import Wave from Another Project"),
 		sLastDir,
-		QObject::tr("GC-EAD files (*.ead);;AutoSpike ASC files (*.asc)"));
+		QObject::tr("GC-EAD and ASC files (*.ead *.asc)"));
 
 	if (sFilename.isEmpty())
 		return;
@@ -383,7 +386,9 @@ LoadSaveResult MainWindow::importAsc(const QString &sFilename)
 		return LoadSaveResult_WrongFormat;
 
 	QStringList asNames;
-	QString sNamePrefix = "; Wave data Signal ";
+	const QString sNamePrefix = "; Wave data Signal ";
+	const QString sFactorPrefix = "; Rec. Factor ";
+	const QString sRatePrefix = "; Sample rate ";
 	while (!str.atEnd()) {
 		sLine = str.readLine().trimmed();
 		if (sLine.startsWith(sNamePrefix)) {
@@ -392,14 +397,141 @@ LoadSaveResult MainWindow::importAsc(const QString &sFilename)
 		}
 	}
 
+	// Show dialog asking for catagories
+	ImportRecordDialog dlg(asNames, this);
+	dlg.exec();
+
+	QMap<QString, WaveType> map = dlg.map();
+	if (map.size() == 0)
+		return LoadSaveResult_Ok;
+
+	RecInfo* rec = new RecInfo(m_scope->file(), m_scope->file()->recs().size());
+	str.seek(0);
+	bool bReadLine = true;
+	while (!str.atEnd()) {
+		if (bReadLine)
+			sLine = str.readLine().trimmed();
+		bReadLine = true;
+
+		if (sLine.startsWith(sNamePrefix)) {
+			QString sName = sLine.mid(sNamePrefix.size());
+			if (map.contains(sName)) {
+				// ; Rec. Factor 116.364313
+				// ; Sample rate 20.0
+				// ; Format :<time>         <Value>
+				QString sLine2 = str.readLine().trimmed();
+				QString sLine3 = str.readLine().trimmed();
+				QString sLine4 = str.readLine().trimmed();
+
+				CHECK_ASSERT_NORET(sLine2.startsWith(sFactorPrefix) && sLine3.startsWith(sRatePrefix));
+				if (!sLine2.startsWith(sFactorPrefix) || !sLine3.startsWith(sRatePrefix))
+					break;
+
+				QString sFactor = sLine2.mid(sFactorPrefix.size()).trimmed();
+				QString sRate = sLine3.mid(sRatePrefix.size()).trimmed();
+				bool bOkFactor, bOkRate;
+				double nFactor = sFactor.toDouble(&bOkFactor);
+				int nRate = (int) sRate.toDouble(&bOkRate);
+				CHECK_ASSERT_NORET(bOkFactor && bOkRate);
+				if (!bOkFactor || !bOkRate)
+					break;
+
+				WaveType waveType = map[sName];
+				WaveInfo* wave = rec->wave(waveType);
+				QList<short> raw;
+				while (!str.atEnd()) {
+					sLine = str.readLine().trimmed();
+					if (sLine.startsWith(";")) {
+						bReadLine = false;
+						if (raw.size() > 0) {
+							int nSize = (int) raw.size() * 100 / nRate;
+							wave->nRawToVoltageFactorNum = nFactor * 100000;
+							wave->nRawToVoltageFactorDen = 100000;
+							wave->nRawToVoltageFactor = nFactor;
+							wave->raw.resize(nSize);
+							if (nRate < 100) {
+								// Interpolate raw into wave->raw
+								double nIndexRatio = double(nRate) / 100;
+								wave->raw[0] = raw[0];
+								for (int iOut = 1; iOut < nSize; iOut++) {
+									double i = iOut * nIndexRatio;
+									int i0 = (int) floor(i);
+									int i1 = (int) ceil(i);
+									if (i1 >= raw.size())
+										i1 = raw.size() - 1;
+
+									short n0 = raw[i0];
+									short n;
+									if (i0 < i1) {
+										short n1 = raw[i1];
+										double p = (i - i0) / (i1 - i0);
+										n = short(n0 + (n1 - n0) * p);
+									}
+									else {
+										n = n0;
+									}
+
+									wave->raw[iOut] = n;
+								}
+							}
+							else {
+								// Pick values from raw and place them into wave->raw
+								double nIndexRatio = double(nRate) / 100;
+								wave->raw[0] = raw[0];
+								for (int iOut = 1; iOut < nSize; iOut++) {
+									int i = int(iOut * nIndexRatio);
+									wave->raw[iOut] = raw[i];
+								}
+							}
+							qDebug() << wave->raw;
+						}
+						break;
+					}
+					else if (!sLine.isEmpty()) {
+						QStringList asValues = sLine.split("\t");
+						CHECK_ASSERT_NORET(asValues.size() == 2);
+						if (asValues.size() == 2) {
+							//QString sTime = asValues[0];
+							QString sValue = asValues[1];
+
+							bool bOkValue;
+							short nValue = (short) sValue.toInt(&bOkValue);
+							CHECK_ASSERT_NORET(bOkValue);
+
+							if (bOkValue) {
+								raw << nValue;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	m_scope->file()->addImportedRecording(rec);
+
+	/*
+	m_newRec = new RecInfo(this, m_recs.size());
+
+	ViewInfo* view = viewInfo(EadView_Recording);
+	// Update the "Recording" view & save pointers for convenience
+	view->clearWaves();
+	view->addWave(m_newRec->ead());
+	view->addWave(m_newRec->fid());
+	view->addWave(m_newRec->digital());
+
+	// Set time of recording to now
+	m_newRec->setTimeOfRecording(QDateTime::currentDateTime());
+	*/
+
 	/*
 	; Wave data Signal Mix43-1
 	; Rec. Factor 116.364313
 	; Sample rate 20.0
 	; Format :<time>         <Value>
 	*/
-	sLine.
 
+	return LoadSaveResult_Ok;
 }
 
 void MainWindow::actions_fileExportSignalData_triggered()

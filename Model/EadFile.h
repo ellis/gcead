@@ -80,6 +80,8 @@ public:
 	void discardNewRecording();
 	/// Place m_newRec into m_recs and set m_newRec = NULL
 	void saveNewRecording();
+	/// Add a recording which has been imported from another source
+	void addImportedRecording(RecInfo* rec);
 
 	//FilterMode filterMode() const { return m_filterMode; }
 	//void setFilterMode(FilterMode mode);

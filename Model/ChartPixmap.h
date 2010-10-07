@@ -83,8 +83,7 @@ public:
 	QPointer<ViewWaveInfo> vwi;
 	int didxPossiblePeak;
 	int iChosenPeak;
-	int iLeftAreaHandle;
-	int iRightAreaHandle;
+	int iMarkerDidx;
 };
 
 
@@ -141,6 +140,8 @@ private:
 		ChartColor_WaveAve,
 		/// Color for recording waves
 		ChartColor_WaveRec,
+		/// Color of marker lines and text
+		ChartColor_Marker,
 	};
 
 	struct Params
@@ -158,6 +159,22 @@ private:
 		Params(const ChartPixmapParams& user);
 	};
 
+	struct MarkerRect {
+		QRect rc;
+		int iPeak;
+		int iDidx;
+
+		MarkerRect()
+			: iPeak(-1), iDidx(-1)
+		{
+		}
+
+		MarkerRect(const QRect& rc, int iPeak, int iDidx)
+			: rc(rc), iPeak(iPeak), iDidx(iDidx)
+		{
+		}
+	};
+
 	struct ChartWaveInfo
 	{
 		QPointer<ViewWaveInfo> vwi;
@@ -170,7 +187,7 @@ private:
 		/// List of rects where user can click on ADD to choose a peak
 		//QList< QPair<QRect, int> > arcPeaksPossible;
 		/// List of rects where user can click to remove a chosen peak
-		QList< QPair<QRect, int> > arcPeaksChosen;
+		QList<MarkerRect> arcPeaksChosen;
 
 		ChartWaveInfo()
 			: render(NULL), renderStd(NULL)
@@ -199,9 +216,15 @@ private:
 	void drawWaveformDigital(QPainter& painter, ChartWaveInfo* vwi);
 	void drawWaveName(QPainter& painter, ChartWaveInfo* vwi, bool bHilight);
 	void drawPossiblePeaks(QPainter& painter, ChartWaveInfo* vwi);
-	void drawMarkerTimes(QPainter& painter, ChartWaveInfo* vwi);
-	void drawAreaLines(QPainter& painter, ChartWaveInfo* vwi);
-	void drawAreaHandles(QPainter& painter, ChartWaveInfo* vwi);
+	void drawMarkers(QPainter& painter, ChartWaveInfo* cwi);
+	//QList<double> getDidxDisplayValues(const ViewWaveInfo* vwi, const QList<int>& didxs);
+	QVector<QPoint> getDidxPoints(const ViewWaveInfo* vwi, const QList<int>& didxs);
+	void drawMarkerType_Time(QPainter& painter, ChartWaveInfo* cwi, int iPeak);
+	void drawMarkerType_FidPeak(QPainter& painter, ChartWaveInfo* cwi, int iPeak);
+	void drawMarkerType_EadPeak(QPainter& painter, ChartWaveInfo* cwi, int iPeak);
+	void drawMarkerTime(QPainter& painter, ChartWaveInfo* cwi, int iPeak, int iDidx, const QPoint& pt, int tidx);
+	void drawMarkerHandle(QPainter& painter, ChartWaveInfo* cwi, int iPeak, int iDidx, const QPoint& pt);
+	//void drawMarkerHandles(QPainter& painter, ChartWaveInfo* cwi, const QVector<QPoint>& pts);
 	QRect rectOfAreaHandle(ViewWaveInfo* vwi, int didx) const;
 	int calcPercentVisible(ChartWaveInfo* cwi);
 

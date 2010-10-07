@@ -154,11 +154,9 @@ void ViewWaveInfo::choosePeak(const WavePeakChosenInfo& peak)
 	m_wave->peaksChosen << peak;
 
 	WavePeakChosenInfo& p = m_wave->peaksChosen.last();
-	boundDidx(p.didxLeft);
-	boundDidx(p.didxMiddle);
-	boundDidx(p.didxRight);
+	for (int i = 0; i < p.didxs.size(); i++)
+		boundDidx(p.didxs[i]);
 
-	m_wave->calcPeakAmplitude(iPeak);
 	m_wave->calcPeakArea(iPeak);
 	m_wave->calcAreaPercents();
 

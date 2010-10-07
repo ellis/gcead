@@ -45,6 +45,22 @@ const int EadViewCount = EadView_Recording + 1;
 Q_ENUMS(EadView);
 
 
+/// Marker type
+enum MarkerType
+{
+	MarkerType_Generic = 0,
+	MarkerType_Time = 1,
+	MarkerType_Value = 2,
+	MarkerType_Duration = 3,
+	MarkerType_Amplitude = 4,
+
+	MarkerType_FidPeak = 20,
+	MarkerType_EadPeakXY = 21,
+	MarkerType_EadPeakXYZ = 22,
+};
+Q_ENUMS(MarkerType);
+
+
 /// Mode for handling peak viewing and editing
 enum EadMarkerMode
 {
@@ -55,7 +71,6 @@ enum EadMarkerMode
 	/// Edit peaks
 	EadMarkerMode_Edit,
 };
-
 
 /// These are the aspects of WaveInfo that can be edited
 enum WaveEditorFlag

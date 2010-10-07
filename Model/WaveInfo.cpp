@@ -197,12 +197,12 @@ bool WaveInfo::findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) cons
 		*peak = peaks[0];
 		// Make sure that we're not selecting an area which has already been chosen
 		foreach (const WavePeakChosenInfo& peakChosen, peaksChosen) {
-			if (peak->left.i <= peakChosen.didxLeft) {
-				if (peak->right.i <= peakChosen.didxLeft)
+			if (peak->left.i <= peakChosen.didxs[0]) {
+				if (peak->right.i <= peakChosen.didxs[0])
 					return false;
 			}
 			else {
-				if (peak->left.i <= peakChosen.didxRight)
+				if (peak->left.i <= peakChosen.didxs[2])
 					return false;
 			}
 		}
@@ -310,7 +310,7 @@ void WaveInfo::findFidPeaks(const QList<WavePoint>& peaksAll, QList<WavePeakInfo
 			bool bChosen = false;
 			for (int iChosen = 0; iChosen < peaksChosen.size(); iChosen++)
 			{
-				if (peaksChosen[iChosen].didxMiddle == pt.i)
+				if (peaksChosen[iChosen].didxs[1] == pt.i)
 				{
 					bChosen = true;
 					break;
@@ -364,7 +364,7 @@ int WaveInfo::findNextMin(int didxLeft, int didxRight) const
 		if (didxMin == didx0 + radius) {
 			// Make sure that we're not selecting an area which has already been chosen
 			foreach (const WavePeakChosenInfo& peak, peaksChosen) {
-				if (peak.didxLeft <= didxMin && didxMin <= peak.didxMiddle)
+				if (peak.didxs[0] <= didxMin && didxMin <= peak.didxs[1])
 					return -1;
 			}
 
@@ -486,7 +486,7 @@ void WaveInfo::findFidPeaks()
 			bool bChosen = false;
 			for (int iChosen = 0; iChosen < peaksChosen.size(); iChosen++)
 			{
-				if (peaksChosen[iChosen].didxMiddle == pt.i)
+				if (peaksChosen[iChosen].didxs[1] == pt.i)
 				{
 					bChosen = true;
 					break;
@@ -506,7 +506,7 @@ int WaveInfo::indexOfChosenPeakAtDidx(int didx) const
 {
 	for (int i = 0; i < peaksChosen.size(); i++)
 	{
-		if (peaksChosen.at(i).didxMiddle == didx)
+		if (peaksChosen.at(i).didxs[1] == didx)
 			return i;
 	}
 	return -1;
@@ -514,6 +514,8 @@ int WaveInfo::indexOfChosenPeakAtDidx(int didx) const
 
 void WaveInfo::choosePeakAtDidx(int didx)
 {
+	CHECK_PRECOND_RET(type == WaveType_FID);
+
 	for (int i0 = 0; i0 < peaks0.size(); i0++)
 	{
 		if (peaks0.at(i0).middle.i == didx)
@@ -523,15 +525,11 @@ void WaveInfo::choosePeakAtDidx(int didx)
 			int iPeak = peaksChosen.size();
 
 			WavePeakChosenInfo peak;
-			peak.didxLeft = peaks0[i0].left.i;
-			peak.didxMiddle = peaks0[i0].middle.i;
-			peak.didxRight = peaks0[i0].right.i;
+			peak.type = MarkerType_FidPeak;
+			peak.didxs << peaks0[i0].left.i << peaks0[i0].middle.i << peaks0[i0].right.i;
 			peaksChosen << peak;
 			
-			if (type == WaveType_EAD)
-				calcPeakAmplitude(iPeak);
-			else if (type == WaveType_FID)
-				calcPeakArea(iPeak);
+			calcPeakArea(iPeak);
 			calcAreaPercents();
 			return;
 		}
@@ -546,7 +544,7 @@ void WaveInfo::unchoosePeakAtIndex(int i)
 	//int i = indexOfChosenPeakAtDidx(didx);
 	CHECK_PARAM_RET(i >= 0 && i < peaksChosen.size());
 	if (i >= 0) {
-		int didx = peaksChosen[i].didxMiddle;
+		int didx = peaksChosen[i].didxs[1];
 		peaksChosen.removeAt(i);
 
 		// Enable the possible peak again
@@ -561,42 +559,27 @@ void WaveInfo::unchoosePeakAtIndex(int i)
 	}
 }
 
-void WaveInfo::calcPeakAmplitude(int iPeak)
-{
-	CHECK_PARAM_RET(iPeak >= 0 && iPeak < peaksChosen.size());
-
-	WavePeakChosenInfo& peak = peaksChosen[iPeak];
-
-	double n0 = display[peak.didxLeft];
-	double n1 = display[peak.didxMiddle];
-	peak.nAmplitude = n0 - n1;
-}
-
 void WaveInfo::calcPeakArea(int iPeak)
 {
 	CHECK_PARAM_RET(iPeak >= 0 && iPeak < peaksChosen.size());
 
 	WavePeakChosenInfo& peak = peaksChosen[iPeak];
+	if (peak.type != MarkerType_FidPeak)
+		return;
 	
 	// Sum area under the curve
 	double nArea = 0;
-	for (int didx = peak.didxLeft; didx <= peak.didxRight; didx++)
+	for (int didx = peak.didxs[0]; didx <= peak.didxs[2]; didx++)
 	{
 		nArea += display[didx];
 	}
 
 	// Subtract area beneath the area line (area_of_square / 2)
-	double nHeight = qAbs(display[peak.didxLeft] - display[peak.didxRight]);
-	int nWidth = peak.didxRight - peak.didxLeft + 1;
+	double nHeight = qAbs(display[peak.didxs[0]] - display[peak.didxs[2]]);
+	int nWidth = peak.didxs[2] - peak.didxs[0] + 1;
 	nArea -= (nHeight * nWidth) / 2;
 
 	peak.nArea = nArea;
-}
-
-void WaveInfo::calcPeakAmplitudes()
-{
-	for (int i = 0; i < peaksChosen.size(); i++)
-		calcPeakAmplitude(i);
 }
 
 void WaveInfo::calcPeakAreas()
@@ -611,10 +594,12 @@ void WaveInfo::calcAreaPercents()
 	double nTotal = 0;
 	for (int i = 0; i < peaksChosen.size(); i++)
 	{
-		nTotal += peaksChosen[i].nArea;
+		if (peaksChosen[i].type == MarkerType_FidPeak)
+			nTotal += peaksChosen[i].nArea;
 	}
 	for (int i = 0; i < peaksChosen.size(); i++)
 	{
-		peaksChosen[i].nPercent = peaksChosen[i].nArea / nTotal;
+		if (peaksChosen[i].type == MarkerType_FidPeak)
+			peaksChosen[i].nPercent = peaksChosen[i].nArea / nTotal;
 	}
 }

@@ -51,8 +51,8 @@ Actions::Actions(QObject *parent)
 	fileComment->setIconText(tr("Comment"));
 	fileComment->setToolTip(tr("Edit the general comment for the whole file"));
 
-	fileImport = new QAction(tr("Import Waves..."), this);
-	fileImport->setToolTip(tr("Import waves from another EAD file"));
+	fileImport = new QAction(tr("&Import Waves..."), this);
+	fileImport->setToolTip(tr("Import waves from another EAD or ASC file"));
 
 	fileExportSignalData = new QAction(tr("Export Si&gnal Data..."), this);
 

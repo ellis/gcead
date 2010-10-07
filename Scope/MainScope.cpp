@@ -276,6 +276,7 @@ void MainScope::updateActions()
 	m_actions->fileOpen->setEnabled(!m_bRecording);
 	m_actions->fileSave->setEnabled(bHaveFile && (m_file->isDirty() || !bHaveData));
 	m_actions->fileSaveAs->setEnabled(bHaveFile);
+	m_actions->fileImport->setEnabled(!m_bRecording);
 	m_actions->fileExportSignalData->setEnabled(bHaveData);
 	m_actions->fileExportAmplitudeData->setEnabled(bHaveData);
 	m_actions->fileExportRetentionData->setEnabled(bHaveData);

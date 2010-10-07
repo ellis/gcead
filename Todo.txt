@@ -1,8 +1,43 @@
+BIG STUFF FOR FUTURE:
+	Refactor program structure:
+		Use commands for all edits
+		Use data/model/view paradigm better
+		Use sqllite for files
+		Add undo/redo
+	Save all edits in a temporary file
+	Crash recovery
+	Allow user to easily move waves around among files
+	OpenGL for graphs
+	Touch-based UI
+------------
+
+	Import ASC file from Autospike
+	?	ImportRecordDialog: add stretch widget to right sight
+	?	ImportRecordDialog: add OK and Cancel buttons (in platform-dependent order?)
+	?	ImportRecordDialog: fill in map
+	?	debug why radio buttons aren't being disabled
+		fix conversion to voltage
+		make sure FID is also being imported
+	?	don't offer digital import
+	Ian's "x" and "z" measurements
+	x	add MarkerType to peak data (TimeFidPeak, EadPeakXY, EadPeakXYZ)
+	?	set marker type on new peaks which user creates
+	x	draw EAD peak lines DOWN&RIGHT instead of RIGHT&DOWN
+	?	draw amplitude to the left the line
+	?	draw the duration to peak to the left of the mark
+		add context-menu option to add 'z' measurement
+		ctrl-click existing xy marker to make it xyz
+	?	draw z line directly
+		test export of amplitude and retention data again
+		
+		FUTURE: for recordings with digital waves, could we try to autodetect EAD peaks?
+	Time markers?
+	Save 
+	Add libusbmac.mak
+
 ?	Fix "RECORDING: ??.??" size
 x	Feedback 1 from Ian
 x	don't let user add markers with right-click menu unless in Markers mode
-3	Import CSV file from Autospike (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
-	Think about feedback 4 from Ian
 	Filters:
 x		create filter task widget
 x		create variables to indicate filtering
@@ -13,10 +48,7 @@ x		add function calls to perform filtering in WaveInfo::calcDisplayData()
 		x	recalculate peaks
 		x	recalculate averages
 			redraw graph
-				
-	Add libusbmac.mak
 x	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
-	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
 x	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
 x	MarkersWidget: why is there such a large bottom border?
 x	When dragging selection area: if user presses ESC, then abort selection
@@ -84,8 +116,9 @@ x	integrate filter code into GcEad
 		is the thicker tick what you had in mind?
 		import of .aspk files?  Soon we should consider adding more advanced file handling.
 	
+	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
+	Import Autospike files (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
-	import of Autospike-CSV files
 	import of old EAG files
 	x	EAD wave
 	x	FID wave

@@ -62,21 +62,16 @@ public:
 class WavePeakChosenInfo
 {
 public:
-	int didxLeft;
-	int didxMiddle;
-	int didxRight;
+	MarkerType type;
+	QList<int> didxs;
 	double nArea;
 	double nPercent;
-	double nAmplitude;
 
 	WavePeakChosenInfo()
-	:	didxLeft(0),
-		didxMiddle(0),
-		didxRight(0),
-		nArea(0),
-		nPercent(0),
-		nAmplitude(0)
+	:	nArea(0),
+		nPercent(0)
 	{
+		type = MarkerType_Generic;
 	}
 };
 
@@ -154,8 +149,6 @@ public:
 	void unchoosePeakAtIndex(int i);
 	//void unchoosePeakAtDidx(int didx);
 
-	/// Calculate the peak amplitude
-	void calcPeakAmplitude(int iPeak);
 	/// Call this if you've changed the indexes of a peak in order to recalculate the area under the curve.
 	void calcPeakArea(int iPeak);
 	/// This calculates the amplitudes of all peaks and implicitly calls calcPeakAmplitude().

@@ -124,7 +124,7 @@ bool EadFile::saveAs(const QString& sFilename)
 		return false;
 
 	QDataStream str(&file);
-	qint32 nVersion = 1;
+	qint32 nVersion = 2;
 	str.writeRawData("EAD", 4);
 	str << nVersion;
 	str.setVersion(QDataStream::Qt_4_3);
@@ -174,7 +174,6 @@ LoadSaveResult EadFile::load(const QString& sFilename)
 		RecInfo* rec = m_recs[i];
 		rec->fid()->findFidPeaks();
 		rec->fid()->calcPeakAreas();
-		rec->ead()->calcPeakAmplitudes();
 	}
 
 	if (result == LoadSaveResult_Ok)
@@ -269,7 +268,7 @@ LoadSaveResult EadFile::loadCurrent(QDataStream& str)
 	str >> nVersion;
 	if (nVersion < 1)
 		return LoadSaveResult_VersionTooLow;
-	else if (nVersion > 1)
+	else if (nVersion > 2)
 		return LoadSaveResult_VersionTooHigh;
 
 	str.setVersion(QDataStream::Qt_4_3);
@@ -449,18 +448,39 @@ void EadFile::createPeakNode(QDomDocument& doc, QDomElement& parent, const WaveP
 	QDomElement elem = doc.createElement("peak");
 	parent.appendChild(elem);
 	
-	elem.setAttribute("left", peak->didxLeft);
-	elem.setAttribute("middle", peak->didxMiddle);
-	elem.setAttribute("right", peak->didxRight);
+	elem.setAttribute("type", (int) peak->type);
+	QStringList asDidxs;
+	foreach (int didx, peak->didxs)
+		asDidxs << QString::number(didx);
+	QString sDidxs = asDidxs.join(",");
+	elem.setAttribute("didxs", sDidxs);
 }
 
 void EadFile::loadPeakNode(QDomElement& elem, WaveInfo* wave)
 {
 	WavePeakChosenInfo peak;
 
-	peak.didxLeft = elem.attribute("left").toInt();
-	peak.didxMiddle = elem.attribute("middle").toInt();
-	peak.didxRight = elem.attribute("right").toInt();
+	// This attributed was added 2010-10-07 to GcEad v 1.2.1
+	// So we have to set the appropriate values in case an older version gets loaded
+	if (elem.hasAttribute("type")) {
+		peak.type = (MarkerType) elem.attribute("type").toInt();
+		QStringList asDidxs = elem.attribute("didxs").split(",");
+		peak.didxs.clear();
+		foreach (QString sDidx, asDidxs)
+			peak.didxs << sDidx.toInt();
+	}
+	else {
+		if (wave->type == WaveType_EAD)
+			peak.type = MarkerType_EadPeakXY;
+		else if (wave->type == WaveType_FID)
+			peak.type = MarkerType_FidPeak;
+		else
+			peak.type = MarkerType_Generic;
+		peak.didxs.clear();
+		peak.didxs << elem.attribute("left").toInt();
+		peak.didxs << elem.attribute("middle").toInt();
+		peak.didxs << elem.attribute("right").toInt();
+	}
 
 	wave->peaksChosen << peak;
 }
@@ -654,22 +674,40 @@ bool EadFile::exportAmplitudeData(const QString& sFilename /*, EadFile::ExportFo
 		return false;
 
 	QTextStream str(&file);
-
-	str << "\"Wave\",\"Minutes\",\"Amplitude\"" << endl;
+	str.setLocale(QLocale::English);
+	str << "\"Wave name\",\"Onset [min]\",\"Peak [s]\",\"End [s]\",\"Amplitude [mV]\"" << endl;
 
 	// Find waves with peaks:
 	foreach (RecInfo* rec, m_recs)
 	{
 		WaveInfo* wave = rec->ead();
-		if (wave->peaksChosen.count() > 0)
+		// For each peak:
+		foreach (const WavePeakChosenInfo& peak, wave->peaksChosen)
 		{
-			// For each peak:
-			foreach (const WavePeakChosenInfo& peak, wave->peaksChosen)
-			{
+			if (peak.type == MarkerType_EadPeakXY) {
+				CHECK_ASSERT_RETVAL(peak.didxs.size() == 2, false);
+				int didx0 = peak.didxs[0];
+				int didx1 = peak.didxs[1];
+				int tidx0 = didx0 + wave->shift();
 				str
 					<< "\"" << wave->sName << "\","
-					<< (double(peak.didxMiddle) / (EAD_SAMPLES_PER_SECOND * 60)) << ','
-					<< peak.nAmplitude << endl;
+					<< (double(tidx0) / (EAD_SAMPLES_PER_SECOND * 60)) << ','
+					<< (double(didx1 - didx0) / EAD_SAMPLES_PER_SECOND) << ','
+					<< ','
+					<< (wave->display[didx1] - wave->display[didx0]) << endl;
+			}
+			else if (peak.type == MarkerType_EadPeakXYZ) {
+				CHECK_ASSERT_RETVAL(peak.didxs.size() == 3, false);
+				int didx0 = peak.didxs[0];
+				int didx1 = peak.didxs[1];
+				int didx2 = peak.didxs[2];
+				int tidx0 = didx0 + wave->shift();
+				str
+					<< "\"" << wave->sName << "\","
+					<< (double(tidx0) / (EAD_SAMPLES_PER_SECOND * 60)) << ','
+					<< (double(didx1 - didx0) / EAD_SAMPLES_PER_SECOND) << ','
+					<< (double(didx2 - didx0) / EAD_SAMPLES_PER_SECOND) << ','
+					<< (wave->display[didx1] - wave->display[didx0]) << endl;
 			}
 		}
 	}
@@ -691,14 +729,15 @@ bool EadFile::exportRetentionData(const QString& sFilename /*, EadFile::ExportFo
 	foreach (RecInfo* rec, m_recs)
 	{
 		WaveInfo* wave = rec->fid();
-		if (wave->peaksChosen.count() > 0)
+		// For each peak:
+		foreach (const WavePeakChosenInfo& peak, wave->peaksChosen)
 		{
-			// For each peak:
-			foreach (const WavePeakChosenInfo& peak, wave->peaksChosen)
-			{
+			if (peak.type == MarkerType_FidPeak) {
+				CHECK_ASSERT_RETVAL(peak.didxs.size() == 3, false);
+				int tidx = peak.didxs[1] + wave->shift();
 				str
 					<< "\"" << wave->sName << "\","
-					<< (double(peak.didxMiddle) / (EAD_SAMPLES_PER_SECOND * 60)) << ','
+					<< (double(tidx) / (EAD_SAMPLES_PER_SECOND * 60)) << ','
 					<< peak.nPercent << ','
 					<< peak.nArea << endl;
 			}
@@ -749,9 +788,17 @@ void EadFile::saveNewRecording()
 	//qDebug() << "EadFile::saveNewRecording()";
 
 	RecInfo* rec = m_newRec;
-
-	m_recs << m_newRec;
 	m_newRec = NULL;
+	addImportedRecording(rec);
+}
+
+void EadFile::addImportedRecording(RecInfo* rec)
+{
+	// Not allowed to import while recording
+	CHECK_PRECOND_RET(m_newRec == NULL);
+	CHECK_PARAM_RET(rec->id() == m_recs.size());
+
+	m_recs << rec;
 
 	updateDisplay(rec);
 	updateViewInfo();
