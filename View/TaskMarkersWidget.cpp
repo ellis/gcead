@@ -88,6 +88,7 @@ void TaskMarkersWidget::setupWidgets()
 			"<p style='margin-top: .5em'><b>Remove marker:</b><br/> 1) Right-click marker<br/> 2) Select &quot;Remove&quot;</p>"
 			"<p style='margin-top: .5em'><b>Add EAD peak end-point:</b><br/> 1) Right-click marker<br/> 2) Select &quot;Add End-Point&quot;</p>"
 			));
+	m_lblPeakTip->setTextFormat(Qt::RichText);
 	m_lblPeakTip->setWordWrap(true);
 	m_lblPeakTip->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
