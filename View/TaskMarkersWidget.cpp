@@ -79,11 +79,14 @@ void TaskMarkersWidget::setupWidgets()
 	m_chkTime->setChecked(actions->markersShowTimeMarkers->isChecked());
 
 	m_lblPeakTip->setText(tr(
-			"<b>Marker tips:</b><br/><br/>"
-			"<i>Create marker:</i><br/> Ctrl-Click wave<br/><br/>"
-			"<i>Adjust postition:</i><br/> drag marker or handles<br/><br/>"
-			"<i>Remove:</i><br/> right-click marker, and<br/> select &quot;Remove&quot;<br/><br/>"
-			"<i>Verify a detected FID peak:</i><br/> click on &quot;<span style='color:red'>Add</span>&quot;"
+			"<hr/>"
+			"<center><b>Marker Tips</b></center>"
+			"<p style='margin-top: .5em'><b>Verify auto-detected peak:</b><br/> Click on &quot;<span style='color:red'>Add</span>&quot;</p>"
+			"<p style='margin-top: .5em'><b>Add peak marker:</b><br/> Ctrl-click wave</p>"
+			"<p style='margin-top: .5em'><b>Add time marker:</b><br/> 1) Right-click wave<br/> 2) Select &quot;Add Time Marker&quot;</p>"
+			"<p style='margin-top: .5em'><b>Adjust postition:</b><br/> Drag square handles</p>"
+			"<p style='margin-top: .5em'><b>Remove marker:</b><br/> 1) Right-click marker<br/> 2) Select &quot;Remove&quot;</p>"
+			"<p style='margin-top: .5em'><b>Add EAD peak end-point:</b><br/> 1) Right-click marker<br/> 2) Select &quot;Add End-Point&quot;</p>"
 			));
 	m_lblPeakTip->setWordWrap(true);
 	m_lblPeakTip->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);

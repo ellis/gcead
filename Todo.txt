@@ -38,7 +38,7 @@ BIG STUFF FOR FUTURE:
 	x	context menu: option to add 'z' measurement
 	x	adjust position of text like Ian suggested
 	x	when marker type is changed to EadPeakXYZ, mark file as dirty
-1		update marker help text
+	x	update marker help text
 2		test export of amplitude and retention data again
 		FUTURE: for recordings with digital waves, could we try to autodetect EAD peaks?
 		FUTURE: antialias the marker lines in Publish mode?
