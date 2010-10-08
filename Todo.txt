@@ -39,7 +39,7 @@ BIG STUFF FOR FUTURE:
 	x	adjust position of text like Ian suggested
 	x	when marker type is changed to EadPeakXYZ, mark file as dirty
 	x	update marker help text
-2		test export of amplitude and retention data again
+	x	test export of amplitude and retention data again
 		FUTURE: for recordings with digital waves, could we try to autodetect EAD peaks?
 		FUTURE: antialias the marker lines in Publish mode?
 x	BUG: why is "Open Recent" grayed out?
@@ -49,11 +49,11 @@ x	BUG: why is "Open Recent" grayed out?
 	x	Show FID Peaks: show time, show area
 	x	Show EAD Peaks: show amplitude, show time span(s), show times
 	x	Show Time Markers
-3	rename export actions
+x	rename export actions
 -	save the marker show selections to the .ead file
 x	test loading of saved markers
 	REFACTOR: Remove enum EadMarkerMode?
-4	show voltage of current wave in status bar
+x	show voltage of current wave in status bar
 5	selecting region for zoom-in doesn't work properly
 	Add libusbmac.mak
 

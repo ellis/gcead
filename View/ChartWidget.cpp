@@ -677,7 +677,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 void ChartWidget::updateMouseCursor(Qt::KeyboardModifiers modifiers)
 {
 	QPoint pos = m_ptMouseWidget;
-	ChartPointInfo info;
+	ChartPointInfo &info = m_mouseMoveInfo;
 	QPoint ptPixmap = pos - m_rcPixmap.topLeft();
 	m_pixmap->fillChartPointInfo(ptPixmap, &info);
 	m_chartS->setHilight(info.vwi);
@@ -809,7 +809,15 @@ void ChartWidget::updateStatus()
 	}
 	else
 	{
-		int iSample = pixmap->xToSampleOffset(m_ptMousePixmap.x());
-		m_chartS->setMousePosition(iSample);
+		int tidx = pixmap->xToSampleOffset(m_ptMousePixmap.x());
+
+		double nAmplitude = 0;
+		if (!m_bDragging && m_mouseMoveInfo.vwi != NULL) {
+			int didx = m_pixmap->xToCenterSample(m_mouseMoveInfo.vwi->wave(), m_ptMousePixmap.x());
+			CHECK_ASSERT_RET(didx >= 0 && didx < m_mouseMoveInfo.vwi->wave()->display.size());
+			nAmplitude = m_mouseMoveInfo.vwi->wave()->display[didx];
+		}
+
+		m_chartS->setMousePosition(tidx, nAmplitude);
 	}
 }

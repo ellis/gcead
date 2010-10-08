@@ -364,12 +364,27 @@ void ChartScope::setSelectionRange(int iSampleStart, int iSampleEnd)
 	emit statusTextChanged(s);
 }
 
-void ChartScope::setMousePosition(int iSample)
+void ChartScope::setMousePosition(int tidx, double nAmplitude)
 {
-	double nMinutes = double(iSample) / (EAD_SAMPLES_PER_SECOND * 60);
-	int nPrecision = calcPrecision(m_params.nSecondsPerDivision / 60);
+	double nSeconds = double(tidx) / EAD_SAMPLES_PER_SECOND;
+	QString sMinute = timestampString(nSeconds, TimestampBase_Minutes);
+	QString s;
+	if (nAmplitude != 0) {
+		QString sVolt = QObject::tr("%0 mV");
+		/*if (nAmplitude >= 10)
+			sVolt = sVolt.arg(nAmplitude, 0, 'f', 0);
+		else if (nAmplitude >= 1)
+			sVolt = sVolt.arg(nAmplitude, 0, 'g', 3);
+		else
+			sVolt = sVolt.arg(nAmplitude, 0, 'g', 2);
+			*/
+		sVolt = sVolt.arg(nAmplitude, 0, 'f', 3);
+		s = "Pos: " + sVolt + ", " + sMinute;
+	}
+	else {
+		s = "Pos: " + sMinute;
+	}
 
-	QString s = tr("Pos: %0").arg(nMinutes, 0, 'f', nPrecision);
 	emit statusTextChanged(s);
 }
 

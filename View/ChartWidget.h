@@ -114,6 +114,8 @@ private:
 	QPoint m_ptMousePixmap;
 	/// Info about the point where the user pressed the mouse
 	ChartPointInfo m_clickInfo;
+	/// Info about the point where the user last moved the mouse over (not updated while dragging)
+	ChartPointInfo m_mouseMoveInfo;
 	/// Pointer to the channel we're currently dragging, or NULL if not dragging.
 	WaveInfo* m_waveDrag;
 	/// Original division offset of m_dragChannel before vertical dragging started

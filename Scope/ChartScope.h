@@ -81,7 +81,7 @@ public slots:
 	void scrollPageLeft();
 	void scrollPageRight();
 	void setSelectionRange(int iSampleStart, int iSampleEnd);
-	void setMousePosition(int iSample);
+	void setMousePosition(int tidx, double nAmplitude);
 
 private:
 	void updateScrollbar();
