@@ -44,7 +44,6 @@ BIG STUFF FOR FUTURE:
 		FUTURE: antialias the marker lines in Publish mode?
 x	BUG: why is "Open Recent" grayed out?
 	Ian's request for space at end while recording
-	Ian's suggestion about timebase
 	TaskMarkers:
 	x	Show FID Peaks: show time, show area
 	x	Show EAD Peaks: show amplitude, show time span(s), show times
@@ -54,7 +53,6 @@ x	rename export actions
 x	test loading of saved markers
 	REFACTOR: Remove enum EadMarkerMode?
 x	show voltage of current wave in status bar
-5	selecting region for zoom-in doesn't work properly
 	Add libusbmac.mak
 
 x	Fix "RECORDING: ??.??" size
@@ -138,6 +136,8 @@ x	integrate filter code into GcEad
 		is the thicker tick what you had in mind?
 		import of .aspk files?  Soon we should consider adding more advanced file handling.
 	
+	Ian's suggestion about timebase
+	improve selecting region for zoom-in so that user can zoom factor isn't so much larger sometimes
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
 	Import Autospike files (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
