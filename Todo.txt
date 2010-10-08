@@ -57,7 +57,7 @@ x	test loading of saved markers
 5	selecting region for zoom-in doesn't work properly
 	Add libusbmac.mak
 
-?	Fix "RECORDING: ??.??" size
+x	Fix "RECORDING: ??.??" size
 x	Feedback 1 from Ian
 x	don't let user add markers with right-click menu unless in Markers mode
 	Filters:

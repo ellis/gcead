@@ -82,6 +82,7 @@ private slots:
 	void on_scope_scrollPageStepChanged(int n);
 	void on_scope_scrollSingleStepChanged(int n);
 	void on_scope_recordingLabelVisibleChanged(bool b);
+	void on_scope_recordingLabelTextChanged(const QString& s);
 
 private:
 	MainScope* m_mainS;

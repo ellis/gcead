@@ -73,7 +73,7 @@ ChartWidget::ChartWidget(MainScope* mainS, QWidget* parent)
 
 	connect(m_chartS, SIGNAL(paramsChanged()), this, SLOT(update()));
 	connect(m_chartS, SIGNAL(recordingLabelVisibleChanged(bool)), this, SLOT(on_scope_recordingLabelVisibleChanged(bool)));
-	connect(m_chartS, SIGNAL(recordingLabelTextChanged(QString)), m_lblRecording, SLOT(setText(QString)));
+	connect(m_chartS, SIGNAL(recordingLabelTextChanged(QString)), this, SLOT(on_scope_recordingLabelTextChanged(QString)));
 	connect(m_chartS, SIGNAL(timebaseChanged(QString)), this, SLOT(on_scope_timebaseChanged(QString)));
 	connect(m_chartS, SIGNAL(scrollMaxChanged(int)), this, SLOT(on_scope_scrollMaxChanged(int)));
 	connect(m_chartS, SIGNAL(scrollPageStepChanged(int)), this, SLOT(on_scope_scrollPageStepChanged(int)));
@@ -140,12 +140,10 @@ void ChartWidget::setupWidgets()
 
 	m_lblRecording = new QLabel(tr("  RECORDING: 99.99 "), this);
 	m_lblRecording->setStyleSheet(
-		//"background-color: rgba(255, 127, 127, 127);"
 		"background-color: #fdd;"
 		"border-style: outset;"
 		"border-width: 1px;"
 		"border-color: #500;"
-		//"border-radius: 7px;"
 		"font-weight: bold;"
 		"padding: 5px 10px;");
 	m_lblRecording->setVisible(false);
@@ -187,6 +185,14 @@ void ChartWidget::on_scope_recordingLabelVisibleChanged(bool b)
 	}
 }
 
+void ChartWidget::on_scope_recordingLabelTextChanged(const QString& s)
+{
+	bool bLayout = (s.length() != m_lblRecording->text().length());
+	m_lblRecording->setText(s);
+	if (bLayout)
+		layoutRecordingLabel();
+}
+
 QSize ChartWidget::calcPixmapSize() const
 {
 	QRect rcPixmapMax(20, m_buttons->height(), width() - 35, height() - m_buttons->height() - 20);
@@ -225,7 +231,8 @@ void ChartWidget::resizeEvent(QResizeEvent* e)
 
 void ChartWidget::layoutRecordingLabel()
 {
-	m_lblRecording->move(width() - m_lblRecording->width() - 20, 5);
+	m_lblRecording->setGeometry(width() - m_lblRecording->sizeHint().width() - 20, 5,
+			m_lblRecording->sizeHint().width(), m_lblRecording->sizeHint().height());
 }
 
 void ChartWidget::paintEvent(QPaintEvent* e)
