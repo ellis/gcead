@@ -145,27 +145,51 @@ Actions::Actions(QObject *parent)
 	// Markers menu
 	//
 
-	markersShow = new QAction(tr("&Show Markers"), this);
-	markersShow->setCheckable(true);
-	markersShow->setChecked(true);
-	markersShow->setIconText(tr("Show"));
-	markersShow->setToolTip(tr("Show selected markers"));
+	markersShowFidPeakMarkers = new QAction(tr("Show &FID Peak Markers"), this);
+	markersShowFidPeakMarkers->setCheckable(true);
+	markersShowFidPeakMarkers->setChecked(true);
+	markersShowFidPeakMarkers->setIconText(tr("Show"));
+	markersShowFidPeakMarkers->setToolTip(tr("Show FID peak markers"));
 
-	markersShowTime = new QAction(tr("Show &Timestamps"), this);
-	markersShowTime->setCheckable(true);
-	markersShowTime->setChecked(true);
-	markersShowTime->setIconText(tr("Time"));
-	markersShowTime->setToolTip(tr("Show the timestamps for markers"));
+	markersShowFidPeakTime = new QAction(tr("Show Time Stamps on FID Peaks"), this);
+	markersShowFidPeakTime->setCheckable(true);
+	markersShowFidPeakTime->setChecked(true);
+	markersShowFidPeakTime->setIconText(tr("Time"));
+	markersShowFidPeakTime->setToolTip(tr("Show time stamps on FID peaks"));
 
-	markersShowFidArea = new QAction(tr("Show &FID Area Percentage"), this);
-	markersShowFidArea->setCheckable(true);
-	markersShowFidArea->setChecked(true);
-	markersShowFidArea->setIconText(tr("Area"));
-	markersShowFidArea->setToolTip(tr("Show the area percentage of FID peaks"));
+	markersShowFidPeakArea = new QAction(tr("Show &Area on FID Peaks"), this);
+	markersShowFidPeakArea->setCheckable(true);
+	markersShowFidPeakArea->setChecked(true);
+	markersShowFidPeakArea->setIconText(tr("Area"));
+	markersShowFidPeakArea->setToolTip(tr("Show area on FID peaks"));
 
-	markersShowEadAmplitude = new QAction(tr("Show EAD &Amplitude"), this);
-	markersShowEadAmplitude->setCheckable(true);
-	markersShowEadAmplitude->setChecked(true);
-	markersShowEadAmplitude->setIconText(tr("Amplitude"));
-	markersShowEadAmplitude->setToolTip(tr("Show the amplitude of EAD peaks"));
+	markersShowEadPeakMarkers = new QAction(tr("Show &EAD Peak Markers"), this);
+	markersShowEadPeakMarkers->setCheckable(true);
+	markersShowEadPeakMarkers->setChecked(true);
+	markersShowEadPeakMarkers->setIconText(tr("Show"));
+	markersShowEadPeakMarkers->setToolTip(tr("Show EAD peak markers"));
+
+	markersShowEadPeakAmplitude = new QAction(tr("Show A&mplitude on EAD Peaks"), this);
+	markersShowEadPeakAmplitude->setCheckable(true);
+	markersShowEadPeakAmplitude->setChecked(true);
+	markersShowEadPeakAmplitude->setIconText(tr("Amp"));
+	markersShowEadPeakAmplitude->setToolTip(tr("Show amplitude on EAD peaks"));
+
+	markersShowEadPeakTimeSpans = new QAction(tr("Show Time Spans on &EAD Peaks"), this);
+	markersShowEadPeakTimeSpans->setCheckable(true);
+	markersShowEadPeakTimeSpans->setChecked(true);
+	markersShowEadPeakTimeSpans->setIconText(tr("Span"));
+	markersShowEadPeakTimeSpans->setToolTip(tr("Show time spans on EAD peaks"));
+
+	markersShowEadPeakTimeStamps = new QAction(tr("Show Time Stamps on &EAD Peaks"), this);
+	markersShowEadPeakTimeStamps->setCheckable(true);
+	markersShowEadPeakTimeStamps->setChecked(false);
+	markersShowEadPeakTimeStamps->setIconText(tr("Time"));
+	markersShowEadPeakTimeStamps->setToolTip(tr("Show time stamps on EAD peaks"));
+
+	markersShowTimeMarkers = new QAction(tr("&Show Time Markers"), this);
+	markersShowTimeMarkers->setCheckable(true);
+	markersShowTimeMarkers->setChecked(true);
+	markersShowTimeMarkers->setIconText(tr("Show"));
+	markersShowTimeMarkers->setToolTip(tr("Show time markers"));
 }

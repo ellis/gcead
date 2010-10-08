@@ -25,6 +25,9 @@ public:
 	void setPeakMode(EadMarkerMode peakMode);
 	void setPeakModeRecId(int id);
 	void setChartElement(ChartElement e, bool b);
+	void setChartElementFidPeak(ChartElementFidPeak e, bool b);
+	void setChartElementEadPeak(ChartElementEadPeak e, bool b);
+	void setChartElementTimeMarker(ChartElementTimeMarker e, bool b);
 	void setRecordingOn(bool b);
 	void setRecordingTime(int nSeconds);
 
@@ -114,6 +117,9 @@ private:
 	QString m_sRecordingText;
 
 	ChartElements m_chartElements;
+	ChartElementFidPeaks m_chartElementFidPeaks;
+	ChartElementEadPeaks m_chartElementEadPeaks;
+	ChartElementTimeMarkers m_chartElementTimeMarkers;
 };
 
 #endif // CHARTSCOPE_H

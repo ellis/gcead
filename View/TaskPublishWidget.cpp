@@ -101,11 +101,11 @@ void TaskPublishWidget::setupWidgets()
 	m_chkComments->setToolTip(tr("Check to show wave comments"));
 	connect(m_chkComments, SIGNAL(clicked()), this, SLOT(on_chkComments_clicked()));
 
-	m_chkMarkers = new QCheckBox(tr("Markers"));
-	m_chkMarkers->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_Markers));
+	/*m_chkMarkers = new QCheckBox(tr("Markers"));
+	m_chkMarkers->setChecked(true);
 	m_chkMarkers->setToolTip(tr("Check to show markers"));
 	connect(m_chkMarkers, SIGNAL(clicked()), this, SLOT(on_chkMarkers_clicked()));
-
+	*/
 	m_chkStdDev = new QCheckBox(tr("Standard deviation"));
 	m_chkStdDev->setChecked(Globals->publisherSettings()->publisherChartElements.testFlag(ChartElement_StdDev));
 	m_chkStdDev->setToolTip(tr("Check to show standard deviation lines around the average waves"));
@@ -144,7 +144,7 @@ void TaskPublishWidget::setupWidgets()
 	grid->addWidget(m_chkTime, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkNames, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkComments, iRow++, 0, 1, 2);
-	grid->addWidget(m_chkMarkers, iRow++, 0, 1, 2);
+	//grid->addWidget(m_chkMarkers, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkStdDev, iRow++, 0, 1, 2);
 	grid->addWidget(m_chkWidth, iRow, 0);
 	grid->addWidget(m_edtWidth, iRow++, 1);
@@ -345,8 +345,8 @@ void TaskPublishWidget::on_chkComments_clicked()
 
 void TaskPublishWidget::on_chkMarkers_clicked()
 {
-	setChartElement(ChartElement_Markers, m_chkMarkers->isChecked());
-	emit settingsChanged();
+	//setChartElement(ChartElement_Markers, m_chkMarkers->isChecked());
+	//emit settingsChanged();
 }
 
 void TaskPublishWidget::on_chkStdDev_clicked()

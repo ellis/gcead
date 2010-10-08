@@ -234,11 +234,16 @@ void MainWindow::setupActions()
 	ui.mnuRecord->addSeparator();
 	ui.mnuRecord->addAction(actions->recordHardwareConnect);
 
-	//ui.mnuMarkers->addAction(actions->markersShow);
-	ui.mnuMarkers->addAction(actions->markersShow);
-	ui.mnuMarkers->addAction(actions->markersShowTime);
-	ui.mnuMarkers->addAction(actions->markersShowEadAmplitude);
-	ui.mnuMarkers->addAction(actions->markersShowFidArea);
+	ui.mnuMarkers->addAction(actions->markersShowFidPeakMarkers);
+	ui.mnuMarkers->addAction(actions->markersShowFidPeakArea);
+	ui.mnuMarkers->addAction(actions->markersShowFidPeakTime);
+	ui.mnuMarkers->addSeparator();
+	ui.mnuMarkers->addAction(actions->markersShowEadPeakMarkers);
+	ui.mnuMarkers->addAction(actions->markersShowEadPeakAmplitude);
+	ui.mnuMarkers->addAction(actions->markersShowEadPeakTimeSpans);
+	ui.mnuMarkers->addAction(actions->markersShowEadPeakTimeStamps);
+	ui.mnuMarkers->addSeparator();
+	ui.mnuMarkers->addAction(actions->markersShowTimeMarkers);
 
 	ui.toolBar->addAction(actions->recordRecord);
 	ui.toolBar->addSeparator();

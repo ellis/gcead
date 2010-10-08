@@ -91,7 +91,7 @@ private:
 	QCheckBox* m_chkTime;
 	QCheckBox* m_chkNames;
 	QCheckBox* m_chkComments;
-	QCheckBox* m_chkMarkers;
+	//QCheckBox* m_chkMarkers;
 	QCheckBox* m_chkStdDev;
 	QCheckBox* m_chkWidth;
 	QSpinBox* m_edtWidth;

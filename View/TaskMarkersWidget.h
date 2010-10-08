@@ -27,21 +27,25 @@ private:
 private slots:
 	void on_chkAutoDetect_toggled();
 	void on_cmbPeakFid_activated();
-	void on_actions_markersShow_toggled();
 	void on_scope_peakModeChanged();
 	void updateCmbPeakFid();
 
 private:
 	MainScope* m_scope;
 
-	QCheckBox* m_chkShowMarkers;
 	QGroupBox* m_grpFid;
-	QCheckBox* m_chkShowTime;
-	QCheckBox* m_chkShowArea;
+	QCheckBox* m_chkShowFidTime;
+	QCheckBox* m_chkShowFidArea;
 	QCheckBox* m_chkAutoDetect;
 	QComboBox* m_cmbPeakFid;
+
 	QGroupBox* m_grpEad;
-	QCheckBox* m_chkShowAmplitude;
+	QCheckBox* m_chkShowEadAmplitude;
+	QCheckBox* m_chkShowEadTimeSpans;
+	QCheckBox* m_chkShowEadTimeStamps;
+
+	QCheckBox* m_chkTime;
+
 	QLabel* m_lblPeakTip;
 
 	int m_idAutoDetect;

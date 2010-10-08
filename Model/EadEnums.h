@@ -103,19 +103,47 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(ViewChangeEvents);
 /// Elements to have on a chart
 enum ChartElement
 {
-	ChartElement_Grid = 0x001,
-	ChartElement_AxisTime = 0x002,
-	ChartElement_WaveNames = 0x004,
-	ChartElement_WaveComments = 0x008,
-	ChartElement_Markers = 0x010,
-	ChartElement_MarkerTime = 0x020,
-	ChartElement_MarkerEadAmplitude = 0x040,
-	ChartElement_MarkerFidArea = 0x080,
+	ChartElement_Grid = 0x0001,
+	ChartElement_AxisTime = 0x0002,
+	ChartElement_WaveNames = 0x0004,
+	ChartElement_WaveComments = 0x0008,
 	/// Display standard deviation lines around averaged waves
-	ChartElement_StdDev = 0x100,
+	ChartElement_StdDev = 0x0010,
 };
 Q_DECLARE_FLAGS(ChartElements, ChartElement);
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChartElements);
+
+
+/// Maker elements to have on a chart
+enum ChartElementFidPeak
+{
+	ChartElementFidPeak_Show = 1,
+	ChartElementFidPeak_Time = 2,
+	ChartElementFidPeak_Area = 4,
+};
+Q_DECLARE_FLAGS(ChartElementFidPeaks, ChartElementFidPeak);
+Q_DECLARE_OPERATORS_FOR_FLAGS(ChartElementFidPeaks);
+
+
+/// Maker elements to have on a chart
+enum ChartElementEadPeak
+{
+	ChartElementEadPeak_Show = 1,
+	ChartElementEadPeak_Amplitude = 2,
+	ChartElementEadPeak_TimeSpans = 4,
+	ChartElementEadPeak_TimeStamps = 8,
+};
+Q_DECLARE_FLAGS(ChartElementEadPeaks, ChartElementEadPeak);
+Q_DECLARE_OPERATORS_FOR_FLAGS(ChartElementEadPeaks);
+
+
+/// Maker elements to have on a chart
+enum ChartElementTimeMarker
+{
+	ChartElementTimeMarker_Show = 1,
+};
+Q_DECLARE_FLAGS(ChartElementTimeMarkers, ChartElementTimeMarker);
+Q_DECLARE_OPERATORS_FOR_FLAGS(ChartElementTimeMarkers);
 
 
 /// Return value when loading/saving files

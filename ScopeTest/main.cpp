@@ -139,10 +139,10 @@ public:
 		compare("ALL", sFilenameAves);
 
 		// Hide peaks (shouldn't change anything visually)
-		actions->markersShow->setChecked(false);
+		actions->markersShowFidPeakMarkers->setChecked(false);
 		compare("AVEs", sFilenameAves);
 		// Edit peaks
-		actions->markersShow->toggle();
+		actions->markersShowFidPeakMarkers->toggle();
 		actions->viewMarkersMode->trigger();
 		snap("PeaksEdit");
 		// Validate a detected peak on the FID wave
@@ -150,13 +150,13 @@ public:
 		vwi->choosePeakAtDidx(vwi->wave()->peaks0[1].middle.i);
 		snap("PeaksEdit1");
 		// Hide markers
-		actions->markersShow->toggle();
+		actions->markersShowFidPeakMarkers->toggle();
 		compare("AVEs", sFilenameAves);
 		// Unhide markers
-		actions->markersShow->toggle();
+		actions->markersShowFidPeakMarkers->toggle();
 		snapAndContrast("PeaksVerified1", sFilenameAves);
 
-		actions->markersShow->trigger();
+		actions->markersShowFidPeakMarkers->trigger();
 		actions->viewViewMode->trigger();
 		compare("AVEs", sFilenameAves);
 

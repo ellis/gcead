@@ -129,6 +129,33 @@ void ChartScope::setChartElement(ChartElement e, bool b)
 	}
 }
 
+void ChartScope::setChartElementFidPeak(ChartElementFidPeak e, bool b)
+{
+	if (b != m_chartElementFidPeaks.testFlag(e)) {
+		if (b) m_chartElementFidPeaks |= e;
+		else m_chartElementFidPeaks &= ~e;
+		emitParamsChanged();
+	}
+}
+
+void ChartScope::setChartElementEadPeak(ChartElementEadPeak e, bool b)
+{
+	if (b != m_chartElementEadPeaks.testFlag(e)) {
+		if (b) m_chartElementEadPeaks |= e;
+		else m_chartElementEadPeaks &= ~e;
+		emitParamsChanged();
+	}
+}
+
+void ChartScope::setChartElementTimeMarker(ChartElementTimeMarker e, bool b)
+{
+	if (b != m_chartElementTimeMarkers.testFlag(e)) {
+		if (b) m_chartElementTimeMarkers |= e;
+		else m_chartElementTimeMarkers &= ~e;
+		emitParamsChanged();
+	}
+}
+
 void ChartScope::setRecordingOn(bool b)
 {
 	if (b != m_bRecording) {
@@ -375,6 +402,9 @@ const ChartPixmap* ChartScope::draw(const QSize& sz)
 		m_params.nCols = 0;
 
 		m_params.elements = m_chartElements;
+		m_params.fidMarkerElements = m_chartElementFidPeaks;
+		m_params.eadMarkerElements = m_chartElementEadPeaks;
+		m_params.timeMarkerElements = m_chartElementTimeMarkers;
 		if (m_params.task == EadTask_Publish)
 		{
 			PublisherSettings* pub = Globals->publisherSettings();

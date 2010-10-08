@@ -65,10 +65,14 @@ public:
 	QAction* recordDiscard;
 	QAction* recordHardwareConnect;
 
-	QAction* markersShow;
-	QAction* markersShowTime;
-	QAction* markersShowFidArea;
-	QAction* markersShowEadAmplitude;
+	QAction* markersShowFidPeakMarkers;
+	QAction* markersShowFidPeakTime;
+	QAction* markersShowFidPeakArea;
+	QAction* markersShowEadPeakMarkers;
+	QAction* markersShowEadPeakAmplitude;
+	QAction* markersShowEadPeakTimeSpans;
+	QAction* markersShowEadPeakTimeStamps;
+	QAction* markersShowTimeMarkers;
 };
 
 #endif

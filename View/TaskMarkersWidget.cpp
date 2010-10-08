@@ -22,47 +22,59 @@ TaskMarkersWidget::TaskMarkersWidget(MainScope* scope, QWidget *parent) :
 
 void TaskMarkersWidget::setupWidgets()
 {
-	m_chkShowMarkers = new QCheckBox(tr("Show markers"));
-	m_grpFid = new QGroupBox(tr("FID"));
-	m_chkShowTime = new QCheckBox(tr("Show time"));
-	m_chkShowArea = new QCheckBox(tr("Show area"));
+	m_grpFid = new QGroupBox(tr("Show FID Peak Markers"));
+	m_chkShowFidTime = new QCheckBox(tr("Show time"));
+	m_chkShowFidArea = new QCheckBox(tr("Show area"));
 	m_chkAutoDetect = new QCheckBox(tr("Auto-detect peaks"));
 	m_cmbPeakFid = new QComboBox();
-	m_grpEad = new QGroupBox(tr("EAD"));
-	m_chkShowAmplitude = new QCheckBox(tr("Show amplitude"));
+
+	m_grpEad = new QGroupBox(tr("Show EAD Peak Markers"));
+	m_chkShowEadAmplitude = new QCheckBox(tr("Show amplitude"));
+	m_chkShowEadTimeSpans = new QCheckBox(tr("Show time spans"));
+	m_chkShowEadTimeStamps = new QCheckBox(tr("Show time stamps"));
+
+	m_chkTime = new QCheckBox(tr("Show time markers"));
+
 	m_lblPeakTip = new QLabel(this);
 
 	QVBoxLayout* vbox;
 
 	vbox = new QVBoxLayout();
-	vbox->addWidget(m_chkShowTime);
-	vbox->addWidget(m_chkShowArea);
+	vbox->addWidget(m_chkShowFidTime);
+	vbox->addWidget(m_chkShowFidArea);
 	vbox->addWidget(m_chkAutoDetect);
 	vbox->addWidget(m_cmbPeakFid);//, 0, Qt::AlignHCenter);
 	//m_cmbPeakFid->setStyleSheet("padding-left: 20px");
 	m_grpFid->setLayout(vbox);
 
 	vbox = new QVBoxLayout();
-	vbox->addWidget(m_chkShowAmplitude);
+	vbox->addWidget(m_chkShowEadAmplitude);
+	vbox->addWidget(m_chkShowEadTimeSpans);
+	vbox->addWidget(m_chkShowEadTimeStamps);
 	m_grpEad->setLayout(vbox);
 
 	QVBoxLayout* layout = new QVBoxLayout();
-	layout->addWidget(m_chkShowMarkers);
 	layout->addWidget(m_grpFid);
 	layout->addWidget(m_grpEad);
+	layout->addWidget(m_chkTime);
 	layout->addWidget(m_lblPeakTip);
 	layout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 	setLayout(layout);
 
 	Actions* actions = m_scope->actions();
 
-	m_chkShowMarkers->setChecked(actions->markersShow->isChecked());
-	m_chkShowTime->setChecked(actions->markersShowTime->isChecked());
-	m_chkShowArea->setChecked(actions->markersShowFidArea->isChecked());
-	m_chkShowAmplitude->setChecked(actions->markersShowEadAmplitude->isChecked());
+	m_grpFid->setCheckable(true);
+	m_grpFid->setChecked(actions->markersShowTimeMarkers->isChecked());
+	m_chkShowFidTime->setChecked(actions->markersShowFidPeakTime->isChecked());
+	m_chkShowFidArea->setChecked(actions->markersShowFidPeakArea->isChecked());
 	m_chkAutoDetect->setChecked(true);
-
 	m_cmbPeakFid->setToolTip(tr("Select an FID wave for peak editing"));
+
+	m_grpEad->setCheckable(true);
+	m_grpEad->setChecked(actions->markersShowEadPeakMarkers->isChecked());
+	m_chkShowEadAmplitude->setChecked(actions->markersShowEadPeakAmplitude->isChecked());
+	m_chkShowEadTimeSpans->setChecked(actions->markersShowEadPeakTimeSpans->isChecked());
+	m_chkShowEadTimeStamps->setChecked(actions->markersShowEadPeakTimeStamps->isChecked());
 
 	m_lblPeakTip->setText(tr(
 			"<b>Marker tips:</b><br/><br/>"
@@ -74,16 +86,35 @@ void TaskMarkersWidget::setupWidgets()
 	m_lblPeakTip->setWordWrap(true);
 	m_lblPeakTip->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
-	connect(m_chkShowMarkers, SIGNAL(toggled(bool)), actions->markersShow, SLOT(setChecked(bool)));
-	connect(m_chkShowTime, SIGNAL(toggled(bool)), actions->markersShowTime, SLOT(setChecked(bool)));
-	connect(m_chkShowArea, SIGNAL(toggled(bool)), actions->markersShowFidArea, SLOT(setChecked(bool)));
+	// FID -> action
+	connect(m_grpFid, SIGNAL(toggled(bool)), actions->markersShowFidPeakMarkers, SLOT(setChecked(bool)));
+	connect(m_chkShowFidTime, SIGNAL(toggled(bool)), actions->markersShowFidPeakTime, SLOT(setChecked(bool)));
+	connect(m_chkShowFidArea, SIGNAL(toggled(bool)), actions->markersShowFidPeakArea, SLOT(setChecked(bool)));
 	connect(m_chkAutoDetect, SIGNAL(toggled(bool)), this, SLOT(on_chkAutoDetect_toggled()));
 	connect(m_cmbPeakFid, SIGNAL(activated(int)), this, SLOT(on_cmbPeakFid_activated()));
-	connect(m_chkShowAmplitude, SIGNAL(toggled(bool)), actions->markersShowEadAmplitude, SLOT(setChecked(bool)));
-	connect(actions->markersShow, SIGNAL(toggled(bool)), this, SLOT(on_actions_markersShow_toggled()));
-	connect(actions->markersShowTime, SIGNAL(toggled(bool)), m_chkShowTime, SLOT(setChecked(bool)));
-	connect(actions->markersShowFidArea, SIGNAL(toggled(bool)), m_chkShowArea, SLOT(setChecked(bool)));
-	connect(actions->markersShowEadAmplitude, SIGNAL(toggled(bool)), m_chkShowAmplitude, SLOT(setChecked(bool)));
+
+	// EAD -> action
+	connect(m_grpEad, SIGNAL(toggled(bool)), actions->markersShowEadPeakMarkers, SLOT(setChecked(bool)));
+	connect(m_chkShowEadAmplitude, SIGNAL(toggled(bool)), actions->markersShowEadPeakAmplitude, SLOT(setChecked(bool)));
+	connect(m_chkShowEadTimeSpans, SIGNAL(toggled(bool)), actions->markersShowEadPeakTimeSpans, SLOT(setChecked(bool)));
+	connect(m_chkShowEadTimeStamps, SIGNAL(toggled(bool)), actions->markersShowEadPeakTimeStamps, SLOT(setChecked(bool)));
+
+	// Time -> action
+	connect(m_chkTime, SIGNAL(toggled(bool)), actions->markersShowTimeMarkers, SLOT(setChecked(bool)));
+
+	// Actions -> FID
+	connect(actions->markersShowFidPeakMarkers, SIGNAL(toggled(bool)), m_grpFid, SLOT(setChecked(bool)));
+	connect(actions->markersShowFidPeakTime, SIGNAL(toggled(bool)), m_chkShowFidTime, SLOT(setChecked(bool)));
+	connect(actions->markersShowFidPeakArea, SIGNAL(toggled(bool)), m_chkShowFidArea, SLOT(setChecked(bool)));
+
+	// Actions -> EAD
+	connect(actions->markersShowEadPeakMarkers, SIGNAL(toggled(bool)), m_grpEad, SLOT(setChecked(bool)));
+	connect(actions->markersShowEadPeakAmplitude, SIGNAL(toggled(bool)), m_chkShowEadAmplitude, SLOT(setChecked(bool)));
+	connect(actions->markersShowEadPeakTimeSpans, SIGNAL(toggled(bool)), m_chkShowEadTimeSpans, SLOT(setChecked(bool)));
+	connect(actions->markersShowEadPeakTimeStamps, SIGNAL(toggled(bool)), m_chkShowEadTimeStamps, SLOT(setChecked(bool)));
+
+	// Actions -> Time
+	connect(actions->markersShowTimeMarkers, SIGNAL(toggled(bool)), m_chkTime, SLOT(setChecked(bool)));
 
 	connect(m_scope, SIGNAL(fileChanged(EadFile*)), this, SLOT(updateCmbPeakFid()));
 	connect(m_scope, SIGNAL(taskTypeChanged(EadTask)), this, SLOT(updateCmbPeakFid()));
@@ -110,14 +141,6 @@ void TaskMarkersWidget::on_cmbPeakFid_activated()
 	m_idAutoDetect = m_cmbPeakFid->itemData(iItem).toInt();
 	if (m_idAutoDetect >= 0)
 		m_scope->setPeakModeRecId(m_idAutoDetect);
-}
-
-void TaskMarkersWidget::on_actions_markersShow_toggled()
-{
-	bool b = m_scope->actions()->markersShow->isChecked();
-	m_chkShowMarkers->setChecked(b);
-	m_grpFid->setEnabled(b);
-	m_grpEad->setEnabled(b);
 }
 
 void TaskMarkersWidget::on_scope_peakModeChanged()
