@@ -884,22 +884,49 @@ void ChartPixmap::drawMarkerType_EadPeak(QPainter &painter, ChartWaveInfo *cwi, 
 	pts1[2] = pts[1];
 	painter.drawPolyline(pts1, 3);
 
+	// Show amplitude
+	double nAmplitude = display[didxs[1]] - display[didxs[0]];
+	bool bUp = (nAmplitude >= 0);
 	if (m_params.eadMarkerElements.testFlag(ChartElementEadPeak_Amplitude)) {
-		double nAmplitude = display[didxs[1]] - display[didxs[0]];
-		double nPeakTime = double(didxs[1] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
-		QString s = QObject::tr("%0 mV\n%1");
+		QString s = QObject::tr("%0 mV");
 		if (nAmplitude >= 10)
 			s = s.arg(nAmplitude, 0, 'f', 0);
 		else if (nAmplitude >= 1)
 			s = s.arg(nAmplitude, 0, 'g', 3);
 		else
 			s = s.arg(nAmplitude, 0, 'g', 2);
-		s = s.arg(timestampString(nPeakTime));
 
-		int xText = pts[0].x();
-		int yText = pts[1].y() + 5;
-		QRect rc(xText, yText, 100, 100);
-		painter.drawText(rc, Qt::AlignLeft | Qt::AlignTop, s);
+		int xText = pts[0].x() - 3;
+		int yText = (pts[0].y() + pts[1].y()) / 2;
+		QRect rc(xText - 100, yText - 50, 101, 101);
+		painter.drawText(rc, Qt::AlignRight | Qt::AlignVCenter, s);
+	}
+
+	// Show time to peak
+	if (m_params.eadMarkerElements.testFlag(ChartElementEadPeak_TimeSpans)) {
+		double nPeakTime = double(didxs[1] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
+		QString s = timestampString(nPeakTime);
+
+		int xText = (pts[0].x() + pts[1].x()) / 2;
+		int yText = pts[1].y();
+		// Draw below the line for downward peaks
+		if (!bUp) {
+			yText += 5;
+			QRect rc(xText - 50, yText, 101, 101);
+			painter.drawText(rc, Qt::AlignHCenter | Qt::AlignTop, s);
+		}
+		// Draw above the line for upward peaks
+		else {
+			yText -= 5;
+			QRect rc(xText - 50, yText - 100, 101, 101);
+			painter.drawText(rc, Qt::AlignHCenter| Qt::AlignBottom, s);
+		}
+	}
+	else if (m_params.eadMarkerElements.testFlag(ChartElementEadPeak_TimeStamps)) {
+		int tidx0 = didxs[0] + vwi->shift();
+		int tidx1 = didxs[1] + vwi->shift();
+		drawMarkerTime(painter, pts[0], tidx0, !bUp, true);
+		drawMarkerTime(painter, pts[1], tidx1, bUp, true);
 	}
 
 	// Draw line for time to return to baseline
@@ -907,12 +934,29 @@ void ChartPixmap::drawMarkerType_EadPeak(QPainter &painter, ChartWaveInfo *cwi, 
 		CHECK_PRECOND_RET(peak.didxs.size() == 3);
 		painter.drawLine(pts[0], pts[2]);
 
-		double nReturnTime = double(didxs[2] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
-		QString s = timestampString(nReturnTime);
+		if (m_params.eadMarkerElements.testFlag(ChartElementEadPeak_TimeSpans)) {
+			double nReturnTime = double(didxs[2] - didxs[0]) / EAD_SAMPLES_PER_SECOND;
+			QString s = timestampString(nReturnTime);
 
-		int yText = qMin(pts[0].y(), pts[2].y()) - 5;
-		QRect rc(pts[1].x() - 100, yText - 100, 201, 100);
-		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, s);
+			int xText = (pts[0].x() + pts[2].x()) / 2;
+			int yText = qMin(pts[0].y(), pts[2].y());
+			// Draw above the line for downward peaks
+			if (!bUp) {
+				yText -= 5;
+				QRect rc(xText - 50, yText - 100, 101, 101);
+				painter.drawText(rc, Qt::AlignHCenter| Qt::AlignBottom, s);
+			}
+			// Draw below the line for upward peaks
+			else {
+				yText += 5;
+				QRect rc(xText - 50, yText, 101, 101);
+				painter.drawText(rc, Qt::AlignHCenter | Qt::AlignTop, s);
+			}
+		}
+		else if (m_params.eadMarkerElements.testFlag(ChartElementEadPeak_TimeStamps)) {
+			int tidx2 = didxs[2] + vwi->shift();
+			drawMarkerTime(painter, pts[2], tidx2, !bUp, true);
+		}
 	}
 
 	// Mark area handles
@@ -934,7 +978,8 @@ void ChartPixmap::drawMarkerType_FidPeak(QPainter& painter, ChartWaveInfo* cwi, 
 
 	QVector<QPoint> pts = getDidxPoints(vwi, didxs);
 
-	drawMarkerTime(painter, /*cwi, iPeak, 1,*/ pts[1], didxs[1] + vwi->shift());
+	bool bDrawText = m_params.fidMarkerElements.testFlag(ChartElementFidPeak_Time);
+	drawMarkerTime(painter, /*cwi, iPeak, 1,*/ pts[1], didxs[1] + vwi->shift(), true, bDrawText);
 
 	QPen penOld = painter.pen();
 
@@ -968,10 +1013,10 @@ void ChartPixmap::drawMarkerType_Time(QPainter& painter, ChartWaveInfo* cwi, int
 
 	CHECK_PRECOND_RET(didxs.size() == 1);
 	QVector<QPoint> pts = getDidxPoints(vwi, didxs);
-	drawMarkerTime(painter, /*cwi, iPeak, 0,*/ pts[0], didxs[0] + vwi->shift());
+	drawMarkerTime(painter, /*cwi, iPeak, 0,*/ pts[0], didxs[0] + vwi->shift(), true, true);
 }
 
-void ChartPixmap::drawMarkerTime(QPainter& painter, /*ChartWaveInfo* cwi, int iPeak, int iDidx,*/ const QPoint& pt, int tidx)
+void ChartPixmap::drawMarkerTime(QPainter& painter, /*ChartWaveInfo* cwi, int iPeak, int iDidx,*/ const QPoint& pt, int tidx, bool bUp, bool bDrawText)
 {
 	QPen penOld = painter.pen();
 
@@ -982,18 +1027,28 @@ void ChartPixmap::drawMarkerTime(QPainter& painter, /*ChartWaveInfo* cwi, int iP
 	painter.setPen(penTick);
 	int x = pt.x();
 	int y = pt.y();
-	painter.drawLine(x, y - 10, x, y);
-	//cwi->arcPeaksChosen << MarkerRect(QRect(x - 2, y - 10, 5, 11), iPeak, iDidx);
+	if (bUp)
+		painter.drawLine(x, y - 10, x, y);
+	else
+		painter.drawLine(x, y, x, y + 10);
 	painter.setPen(clr);
+	//cwi->arcPeaksChosen << MarkerRect(QRect(x - 2, y - 10, 5, 11), iPeak, iDidx);
 
 	// Draw time label on top of tick
-	if (m_params.fidMarkerElements.testFlag(ChartElementFidPeak_Time))
+	if (bDrawText)
 	{
 		double nSeconds = double(tidx) / EAD_SAMPLES_PER_SECOND;
 		QString sTime = timestampString(nSeconds);
-		QRect rc(x - 100, y - 111, 201, 100);
-		QRect rcTime;
-		painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, sTime, &rcTime);
+		if (bUp) {
+			QRect rc(x - 50, y - 110, 101, 101);
+			painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, sTime);
+		}
+		else {
+			QRect rc(x - 50, y + 11, 101, 101);
+			painter.drawText(rc, Qt::AlignHCenter | Qt::AlignTop, sTime);
+		}
+		//QRect rcTime;
+		//painter.drawText(rc, Qt::AlignHCenter | Qt::AlignBottom, sTime, &rcTime);
 		//rcTime.adjust(-3, -3, 3, 3);
 		//cwi->arcPeaksChosen << MarkerRect(rcTime, iPeak, iDidx);
 	}

@@ -225,7 +225,7 @@ private:
 	void drawMarkerType_Time(QPainter& painter, ChartWaveInfo* cwi, int iPeak);
 	void drawMarkerType_FidPeak(QPainter& painter, ChartWaveInfo* cwi, int iPeak);
 	void drawMarkerType_EadPeak(QPainter& painter, ChartWaveInfo* cwi, int iPeak);
-	void drawMarkerTime(QPainter& painter, /*ChartWaveInfo* cwi, int iPeak, int iDidx,*/ const QPoint& pt, int tidx);
+	void drawMarkerTime(QPainter& painter, /*ChartWaveInfo* cwi, int iPeak, int iDidx,*/ const QPoint& pt, int tidx, bool bUp, bool bDrawText);
 	void drawMarkerHandle(QPainter& painter, ChartWaveInfo* cwi, int iPeak, int iDidx, const QPoint& pt);
 	//void drawMarkerHandles(QPainter& painter, ChartWaveInfo* cwi, const QVector<QPoint>& pts);
 	QRect rectOfAreaHandle(ViewWaveInfo* vwi, int didx) const;

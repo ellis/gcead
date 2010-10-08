@@ -32,16 +32,17 @@ BIG STUFF FOR FUTURE:
 	x	BUG FID peaks: place time at top
 	x	BUG FID peaks: area line and text are red; should be blue
 	.	draw amplitude to the left the line
-4		EAD peaks: use new ead peak display flags
-5		EAD peaks: when "times" is selected, show time ticks
+	x	EAD peaks: use new ead peak display flags
+	x	EAD peaks: when "times" is selected, show time ticks
 6		context menu: add a time marker
 7		context menu: option to add 'z' measurement
 		adjust position of text like Ian suggested
 		test export of amplitude and retention data again
 		FUTURE: for recordings with digital waves, could we try to autodetect EAD peaks?
+		FUTURE: antialias the marker lines in Publish mode?
 	TaskMarkers:
 	x	Show FID Peaks: show time, show area
-	?	Show EAD Peaks: show amplitude, show time span(s), show times
+	x	Show EAD Peaks: show amplitude, show time span(s), show times
 	?	Show Time Markers
 	rename export actions
 	save the marker show selections to the .ead file
