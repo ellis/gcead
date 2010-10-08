@@ -372,7 +372,7 @@ void MainScope::addRecentFile(const QString& sFilename)
 
 void MainScope::updateRecentFileActions()
 {
-	CHECK_PRECOND_RET(Globals->recentFiles.count() < m_actions->fileOpenRecentActions.count());
+	CHECK_PRECOND_RET(Globals->recentFiles.count() <= m_actions->fileOpenRecentActions.count());
 
 	// Enable the recent files menu, if appropriate
 	setIsRecentFilesMenuEnabled(Globals->recentFiles.count() > 0);

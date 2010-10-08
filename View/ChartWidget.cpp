@@ -326,16 +326,7 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 				if (info.iChosenPeak < 0)
 					addMarker(vwi, m_ptClickPixmap.x());
 				else if (wave->peaksChosen[info.iChosenPeak].type == MarkerType_EadPeakXY) {
-					WavePeakChosenInfo& marker = vwi->waveInfo()->peaksChosen[info.iChosenPeak];
-					QList<int>& didxs = marker.didxs;
-					CHECK_ASSERT_NORET(didxs.size() == 2);
-					if (didxs.size() == 2) {
-						int d = didxs[1] - didxs[0];
-						int didx2 = didxs[1] + d;
-						didxs << didx2;
-						marker.type = MarkerType_EadPeakXYZ;
-						m_chartS->redraw();
-					}
+					addEadPeakXYEndPoint(vwi, info.iChosenPeak);
 				}
 			}
 		}
@@ -469,7 +460,7 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 		{
 			int x = pos.x() - m_rcPixmap.left();
 			int didx = m_pixmap->xToCenterSample(info.vwi->wave(), x);
-			moveMarkerHandle(wave, info.iChosenPeak, info.iMarkerDidx, didx);
+			moveMarkerHandle(vwi, info.iChosenPeak, info.iMarkerDidx, didx);
 		}
 		else if (wave != NULL)
 		{
@@ -592,35 +583,43 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		wave = vwi->wave();
 
 	QMenu menu(this);
-	QAction* actSettings = NULL;
-	QAction* actAddMarker = NULL;
+	QAction* actAddPeakEndPoint = NULL;
+	QAction* actAddPeakMarker = NULL;
+	QAction* actAddTimeMarker = NULL;
 	QAction* actRemoveMarker = NULL;
+	QAction* actSettings = NULL;
 	{
 		// Clicked on a chosen peak:
 		if (info.iChosenPeak >= 0)
 		{
-			actRemoveMarker = new QAction(tr("Remove Marker"), &menu);
-			menu.addAction(actRemoveMarker);
+			if (m_chartS->params().task == EadTask_Markers) {
+				actRemoveMarker = new QAction(tr("Remove Marker"), &menu);
+				menu.addAction(actRemoveMarker);
+				if (wave->peaksChosen[info.iChosenPeak].type == MarkerType_EadPeakXY) {
+					actAddPeakEndPoint = new QAction(tr("Add End-Point to Marker"), &menu);
+					menu.addAction(actAddPeakEndPoint);
+				}
+			}
 		}
 		// Clicked on a detected peak:
 		else if (info.didxPossiblePeak >= 0)
 		{
-			actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
-			menu.addAction(actAddMarker);
+			actAddPeakMarker = new QAction(tr("Add Peak Marker"), &menu);
+			menu.addAction(actAddPeakMarker);
 		}
 		// Clicked on a wave:
 		else if (wave != NULL)
 		{
-			actSettings = new QAction(tr("Settings..."), &menu);
 			menu.addAction(actSettings);
-			if (m_chartS->params().task == EadTask_Markers && (wave->type == WaveType_EAD || wave->type == WaveType_FID))
-			{
-				actAddMarker = new QAction(tr("Add Peak Marker"), &menu);
-				//QAction* act = m_mainS->actions()->markersEdit;
-				//actAddMarker->setEnabled(act->isEnabled() && act->isChecked());
-				//actAddMarker->setEnabled(act->isEnabled());
-				menu.addAction(actAddMarker);
+			if (m_chartS->params().task == EadTask_Markers) {
+				if (wave->type == WaveType_EAD || wave->type == WaveType_FID) {
+					actAddPeakMarker = new QAction(tr("Add Peak Marker"), &menu);
+					menu.addAction(actAddPeakMarker);
+				}
+				actAddTimeMarker = new QAction(tr("Add Time Marker"), &menu);
+				menu.addAction(actAddTimeMarker);
 			}
+			actSettings = new QAction(tr("Settings..."), &menu);
 		}
 		else if (rcWaveforms.contains(e->pos()))
 		{
@@ -638,21 +637,29 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		QAction* act = menu.exec(ptGlobal);
 		if (act == NULL)
 			;
-		else if (act == actSettings)
+		else if (act == actAddPeakEndPoint)
 		{
-			openWaveEditorDialog(vwi, ptGlobal);
+			addEadPeakXYEndPoint(vwi, info.iChosenPeak);
 		}
-		else if (act == actAddMarker)
+		else if (act == actAddPeakMarker)
 		{
 			if (info.didxPossiblePeak >= 0)
 				vwi->choosePeakAtDidx(info.didxPossiblePeak);
 			else
 				addMarker(vwi, ptPixmap.x());
 		}
+		else if (act == actAddTimeMarker)
+		{
+			addMarker(vwi, MarkerType_Time, ptPixmap.x());
+		}
 		else if (act == actRemoveMarker)
 		{
 			if (info.iChosenPeak >= 0)
 				vwi->unchoosePeakAtIndex(info.iChosenPeak);
+		}
+		else if (act == actSettings)
+		{
+			openWaveEditorDialog(vwi, ptGlobal);
 		}
 	}
 
@@ -725,13 +732,25 @@ void ChartWidget::addMarker(ViewWaveInfo* vwi, MarkerType markerType, int x)
 	vwi->choosePeak(peak);
 }
 
+void ChartWidget::addEadPeakXYEndPoint(ViewWaveInfo *vwi, int iPeak)
+{
+	WavePeakChosenInfo& marker = vwi->waveInfo()->peaksChosen[iPeak];
+	CHECK_ASSERT_RET(marker.didxs.size() == 2);
+
+	int d = marker.didxs[1] - marker.didxs[0];
+	int didx2 = marker.didxs[1] + d;
+
+	vwi->setMarkerPoint(iPeak, 2, didx2);
+	vwi->setMarkerType(iPeak, MarkerType_EadPeakXYZ);
+}
+
 void ChartWidget::setupMarkerType_EadPeakXY(const WaveInfo* wave, WavePeakChosenInfo& marker, int x)
 {
 	int didxLeft = m_pixmap->xToCenterSample(wave, x);
 	int didxMiddle = m_pixmap->xToCenterSample(wave, x + 20);
 	int didxEnd = m_pixmap->xToCenterSample(wave, m_pixmap->borderRect().right() - 1);
 
-	int didxMiddle2 = wave->findNextMin(didxLeft, didxEnd);
+	int didxMiddle2 = wave->findNextEadMin(didxLeft, didxEnd);
 	if (didxMiddle2 >= 0)
 		didxMiddle = didxMiddle2;
 
@@ -755,31 +774,9 @@ void ChartWidget::setupMarkerType_FidPeak(const WaveInfo* wave, WavePeakChosenIn
 	marker.didxs << didxLeft << didxMiddle << didxRight;
 }
 
-void ChartWidget::moveMarkerHandle(WaveInfo* wave, int iPeak, int iDidx, int didx)
+void ChartWidget::moveMarkerHandle(ViewWaveInfo* vwi, int iPeak, int iDidx, int didx)
 {
-	WavePeakChosenInfo& marker = wave->peaksChosen[iPeak];
-
-	// Bound didx value between their neighbors
-	int iDidxLast = marker.didxs.size() - 1;
-	if (iDidx > 0) {
-		didx = qMax(didx, marker.didxs[iDidx - 1] + 10);
-	}
-	if (iDidx < iDidxLast) {
-		didx = qMin(didx, marker.didxs[iDidx + 1] - 10);
-	}
-
-	marker.didxs[iDidx] = didx;
-
-	switch (marker.type) {
-	case MarkerType_FidPeak:
-		wave->calcPeakArea(iPeak);
-		wave->calcAreaPercents();
-		break;
-	default:
-		break;
-	}
-
-	m_chartS->redraw();
+	vwi->setMarkerPoint(iPeak, iDidx, didx);
 }
 
 void ChartWidget::openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal)

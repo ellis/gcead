@@ -76,6 +76,8 @@ void TaskMarkersWidget::setupWidgets()
 	m_chkShowEadTimeSpans->setChecked(actions->markersShowEadPeakTimeSpans->isChecked());
 	m_chkShowEadTimeStamps->setChecked(actions->markersShowEadPeakTimeStamps->isChecked());
 
+	m_chkTime->setChecked(actions->markersShowTimeMarkers->isChecked());
+
 	m_lblPeakTip->setText(tr(
 			"<b>Marker tips:</b><br/><br/>"
 			"<i>Create marker:</i><br/> Ctrl-Click wave<br/><br/>"

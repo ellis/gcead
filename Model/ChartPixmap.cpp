@@ -1014,6 +1014,12 @@ void ChartPixmap::drawMarkerType_Time(QPainter& painter, ChartWaveInfo* cwi, int
 	CHECK_PRECOND_RET(didxs.size() == 1);
 	QVector<QPoint> pts = getDidxPoints(vwi, didxs);
 	drawMarkerTime(painter, /*cwi, iPeak, 0,*/ pts[0], didxs[0] + vwi->shift(), true, true);
+
+	// Mark area handles
+	if (m_params.peakMode == EadMarkerMode_Edit) {
+		for (int iDidx = 0; iDidx < pts.size(); iDidx++)
+			drawMarkerHandle(painter, cwi, iPeak, iDidx, pts[iDidx]);
+	}
 }
 
 void ChartPixmap::drawMarkerTime(QPainter& painter, /*ChartWaveInfo* cwi, int iPeak, int iDidx,*/ const QPoint& pt, int tidx, bool bUp, bool bDrawText)

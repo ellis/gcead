@@ -142,12 +142,14 @@ public:
 	bool findFidPeak(int didxLeft, int didxRight, WavePeakInfo* peak) const;
 
 	//int indexOfMax(int didxLeft, int didxRight) const;
-	int findNextMin(int didxLeft, int didxRight) const;
+	int findNextEadMin(int didxLeft, int didxRight) const;
 
 	int indexOfChosenPeakAtDidx(int didx) const;
 	void choosePeakAtDidx(int didx);
 	void unchoosePeakAtIndex(int i);
 	//void unchoosePeakAtDidx(int didx);
+	void setMarkerType(int iMarker, MarkerType markerType);
+	void setMarkerPoint(int iMarker, int iDidx, int didx);
 
 	/// Call this if you've changed the indexes of a peak in order to recalculate the area under the curve.
 	void calcPeakArea(int iPeak);

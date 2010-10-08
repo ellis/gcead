@@ -325,7 +325,7 @@ void WaveInfo::findFidPeaks(const QList<WavePoint>& peaksAll, QList<WavePeakInfo
 	}
 }
 
-int WaveInfo::findNextMin(int didxLeft, int didxRight) const
+int WaveInfo::findNextEadMin(int didxLeft, int didxRight) const
 {
 	if (didxLeft < 0)
 		didxLeft = 0;
@@ -364,8 +364,14 @@ int WaveInfo::findNextMin(int didxLeft, int didxRight) const
 		if (didxMin == didx0 + radius) {
 			// Make sure that we're not selecting an area which has already been chosen
 			foreach (const WavePeakChosenInfo& peak, peaksChosen) {
-				if (peak.didxs[0] <= didxMin && didxMin <= peak.didxs[1])
-					return -1;
+				if (peak.type == MarkerType_EadPeakXY) {
+					if (peak.didxs[0] <= didxMin && didxMin <= peak.didxs[1])
+						return -1;
+				}
+				else if (peak.type == MarkerType_EadPeakXYZ) {
+					if (peak.didxs[0] <= didxMin && didxMin <= peak.didxs[2])
+						return -1;
+				}
 			}
 
 			return didxMin;
@@ -556,6 +562,45 @@ void WaveInfo::unchoosePeakAtIndex(int i)
 				break;
 			}
 		}
+	}
+}
+
+void WaveInfo::setMarkerType(int iMarker, MarkerType markerType)
+{
+	CHECK_PARAM_RET(iMarker >= 0 && iMarker < peaksChosen.size());
+	peaksChosen[iMarker].type = markerType;
+}
+
+void WaveInfo::setMarkerPoint(int iMarker, int iDidx, int didx)
+{
+	CHECK_PARAM_RET(iMarker >= 0 && iMarker < peaksChosen.size());
+	CHECK_PARAM_RET(iDidx >= 0 && iDidx <= peaksChosen[iMarker].didxs.size());
+
+	WavePeakChosenInfo& marker = peaksChosen[iMarker];
+
+	if (iDidx < marker.didxs.size()) {
+		// Bound didx value between their neighbors
+		int iDidxLast = marker.didxs.size() - 1;
+		if (iDidx > 0) {
+			didx = qMax(didx, marker.didxs[iDidx - 1] + 10);
+		}
+		if (iDidx < iDidxLast) {
+			didx = qMin(didx, marker.didxs[iDidx + 1] - 10);
+		}
+		// Set
+		marker.didxs[iDidx] = didx;
+	}
+	else {
+		// Make sure didx is greater than last one
+		if (iDidx > 0) {
+			didx = qMax(didx, marker.didxs.last() + 10);
+		}
+		marker.didxs << didx;
+	}
+
+	if (marker.type == MarkerType_FidPeak) {
+		calcPeakArea(iMarker);
+		calcAreaPercents();
 	}
 }
 

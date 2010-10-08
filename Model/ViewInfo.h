@@ -76,6 +76,9 @@ public:
 	void choosePeakAtDidx(int didx);
 	void unchoosePeakAtIndex(int i);
 
+	void setMarkerType(int iMarker, MarkerType markerType);
+	void setMarkerPoint(int iMarker, int iDidx, int didx);
+
 private:
 	void boundDidx(int& didx);
 	void emitChanged(ViewChangeEvents e);

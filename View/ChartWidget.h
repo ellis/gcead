@@ -68,9 +68,10 @@ private:
 
 	void addMarker(ViewWaveInfo* vwi, int x);
 	void addMarker(ViewWaveInfo* vwi, MarkerType markerType, int x);
+	void addEadPeakXYEndPoint(ViewWaveInfo* vwi, int iPeak);
 	void setupMarkerType_EadPeakXY(const WaveInfo* wave, WavePeakChosenInfo& marker, int x);
 	void setupMarkerType_FidPeak(const WaveInfo* wave, WavePeakChosenInfo& marker, int x);
-	void moveMarkerHandle(WaveInfo* wave, int iPeak, int iDidx, int didx);
+	void moveMarkerHandle(ViewWaveInfo* vwi, int iPeak, int iDidx, int didx);
 	void openWaveEditorDialog(ViewWaveInfo* vwi, const QPoint& ptGlobal);
 	void updateStatus();
 

@@ -185,6 +185,20 @@ void ViewWaveInfo::unchoosePeakAtIndex(int i)
 	emitChanged(ViewChangeEvent_Paint);
 }
 
+void ViewWaveInfo::setMarkerType(int iMarker, MarkerType markerType)
+{
+	CHECK_PRECOND_RET(m_wave != NULL);
+	m_wave->setMarkerType(iMarker, markerType);
+	emitChanged(ViewChangeEvent_Paint);
+}
+
+void ViewWaveInfo::setMarkerPoint(int iMarker, int iDidx, int didx)
+{
+	CHECK_PRECOND_RET(m_wave != NULL);
+	m_wave->setMarkerPoint(iMarker, iDidx, didx);
+	emitChanged(ViewChangeEvent_Paint);
+}
+
 void ViewWaveInfo::emitChanged(ViewChangeEvents e)
 {
 	CHECK_PRECOND_RET(m_view != NULL);

@@ -17,10 +17,6 @@ class TaskMarkersWidget : public TaskWidget
 public:
 	TaskMarkersWidget(MainScope* scope, QWidget *parent = 0);
 
-signals:
-
-public slots:
-
 private:
 	void setupWidgets();
 
