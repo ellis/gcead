@@ -12,6 +12,9 @@ BIG STUFF FOR FUTURE:
 	Any good way to use a state machine?
 ------------
 
+x	Test for correct voltage levels between IDAC2 and IDAC4
+2	Create my own Autospike recordings for testing ASC import
+
 	Import ASC file from Autospike
 	?	ImportRecordDialog: add stretch widget to right sight
 	?	ImportRecordDialog: add OK and Cancel buttons (in platform-dependent order?)
@@ -40,34 +43,28 @@ BIG STUFF FOR FUTURE:
 	x	when marker type is changed to EadPeakXYZ, mark file as dirty
 	x	update marker help text
 	x	test export of amplitude and retention data again
-		FUTURE: for recordings with digital waves, could we try to autodetect EAD peaks?
-		FUTURE: antialias the marker lines in Publish mode?
 x	BUG: why is "Open Recent" grayed out?
-	Ian's request for space at end while recording
 	TaskMarkers:
 	x	Show FID Peaks: show time, show area
 	x	Show EAD Peaks: show amplitude, show time span(s), show times
 	x	Show Time Markers
 x	rename export actions
--	save the marker show selections to the .ead file
 x	test loading of saved markers
-	REFACTOR: Remove enum EadMarkerMode?
 x	show voltage of current wave in status bar
 	Add libusbmac.mak
 
 x	Fix "RECORDING: ??.??" size
 x	Feedback 1 from Ian
 x	don't let user add markers with right-click menu unless in Markers mode
-	Filters:
+x	Filters:
 x		create filter task widget
 x		create variables to indicate filtering
 x		add Filters project to .pro file
 x		add function calls to perform filtering in WaveInfo::calcDisplayData()
-.		when filtering is enabled/disabled:
+x		when filtering is enabled/disabled:
 		x	recalculate display
 		x	recalculate peaks
 		x	recalculate averages
-			redraw graph
 x	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
 x	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
 x	MarkersWidget: why is there such a large bottom border?
@@ -134,11 +131,10 @@ x	integrate filter code into GcEad
 	Question for Peter:
 		should I drop "min" unit from time when the unit is minutes?
 		is the thicker tick what you had in mind?
-		import of .aspk files?  Soon we should consider adding more advanced file handling.
 	
-	Ian's suggestion about timebase
-	improve selecting region for zoom-in so that user can zoom factor isn't so much larger sometimes
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
+	Ian's suggestion about timebase (make it obvious that timebase refers to grid width)
+	improve selecting region for zoom-in so that zoom factor isn't so large sometimes
 	Import Autospike files (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of old EAG files
@@ -208,10 +204,6 @@ Windows 7 x64 USB:
 DONE:
 
 	INSTALLER:
-		MAC:
-			offer to start program after installation
-			how to install libusb on mac? (see http://www.ellert.se/twain-sane/)
-			readme for mac about libusb?
 		WINDOWS:
 			verify libusb on vista
 	IDAC2
@@ -252,13 +244,14 @@ FUTURE STUFF suggested by Peter:
 	Import .aspk files (along with dialog to select which waves)
 	Add band-pass filter from EAD program
 
-FUTURE STUFF: doesn't fit in this contract, but should be done as soon as possible
+FUTURE STUFF:
+	for recordings with digital waves, could we try to autodetect EAD peaks?
 	add programmer documentation to IdacDriver* projects
-
-FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement later
 	Markers Edit; click Add; move marker; remove marker: autodetect of peak should be re-added?
 	BUG: Load Sample Project, edit it, Save As over an existing file: should ask for overwrite confirmation!  Appears to be a Qt or KDE bug, because other applications have the same problem, and I think it might have worked correctly in windows -- 2010-05-05.
 	integrate RecordHandler into Idac/ or IdacDriver/ (and delete RecordHandler)
+	EadFile: redraw graph when filters change
+	ChartWidget: antialias the marker lines in Publish mode
 	ChartWidget: vertical "crosshair" line
 	ChartWidget: When changing number of horizontal divisions in Publish task, move the scrollbar appropriately
 	ChartWidget: When the user first presses Ctrl, update the mouse cursor if appropriate (i.e., about to set a peak)
@@ -288,6 +281,7 @@ FUTURE STUFF: doesn't belong in this contract, but might be done as a refinement
 	WaveEditorWidget: add a wave color?
 	WaveEditorWidget: let user edit name
 
+	REFACTOR: Remove enum EadMarkerMode?
 	Refactor: ChartPixmap: remove knowledge of the current EadTask (perform task-specific logic via other variables)
 	Refactor: ChartScope: remove knowledge of the current EadTask (perform task-specific logic via other variables)
 	Refactor: MainScope: move File|Open Recent from MainWindow to MainScope

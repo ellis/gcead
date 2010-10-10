@@ -40,8 +40,8 @@ using namespace std;
 
 extern INTEL_HEX_RECORD g_firmwareIdacDriver2[];
 
-/// Voltage in uVolt
-#define MAX_INPUT_VOLTAGE_ADC 1000000
+/// Maximum input voltage in uVolt (the range is twice this value)
+#define MAX_INPUT_VOLTAGE_ADC 5000000
 
 static int dwRangesList[IDAC_SCALERANGECOUNT+1] =
 {
