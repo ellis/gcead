@@ -452,14 +452,24 @@ void IdacDriver2::sampleLoop()
 					CHECK_ASSERT_NORET((parts[3] & 0x80) != 0);
 					CHECK_ASSERT_NORET((parts[4] & 0x80) != 0);
 
+					// The data in the 5-byte packet is distributed as follows:
+					// - 'A' bits are for analog channel 1
+					// - 'B' bits are for analog channel 2
+					// - 'D' bits are for the digital channels
+					// parts[0]	1AAAAAAA
+					// parts[1]	0AAAAAAA
+					// parts[2]	0AABBBBB
+					// parts[3]	0BBBBBBB
+					// parts[4]	0BBBBDDD
+
 					for (int i = 0; i < 5; i++)
 						parts[i] &= 0x7f;
 
 					short analog1 = -((parts[0] << 9) | (parts[1] << 2) | (parts[2] >> 5));
 					short analog2 = -(((parts[2] & 0x1f) << 11) | (parts[3] << 4) | (parts[4] >> 3));
 					short digital = 0;
-					digital |= ((parts[4] & 0x02) > 0);
-					digital |= ((parts[4] & 0x01) > 0) << 1;
+					digital |= ((parts[4] & 0x02) > 0); // Trigger
+					digital |= ((parts[4] & 0x05) > 0) << 1; // Signal?
 					digital = ~digital;
 
 					/*

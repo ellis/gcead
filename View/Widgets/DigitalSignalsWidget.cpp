@@ -106,7 +106,7 @@ void DigitalSignalsWidget::paintChannels(QPainter& p, int i0, int i1)
 void DigitalSignalsWidget::paintChannel(QPainter& p, uchar mask, int y, const QColor& clr, int i0, int i1)
 {
 	int xMax = width() - 1;
-	int xPrev = i0;
+	int xPrev = int(xMax * double(i0) / (m_nSamples - 1)) + 1;
 	for (int i = i0 + 1; i < i1; i++)
 	{
 		bool b = ((m_data[i] & mask) != 0);
