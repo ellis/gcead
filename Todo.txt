@@ -13,7 +13,20 @@ BIG STUFF FOR FUTURE:
 ------------
 
 x	Test for correct voltage levels between IDAC2 and IDAC4
-2	Create my own Autospike recordings for testing ASC import
+.	Create my own Autospike recordings for testing ASC import
+		msex_test.asc EAD:
+			-8390 to 1996 (height is 76% of 3 units ~= 4.6mV)
+			f1 = 116.364313
+			a1 = 10386
+			r1 = a1/f1 = 89.254
+		msex_test.asc FID:
+			-3 to 10719 (height is 75% of 3 units)
+		recording.asc EAD:
+			min/max: -3083 to 417
+			347 to -3009 = 3356 = 8.8mV
+			f2 = 11.636431
+			a2 = 3356
+			r2 = a2/f2 = 288.40
 
 	Import ASC file from Autospike
 	?	ImportRecordDialog: add stretch widget to right sight
@@ -132,10 +145,10 @@ x	integrate filter code into GcEad
 		should I drop "min" unit from time when the unit is minutes?
 		is the thicker tick what you had in mind?
 	
+x	BUG: RecordDialog: digital signals have some display bugs on the tail part of the display
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
 	Ian's suggestion about timebase (make it obvious that timebase refers to grid width)
 	improve selecting region for zoom-in so that zoom factor isn't so large sometimes
-	Import Autospike files (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of old EAG files
 	x	EAD wave
@@ -201,11 +214,9 @@ Windows 7 x64 USB:
 	Could IDAC4 firmware be re-written to not use isochronous transfer, so that WinUSB could be used?
 	Could IDAC firmware be rewritten to implement a "Communication Class", in particular "Asynchronous Transfer Mode", and then use the standard Windows driver?
 
-DONE:
+BEFORE A RELEASE:
 
 	INSTALLER:
-		WINDOWS:
-			verify libusb on vista
 	IDAC2
 	?	IdacDriver2: get inverted status correct
 		handle 0x7ffe (or whatever the reset code is)? (only if I can look at the original code which generated/handled 0x7ffe)
@@ -216,7 +227,6 @@ DONE:
 		is the decimation value really right for IDAC2?
 		run through a couple use-cases
 	FOR PETER:
-		USB drivers CANNOT co-exist with old drivers
 		IDAC2: same signal on INPUT 2 reads about 10x smaller than on INPUT 1...
 		IDAC2: when I set ext amp=1, signal on INPUT 1 is *2mV* peak to peak
 		IDAC4: when I set ext amp=10, signal on INPUT 1 is *1mV* peak to peak
@@ -241,7 +251,7 @@ DONE:
 		upload EXEs to sourceforge
 
 FUTURE STUFF suggested by Peter:
-	Import .aspk files (along with dialog to select which waves)
+	Import .aspk files (along with dialog to select which waves) (see Aspkdoc.cpp, CAutoSpkDoc::Serialize)
 	Add band-pass filter from EAD program
 
 FUTURE STUFF:
