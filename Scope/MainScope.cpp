@@ -479,6 +479,59 @@ void MainScope::open(const QString& _sFilename)
 {
 	EadFile* file = load(_sFilename, false);
 	if (file != NULL) {
+		// This is a fix for a problem with old IDAC2 recordings where the RawToVoltage factor was 5x too low
+		// We have the difficulty that we can't distinguish between IDAC2 and IDAC4v1.
+		#define	WRONG 1000000
+		static const int anWrong[6] = { WRONG / 1, WRONG / 4, WRONG / 16, WRONG / 64, WRONG / 256, WRONG / 1024 };
+		#define	RIGHT 5000000
+		static const int anRight[6] = { RIGHT / 1, RIGHT / 4, RIGHT / 16, RIGHT / 64, RIGHT / 256, RIGHT / 1024 };
+		bool bTooLow = false;
+		foreach (RecInfo* rec, file->recs()) {
+			foreach (WaveInfo* wave, rec->waves()) {
+				if (wave != NULL) {
+					for (int i = 0; i < 6; i++) {
+						if (anWrong[i] == wave->nRawToVoltageFactorNum) {
+							bTooLow = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (bTooLow) {
+			QMessageBox::StandardButton res = m_ui->question(
+					tr("Was this recorded with an IDAC-2?"),
+					tr("Was this recording acquired from an IDAC-2?  If so, prior versions of GcEad/2010 improperly displayed the waves at 1/5th of their actual value.  Please click [Yes] to correct the values, or [No] to ignore."),
+					QMessageBox::Yes | QMessageBox::No);
+			if (res == QMessageBox::Yes) {
+				QList<ViewInfo*> views;
+				views << file->viewInfo(EadView_Averages) << file->viewInfo(EadView_EADs) << file->viewInfo(EadView_FIDs) << file->viewInfo(EadView_All) << file->viewInfo(EadView_Recording);
+				foreach (RecInfo* rec, file->recs()) {
+					foreach (WaveInfo* wave, rec->waves()) {
+						if (wave != NULL) {
+							for (int i = 0; i < 6; i++) {
+								if (anWrong[i] == wave->nRawToVoltageFactorNum) {
+									wave->nRawToVoltageFactorNum = anRight[i];
+									wave->nRawToVoltageFactor *= 5;
+									foreach (ViewInfo* view, views) {
+										foreach (ViewWaveInfo* vwi, view->allVwis()) {
+											if (vwi->waveInfo() == wave) {
+												vwi->changeVoltsPerDivision(2);
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
+				file->updateDisplay();
+				file->updateAveWaves();
+				file->setDirty();
+			}
+		}
+
 		setFile(file);
 	}
 }

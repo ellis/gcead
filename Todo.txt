@@ -28,6 +28,10 @@ x	Test for correct voltage levels between IDAC2 and IDAC4
 			a2 = 3356
 			r2 = a2/f2 = 288.40
 
+	Today (2010-10-16):
+	x	hide import of ASC files
+	x	recognize old IDAC2 files and show IDAC2 fix dialog
+
 	Import ASC file from Autospike
 	?	ImportRecordDialog: add stretch widget to right sight
 	?	ImportRecordDialog: add OK and Cancel buttons (in platform-dependent order?)
@@ -147,6 +151,7 @@ x	integrate filter code into GcEad
 	
 x	BUG: RecordDialog: digital signals have some display bugs on the tail part of the display
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
+	BUG (maybe): record a wave; Ave view; zoom in on EAD AVE wave; Stop and Save; reopen file; EAD Ave wave might not have kept its sensitivty
 	Ian's suggestion about timebase (make it obvious that timebase refers to grid width)
 	improve selecting region for zoom-in so that zoom factor isn't so large sometimes
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
@@ -159,11 +164,6 @@ x	BUG: RecordDialog: digital signals have some display bugs on the tail part of 
 	?	import all records from another EAD file
 		test importing from both GcEad/2010 and the old EAD program
 		but: also need to let user delete waves then?
-*	Output the steigung of the EAD peak in the CSV file
-		amplitude
-		dauer
-		steigung nach unten
-		steigung nach oben
 	Create unit tests
 	x	load sample project
 	x	charts

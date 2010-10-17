@@ -354,7 +354,8 @@ void MainWindow::actions_fileImport_triggered()
 		this,
 		QObject::tr("Import Wave from Another Project"),
 		sLastDir,
-		QObject::tr("GC-EAD and ASC files (*.ead *.asc)"));
+		//QObject::tr("GC-EAD and ASC files (*.ead *.asc)"));
+		QObject::tr("GC-EAD files (*.ead)"));
 
 	if (sFilename.isEmpty())
 		return;
