@@ -6,7 +6,9 @@
 #include "WaveProcess.h"
 #include "AutoCov.h"
 
-#include <malloc.h>
+#ifndef Q_WS_MAC
+//#include <malloc.h>
+#endif
 #include <math.h>
 
 #include "fft.h"
