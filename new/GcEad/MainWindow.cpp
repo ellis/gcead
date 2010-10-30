@@ -1,7 +1,10 @@
 #include "MainWindow.h"
 
-#include "ProjectData.h"
+#include <QTableView>
+
 #include "Project.h"
+#include "ProjectData.h"
+#include "ProjectTableModel.h"
 #include "WaveData.h"
 #include "WaveProxy.h"
 
@@ -11,6 +14,32 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ProjectData* projD = new ProjectData();
 	Project* proj = new Project(projD, this);
+
+	WaveData* waveD;
+
+	waveD = new WaveData();
+	waveD->setName("One");
+	waveD->setComment("Yay");
+	waveD->setSensitivity(1);
+	projD->addWaveData(waveD);
+
+	waveD = new WaveData();
+	waveD->setName("Two");
+	waveD->setComment("Yay");
+	waveD->setSensitivity(2);
+	projD->addWaveData(waveD);
+
+	ProjectTableModel* model = new ProjectTableModel(this);
+	model->setProject(proj);
+	model->setTable("wave");
+	model->setProperties(QStringList() << "name" << "comment" << "sensitivity");
+	model->setRows(QList<int>() << 1 << 2);
+
+	QTableView* tbl;
+	tbl = new QTableView();
+	tbl->setModel(model);
+
+	setCentralWidget(tbl);
 
 	// TODO:
 	// - add some sample waves to the project

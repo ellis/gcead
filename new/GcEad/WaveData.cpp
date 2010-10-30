@@ -4,6 +4,13 @@
 WaveData::WaveData(QObject *parent)
 	: QObject(parent)
 {
+	m_id = 0;
+	m_recId = 0;
+	m_typeId = 0;
+	m_nRate = 0;
+	m_nOffset = 0;
+	m_nSensitivity = 0;
+	m_nShift = 0;
 }
 
 void WaveData::setId(int id) {

@@ -15,11 +15,13 @@ SOURCES += main.cpp\
     WaveData.cpp \
     ProjectData.cpp \
     WaveProxy.cpp \
-    Project.cpp
+    Project.cpp \
+    ProjectTableModel.cpp
 
 HEADERS  += MainWindow.h \
     WaveData.h \
     ProjectData.h \
     Check.h \
     WaveProxy.h \
-    Project.h
+    Project.h \
+    ProjectTableModel.h

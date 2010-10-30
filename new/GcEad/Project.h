@@ -34,6 +34,7 @@ public:
 public:
 	explicit Project(ProjectData* projD, QObject *parent = 0);
 
+	QVariant getProperty(const QString& sTable, int id, const QString& sProperty);
 	bool cmdSetProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v);
 
 signals:
@@ -45,7 +46,6 @@ public slots:
 private:
 	friend class SetPropertyCommand;
 
-	QVariant getProperty(const QString& sTable, int id, const QString& sProperty);
 	void setProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v);
 
 private:

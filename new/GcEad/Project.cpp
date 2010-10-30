@@ -23,7 +23,7 @@ void Project::SetPropertyCommand::undo() {
 Project::Project(ProjectData* projD, QObject* parent)
 	: QObject(parent), m_projD(projD)
 {
-
+	m_commands = new QUndoStack(this);
 }
 
 bool Project::cmdSetProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v) {
@@ -65,7 +65,7 @@ void Project::setProperty(const QString& sTable, int id, const QString& sPropert
 	CHECK_ASSERT_RET(o != NULL)
 
 	bool b = o->setProperty(sProperty.toLatin1(), v);
-	CHECK_ASSERT_RET(b)
+	//CHECK_ASSERT_RET(b)
 
 	emit wavePropertyChanged(id, sProperty);
 	emit propertyChanged(sTable, id, sProperty);

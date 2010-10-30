@@ -15,9 +15,14 @@ class ProjectData : public QObject
 public:
 	explicit ProjectData(QObject* parent = NULL);
 
+	void addWaveData(WaveData* wave);
 	WaveData* getWaveData(int waveId);
 
 private:
+	int nextWaveId();
+
+private:
+	int m_waveIdNext;
 	QList<WaveData*> m_waves;
 };
 
