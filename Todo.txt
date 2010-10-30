@@ -21,6 +21,8 @@ BIG STUFF FOR FUTURE:
 	Any good way to use a state machine?
 ------------
 
+	Add support for Engineering Spirit drivers:
+		http://en.wikipedia.org/wiki/Dynamic-link_library#C_and_C.2B.2B_2
 x	Test for correct voltage levels between IDAC2 and IDAC4
 .	Create my own Autospike recordings for testing ASC import
 		msex_test.asc EAD:
