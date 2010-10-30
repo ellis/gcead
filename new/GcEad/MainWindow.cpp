@@ -5,6 +5,7 @@
 #include <QTreeView>
 #include <QUndoView>
 
+#include "ObjectPropertiesModel.h"
 #include "Project.h"
 #include "ProjectData.h"
 #include "ProjectTableModel.h"
@@ -33,19 +34,24 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m_proj = new Project(projD, this);
 
-	ProjectTableModel* model = new ProjectTableModel(this);
-	model->setProject(m_proj);
-	model->setTable("wave");
-	model->setProperties(QStringList() << "name" << "comment" << "sensitivity");
-	model->setRows(QList<int>() << 1 << 2);
+	ProjectTableModel* tableModel = new ProjectTableModel(this);
+	tableModel->setProject(m_proj);
+	tableModel->setTable("wave");
+	tableModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
+	tableModel->setRows(QList<int>() << 1 << 2);
+
+	WaveProxy* proxy = new WaveProxy(m_proj, waveD, this);
+	ObjectPropertiesModel* objModel = new ObjectPropertiesModel(this);
+	objModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
+	objModel->addObject(proxy);
 
 	QGridLayout* layout = new QGridLayout();
 	QTableView* tbl;
 	tbl = new QTableView();
-	tbl->setModel(model);
+	tbl->setModel(tableModel);
 	layout->addWidget(tbl, 0, 0);
 	QTreeView* tree = new QTreeView();
-	tree->setModel(model);
+	tree->setModel(objModel);
 	layout->addWidget(tree, 0, 1);
 
 	QWidget* w = new QWidget();

@@ -16,7 +16,8 @@ SOURCES += main.cpp\
     ProjectData.cpp \
     WaveProxy.cpp \
     Project.cpp \
-    ProjectTableModel.cpp
+    ProjectTableModel.cpp \
+    ObjectPropertiesModel.cpp
 
 HEADERS  += MainWindow.h \
     WaveData.h \
@@ -24,4 +25,5 @@ HEADERS  += MainWindow.h \
     Check.h \
     WaveProxy.h \
     Project.h \
-    ProjectTableModel.h
+    ProjectTableModel.h \
+    ObjectPropertiesModel.h

@@ -41,6 +41,7 @@ public:
 	double shift() const;
 
 signals:
+	//void propertyChanged(const QString& sPropertyName);
 	void idChanged();
 	void recIdChanged();
 	void typeIdChanged();
