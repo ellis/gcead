@@ -1,5 +1,5 @@
-#ifndef PROJECT_H
-#define PROJECT_H
+#ifndef __PROJECT_H
+#define __PROJECT_H
 
 #include <QObject>
 #include <QPointer>
@@ -34,6 +34,8 @@ public:
 public:
 	explicit Project(ProjectData* projD, QObject *parent = 0);
 
+	QUndoStack* undoStack() { return m_commands; }
+
 	QVariant getProperty(const QString& sTable, int id, const QString& sProperty);
 	bool cmdSetProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v);
 
@@ -54,4 +56,4 @@ private:
 
 };
 
-#endif // PROJECT_H
+#endif

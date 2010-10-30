@@ -7,6 +7,7 @@ Project::SetPropertyCommand::SetPropertyCommand(Project* proj, const QString& sT
 	CHECK_PARAM_NORET(!this->proj.isNull())
 	CHECK_PARAM_NORET(vOld.isValid())
 	CHECK_PARAM_NORET(vNew.isValid())
+	setText("Set " + sTable + " " + sProperty);
 }
 
 void Project::SetPropertyCommand::redo() {
@@ -67,6 +68,8 @@ void Project::setProperty(const QString& sTable, int id, const QString& sPropert
 	bool b = o->setProperty(sProperty.toLatin1(), v);
 	//CHECK_ASSERT_RET(b)
 
-	emit wavePropertyChanged(id, sProperty);
-	emit propertyChanged(sTable, id, sProperty);
+	if (b) {
+		emit wavePropertyChanged(id, sProperty);
+		emit propertyChanged(sTable, id, sProperty);
+	}
 }

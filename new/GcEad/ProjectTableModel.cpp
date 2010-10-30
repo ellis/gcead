@@ -64,7 +64,7 @@ QVariant ProjectTableModel::data(const QModelIndex &index, int role) const
 	if (m_proj.isNull() || m_sTable.isEmpty() || index.row() >= m_anRows.size())
 		return QVariant();
 
-	if (role == Qt::DisplayRole) {
+	if (role == Qt::DisplayRole || role == Qt::EditRole) {
 		int iRow = m_anRows[index.row()];
 		return m_proj->getProperty(m_sTable, iRow, m_asProperties[index.column()]);
 	}

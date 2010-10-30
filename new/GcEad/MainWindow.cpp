@@ -1,6 +1,9 @@
 #include "MainWindow.h"
 
+#include <QGridLayout>
 #include <QTableView>
+#include <QTreeView>
+#include <QUndoView>
 
 #include "Project.h"
 #include "ProjectData.h"
@@ -13,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
 	ProjectData* projD = new ProjectData();
-	Project* proj = new Project(projD, this);
 
 	WaveData* waveD;
 
@@ -29,17 +31,28 @@ MainWindow::MainWindow(QWidget *parent)
 	waveD->setSensitivity(2);
 	projD->addWaveData(waveD);
 
+	m_proj = new Project(projD, this);
+
 	ProjectTableModel* model = new ProjectTableModel(this);
-	model->setProject(proj);
+	model->setProject(m_proj);
 	model->setTable("wave");
 	model->setProperties(QStringList() << "name" << "comment" << "sensitivity");
 	model->setRows(QList<int>() << 1 << 2);
 
+	QGridLayout* layout = new QGridLayout();
 	QTableView* tbl;
 	tbl = new QTableView();
 	tbl->setModel(model);
+	layout->addWidget(tbl, 0, 0);
+	QTreeView* tree = new QTreeView();
+	tree->setModel(model);
+	layout->addWidget(tree, 0, 1);
 
-	setCentralWidget(tbl);
+	QWidget* w = new QWidget();
+	w->setLayout(layout);
+	setCentralWidget(w);
+
+	createUndoView();
 
 	// TODO:
 	// - add some sample waves to the project
@@ -54,4 +67,12 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 
+}
+
+void MainWindow::createUndoView()
+{
+	QUndoView* undoView = new QUndoView(m_proj->undoStack());
+	undoView->setWindowTitle(tr("Command List"));
+	undoView->show();
+	undoView->setAttribute(Qt::WA_QuitOnClose, false);
 }
