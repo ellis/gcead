@@ -1,7 +1,7 @@
 <project>
     <shortName>GcEad</shortName>
     <fullName>GC-EAD 2010</fullName>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <installerFilename></installerFilename>
     <allowComponentSelection>1</allowComponentSelection>
     <enableRollback>1</enableRollback>

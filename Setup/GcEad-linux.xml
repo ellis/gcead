@@ -1,7 +1,7 @@
 <project>
 	<shortName>GcEad</shortName>
 	<fullName>GC-EAD</fullName>
-	<version>1.1</version>
+	<version>1.2.1</version>
 	<installerFilename></installerFilename>
 	<a2555a>1</a2555a>
 	<allowComponentSelection>1</allowComponentSelection>
@@ -74,7 +74,7 @@
 					<platforms>linux</platforms>
 					<distributionFileList>
 						<distributionFile>
-							<origin>../release/GcEad</origin>
+							<origin>../../GcEad-build-desktop/release/GcEad</origin>
 						</distributionFile>
 						<distributionFile>
 							<origin>libs/libgcc_s.so.1</origin>

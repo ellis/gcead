@@ -1,4 +1,13 @@
 BIG STUFF FOR FUTURE:
+	Check out next:
+		models for QTableView
+		undo/redo
+		create task views
+		create QML task views?
+		see how these views work out with an MVP framework?
+		use QSqlite for project file
+		write all edits to a recovery file
+		create an even more abstract Command class that is for both edits and non-edits, and save these so that we can get a more detailed log of the user's actions.
 	Refactor program structure:
 		Use commands for all edits
 		Use data/model/view paradigm better
@@ -131,7 +140,7 @@ x	integrate filter code into GcEad
 		each column of each row emits a change signal
 		when the column of a row changes, the row emits a columnChanged() signal
 		rows know nothing about their tables or parent objects
-		tables capture all columnChanged() signals and emits rowColumnChanged()
+		tables capture all columnChanged() signals and emit rowColumnChanged()
 		------
 		when a wave is added/removed to a filter, the display of that wave should be recalculated
 		------
@@ -152,6 +161,7 @@ x	integrate filter code into GcEad
 x	BUG: RecordDialog: digital signals have some display bugs on the tail part of the display
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
 	BUG (maybe): record a wave; Ave view; zoom in on EAD AVE wave; Stop and Save; reopen file; EAD Ave wave might not have kept its sensitivty
+	website: copy image and css files from vivia-video website
 	Ian's suggestion about timebase (make it obvious that timebase refers to grid width)
 	improve selecting region for zoom-in so that zoom factor isn't so large sometimes
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
@@ -255,6 +265,7 @@ FUTURE STUFF suggested by Peter:
 	Add band-pass filter from EAD program
 
 FUTURE STUFF:
+	Store log files in a user directory instead of in program directory?
 	for recordings with digital waves, could we try to autodetect EAD peaks?
 	add programmer documentation to IdacDriver* projects
 	Markers Edit; click Add; move marker; remove marker: autodetect of peak should be re-added?
