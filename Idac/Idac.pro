@@ -15,6 +15,7 @@ SOURCES += \
     IdacControlThread.cpp \
     IdacProxy.cpp \
     IdacFactory.cpp
+win32:DEFINES += WIN32
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusb-compat-0.1.3/libusb
 

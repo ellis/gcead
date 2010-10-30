@@ -28,7 +28,7 @@
 
 
 IdacDriverUsb::IdacDriverUsb(struct usb_device* device, QObject* parent)
-	: IdacDriver(parent)
+	: IdacDriverWithThread(parent)
 {
 	m_device = device;
 

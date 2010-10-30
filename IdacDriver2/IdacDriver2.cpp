@@ -55,19 +55,10 @@ static int dwRangesList[IDAC_SCALERANGECOUNT+1] =
 };
 
 // Sampling variables
-static IdacDriverSamplingThread* g_recordThread;
 static int g_iDecimation;
 static int g_nDigitalSum;
 static int g_nAnalog1Sum;
 static int g_nAnalog2Sum;
-static int g_nSamplesInBuffer;
-const int g_nSampleMax = 600;
-static short g_samplesDigital[g_nSampleMax];
-static short g_samplesAnalog1[g_nSampleMax];
-static short g_samplesAnalog2[g_nSampleMax];
-static int g_iSampleRead;
-static int g_iSampleWrite;
-static QMutex g_sampleMutex;
 
 
 IdacDriver2::IdacDriver2(struct usb_device* device, QObject* parent)
@@ -377,21 +368,8 @@ bool IdacDriver2::startSampling()
 		*actualChannelSettings(iChan) = *desiredChannelSettings(iChan);
 	sendChannelSettings();
 
-	sampleStart();
+	startSamplingThread();
 	return true;
-}
-
-void IdacDriver2::sampleStart()
-{
-	CHECK_PRECOND_RET(g_recordThread == NULL);
-
-	m_bSampling = true;
-	g_iSampleRead = 0;
-	g_iSampleWrite = 0;
-	g_nSamplesInBuffer = 0;
-	g_recordThread = new IdacDriverSamplingThread(this);
-	// NOTE: The priority specification is probably completely unnecessary -- ellis, 2009-05-04
-	g_recordThread->start(QThread::TimeCriticalPriority);
 }
 
 void IdacDriver2::sampleLoop()
@@ -497,20 +475,7 @@ void IdacDriver2::sampleLoop()
 						g_nAnalog2Sum = 0;
 
 						// A sample was produced
-						if (g_nSamplesInBuffer < g_nSampleMax - 1)
-						{
-							g_samplesDigital[g_iSampleWrite] = digital;
-							g_samplesAnalog1[g_iSampleWrite] = analog1;
-							g_samplesAnalog2[g_iSampleWrite] = analog2;
-
-							g_iSampleWrite++;
-							if (g_iSampleWrite == g_nSampleMax)
-								g_iSampleWrite = 0;
-							g_sampleMutex.lock();
-							g_nSamplesInBuffer++;
-							g_sampleMutex.unlock();
-						}
-						else
+						if (!addSample(digital, analog1, analog2))
 						{
 							bOverflow = true;
 							//m_bSampling = false;
@@ -526,36 +491,4 @@ void IdacDriver2::sampleLoop()
 	// End of INT xfer?
 	// 412307451 S Co:3:005:0 s 40 2a 0000 0000 0000 0
 	setIntXferEnabled(false);
-}
-
-void IdacDriver2::stopSampling()
-{
-	CHECK_PRECOND_RET(g_recordThread != NULL);
-
-	m_bSampling = false;
-	if (g_recordThread->wait(5000))
-	{
-		delete g_recordThread;
-		g_recordThread = NULL;
-	}
-}
-
-int IdacDriver2::takeData(short* digital, short* analog1, short* analog2, int maxSize)
-{
-	int size = 0;
-	while (size < maxSize && g_nSamplesInBuffer > 0)
-	{
-		size++;
-		*digital++ = g_samplesDigital[g_iSampleRead];
-		*analog1++ = g_samplesAnalog1[g_iSampleRead];
-		*analog2++ = g_samplesAnalog2[g_iSampleRead];
-		g_iSampleRead++;
-		if (g_iSampleRead == g_nSampleMax)
-			g_iSampleRead = 0;
-
-		g_sampleMutex.lock();
-		g_nSamplesInBuffer--;
-		g_sampleMutex.unlock();
-	}
-	return size;
 }

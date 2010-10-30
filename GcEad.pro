@@ -6,6 +6,7 @@ SUBDIRS = Core \
     IdacDriver \
     IdacDriver4 \
     IdacDriver2 \
+    IdacDriverES \
     Idac \
     Scope \
     ScopeTest \

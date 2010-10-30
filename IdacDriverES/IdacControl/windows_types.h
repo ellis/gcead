@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009  Ellis Whitehead
+ * Copyright (C) 2008  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,30 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __IDACDRIVERSAMPLINGTHREAD_H
-#define __IDACDRIVERSAMPLINGTHREAD_H
+#ifndef __WINDOWS_TYPES_H
+#define __WINDOWS_TYPES_H
 
-#include <QThread>
+// This is a substitute for the Windows typedefs for Linux
 
-#include "IdacDriverWithThread.h"
+#include <qglobal.h>
 
 
-class IdacDriverSamplingThread : public QThread
-{
-public:
-	IdacDriverSamplingThread(IdacDriverWithThread* driver)
-	{
-		this->driver = driver;
-	}
+#define DRIVER_EXPORT
+#define FAR
+#define WINAPI
 
-protected:
-	void run()
-	{
-		driver->sampleLoop();
-	}
 
-private:
-	IdacDriverWithThread* driver;
-};
+typedef quint8 BYTE;
+typedef qint16 SHORT;
+typedef quint16 WORD;
+typedef quint16 USHORT;
+typedef qint32 LONG;
+typedef quint32 DWORD;
+typedef double DOUBLE;
+
+typedef char* LPSTR;
+typedef const char* LPCSTR;
+typedef DWORD* LPDWORD;
+typedef WORD* PWORD;
+typedef LONG* LPLONG;
+
+typedef int HANDLE;
+typedef size_t SIZE;
 
 #endif

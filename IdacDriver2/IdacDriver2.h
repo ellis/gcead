@@ -51,10 +51,7 @@ public:
 	void initDataFirmware();
 
 	bool startSampling();
-	void stopSampling();
 	void configureChannel(int iChan);
-
-	int takeData(short* digital, short* analog1, short* analog2, int maxSize);
 
 public:
 	bool setPowerOn(bool bOn);
@@ -63,6 +60,10 @@ public:
 	bool setSamplingPaused(bool bPause);
 	/// Activate / deactivate isochrone transfer (SUPPINT.H)
 	bool setIntXferEnabled(bool bEnabled);
+
+// IdacDriverWithThread overrides
+protected:
+	void sampleLoop();
 
 private:
 	struct ConfigData
@@ -77,15 +78,11 @@ private:
 	void initStringsAndRanges();
 	bool claim();
 
-	void sampleStart();
-	void sampleLoop();
-
 private:
 	bool m_bFpgaProgrammed;
 	char m_nVersion;
 	ConfigData m_config;
 
-	bool m_bSampling;
 	bool m_bSamplingPaused;
 };
 

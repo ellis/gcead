@@ -18,9 +18,11 @@ HEADERS += IdacDriver.h \
     Sleeper.h \
     IdacDriverUsb.h \
 	IdacDriverSamplingThread.h \
-    IdacCaps.h
+    IdacCaps.h \
+    IdacDriverWithThread.h
 SOURCES += IdacDriver.cpp \
-    IdacDriverUsb.cpp
+    IdacDriverUsb.cpp \
+    IdacDriverWithThread.cpp
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusb-compat-0.1.3/libusb
 CONFIG(debug, debug|release):DESTDIR = ../debug

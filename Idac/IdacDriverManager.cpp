@@ -25,8 +25,13 @@
 
 #include <IdacDriver/IdacDriver.h>
 #include <IdacDriver/Sleeper.h>
-#include <IdacDriver4/IdacDriver4.h>
 #include <IdacDriver2/IdacDriver2.h>
+#include <IdacDriver4/IdacDriver4.h>
+#include <IdacDriverES/IdacDriverES.h>
+
+#ifdef WIN32
+#include <IdacDriverES/IdacControl/Idacpc.h>
+#endif
 
 
 IdacDriverManager::IdacDriverManager(QObject* parent)
@@ -95,6 +100,13 @@ void IdacDriverManager::createDriver()
 
 		m_driver->init();
 	}
+#ifdef WIN32
+	else {
+		if (IdacPresent(-1)) {
+			m_driver = new IdacDriverES();
+		}
+	}
+#endif
 }
 
 /*

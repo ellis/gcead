@@ -389,18 +389,9 @@ bool IdacDriver4::startSampling()
 	return true;
 }
 
-static IdacDriverSamplingThread* g_recordThread;
 static char* isobuf;
 static IdacDriver4Channel IdacChannelState(true); // Digital inputs are inverted
 static CDD32_STATUS cdStatus;
-static int g_nSamplesInBuffer;
-const int g_nSampleMax = 300;
-static short g_samplesDigital[g_nSampleMax];
-static short g_samplesAnalog1[g_nSampleMax];
-static short g_samplesAnalog2[g_nSampleMax];
-static int g_iSampleRead;
-static int g_iSampleWrite;
-static QMutex g_sampleMutex;
 
 #ifdef WIN32
 static void* isourb[ISO_CONTEXT_COUNT];
@@ -499,8 +490,6 @@ void IdacDriver4::sampleInit()
 
 void IdacDriver4::sampleStart()
 {
-	CHECK_PRECOND_RET(g_recordThread == NULL);
-
 	if (isobuf == NULL)
 		sampleInit();
 	// FIXME: for debug only
@@ -513,12 +502,7 @@ void IdacDriver4::sampleStart()
 	// Reset channel state machine
 	IdacChannelState.Reset(MAX_SYNC_WORD_PER_SECOND);
 
-	m_bSampling = true;
-	g_iSampleRead = 0;
-	g_iSampleWrite = 0;
-	g_nSamplesInBuffer = 0;
-	g_recordThread = new IdacDriverSamplingThread(this);
-	g_recordThread->start(QThread::TimeCriticalPriority);
+	startSamplingThread();
 }
 
 /// @returns libusb error code
@@ -628,6 +612,7 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 			continue;
 		}
 
+		short nDig = 0, nAn1 = 0, nAn2 = 0;
 		for (int iWord = 0; iWord < nWords; iWord++)
 		{
 			// Read little-endian word
@@ -639,76 +624,28 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 			//printf("i:%d\t%d\t%d\t%d\t%x\n", iPacket, iWord, cds.uChannel, (int) bParsed, wData);
 			if (bParsed)
 			{
-				// A sample was produced
-				if (g_nSamplesInBuffer < g_nSampleMax - 1)
-				{
-					if (cds.uChannel == 0)
-						g_samplesDigital[g_iSampleWrite] = cds.nSample;
-					else if (cds.uChannel == 1)
-						g_samplesAnalog1[g_iSampleWrite] = cds.nSample;
-					else if (cds.uChannel == 2)
-						g_samplesAnalog2[g_iSampleWrite] = cds.nSample;
+				if (cds.uChannel == 0)
+					nDig = cds.nSample;
+				else if (cds.uChannel == 1)
+					nAn1 = cds.nSample;
+				else if (cds.uChannel == 2)
+					nAn2 = cds.nSample;
 
-					if (cds.uChannel == 2)
+				else if (cds.uChannel == 2)
+				{
+					bool b = addSample(nDig, nAn1, nAn2);
+					if (!b)
 					{
-						g_iSampleWrite++;
-						if (g_iSampleWrite == g_nSampleMax)
-							g_iSampleWrite = 0;
-						g_sampleMutex.lock();
-						g_nSamplesInBuffer++;
-						g_sampleMutex.unlock();
+						bOverflow = true;
+						logUsbError(__FILE__, __LINE__, "BUFFER OVERRUN");
+						break;
 					}
 				}
-				else
-				{
-					bOverflow = true;
-					logUsbError(__FILE__, __LINE__, "BUFFER OVERRUN");
-					break;
-				}
-				/*
-				if (cds.uChannel == 1)// && !bPrinted)
-				{
-					//printf("D:%d\n", (int) cds.nSample);
-					bPrinted = true;
-				}
-				*/
 			}
 		}
 	}
 
 	return bOverflow;
-}
-
-void IdacDriver4::stopSampling()
-{
-	CHECK_PRECOND_RET(g_recordThread != NULL);
-
-	m_bSampling = false;
-	if (g_recordThread->wait(5000))
-	{
-		delete g_recordThread;
-		g_recordThread = NULL;
-	}
-}
-
-int IdacDriver4::takeData(short* digital, short* analog1, short* analog2, int maxSize)
-{
-	int size = 0;
-	while (size < maxSize && g_nSamplesInBuffer > 0)
-	{
-		size++;
-		*digital++ = g_samplesDigital[g_iSampleRead];
-		*analog1++ = g_samplesAnalog1[g_iSampleRead];
-		*analog2++ = g_samplesAnalog2[g_iSampleRead];
-		g_iSampleRead++;
-		if (g_iSampleRead == g_nSampleMax)
-			g_iSampleRead = 0;
-
-		g_sampleMutex.lock();
-		g_nSamplesInBuffer--;
-		g_sampleMutex.unlock();
-	}
-	return size;
 }
 
 bool IdacDriver4::power(bool bOn)

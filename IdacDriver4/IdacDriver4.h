@@ -53,9 +53,6 @@ public:
 	void configureChannel(int iChan);
 
 	bool startSampling();
-	void stopSampling();
-
-	int takeData(short* digital, short* analog1, short* analog2, int maxSize);
 
 public:
 	bool power(bool bOn);
@@ -134,8 +131,6 @@ private:
 	bool m_bFpgaProgrammed;
 	quint8 m_nVersion;
 	ConfigData m_config;
-
-	bool m_bSampling;
 };
 
 #endif

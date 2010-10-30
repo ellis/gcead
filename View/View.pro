@@ -25,9 +25,10 @@ LIBS += -L$${DESTDIR}
 # VPATH += ../debug
 LIBS += -lCore \
     -lIdac \
-    -lIdacDriver4 \
-    -lIdacDriver2 \
-    -lIdacDriver \
+	-lIdacDriver2 \
+	-lIdacDriver4 \
+	-lIdacDriverES \
+	-lIdacDriver \
     -lModel \
 	-lFilters \
 	-lScope
@@ -35,11 +36,12 @@ PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libIdacDriver.a \
     $${DESTDIR}/libIdacDriver2.a \
     $${DESTDIR}/libIdacDriver4.a \
+	$${DESTDIR}/libIdacDriverES.a \
 	$${DESTDIR}/libIdac.a \
 	$${DESTDIR}/libFilters.a \
 	$${DESTDIR}/libModel.a \
     $${DESTDIR}/libScope.a
-win32:LIBS += $${PWD}/../extern/win32/libusb.a
+win32:LIBS += $${PWD}/../extern/win32/libusb.a $${PWD}/../IdacDriverES/IdacControl/IDAC8_32.lib
 unix:!macx:LIBS += -static-libgcc \
     -L../release \
     -Wl,-Bstatic \
