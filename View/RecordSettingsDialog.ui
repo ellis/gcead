@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>514</width>
-    <height>563</height>
+    <width>360</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -94,130 +94,113 @@
      <property name="title">
       <string>Channel 1 (EAD)</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="lblRange_1">
-          <property name="text">
-           <string>Range:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="cmbRange_1"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="lblLowcut_1">
-          <property name="text">
-           <string>Low cutoff:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lblHighcut_1">
-          <property name="text">
-           <string>High cutoff:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="cmbHighcut_1"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="lblOffset_1">
-          <property name="text">
-           <string>Offset:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="cmbLowcut_1"/>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSpinBox" name="edtOffset_1">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="minimum">
-           <number>-1000000</number>
-          </property>
-          <property name="maximum">
-           <number>1000000</number>
-          </property>
-          <property name="singleStep">
-           <number>30</number>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QSlider" name="sliderOffset_1">
-          <property name="minimum">
-           <number>-60</number>
-          </property>
-          <property name="maximum">
-           <number>60</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="lblSliderOffset_1">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Invert:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QSpinBox" name="edtExternalAmplification_1">
-          <property name="toolTip">
-           <string>External amplification</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QCheckBox" name="chkInvert_1">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label">
-          <property name="toolTip">
-           <string>External amplification</string>
-          </property>
-          <property name="text">
-           <string>Ext. amp.:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="lblDelay_1">
-          <property name="text">
-           <string>GC Delay (ms):</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblRange_1">
+        <property name="text">
+         <string>Range:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cmbRange_1"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblLowcut_1">
+        <property name="text">
+         <string>Low cutoff:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cmbLowcut_1"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblHighcut_1">
+        <property name="text">
+         <string>High cutoff:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="cmbHighcut_1"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblOffset_1">
+        <property name="text">
+         <string>Offset:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="edtOffset_1">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>-1000000</number>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
+        </property>
+        <property name="singleStep">
+         <number>30</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label">
+        <property name="toolTip">
+         <string>External amplification</string>
+        </property>
+        <property name="text">
+         <string>Ext. amp.:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="edtExternalAmplification_1">
+        <property name="toolTip">
+         <string>External amplification</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Invert:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="chkInvert_1">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lblSliderOffset_1">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lblDelay_1">
+        <property name="text">
+         <string>GC Delay (ms):</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -227,148 +210,137 @@
      <property name="title">
       <string>Channel 2 (FID)</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_5">
-      <item>
-       <layout class="QFormLayout" name="formLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Low cutoff:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="cmbLowcut_2"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="lblHighcut_2">
-          <property name="text">
-           <string>High cutoff:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="cmbHighcut_2"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lblRange_2">
-          <property name="text">
-           <string>Range:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="cmbRange_2"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Offset:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSpinBox" name="edtOffset_2">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="minimum">
-           <number>-1000000</number>
-          </property>
-          <property name="maximum">
-           <number>1000000</number>
-          </property>
-          <property name="singleStep">
-           <number>30</number>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QSlider" name="sliderOffset_2">
-          <property name="minimum">
-           <number>-60</number>
-          </property>
-          <property name="maximum">
-           <number>60</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="lblSliderOffset_2">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_10">
-          <property name="toolTip">
-           <string>External amplification</string>
-          </property>
-          <property name="text">
-           <string>Ext. amp.:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QSpinBox" name="edtExternalAmplification_2">
-          <property name="toolTip">
-           <string>External amplification</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="lblDelay_2">
-          <property name="text">
-           <string>GC Delay (ms):</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QSpinBox" name="edtGcDelay">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-          <property name="value">
-           <number>1000</number>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Invert:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QCheckBox" name="chkInvert_2">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblRange_2">
+        <property name="text">
+         <string>Range:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cmbRange_2"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Low cutoff:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cmbLowcut_2"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblHighcut_2">
+        <property name="text">
+         <string>High cutoff:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="cmbHighcut_2"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Offset:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="edtOffset_2">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>-1000000</number>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
+        </property>
+        <property name="singleStep">
+         <number>30</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="toolTip">
+         <string>External amplification</string>
+        </property>
+        <property name="text">
+         <string>Ext. amp.:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="edtExternalAmplification_2">
+        <property name="toolTip">
+         <string>External amplification</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lblDelay_2">
+        <property name="text">
+         <string>GC Delay (ms):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QSpinBox" name="edtGcDelay">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Invert:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="chkInvert_2">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
+     <widget class="QLabel" name="lblSliderOffset_2">
+      <property name="geometry">
+       <rect>
+        <x>11</x>
+        <y>128</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </widget>
    </item>
    <item row="2" column="0">
@@ -376,15 +348,15 @@
      <property name="title">
       <string>Digital 1 (Trigger)</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
+     <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
        <widget class="QCheckBox" name="chkRecordOnTrigger">
         <property name="text">
          <string>Trigger initiates recording</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="chkInvert_3">
         <property name="text">
          <string>Invert</string>
@@ -399,15 +371,15 @@
      <property name="title">
       <string>Digital 2 (Signal)</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
+     <layout class="QFormLayout" name="formLayout_5">
+      <item row="0" column="0">
        <widget class="QCheckBox" name="chkEnabled_4">
         <property name="text">
          <string>Record signal data</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="chkInvert_4">
         <property name="text">
          <string>Invert</string>
@@ -454,13 +426,11 @@
   <tabstop>chkInvert_1</tabstop>
   <tabstop>cmbRange_1</tabstop>
   <tabstop>edtOffset_1</tabstop>
-  <tabstop>sliderOffset_1</tabstop>
   <tabstop>cmbLowcut_2</tabstop>
   <tabstop>cmbHighcut_2</tabstop>
   <tabstop>chkInvert_2</tabstop>
   <tabstop>cmbRange_2</tabstop>
   <tabstop>edtOffset_2</tabstop>
-  <tabstop>sliderOffset_2</tabstop>
   <tabstop>chkRecordOnTrigger</tabstop>
   <tabstop>chkInvert_3</tabstop>
   <tabstop>chkEnabled_4</tabstop>

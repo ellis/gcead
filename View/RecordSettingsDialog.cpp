@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008  Ellis Whitehead
+ * Copyright (C) 2008,2010  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,12 +67,6 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	ui.cmbRange->addItems(ranges);
 	ui.cmbRange->setCurrentIndex(settings->channels[1].iRange);
 
-	// NOTE: I decided to remove these from the UI -- delete them later if noone complains -- ellis, 2009-05-03
-	ui.lblSliderOffset_1->setVisible(false);
-	ui.sliderOffset_1->setVisible(false);
-	ui.lblSliderOffset_2->setVisible(false);
-	ui.sliderOffset_2->setVisible(false);
-
 	chan = &settings->channels[1];
 
 	ui.cmbLowcut_1->addItems(idac->lowcutStrings());
@@ -88,7 +82,6 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	ui.cmbRange_1->addItems(ranges);
 	ui.cmbRange_1->setCurrentIndex(chan->iRange);
 	ui.edtOffset_1->setValue(convOffsetSamplesToMicrovolts(chan->nOffset));
-	ui.sliderOffset_1->setValue(convOffsetSamplesToSlider(chan->nOffset));
 	ui.edtExternalAmplification_1->setValue(chan->nExternalAmplification);
 	// Hide this label, but make sure it has the appropriate width
 	ui.lblDelay_1->setMinimumWidth(ui.lblDelay_1->sizeHint().width());
@@ -103,13 +96,12 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	ui.cmbHighcut_2->addItems(idac->highcutStrings());
 	ui.cmbHighcut_2->setCurrentIndex(chan->iHighcut);
 	ui.chkInvert_2->setChecked(chan->mInvert);
-	ui.lblRange_2->setVisible(false);
+	ui.lblRange_2->setVisible(caps->bRangePerChannel);
 	ui.cmbRange_2->setVisible(caps->bRangePerChannel);
 	ui.cmbRange_2->addItems(ranges);
 	ui.cmbRange_2->setCurrentIndex(chan->iRange);
 	ui.cmbRange_2->setValidator(false);
 	ui.edtOffset_2->setValue(convOffsetSamplesToMicrovolts(chan->nOffset));
-	ui.sliderOffset_2->setValue(convOffsetSamplesToSlider(chan->nOffset));
 	ui.edtExternalAmplification_2->setValue(chan->nExternalAmplification);
 	
 	chan = &settings->channels[0];
@@ -285,19 +277,7 @@ void RecordSettingsDialog::on_cmbRange_1_activated(int i)
 
 void RecordSettingsDialog::on_edtOffset_1_valueChanged(int n)
 {
-	int nSlider = on_edtOffset_valueChanged(1, n);
-
-	if (!m_bSliderMoved_1)
-		ui.sliderOffset_1->setValue(nSlider);
-}
-
-void RecordSettingsDialog::on_sliderOffset_1_sliderMoved(int n)
-{
-	int nOffset = on_sliderOffset_sliderMoved(n);
-
-	m_bSliderMoved_1 = true;
-	ui.edtOffset_1->setValue(nOffset);
-	m_bSliderMoved_1 = false;
+	on_edtOffset_valueChanged(1, n);
 }
 
 void RecordSettingsDialog::on_edtExternalAmplification_1_editingFinished()
@@ -331,19 +311,7 @@ void RecordSettingsDialog::on_cmbRange_2_activated(int i)
 
 void RecordSettingsDialog::on_edtOffset_2_valueChanged(int n)
 {
-	int nSlider = on_edtOffset_valueChanged(2, n);
-
-	if (!m_bSliderMoved_2)
-		ui.sliderOffset_2->setValue(nSlider);
-}
-
-void RecordSettingsDialog::on_sliderOffset_2_sliderMoved(int n)
-{
-	int nOffset = on_sliderOffset_sliderMoved(n);
-
-	m_bSliderMoved_2 = true;
-	ui.edtOffset_2->setValue(nOffset);
-	m_bSliderMoved_2 = false;
+	on_edtOffset_valueChanged(2, n);
 }
 
 void RecordSettingsDialog::on_edtExternalAmplification_2_editingFinished()

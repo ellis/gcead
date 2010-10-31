@@ -51,9 +51,15 @@ protected:
 	virtual void sampleLoop();
 
 private:
+	bool boot();
+	bool boot_2000_4(const QString& sType);
+	bool boot_ISA_USB();
+	int bootAtAddress(int addr, int nChannels);
+	QString getBinFileName(int nSignals);
 	void grabDataFromDll();
 
 private:
+	bool m_bFirmwareSent;
 	bool m_bIdac2;
 	bool m_bIdac4;
 };

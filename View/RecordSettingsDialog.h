@@ -64,7 +64,6 @@ private slots:
 	void on_chkInvert_1_clicked();
 	void on_cmbRange_1_activated(int i);
 	void on_edtOffset_1_valueChanged(int n);
-	void on_sliderOffset_1_sliderMoved(int n);
 	void on_edtExternalAmplification_1_editingFinished();
 
 	// FID
@@ -73,7 +72,6 @@ private slots:
 	void on_chkInvert_2_clicked();
 	void on_cmbRange_2_activated(int i);
 	void on_edtOffset_2_valueChanged(int n);
-	void on_sliderOffset_2_sliderMoved(int n);
 	void on_edtExternalAmplification_2_editingFinished();
 	void on_edtGcDelay_valueChanged(int n);
 
