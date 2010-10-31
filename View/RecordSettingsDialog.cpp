@@ -62,10 +62,13 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	const IdacCaps* caps = idac->caps();
 	
 	// Setup the range editor for all channels
-	ui.lblRange->setVisible(!caps->bRangePerChannel);
-	ui.cmbRange->setVisible(!caps->bRangePerChannel);
-	ui.cmbRange->addItems(ranges);
-	ui.cmbRange->setCurrentIndex(settings->channels[1].iRange);
+	ui.lblGeneralRange->setVisible(!caps->bRangePerChannel);
+	ui.lblGeneralRange->setEnabled(!caps->bRangePerChannel);
+	ui.lblGeneralRange->setText("Hi");
+	ui.cmbGeneralRange->setVisible(!caps->bRangePerChannel);
+	ui.cmbGeneralRange->setEnabled(!caps->bRangePerChannel);
+	ui.cmbGeneralRange->addItems(ranges);
+	ui.cmbGeneralRange->setCurrentIndex(settings->channels[1].iRange);
 
 	chan = &settings->channels[1];
 
@@ -157,7 +160,7 @@ void RecordSettingsDialog::on_edtRecordingDuration_editingFinished()
 	settings->nRecordingDuration = ui.edtRecordingDuration->value();
 }
 
-void RecordSettingsDialog::on_cmbRange_activated(int i)
+void RecordSettingsDialog::on_cmbGeneralRange_activated(int i)
 {
 	IdacSettings* settings = Globals->idacSettings();
 	settings->channels[1].iRange = i;

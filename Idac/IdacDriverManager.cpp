@@ -104,6 +104,7 @@ void IdacDriverManager::createDriver()
 	else {
 		if (IdacPresent(-1)) {
 			m_driver = new IdacDriverES();
+			m_driver->init();
 		}
 	}
 #endif

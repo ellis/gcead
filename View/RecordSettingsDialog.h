@@ -56,7 +56,7 @@ private slots:
 	// Recording duration
 	//void on_chkRecordingDuration_clicked();
 	void on_edtRecordingDuration_editingFinished();
-	void on_cmbRange_activated(int n);
+	void on_cmbGeneralRange_activated(int n);
 
 	// EAD
 	void on_cmbLowcut_1_activated(int i);
