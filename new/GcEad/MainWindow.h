@@ -4,7 +4,10 @@
 #include <QtGui/QMainWindow>
 
 
+class ObjectPropertiesModel;
 class Project;
+class WaveData;
+class WaveProxy;
 
 
 class MainWindow : public QMainWindow
@@ -16,7 +19,8 @@ public:
     ~MainWindow();
 
 private:
-	void createUndoView();
+	void createWidgets(WaveData* waveD);
+	QWidget* createForm(ObjectPropertiesModel* model);
 
 private:
 	Project* m_proj;

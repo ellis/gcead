@@ -1,13 +1,26 @@
 BIG STUFF FOR FUTURE:
 	Check out next:
-		models for QTableView
-		undo/redo
+	x	models for QTableView
+	x	undo/redo
 		create task views
+			View Task:
+				item selection (preferably multi-selection also possible)
+				easy editing of common parameters
+				it'd be nice to have mouse cursor feedback when moving over widgets
+				
+				QGraphicsView with custom layout of widgets
+				custom widget with custom layout of widgets
+				custom widget with custom layout and drawing of everything
+				QTreeView
+				derive from QAbstractItemView
+				
 		create QML task views?
 		see how these views work out with an MVP framework?
 		use QSqlite for project file
 		write all edits to a recovery file
 		create an even more abstract Command class that is for both edits and non-edits, and save these so that we can get a more detailed log of the user's actions.
+		tap into application event loop in order to log events
+		catch exceptions so that log files can be flushed
 	Refactor program structure:
 		Use commands for all edits
 		Use data/model/view paradigm better
@@ -22,7 +35,20 @@ BIG STUFF FOR FUTURE:
 ------------
 
 	Add support for Engineering Spirit drivers:
-		http://en.wikipedia.org/wiki/Dynamic-link_library#C_and_C.2B.2B_2
+	x	recognize device
+	x	initialize device
+	x	record from device
+	x	fix recording rate
+	x	configure device
+	x	shut down device when done
+		test IDAC2 too
+		search for IDAC8_32.dll instead of shipping with it:
+			http://en.wikipedia.org/wiki/Dynamic-link_library#C_and_C.2B.2B_2
+	Fix IDAC4 Settings dialog:
+	.	make it smaller?
+	x	on Channel 2, the "Range" label is missing and it should be above the cutoff stuff
+	x	hide general range setting if range can be set per channel
+	x	put spacers on left and right sides of dialog
 x	Test for correct voltage levels between IDAC2 and IDAC4
 .	Create my own Autospike recordings for testing ASC import
 		msex_test.asc EAD:
@@ -289,7 +315,8 @@ FUTURE STUFF:
 	PanelTabs: consider choosing equal widths for tabs, if space allows
 	PanelTabs: draw shadow around active tab?
 	RecordDialog: when trigger comes, somehow start saving data on EXACTLY the sample where the trigger occurred, rather than waiting for the next data block
-	RecordSettingsDialog: on_sliderOffset_sliderMoved(): make it use increments of 1,000,000/0x7fff
+	RecordSettingsDialog: add +- sign to range values?
+	RecordSettingsDialog: right-align the comboboxes (http://www.qtforum.org/article/20839/text-alignment-in-qcombobox.html)
 	SweepWidget: when signal is out of range, make it visible somehow (limit to viewport?)
 	TaskPublishWidget: add btnResetColors
 	TaskPublishWidget: when printing the time of a recording, only print hour and minute (not seconds), but keep it localized!
