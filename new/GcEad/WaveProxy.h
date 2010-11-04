@@ -26,6 +26,9 @@ class WaveProxy : public QObject
 	Q_PROPERTY(double shift READ shift WRITE setShift NOTIFY shiftChanged)
 
 public:
+	//static const WaveProxy null;
+
+public:
 	explicit WaveProxy(Project* proj, WaveData* data, QObject *parent = 0);
 
 	int id() const;
@@ -69,6 +72,9 @@ public slots:
 
 protected:
 	void setDataProperty(const QString& sProperty, const QVariant& v);
+
+private:
+	//WaveProxy();
 
 private:
 	QPointer<Project> proj;

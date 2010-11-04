@@ -25,6 +25,13 @@ WaveProxy::WaveProxy(Project* proj, WaveData* data, QObject *parent) :
 	C(shift);
 }
 
+/*
+WaveProxy::WaveProxy()
+	: proj(NULL), data(NULL)
+{
+}
+*/
+
 int WaveProxy::id() const { CHECK_PRECOND_RETVAL(!data.isNull(), -1) return data->id(); }
 int WaveProxy::recId() const { CHECK_PRECOND_RETVAL(!data.isNull(), -1) return data->recId(); }
 int WaveProxy::typeId() const { CHECK_PRECOND_RETVAL(!data.isNull(), -1) return data->typeId(); }

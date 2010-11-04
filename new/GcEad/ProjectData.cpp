@@ -11,18 +11,6 @@ ProjectData::ProjectData(QObject* parent)
 	m_waveIdNext = 1;
 }
 
-void ProjectData::addWaveData(WaveData *wave) {
-	CHECK_PARAM_RET(wave != NULL);
-	wave->setId(nextWaveId());
-	wave->setParent(this);
-	// TODO: catch as an error if the wave is already part of another project
-	m_waves << wave;
-}
-
-int ProjectData::nextWaveId() {
-	return m_waveIdNext++;
-}
-
 WaveData* ProjectData::getWaveData(int waveId) {
 	CHECK_PARAM_RETVAL(waveId >= 0, NULL)
 	//CHECK_PARAM_RETVAL(waveId < m_waves.size(), NULL)
@@ -32,4 +20,35 @@ WaveData* ProjectData::getWaveData(int waveId) {
 			return wave;
 	}
 	return NULL;
+}
+
+WaveData* ProjectData::createWaveData() {
+	WaveData* waveD = new WaveData(this);
+	waveD->setId(nextWaveId());
+	m_waves << waveD;
+	m_mapWaves[waveD->id()] = waveD;
+}
+
+void ProjectData::detachWaveData(int waveId) {
+	CHECK_PRECOND_RET(m_mapWaves.contains(waveId));
+	for (int i = 0; i < m_waves.size(); i++) {
+		if (m_waves[i]->id() == waveId) {
+			m_waves.removeAt(i);
+			break;
+		}
+	}
+	m_mapWaves.remove(waveId);
+}
+
+void ProjectData::attachWaveData(WaveData *waveD) {
+	CHECK_PARAM_RET(wave != NULL);
+	CHECK_PRECOND_RET(!m_mapWaves.contains(wave->id()));
+	waveD->setParent(this);
+	m_waves << waveD;
+	m_mapWaves[waveD->id()] = waveD;
+	// TODO: catch as an error if the wave is already part of another project
+}
+
+int ProjectData::nextWaveId() {
+	return m_waveIdNext++;
 }

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QMap>
 #include <QVariant>
 
 class WaveData;
@@ -15,8 +16,11 @@ class ProjectData : public QObject
 public:
 	explicit ProjectData(QObject* parent = NULL);
 
-	void addWaveData(WaveData* wave);
 	WaveData* getWaveData(int waveId);
+
+	WaveData* createWaveData();
+	void detachWaveData(int waveId);
+	void attachWaveData(WaveData* wave);
 
 private:
 	int nextWaveId();
@@ -24,6 +28,7 @@ private:
 private:
 	int m_waveIdNext;
 	QList<WaveData*> m_waves;
+	QMap<int, WaveData*> m_mapWaves;
 };
 
 #endif // PROJECTDATA_H
