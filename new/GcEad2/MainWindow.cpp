@@ -4,6 +4,8 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QScriptEngine>
+#include <QScriptEngineDebugger>
 #include <QSpinBox>
 #include <QTableView>
 #include <QTreeView>
@@ -15,9 +17,14 @@
 #include "Wave.h"
 
 
+static QScriptValue waveToScript(QScriptEngine* engine, Wave* const& in) { return engine->newQObject(in); }
+static void scriptToWave(const QScriptValue& val, Wave*& out) { out = qobject_cast<Wave*>(val.toQObject()); }
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+	m_engine = new QScriptEngine(this);
+
 	m_proj = new Project(this);
 
 	Wave* wave = m_proj->waveCreate();
@@ -31,6 +38,19 @@ MainWindow::MainWindow(QWidget *parent)
 	wave->setSensitivity(2);
 
 	createWidgets(wave);
+
+	qRegisterMetaType<Wave*>("Wave*");
+
+	QScriptValue val = m_engine->newQObject(m_proj);
+	m_engine->globalObject().setProperty("project", val);
+	qScriptRegisterMetaType(m_engine, waveToScript, scriptToWave);
+
+	QScriptEngineDebugger* debugger = new QScriptEngineDebugger(this);
+	debugger->attachTo(m_engine);
+	debugger->standardWindow()->show();
+	//m_engine->registerCustomType();
+	//m_engine->evaluate("debugger; 5 + 4");
+
 }
 
 MainWindow::~MainWindow()
@@ -49,9 +69,7 @@ void MainWindow::createWidgets(Wave* wave) {
 	QWidget* w = new QWidget();
 
 	tableModel->setProject(m_proj);
-	tableModel->setTable("wave");
 	tableModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
-	tableModel->setRows(QList<int>() << 0 << 1);
 
 	//objModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
 	//objModel->addObject(proxy);

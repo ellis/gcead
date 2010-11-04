@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QObject>
+#include <QMetaType>
 #include <QPointer>
 
 #include "Item.h"
@@ -98,5 +99,7 @@ private:
 	IItemPropertySetter* const setter;
 	QPointer<WaveData> m_data;
 };
+
+Q_DECLARE_METATYPE(Wave*);
 
 #endif

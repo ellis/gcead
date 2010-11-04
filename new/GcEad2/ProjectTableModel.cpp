@@ -2,6 +2,7 @@
 
 #include <Check.h>
 
+#include "ItemList.h"
 #include "Project.h"
 
 
@@ -16,29 +17,23 @@ void ProjectTableModel::setProject(Project *proj) {
 	}
 
 	m_proj = proj;
+	m_items = NULL;
 	m_anRows.clear();
 
 	if (!m_proj.isNull()) {
-		connect(m_proj, SIGNAL(propertyChanged(int,QString)), this, SLOT(on_proj_propertyChanged(int,QString)));
+		m_items = m_proj->itemList();
+		connect(m_items, SIGNAL(itemAdded(int)), this, SLOT(on_items_itemAdded(int)));
+		connect(m_items, SIGNAL(itemRemoved(int)), this, SLOT(on_items_itemRemoved(int)));
+		connect(m_items, SIGNAL(itemPropertyChanged(int,QString)), this, SLOT(on_items_itemPropertyChanged(int,QString)));
+		foreach (const Item* item, m_items->getUnderlyingSet())
+			m_anRows << item->itemId();
 	}
 
 	reset();
 }
 
-void ProjectTableModel::setTable(const QString &sTable) {
-	m_sTable = sTable;
-	m_asProperties.clear();
-	m_anRows.clear();
-	reset();
-}
-
 void ProjectTableModel::setProperties(const QStringList &asProperties) {
 	m_asProperties = asProperties;
-	reset();
-}
-
-void ProjectTableModel::setRows(const QList<int> &anRows) {
-	m_anRows = anRows;
 	reset();
 }
 
@@ -61,7 +56,7 @@ QVariant ProjectTableModel::data(const QModelIndex &index, int role) const
 	CHECK_PARAM_RETVAL(index.isValid(), QVariant());
 	CHECK_PARAM_RETVAL(index.column() < m_asProperties.size(), QVariant());
 
-	if (m_proj.isNull() || m_sTable.isEmpty() || index.row() >= m_anRows.size())
+	if (m_proj.isNull() || index.row() >= m_anRows.size())
 		return QVariant();
 
 	if (role == Qt::DisplayRole || role == Qt::EditRole) {
@@ -98,7 +93,7 @@ bool ProjectTableModel::setData(const QModelIndex &index, const QVariant &value,
 	CHECK_PARAM_RETVAL(index.isValid(), false);
 	CHECK_PARAM_RETVAL(index.column() < m_asProperties.size(), false);
 
-	if (m_proj.isNull() || m_sTable.isEmpty() || index.row() >= m_anRows.size())
+	if (m_proj.isNull() || index.row() >= m_anRows.size())
 		return false;
 
 	if (role == Qt::EditRole) {
@@ -110,7 +105,23 @@ bool ProjectTableModel::setData(const QModelIndex &index, const QVariant &value,
 	return false;
 }
 
-void ProjectTableModel::on_proj_propertyChanged(int itemId, const QString& sProperty) {
+void ProjectTableModel::on_items_itemAdded(int itemId) {
+	int iRow = m_anRows.size();
+	beginInsertRows(QModelIndex(), iRow, iRow);
+	m_anRows << itemId;
+	endInsertRows();
+}
+
+void ProjectTableModel::on_items_itemRemoved(int itemId) {
+	int iRow = m_anRows.indexOf(itemId);
+	if (iRow >= 0) {
+		beginRemoveRows(QModelIndex(), iRow, iRow);
+		m_anRows.removeAll(itemId);
+		endRemoveRows();
+	}
+}
+
+void ProjectTableModel::on_items_itemPropertyChanged(int itemId, const QString& sProperty) {
 	int iRow = m_anRows.indexOf(itemId);
 	if (iRow >= 0) {
 		int iCol = m_asProperties.indexOf(sProperty);

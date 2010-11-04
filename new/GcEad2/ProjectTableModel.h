@@ -9,6 +9,7 @@
 #include <QStringList>
 
 
+class ItemList;
 class Project;
 
 
@@ -19,9 +20,8 @@ public:
 	explicit ProjectTableModel(QObject *parent = 0);
 
 	void setProject(Project* proj);
-	void setTable(const QString& sTable);
+	//void setTable(const QString& sTable);
 	void setProperties(const QStringList& asProperties);
-	void setRows(const QList<int>& anRows);
 
 // Overrides for QAbstractItemModel
 public:
@@ -34,11 +34,14 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role);
 
 private slots:
-	void on_proj_propertyChanged(int itemId, const QString& sProperty);
+	void on_items_itemAdded(int itemId);
+	void on_items_itemRemoved(int itemId);
+	void on_items_itemPropertyChanged(int itemId, const QString& sProperty);
 
 private:
 	QPointer<Project> m_proj;
-	QString m_sTable;
+	const ItemList* m_items;
+	//QString m_sTable;
 	QStringList m_asProperties;
 	// REFACTOR: Rename to m_itemIds
 	QList<int> m_anRows;

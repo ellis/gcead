@@ -2,6 +2,7 @@
 
 #include <Check.h>
 
+#include "ItemList.h"
 #include "WaveData.h"
 #include "Wave.h"
 
@@ -42,17 +43,17 @@ Project::Project(QObject *parent)
 	m_commands = new QUndoStack(this);
 	m_itemIdNext = 0;
 	//m_waveIdNext = 0;
+	m_items = new ItemList(this);
+	m_items->setObjectName("items");
+	m_trash = new ItemList(this);
+	m_trash->setObjectName("trash");
 }
 
 Project::~Project() {
 }
 
 Item* Project::findItem(int itemId) const {
-	foreach (Item* item, m_items) {
-		if (item->itemId() == itemId)
-			return item;
-	}
-	return NULL;
+	return m_items->find(itemId);
 }
 
 Wave* Project::findWave(int itemId) const {
@@ -82,7 +83,7 @@ void Project::setProperty(int itemId, const QString& sProperty, const QVariant& 
 Wave* Project::waveCreate() {
 	WaveData* waveD = new WaveData(m_itemIdNext++, this);
 	Wave* wave = new Wave(waveD, this, this);
-	m_trash << wave;
+	m_trash->add(wave);
 
 	CommandDataGeneric* data = new CommandDataGeneric(CommandType_WaveCreate);
 	data->o = wave;
@@ -140,7 +141,7 @@ void Project::_setProperty(Item* o, const QString& sProperty, const QVariant& v)
 	if (b) {
 		//emit wavePropertyChanged(id, sProperty);
 		//emit propertyChanged(sTable, id, sProperty);
-		emit propertyChanged(o->itemId(), sProperty);
+		m_items->emit_itemPropertyChanged(o->itemId(), sProperty);
 	}
 }
 
@@ -148,15 +149,15 @@ void Project::_itemDelete(CommandDataGeneric* data, bool bDo) {
 	CHECK_PRECOND_RET(!data->o.isNull());
 	Item* item = data->o;
 	CHECK_ASSERT_RET(item != NULL);
-	CHECK_PRECOND_RET(m_trash.contains(item) != bDo);
-	CHECK_PRECOND_RET(m_items.contains(item) == bDo);
+	CHECK_PRECOND_RET(m_trash->contains(item) != bDo);
+	CHECK_PRECOND_RET(m_items->contains(item) == bDo);
 	if (bDo) {
-		m_items.removeOne(item);
-		m_trash << item;
+		m_items->remove(item);
+		m_trash->add(item);
 	}
 	else {
-		m_items << item;
-		m_trash.removeOne(item);
+		m_items->add(item);
+		m_trash->remove(item);
 	}
 }
 

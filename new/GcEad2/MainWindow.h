@@ -4,6 +4,7 @@
 #include <QtGui/QMainWindow>
 
 class QAbstractTableModel;
+class QScriptEngine;
 
 class Project;
 class Wave;
@@ -23,6 +24,7 @@ private:
 
 private:
 	Project* m_proj;
+	QScriptEngine* m_engine;
 };
 
 #endif // MAINWINDOW_H

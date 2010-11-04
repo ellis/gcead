@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui script scripttools
 
 TARGET = GcEad
 TEMPLATE = app
@@ -19,7 +19,8 @@ SOURCES += \
     ProjectTableModel.cpp \
     ObjectPropertiesModel.cpp \
 	MainWindow.cpp \
-	main.cpp
+	main.cpp \
+    ItemList.cpp
 
 HEADERS  += MainWindow.h \
     WaveData.h \
@@ -29,4 +30,5 @@ HEADERS  += MainWindow.h \
     ProjectTableModel.h \
 	ObjectPropertiesModel.h \
     Data.h \
-    Item.h
+    Item.h \
+    ItemList.h

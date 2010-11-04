@@ -1,6 +1,7 @@
 #ifndef __ITEM_H
 #define __ITEM_H
 
+#include <QMetaType>
 #include <QObject>
 
 #include "Data.h"
@@ -28,5 +29,7 @@ public:
 private:
 	Data* m_data;
 };
+
+Q_DECLARE_METATYPE(Item*);
 
 #endif
