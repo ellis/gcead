@@ -5,92 +5,105 @@
 #include <QPointer>
 #include <QUndoCommand>
 #include <QUndoStack>
+#include <QVariantList>
 
-#include "Check.h"
-#include "ProjectData.h"
-#include "WaveData.h"
-
-
-class WaveProxy;
+#include "Item.h"
 
 
-class Project : public QObject
+class Wave;
+
+
+class Project : public QObject, private IItemPropertySetter
 {
     Q_OBJECT
 public:
+	struct CommandData {
+		virtual ~CommandData() {}
+	};
+
+	struct CommandDataProperty : public CommandData {
+		QPointer<Item> o;
+		//QString sTable;
+		//int id;
+		QString sProperty;
+		QVariant vOld;
+		QVariant vNew;
+	};
+
+	enum CommandType {
+		CommandType_ItemDelete,
+		CommandType_WaveCreate,
+	};
+
+	struct CommandDataGeneric : public CommandData {
+		CommandDataGeneric(CommandType type) : type(type) {}
+		CommandType type;
+		QPointer<Item> o;
+		//int itemId;
+		QVariantList vars;
+	};
+
 	class CommandBase : public QUndoCommand {
 	public:
 		CommandBase(Project* proj);
+		virtual ~CommandBase();
 	protected:
 		Project* const proj;
 	};
 
-	class CommandProperty : public CommandBase {
-		CommandProperty(Project* proj, QObject* o, const QString& sProperty, const QVariant& vOld, const QVariant& vNew);
+	class Command : public CommandBase {
+	public:
+		Command(const QString& sName, Project* proj, CommandData* data);
+		~Command();
 		void redo();
 		void undo();
 	private:
-		QObject const* o;
-		const QString sProperty;
-		const QVariant vOld;
-		const QVariant vNew;
-	};
-
-	/*class SetPropertyCommand : public QUndoCommand {
-	public:
-		SetPropertyCommand(Project* proj, const QString& sTable, int id, const QString& sProperty, const QVariant& vOld, const QVariant& vNew);
-
-		virtual void redo();
-		virtual void undo();
-
-	private:
-		const QString sTable;
-		const int id;
-		const QString sProperty;
-		const QVariant vOld;
-		const QVariant vNew;
-	};*/
-
-
-	class CommandWaveCreate : public CommandBase {
-	public:
-		CommandWaveCreate(Project* proj);
-		void redo();
-		void undo();
-	private:
-		int waveId;
+		CommandData* const data;
 	};
 
 public:
-	explicit Project(ProjectData* projD, QObject *parent = 0);
+	explicit Project(QObject *parent = 0);
+	~Project();
 
 	QUndoStack* undoStack() { return m_commands; }
 
-	QVariant getProperty(const QString& sTable, int id, const QString& sProperty);
-	WaveProxy* getWave(int waveId);
+	Item* findItem(int itemId) const;
+	Wave* findWave(int itemId) const;
 
-	bool cmdSetProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v);
+	QVariant getProperty(int itemId, const QString& sProperty);
+	void setProperty(int itemId, const QString& sProperty, const QVariant& v);
 
-	WaveProxy* cmdCreateWave();
-	void cmdDeleteWave(int waveId);
+	Wave* waveCreate();
+	void itemDelete(int itemId);
 
 signals:
-	void propertyChanged(const QString& sTable, int id, const QString& sProperty);
-	void wavePropertyChanged(int waveId, const QString& sProperty);
+	//void propertyChanged(const QString& sTable, int id, const QString& sProperty);
+	void propertyChanged(int objId, const QString& sProperty);
+	//void propertyChanged(int objId, int iProperty);
 
 public slots:
 
-private:
-	friend class SetPropertyCommand;
+protected:
+	friend class Command;
+	friend class Wave;
 
-	void setProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v);
+	void setProperty(Item* o, const QString& sProperty, const QVariant& vOld, const QVariant& vNew);
+	void handleCommand(CommandData* data, bool bDo);
+
+private:
+	void _setProperty(Item* o, const QString& sProperty, const QVariant& v);
+	void _itemDelete(CommandDataGeneric* data, bool bDo);
+	void _waveCreate(CommandDataGeneric* data, bool bDo);
 
 private:
 	QUndoStack* m_commands;
 
-	int m_waveIdNext;
-	QList<WaveProxy*> m_waves;
-	QMap<int, int> m_mapWaveIdToIndex;
+	int m_itemIdNext;
+	//int m_waveIdNext;
+	//QList<WaveData*> m_waveDatas;
+	//QMap<int, int> m_mapWaveIdToIndex;
+	QList<Item*> m_items;
+	QList<Item*> m_trash;
 };
 
 #endif

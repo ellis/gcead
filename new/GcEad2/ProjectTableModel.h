@@ -34,12 +34,13 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role);
 
 private slots:
-	void on_proj_propertyChanged(const QString& sTable, int id, const QString& sProperty);
+	void on_proj_propertyChanged(int itemId, const QString& sProperty);
 
 private:
 	QPointer<Project> m_proj;
 	QString m_sTable;
 	QStringList m_asProperties;
+	// REFACTOR: Rename to m_itemIds
 	QList<int> m_anRows;
 };
 

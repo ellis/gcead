@@ -19,7 +19,7 @@ void ProjectTableModel::setProject(Project *proj) {
 	m_anRows.clear();
 
 	if (!m_proj.isNull()) {
-		connect(m_proj, SIGNAL(propertyChanged(QString,int,QString)), this, SLOT(on_proj_propertyChanged(QString,int,QString)));
+		connect(m_proj, SIGNAL(propertyChanged(int,QString)), this, SLOT(on_proj_propertyChanged(int,QString)));
 	}
 
 	reset();
@@ -65,8 +65,8 @@ QVariant ProjectTableModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 
 	if (role == Qt::DisplayRole || role == Qt::EditRole) {
-		int iRow = m_anRows[index.row()];
-		return m_proj->getProperty(m_sTable, iRow, m_asProperties[index.column()]);
+		int itemId = m_anRows[index.row()];
+		return m_proj->getProperty(itemId, m_asProperties[index.column()]);
 	}
 	else {
 		return QVariant();
@@ -102,23 +102,21 @@ bool ProjectTableModel::setData(const QModelIndex &index, const QVariant &value,
 		return false;
 
 	if (role == Qt::EditRole) {
-		int iRow = m_anRows[index.row()];
-		m_proj->cmdSetProperty(m_sTable, iRow, m_asProperties[index.column()], value);
+		int itemId = m_anRows[index.row()];
+		m_proj->setProperty(itemId, m_asProperties[index.column()], value);
 		return true;
 	}
 
 	return false;
 }
 
-void ProjectTableModel::on_proj_propertyChanged(const QString& sTable, int id, const QString& sProperty) {
-	if (sTable == m_sTable) {
-		int iRow = m_anRows.indexOf(id);
-		if (iRow >= 0) {
-			int iCol = m_asProperties.indexOf(sProperty);
-			if (iCol >= 0) {
-				QModelIndex idx = index(iRow, iCol);
-				emit dataChanged(idx, idx);
-			}
+void ProjectTableModel::on_proj_propertyChanged(int itemId, const QString& sProperty) {
+	int iRow = m_anRows.indexOf(itemId);
+	if (iRow >= 0) {
+		int iCol = m_asProperties.indexOf(sProperty);
+		if (iCol >= 0) {
+			QModelIndex idx = index(iRow, iCol);
+			emit dataChanged(idx, idx);
 		}
 	}
 }

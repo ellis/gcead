@@ -1,19 +1,33 @@
-#ifndef __WAVEPROXY_H
-#define __WAVEPROXY_H
+#ifndef __WAVE_H
+#define __WAVE_H
 
 #include <QDateTime>
 #include <QObject>
 #include <QPointer>
 
-class Project;
+#include "Item.h"
+#include "WaveData.h"
+
+class IDataPropertySetter;
 class WaveData;
 
 
-class WaveProxy : public QObject
+class Wave : public Item
 {
 	Q_OBJECT
 
-	Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
+	//Q_PROPERTY(int id READ id WRITE setId)
+	Q_PROPERTY(int recId READ recId WRITE setRecId)
+	Q_PROPERTY(int typeId READ typeId WRITE setTypeId)
+	Q_PROPERTY(QString name READ name WRITE setName)
+	Q_PROPERTY(QString comment READ comment WRITE setComment)
+	Q_PROPERTY(QString source READ source WRITE setSource)
+	Q_PROPERTY(QDateTime time READ time WRITE setTime)
+	Q_PROPERTY(double rate READ rate WRITE setRate)
+	Q_PROPERTY(double offset READ offset WRITE setOffset)
+	Q_PROPERTY(double sensitivity READ sensitivity WRITE setSensitivity)
+	Q_PROPERTY(double shift READ shift WRITE setShift)
+	/*Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
 	Q_PROPERTY(int recId READ recId WRITE setRecId NOTIFY recIdChanged)
 	Q_PROPERTY(int typeId READ typeId WRITE setTypeId NOTIFY typeIdChanged)
 	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
@@ -23,15 +37,18 @@ class WaveProxy : public QObject
 	Q_PROPERTY(double rate READ rate WRITE setRate NOTIFY rateChanged)
 	Q_PROPERTY(double offset READ offset WRITE setOffset NOTIFY offsetChanged)
 	Q_PROPERTY(double sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
-	Q_PROPERTY(double shift READ shift WRITE setShift NOTIFY shiftChanged)
+	Q_PROPERTY(double shift READ shift WRITE setShift NOTIFY shiftChanged)*/
 
 public:
 	//static const WaveProxy null;
 
 public:
-	explicit WaveProxy(Project* proj, WaveData* data, QObject *parent = 0);
+	explicit Wave(WaveData* data, IItemPropertySetter* setter, QObject* parent);
 
-	int id() const;
+	WaveData* getWaveData() { return m_data; }
+
+	int objId() const;
+	//int id() const;
 	int recId() const;
 	int typeId() const;
 	QString name() const;
@@ -43,7 +60,7 @@ public:
 	double sensitivity() const;
 	double shift() const;
 
-signals:
+/*signals:
 	//void propertyChanged(const QString& sPropertyName);
 	void idChanged();
 	void recIdChanged();
@@ -56,9 +73,10 @@ signals:
 	void offsetChanged();
 	void sensitivityChanged();
 	void shiftChanged();
+*/
 
 public slots:
-	virtual void setId(int id);
+	//virtual void setId(int id);
 	virtual void setRecId(int recId);
 	virtual void setTypeId(int typeId);
 	virtual void setName(const QString& sName);
@@ -77,8 +95,8 @@ private:
 	//WaveProxy();
 
 private:
-	QPointer<Project> proj;
-	QPointer<WaveData> data;
+	IItemPropertySetter* const setter;
+	QPointer<WaveData> m_data;
 };
 
 #endif

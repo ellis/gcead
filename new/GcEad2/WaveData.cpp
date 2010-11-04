@@ -1,8 +1,8 @@
 #include "WaveData.h"
 
 
-WaveData::WaveData(QObject *parent)
-	: QObject(parent)
+WaveData::WaveData(int objId, QObject *parent)
+	: Data(objId, parent)
 {
 	m_id = 0;
 	m_recId = 0;
@@ -16,42 +16,42 @@ WaveData::WaveData(QObject *parent)
 void WaveData::setId(int id) {
 	if (id != m_id) {
 		m_id = id;
-		emit idChanged();
+		//emit idChanged();
 	}
 }
 
 void WaveData::setRecId(int recId) {
 	if (recId != m_recId) {
 		m_recId = recId;
-		emit recIdChanged();
+		//emit recIdChanged();
 	}
 }
 
 void WaveData::setTypeId(int typeId) {
 	if (typeId != m_typeId) {
 		m_typeId = typeId;
-		emit typeIdChanged();
+		//emit typeIdChanged();
 	}
 }
 
 void WaveData::setName(const QString& sName) {
 	if (sName != m_sName) {
 		m_sName = sName;
-		emit nameChanged();
+		//emit nameChanged();
 	}
 }
 
 void WaveData::setComment(const QString& sComment) {
 	if (sComment != m_sComment) {
 		m_sComment = sComment;
-		emit commentChanged();
+		//emit commentChanged();
 	}
 }
 
 void WaveData::setSource(const QString& sSource) {
 	if (sSource != m_sSource) {
 		m_sSource = sSource;
-		emit sourceChanged();
+		//emit sourceChanged();
 	}
 }
 
@@ -59,17 +59,17 @@ void WaveData::setSource(const QString& sSource) {
 void WaveData::set##Name(type var) {\
 	if (var != m_##var) {\
 	   m_##var = var;\
-	   emit signal##Changed();\
    }\
 }
+//	   emit signal##Changed();
 
 #define AAC(Name, signal, var, type)\
 void WaveData::set##Name(const type& var) {\
 	if (var != m_##var) {\
 	   m_##var = var;\
-	   emit signal##Changed();\
    }\
 }
+//	   emit signal##Changed();
 
 AAC(Time, time, time, QDateTime)
 AAA(Rate, rate, nRate, double)

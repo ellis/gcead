@@ -11,34 +11,26 @@
 
 #include "ObjectPropertiesModel.h"
 #include "Project.h"
-#include "ProjectData.h"
 #include "ProjectTableModel.h"
-#include "WaveData.h"
-#include "WaveProxy.h"
+#include "Wave.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-	ProjectData* projD = new ProjectData();
+	m_proj = new Project(this);
 
-	WaveData* waveD;
+	Wave* wave = m_proj->waveCreate();
+	wave->setName("One");
+	wave->setComment("Yay");
+	wave->setSensitivity(1);
 
-	waveD = new WaveData();
-	waveD->setName("One");
-	waveD->setComment("Yay");
-	waveD->setSensitivity(1);
-	projD->addWaveData(waveD);
+	wave = m_proj->waveCreate();
+	wave->setName("Two");
+	wave->setComment("Yay");
+	wave->setSensitivity(2);
 
-	waveD = new WaveData();
-	waveD->setName("Two");
-	waveD->setComment("Yay");
-	waveD->setSensitivity(2);
-	projD->addWaveData(waveD);
-
-	m_proj = new Project(projD, this);
-
-	createWidgets(waveD);
+	createWidgets(wave);
 }
 
 MainWindow::~MainWindow()
@@ -46,10 +38,9 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::createWidgets(WaveData* waveD) {
+void MainWindow::createWidgets(Wave* wave) {
 	ProjectTableModel* tableModel = new ProjectTableModel(this);
-	WaveProxy* proxy = new WaveProxy(m_proj, waveD, this);
-	ObjectPropertiesModel* objModel = new ObjectPropertiesModel(this);
+	//ObjectPropertiesModel* objModel = new ObjectPropertiesModel(this);
 
 	QGridLayout* layout = new QGridLayout();
 	QTableView* tbl = new QTableView();
@@ -60,10 +51,10 @@ void MainWindow::createWidgets(WaveData* waveD) {
 	tableModel->setProject(m_proj);
 	tableModel->setTable("wave");
 	tableModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
-	tableModel->setRows(QList<int>() << 1 << 2);
+	tableModel->setRows(QList<int>() << 0 << 1);
 
-	objModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
-	objModel->addObject(proxy);
+	//objModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
+	//objModel->addObject(proxy);
 
 
 	int iCol = 0;
@@ -71,10 +62,10 @@ void MainWindow::createWidgets(WaveData* waveD) {
 	tbl->setModel(tableModel);
 	layout->addWidget(tbl, 0, iCol++);
 
-	tree->setModel(objModel);
+	tree->setModel(tableModel);
 	layout->addWidget(tree, 0, iCol++);
 
-	layout->addWidget(createForm(objModel), 0, iCol++);
+	layout->addWidget(createForm(tableModel), 0, iCol++);
 
 	undoView->setWindowTitle(tr("Command List"));
 	layout->addWidget(undoView, 0, iCol++);
@@ -92,7 +83,7 @@ void MainWindow::createWidgets(WaveData* waveD) {
 	// - test undo/redo
 }
 
-QWidget* MainWindow::createForm(ObjectPropertiesModel* model) {
+QWidget* MainWindow::createForm(QAbstractTableModel* model) {
 	QWidget* form = new QWidget();
 	QGridLayout* grid = new QGridLayout();
 	QLineEdit* edtName = new QLineEdit();

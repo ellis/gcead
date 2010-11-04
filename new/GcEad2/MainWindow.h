@@ -3,11 +3,10 @@
 
 #include <QtGui/QMainWindow>
 
+class QAbstractTableModel;
 
-class ObjectPropertiesModel;
 class Project;
-class WaveData;
-class WaveProxy;
+class Wave;
 
 
 class MainWindow : public QMainWindow
@@ -19,8 +18,8 @@ public:
     ~MainWindow();
 
 private:
-	void createWidgets(WaveData* waveD);
-	QWidget* createForm(ObjectPropertiesModel* model);
+	void createWidgets(Wave* wave);
+	QWidget* createForm(QAbstractTableModel* model);
 
 private:
 	Project* m_proj;

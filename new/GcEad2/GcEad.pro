@@ -10,22 +10,23 @@ TARGET = GcEad
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        MainWindow.cpp \
+SOURCES += \
+	Data.cpp \
+	Item.cpp \
     WaveData.cpp \
-    ProjectData.cpp \
-    WaveProxy.cpp \
+	Wave.cpp \
     Project.cpp \
     ProjectTableModel.cpp \
     ObjectPropertiesModel.cpp \
-    Action.cpp
+	MainWindow.cpp \
+	main.cpp
 
 HEADERS  += MainWindow.h \
     WaveData.h \
-    ProjectData.h \
-    Check.h \
-    WaveProxy.h \
+	Wave.h \
+	Check.h \
     Project.h \
     ProjectTableModel.h \
-    ObjectPropertiesModel.h \
-    Action.h
+	ObjectPropertiesModel.h \
+    Data.h \
+    Item.h

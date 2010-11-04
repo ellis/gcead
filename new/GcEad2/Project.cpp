@@ -1,142 +1,165 @@
 #include "Project.h"
 
-#include "WaveProxy.h"
+#include <Check.h>
+
+#include "WaveData.h"
+#include "Wave.h"
 
 
-Project::SetPropertyCommand::SetPropertyCommand(Project* proj, const QString& sTable, int id, const QString& sProperty, const QVariant& vOld, const QVariant& vNew)
-	: proj(proj), sTable(sTable), id(id), sProperty(sProperty), vOld(vOld), vNew(vNew)
-{
-	CHECK_PARAM_NORET(!this->proj.isNull())
-	CHECK_PARAM_NORET(vOld.isValid())
-	CHECK_PARAM_NORET(vNew.isValid())
-	setText("Set " + sTable + " " + sProperty);
-}
-
-void Project::SetPropertyCommand::redo() {
-	proj->setProperty(sTable, id, sProperty, vNew);
-}
-
-void Project::SetPropertyCommand::undo() {
-	proj->setProperty(sTable, id, sProperty, vOld);
-}
-
-void Project::CommandWaveCreate(Project *proj)
+Project::CommandBase::CommandBase(Project* proj)
 	: proj(proj)
 {
-	CHECK_PARAM_NORET(!proj.isNull())
-	setText("Create new wave");
+	CHECK_PARAM_NORET(proj != NULL);
 }
 
-void Project::CommandWaveCreate::redo() {
-	CHECK_PRECOND_RET(!proj.isNull())
-	if (wave.isNull()) {
-		wave = proj->createWave();
-	}
-	else {
-		proj->attachWave(wave);
-	}
+Project::CommandBase::~CommandBase() {
 }
 
-void Project::CommandWaveCreate::undo() {
-	CHECK_PRECOND_RET(!proj.isNull())
-	CHECK_PRECOND_RET(!wave.isNull())
-	proj->detachWave(wave);
-}
-
-void Project::CommandWaveDelete(Project *proj, int waveId)
-	: proj(proj), waveId(waveId)
+Project::Command::Command(const QString& sName, Project* proj, CommandData* data)
+	: CommandBase(proj), data(data)
 {
-	CHECK_PARAM_NORET(!proj.isNull())
-	setText("Delete wave");
+	CHECK_PARAM_NORET(data != NULL);
+	setText(sName);
 }
 
-void Project::CommandWaveCreate::redo() {
-	CHECK_PRECOND_RET(!proj.isNull())
-	proj->detachWave(waveId);
-	if (wave.isNull()) {
-		wave = proj->createWave();
-	}
-	else {
-		proj->attachWave(wave);
-	}
+Project::Command::~Command() {
+	delete data;
 }
 
-void Project::CommandWaveCreate::undo() {
-	CHECK_PRECOND_RET(!proj.isNull())
-	CHECK_PRECOND_RET(!wave.isNull())
-	proj->detachWave(wave);
+void Project::Command::redo() {
+	CHECK_PRECOND_RET(proj != NULL);
+	proj->handleCommand(data, true);
 }
 
+void Project::Command::undo() {
+	CHECK_PRECOND_RET(proj != NULL);
+	proj->handleCommand(data, false);
+}
 
-
-
-Project::Project(ProjectData* projD, QObject* parent)
-	: QObject(parent), m_projD(projD)
+Project::Project(QObject *parent)
+	: QObject(parent)
 {
 	m_commands = new QUndoStack(this);
+	m_itemIdNext = 0;
+	//m_waveIdNext = 0;
 }
 
-QVariant Project::getProperty(const QString& sTable, int id, const QString& sProperty) {
-	CHECK_PRECOND_RETVAL(!m_projD.isNull(), QVariant())
+Project::~Project() {
+}
 
-	QObject* o = NULL;
-	if (sTable == "wave")
-		o = m_projD->getWaveData(id);
-	else {
-		CHECK_FAILURE_RETVAL(QVariant())
+Item* Project::findItem(int itemId) const {
+	foreach (Item* item, m_items) {
+		if (item->itemId() == itemId)
+			return item;
 	}
+	return NULL;
+}
+
+Wave* Project::findWave(int itemId) const {
+	Item* item = findItem(itemId);
+	if (item != NULL)
+		return dynamic_cast<Wave*>(item);
+	return NULL;
+}
+
+QVariant Project::getProperty(int itemId, const QString& sProperty) {
+	Item* o = findItem(itemId);
 	CHECK_ASSERT_RETVAL(o != NULL, QVariant())
 
-	QVariant v = o->property(sProperty.toLatin1());
+	QVariant v = o->getItemData()->property(sProperty.toLatin1());
 	CHECK_ASSERT_RETVAL(v.isValid(), QVariant())
 
 	return v;
 }
 
-WaveProxy* Project::getWave(int waveId) {
-	CHECK_PRECOND_RETVAL(!m_projD.isNull(), NULL);
+void Project::setProperty(int itemId, const QString& sProperty, const QVariant& v) {
+	Item* o = findItem(itemId);
+	CHECK_ASSERT_RET(o != NULL)
+	QVariant vOld = o->property(sProperty.toLatin1());
+	setProperty(o, sProperty, vOld, v);
+}
 
-	WaveProxy* waveP = m_mapWaves.value(waveId, NULL);
-	if (waveP == NULL) {
-		WaveData* waveD = m_projD->getWaveData(waveId);
-		if (waveD != NULL) {
-			waveP = new WaveProxy(this, waveD, this);
-			m_mapWaves[waveId] = waveP;
+Wave* Project::waveCreate() {
+	WaveData* waveD = new WaveData(m_itemIdNext++, this);
+	Wave* wave = new Wave(waveD, this, this);
+	m_trash << wave;
+
+	CommandDataGeneric* data = new CommandDataGeneric(CommandType_WaveCreate);
+	data->o = wave;
+	m_commands->push(new Command(tr("Create wave (#%0)").arg(waveD->itemId()), this, data));
+
+	return wave;
+}
+
+void Project::itemDelete(int itemId) {
+	Item* item = findItem(itemId);
+	CHECK_PARAM_RET(item != NULL);
+	CommandDataGeneric* data = new CommandDataGeneric(CommandType_ItemDelete);
+	data->o = item;
+	m_commands->push(new Command(tr("Delete item (#%0)").arg(itemId), this, data));
+}
+
+void Project::setProperty(Item* o, const QString& sProperty, const QVariant& vOld, const QVariant& vNew) {
+	if (vNew != vOld) {
+		CommandDataProperty* data = new CommandDataProperty;
+		data->o = o;
+		data->sProperty = sProperty;
+		data->vNew = vNew;
+		data->vOld = vOld;
+		m_commands->push(new Command("Set property " + sProperty, this, data));
+	}
+}
+
+void Project::handleCommand(CommandData* data, bool bDo) {
+	CHECK_PARAM_RET(data != NULL);
+	{
+		CommandDataProperty* d = dynamic_cast<CommandDataProperty*>(data);
+		if (d != NULL) {
+			_setProperty(d->o, d->sProperty, (bDo) ? d->vNew : d->vOld);
+			return;
 		}
 	}
-	return waveP;
+	{
+		CommandDataGeneric* d = dynamic_cast<CommandDataGeneric*>(data);
+		if (d != NULL) {
+			switch (d->type) {
+			case CommandType_ItemDelete: _itemDelete(d, bDo); break;
+			case CommandType_WaveCreate: _waveCreate(d, bDo); break;
+			}
+			return;
+		}
+	}
 }
 
-bool Project::cmdSetProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v) {
-	QVariant vOld = getProperty(sTable, id, sProperty);
-	if (v != vOld) {
-		SetPropertyCommand* cmd = new SetPropertyCommand(this, "wave", id, sProperty, vOld, v);
-		m_commands->push(cmd);
-		return true;
-	}
-	return false;
-}
+void Project::_setProperty(Item* o, const QString& sProperty, const QVariant& v) {
+	CHECK_PARAM_RET(o != NULL)
 
-void Project::setProperty(const QString& sTable, int id, const QString& sProperty, const QVariant& v) {
-	CHECK_PRECOND_RET(!m_projD.isNull())
-
-	QObject* o = NULL;
-	if (sTable == "wave")
-		o = m_projD->getWaveData(id);
-	else {
-		CHECK_FAILURE_RET()
-	}
-	CHECK_ASSERT_RET(o != NULL)
-
-	bool b = o->setProperty(sProperty.toLatin1(), v);
-	//CHECK_ASSERT_RET(b)
+	bool b = o->getItemData()->setProperty(sProperty.toLatin1(), v);
+	CHECK_ASSERT_RET(b)
 
 	if (b) {
-		emit wavePropertyChanged(id, sProperty);
-		emit propertyChanged(sTable, id, sProperty);
+		//emit wavePropertyChanged(id, sProperty);
+		//emit propertyChanged(sTable, id, sProperty);
+		emit propertyChanged(o->itemId(), sProperty);
 	}
 }
 
-WaveProxy* Project::cmdCreateWave() {
+void Project::_itemDelete(CommandDataGeneric* data, bool bDo) {
+	CHECK_PRECOND_RET(!data->o.isNull());
+	Item* item = data->o;
+	CHECK_ASSERT_RET(item != NULL);
+	CHECK_PRECOND_RET(m_trash.contains(item) != bDo);
+	CHECK_PRECOND_RET(m_items.contains(item) == bDo);
+	if (bDo) {
+		m_items.removeOne(item);
+		m_trash << item;
+	}
+	else {
+		m_items << item;
+		m_trash.removeOne(item);
+	}
+}
 
+void Project::_waveCreate(CommandDataGeneric* data, bool bDo) {
+	_itemDelete(data, !bDo);
 }

@@ -5,25 +5,27 @@
 #include <QObject>
 #include <QString>
 
+#include "Data.h"
 
-struct WaveData : public QObject
+
+struct WaveData : public Data
 {
 	Q_OBJECT
 
-	Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
-	Q_PROPERTY(int recId READ recId WRITE setRecId NOTIFY recIdChanged)
-	Q_PROPERTY(int typeId READ typeId WRITE setTypeId NOTIFY typeIdChanged)
-	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-	Q_PROPERTY(QString comment READ comment WRITE setComment NOTIFY commentChanged)
-	Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-	Q_PROPERTY(QDateTime time READ time WRITE setTime NOTIFY timeChanged)
-	Q_PROPERTY(double rate READ rate WRITE setRate NOTIFY rateChanged)
-	Q_PROPERTY(double offset READ offset WRITE setOffset NOTIFY offsetChanged)
-	Q_PROPERTY(double sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
-	Q_PROPERTY(double shift READ shift WRITE setShift NOTIFY shiftChanged)
+	Q_PROPERTY(int id READ id WRITE setId)
+	Q_PROPERTY(int recId READ recId WRITE setRecId)
+	Q_PROPERTY(int typeId READ typeId WRITE setTypeId)
+	Q_PROPERTY(QString name READ name WRITE setName)
+	Q_PROPERTY(QString comment READ comment WRITE setComment)
+	Q_PROPERTY(QString source READ source WRITE setSource)
+	Q_PROPERTY(QDateTime time READ time WRITE setTime)
+	Q_PROPERTY(double rate READ rate WRITE setRate)
+	Q_PROPERTY(double offset READ offset WRITE setOffset)
+	Q_PROPERTY(double sensitivity READ sensitivity WRITE setSensitivity)
+	Q_PROPERTY(double shift READ shift WRITE setShift)
 
 public:
-	explicit WaveData(QObject *parent = 0);
+	explicit WaveData(int objId, QObject *parent = 0);
 
 	int id() const { return m_id; }
 	int recId() const { return m_recId; }
@@ -38,31 +40,18 @@ public:
 	double sensitivity() const { return m_nSensitivity; }
 	double shift() const { return m_nShift; }
 
-signals:
-	void idChanged();
-	void recIdChanged();
-	void typeIdChanged();
-	void nameChanged();
-	void commentChanged();
-	void sourceChanged();
-	void timeChanged();
-	void rateChanged();
-	void offsetChanged();
-	void sensitivityChanged();
-	void shiftChanged();
-
-public slots:
-	virtual void setId(int id);
-	virtual void setRecId(int recId);
-	virtual void setTypeId(int typeId);
-	virtual void setName(const QString& sName);
-	virtual void setComment(const QString& sComment);
-	virtual void setSource(const QString& sSource);
-	virtual void setTime(const QDateTime& time);
-	virtual void setRate(double nRate);
-	virtual void setOffset(double nOffset);
-	virtual void setSensitivity(double nSensitivity);
-	virtual void setShift(double nShift);
+//public slots:
+	void setId(int id);
+	void setRecId(int recId);
+	void setTypeId(int typeId);
+	void setName(const QString& sName);
+	void setComment(const QString& sComment);
+	void setSource(const QString& sSource);
+	void setTime(const QDateTime& time);
+	void setRate(double nRate);
+	void setOffset(double nOffset);
+	void setSensitivity(double nSensitivity);
+	void setShift(double nShift);
 
 private:
 	int m_id;
