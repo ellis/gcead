@@ -4,6 +4,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QListWidget>
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
 #include <QSpinBox>
@@ -13,9 +14,13 @@
 
 #include "ObjectPropertiesModel.h"
 #include "Project.h"
-#include "ProjectTableModel.h"
+#include "Item.h"
+#include "ItemListModel.h"
 #include "Wave.h"
 
+
+static QScriptValue itemToScript(QScriptEngine* engine, Item* const& in) { return engine->newQObject(in); }
+static void scriptToItem(const QScriptValue& val, Item*& out) { out = qobject_cast<Item*>(val.toQObject()); }
 
 static QScriptValue waveToScript(QScriptEngine* engine, Wave* const& in) { return engine->newQObject(in); }
 static void scriptToWave(const QScriptValue& val, Wave*& out) { out = qobject_cast<Wave*>(val.toQObject()); }
@@ -43,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	QScriptValue val = m_engine->newQObject(m_proj);
 	m_engine->globalObject().setProperty("project", val);
+	qScriptRegisterMetaType(m_engine, itemToScript, scriptToItem);
 	qScriptRegisterMetaType(m_engine, waveToScript, scriptToWave);
 
 	QScriptEngineDebugger* debugger = new QScriptEngineDebugger(this);
@@ -51,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
 	//m_engine->registerCustomType();
 	//m_engine->evaluate("debugger; 5 + 4");
 
+	connect(m_proj, SIGNAL(logCommand(QString)), this, SLOT(on_proj_logCommand(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -59,12 +66,13 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::createWidgets(Wave* wave) {
-	ProjectTableModel* tableModel = new ProjectTableModel(this);
+	ItemListModel* tableModel = new ItemListModel(this);
 	//ObjectPropertiesModel* objModel = new ObjectPropertiesModel(this);
 
 	QGridLayout* layout = new QGridLayout();
 	QTableView* tbl = new QTableView();
-	QTreeView* tree = new QTreeView();
+	//QTreeView* tree = new QTreeView();
+	m_lstLog = new QListWidget();
 	QUndoView* undoView = new QUndoView(m_proj->undoStack());
 	QWidget* w = new QWidget();
 
@@ -80,8 +88,9 @@ void MainWindow::createWidgets(Wave* wave) {
 	tbl->setModel(tableModel);
 	layout->addWidget(tbl, 0, iCol++);
 
-	tree->setModel(tableModel);
-	layout->addWidget(tree, 0, iCol++);
+	//tree->setModel(tableModel);
+	//layout->addWidget(tree, 0, iCol++);
+	layout->addWidget(m_lstLog, 0, iCol++);
 
 	layout->addWidget(createForm(tableModel), 0, iCol++);
 
@@ -127,4 +136,8 @@ QWidget* MainWindow::createForm(QAbstractTableModel* model) {
 
 	form->setLayout(grid);
 	return form;
+}
+
+void MainWindow::on_proj_logCommand(const QString& s) {
+	m_lstLog->addItem(s);
 }

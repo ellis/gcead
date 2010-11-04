@@ -1,4 +1,4 @@
-#include "ProjectTableModel.h"
+#include "ItemListModel.h"
 
 #include <Check.h>
 
@@ -6,12 +6,12 @@
 #include "Project.h"
 
 
-ProjectTableModel::ProjectTableModel(QObject *parent)
+ItemListModel::ItemListModel(QObject *parent)
 	: QAbstractTableModel(parent)
 {
 }
 
-void ProjectTableModel::setProject(Project *proj) {
+void ItemListModel::setProject(Project *proj) {
 	if (!m_proj.isNull()) {
 		m_proj->disconnect(this);
 	}
@@ -32,26 +32,26 @@ void ProjectTableModel::setProject(Project *proj) {
 	reset();
 }
 
-void ProjectTableModel::setProperties(const QStringList &asProperties) {
+void ItemListModel::setProperties(const QStringList &asProperties) {
 	m_asProperties = asProperties;
 	reset();
 }
 
-int ProjectTableModel::rowCount(const QModelIndex &parent) const
+int ItemListModel::rowCount(const QModelIndex &parent) const
 {
 	if (parent.isValid())
 		return 0;
 	return m_anRows.size();
 }
 
-int ProjectTableModel::columnCount(const QModelIndex &parent) const
+int ItemListModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid())
 		return 0;
 	return m_asProperties.size();
 }
 
-QVariant ProjectTableModel::data(const QModelIndex &index, int role) const
+QVariant ItemListModel::data(const QModelIndex &index, int role) const
 {
 	CHECK_PARAM_RETVAL(index.isValid(), QVariant());
 	CHECK_PARAM_RETVAL(index.column() < m_asProperties.size(), QVariant());
@@ -69,7 +69,7 @@ QVariant ProjectTableModel::data(const QModelIndex &index, int role) const
 }
 
 /*
-QModelIndex ProjectTableModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex ItemListModel::index(int row, int column, const QModelIndex &parent) const
 {
 	QModelIndex idx;
 	if (!parent.isValid())
@@ -77,19 +77,19 @@ QModelIndex ProjectTableModel::index(int row, int column, const QModelIndex &par
 	return idx;
 }
 
-QModelIndex ProjectTableModel::parent(const QModelIndex &child) const
+QModelIndex ItemListModel::parent(const QModelIndex &child) const
 {
 	return QModelIndex();
 }
 */
 
-Qt::ItemFlags ProjectTableModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags ItemListModel::flags(const QModelIndex &index) const {
 	if (!index.isValid())
 		return Qt::NoItemFlags;
 	return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 }
 
-bool ProjectTableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+bool ItemListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	CHECK_PARAM_RETVAL(index.isValid(), false);
 	CHECK_PARAM_RETVAL(index.column() < m_asProperties.size(), false);
 
@@ -105,14 +105,14 @@ bool ProjectTableModel::setData(const QModelIndex &index, const QVariant &value,
 	return false;
 }
 
-void ProjectTableModel::on_items_itemAdded(int itemId) {
+void ItemListModel::on_items_itemAdded(int itemId) {
 	int iRow = m_anRows.size();
 	beginInsertRows(QModelIndex(), iRow, iRow);
 	m_anRows << itemId;
 	endInsertRows();
 }
 
-void ProjectTableModel::on_items_itemRemoved(int itemId) {
+void ItemListModel::on_items_itemRemoved(int itemId) {
 	int iRow = m_anRows.indexOf(itemId);
 	if (iRow >= 0) {
 		beginRemoveRows(QModelIndex(), iRow, iRow);
@@ -121,7 +121,7 @@ void ProjectTableModel::on_items_itemRemoved(int itemId) {
 	}
 }
 
-void ProjectTableModel::on_items_itemPropertyChanged(int itemId, const QString& sProperty) {
+void ItemListModel::on_items_itemPropertyChanged(int itemId, const QString& sProperty) {
 	int iRow = m_anRows.indexOf(itemId);
 	if (iRow >= 0) {
 		int iCol = m_asProperties.indexOf(sProperty);

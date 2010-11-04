@@ -4,6 +4,7 @@
 #include <QtGui/QMainWindow>
 
 class QAbstractTableModel;
+class QListWidget;
 class QScriptEngine;
 
 class Project;
@@ -22,9 +23,13 @@ private:
 	void createWidgets(Wave* wave);
 	QWidget* createForm(QAbstractTableModel* model);
 
+private slots:
+	void on_proj_logCommand(const QString& s);
+
 private:
 	Project* m_proj;
 	QScriptEngine* m_engine;
+	QListWidget* m_lstLog;
 };
 
 #endif // MAINWINDOW_H

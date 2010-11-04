@@ -15,20 +15,20 @@ SOURCES += \
 	Item.cpp \
     WaveData.cpp \
 	Wave.cpp \
-    Project.cpp \
-    ProjectTableModel.cpp \
+	ItemList.cpp \
+	Project.cpp \
+	ItemListModel.cpp \
     ObjectPropertiesModel.cpp \
 	MainWindow.cpp \
 	main.cpp \
-    ItemList.cpp
 
-HEADERS  += MainWindow.h \
-    WaveData.h \
+HEADERS  += Check.h \
+	Data.h \
+	Item.h \
+	WaveData.h \
 	Wave.h \
-	Check.h \
+	ItemList.h \
     Project.h \
-    ProjectTableModel.h \
+	ItemListModel.h \
 	ObjectPropertiesModel.h \
-    Data.h \
-    Item.h \
-    ItemList.h
+	MainWindow.h

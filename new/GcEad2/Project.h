@@ -19,7 +19,9 @@ class Project : public QObject, private IItemPropertySetter
     Q_OBJECT
 public:
 	struct CommandData {
+		CommandData() : bRunOnce(false) {}
 		virtual ~CommandData() {}
+		bool bRunOnce;
 	};
 
 	struct CommandDataProperty : public CommandData {
@@ -79,7 +81,11 @@ public:
 	Q_INVOKABLE Wave* waveCreate();
 	Q_INVOKABLE void itemDelete(int itemId);
 
+	Q_INVOKABLE void undo();
+	Q_INVOKABLE void redo();
+
 signals:
+	void logCommand(const QString& s);
 	//void propertyChanged(const QString& sTable, int id, const QString& sProperty);
 	//void propertyChanged(int objId, const QString& sProperty);
 	//void propertyChanged(int objId, int iProperty);

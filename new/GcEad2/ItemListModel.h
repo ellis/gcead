@@ -13,11 +13,11 @@ class ItemList;
 class Project;
 
 
-class ProjectTableModel : public QAbstractTableModel
+class ItemListModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	explicit ProjectTableModel(QObject *parent = 0);
+	explicit ItemListModel(QObject *parent = 0);
 
 	void setProject(Project* proj);
 	//void setTable(const QString& sTable);

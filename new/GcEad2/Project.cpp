@@ -87,6 +87,7 @@ Wave* Project::waveCreate() {
 
 	CommandDataGeneric* data = new CommandDataGeneric(CommandType_WaveCreate);
 	data->o = wave;
+	emit logCommand(QString("project.waveCreate()"));
 	m_commands->push(new Command(tr("Create wave (#%0)").arg(waveD->itemId()), this, data));
 
 	return wave;
@@ -97,22 +98,38 @@ void Project::itemDelete(int itemId) {
 	CHECK_PARAM_RET(item != NULL);
 	CommandDataGeneric* data = new CommandDataGeneric(CommandType_ItemDelete);
 	data->o = item;
+	emit logCommand(QString("project.itemDelete(%0)").arg(itemId));
 	m_commands->push(new Command(tr("Delete item (#%0)").arg(itemId), this, data));
 }
 
-void Project::setProperty(Item* o, const QString& sProperty, const QVariant& vOld, const QVariant& vNew) {
+void Project::undo() {
+	m_commands->undo();
+}
+
+void Project::redo() {
+	m_commands->redo();
+}
+
+void Project::setProperty(Item* item, const QString& sProperty, const QVariant& vOld, const QVariant& vNew) {
 	if (vNew != vOld) {
 		CommandDataProperty* data = new CommandDataProperty;
-		data->o = o;
+		data->o = item;
 		data->sProperty = sProperty;
 		data->vNew = vNew;
 		data->vOld = vOld;
+		emit logCommand(QString("project.findItem(%0).%1 = \"%2\"").arg(item->itemId()).arg(sProperty).arg(vNew.toString()));
 		m_commands->push(new Command("Set property " + sProperty, this, data));
 	}
 }
 
 void Project::handleCommand(CommandData* data, bool bDo) {
 	CHECK_PARAM_RET(data != NULL);
+	if (!data->bRunOnce)
+		data->bRunOnce = true;
+	else {
+		emit logCommand(QString("project.%0()").arg(bDo ? "redo" : "undo"));
+	}
+
 	{
 		CommandDataProperty* d = dynamic_cast<CommandDataProperty*>(data);
 		if (d != NULL) {
@@ -132,16 +149,16 @@ void Project::handleCommand(CommandData* data, bool bDo) {
 	}
 }
 
-void Project::_setProperty(Item* o, const QString& sProperty, const QVariant& v) {
-	CHECK_PARAM_RET(o != NULL)
+void Project::_setProperty(Item* item, const QString& sProperty, const QVariant& v) {
+	CHECK_PARAM_RET(item != NULL)
 
-	bool b = o->getItemData()->setProperty(sProperty.toLatin1(), v);
+	bool b = item->getItemData()->setProperty(sProperty.toLatin1(), v);
 	CHECK_ASSERT_RET(b)
 
 	if (b) {
 		//emit wavePropertyChanged(id, sProperty);
 		//emit propertyChanged(sTable, id, sProperty);
-		m_items->emit_itemPropertyChanged(o->itemId(), sProperty);
+		m_items->emit_itemPropertyChanged(item->itemId(), sProperty);
 	}
 }
 
