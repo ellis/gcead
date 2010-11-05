@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include <QDataWidgetMapper>
+#include <QDockWidget>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -42,8 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
 	wave->setComment("Yay");
 	wave->setSensitivity(2);
 
-	createWidgets(wave);
-
 	qRegisterMetaType<Wave*>("Wave*");
 
 	QScriptValue val = m_engine->newQObject(m_proj);
@@ -51,11 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
 	qScriptRegisterMetaType(m_engine, itemToScript, scriptToItem);
 	qScriptRegisterMetaType(m_engine, waveToScript, scriptToWave);
 
-	QScriptEngineDebugger* debugger = new QScriptEngineDebugger(this);
-	debugger->attachTo(m_engine);
-	debugger->standardWindow()->show();
-	//m_engine->registerCustomType();
-	//m_engine->evaluate("debugger; 5 + 4");
+	createWidgets(wave);
 
 	connect(m_proj, SIGNAL(logCommand(QString)), this, SLOT(on_proj_logCommand(QString)));
 }
@@ -74,6 +69,7 @@ void MainWindow::createWidgets(Wave* wave) {
 	//QTreeView* tree = new QTreeView();
 	m_lstLog = new QListWidget();
 	QUndoView* undoView = new QUndoView(m_proj->undoStack());
+	m_debugger = new QScriptEngineDebugger(this);
 	QWidget* w = new QWidget();
 
 	tableModel->setProject(m_proj);
@@ -90,16 +86,32 @@ void MainWindow::createWidgets(Wave* wave) {
 
 	//tree->setModel(tableModel);
 	//layout->addWidget(tree, 0, iCol++);
-	layout->addWidget(m_lstLog, 0, iCol++);
+	//layout->addWidget(m_lstLog, 0, iCol++);
 
 	layout->addWidget(createForm(tableModel), 0, iCol++);
 
-	undoView->setWindowTitle(tr("Command List"));
-	layout->addWidget(undoView, 0, iCol++);
+	//undoView->setWindowTitle(tr("Command List"));
+	//layout->addWidget(undoView, 0, iCol++);
 
 	w->setLayout(layout);
 	setCentralWidget(w);
 
+	QDockWidget* dock;
+
+	dock = new QDockWidget(tr("Undo/Redo List"), this);
+	dock->setWidget(undoView);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+
+	dock = new QDockWidget(tr("Log"), this);
+	dock->setWidget(m_lstLog);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+
+	m_debugger->attachTo(m_engine);
+	dock = new QDockWidget(tr("Script console"), this);
+	dock->setWidget(m_debugger->widget(QScriptEngineDebugger::ConsoleWidget));
+	addDockWidget(Qt::BottomDockWidgetArea, dock);
+
+	//m_debugger->standardWindow()->show();
 	// TODO:
 	// - add some sample waves to the project
 	// - create a Model of the waves

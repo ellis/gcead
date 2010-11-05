@@ -6,6 +6,7 @@
 class QAbstractTableModel;
 class QListWidget;
 class QScriptEngine;
+class QScriptEngineDebugger;
 
 class Project;
 class Wave;
@@ -29,6 +30,8 @@ private slots:
 private:
 	Project* m_proj;
 	QScriptEngine* m_engine;
+
+	QScriptEngineDebugger* m_debugger;
 	QListWidget* m_lstLog;
 };
 
