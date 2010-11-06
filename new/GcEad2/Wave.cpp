@@ -5,10 +5,9 @@
 #include "WaveData.h"
 
 
-Wave::Wave(WaveData* data, IItemPropertySetter* setter, QObject* parent) :
-	Item(data, parent), setter(setter), m_data(data)
+Wave::Wave(WaveData* data, QObject* parent) :
+	Item(data, parent), m_data(data)
 {
-	CHECK_PARAM_RET(setter != NULL)
 	CHECK_PARAM_RET(data != NULL)
 
 	/*#define C(name) connect(data, SIGNAL(name##Changed()), this, SIGNAL(name##Changed()))
@@ -46,9 +45,11 @@ double Wave::sensitivity() const { return m_data->sensitivity(); }
 double Wave::shift() const { return m_data->shift(); }
 
 void Wave::setDataProperty(const QString& sProperty, const QVariant& v) {
-	CHECK_PARAM_RET(!sProperty.isEmpty())
 	QVariant vOld = property(sProperty.toLatin1());
-	setter->setProperty(this, sProperty, vOld, v);
+	if (v != vOld) {
+		EdmCommandItemProperty* cmd = new EdmCommandItemProperty(this, sProperty, vOld, v);
+		sendCommand(cmd);
+	}
 }
 
 //void Wave::setId(int id) { setDataProperty("id", id); }

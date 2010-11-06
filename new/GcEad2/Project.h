@@ -11,10 +11,12 @@
 
 
 class ItemList;
+class ProjectData;
 class Wave;
+class WaveRepository;
 
 
-class Project : public QObject, private IItemPropertySetter
+class Project : public QObject
 {
     Q_OBJECT
 public:
@@ -69,26 +71,23 @@ public:
 	~Project();
 
 	QUndoStack* undoStack() { return m_commands; }
-	const ItemList* itemList() const { return m_items; }
-	const ItemList* trashList() const { return m_trash; }
+	const ItemList* itemList() const;
+	const ItemList* trashList() const;
 
-	Q_INVOKABLE Item* findItem(int itemId) const;
+	Q_INVOKABLE Item* find(int itemId) const;
 	Q_INVOKABLE Wave* findWave(int itemId) const;
 
 	Q_INVOKABLE QVariant getProperty(int itemId, const QString& sProperty);
 	Q_INVOKABLE void setProperty(int itemId, const QString& sProperty, const QVariant& v);
 
-	Q_INVOKABLE Wave* waveCreate();
 	Q_INVOKABLE void itemDelete(int itemId);
+	Q_INVOKABLE Wave* waveCreate();
 
 	Q_INVOKABLE void undo();
 	Q_INVOKABLE void redo();
 
 signals:
 	void logCommand(const QString& s);
-	//void propertyChanged(const QString& sTable, int id, const QString& sProperty);
-	//void propertyChanged(int objId, const QString& sProperty);
-	//void propertyChanged(int objId, int iProperty);
 
 public slots:
 
@@ -100,21 +99,8 @@ protected:
 	void handleCommand(CommandData* data, bool bDo);
 
 private:
-	void _setProperty(Item* o, const QString& sProperty, const QVariant& v);
-	void _itemDelete(CommandDataGeneric* data, bool bDo);
-	void _waveCreate(CommandDataGeneric* data, bool bDo);
-
-private:
+	WaveRepository* m_waves;
 	QUndoStack* m_commands;
-
-	int m_itemIdNext;
-	//int m_waveIdNext;
-	//QList<WaveData*> m_waveDatas;
-	//QMap<int, int> m_mapWaveIdToIndex;
-	//QList<Item*> m_items;
-	//QList<Item*> m_trash;
-	ItemList* m_items;
-	ItemList* m_trash;
 };
 
 #endif

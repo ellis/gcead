@@ -3,7 +3,6 @@
 #include <Check.h>
 
 #include "ItemList.h"
-#include "Project.h"
 
 
 ItemListModel::ItemListModel(QObject *parent)
@@ -11,17 +10,17 @@ ItemListModel::ItemListModel(QObject *parent)
 {
 }
 
-void ItemListModel::setProject(Project *proj) {
-	if (!m_proj.isNull()) {
-		m_proj->disconnect(this);
+void ItemListModel::setItemList(const ItemList* items) {
+	CHECK_PARAM_RET(items != NULL)
+
+	if (m_items != NULL) {
+		m_items->disconnect(this);
 	}
 
-	m_proj = proj;
-	m_items = NULL;
+	m_items = (ItemList*) items;
 	m_anRows.clear();
 
-	if (!m_proj.isNull()) {
-		m_items = m_proj->itemList();
+	if (m_items != NULL) {
 		connect(m_items, SIGNAL(itemAdded(int)), this, SLOT(on_items_itemAdded(int)));
 		connect(m_items, SIGNAL(itemRemoved(int)), this, SLOT(on_items_itemRemoved(int)));
 		connect(m_items, SIGNAL(itemPropertyChanged(int,QString)), this, SLOT(on_items_itemPropertyChanged(int,QString)));
@@ -56,12 +55,14 @@ QVariant ItemListModel::data(const QModelIndex &index, int role) const
 	CHECK_PARAM_RETVAL(index.isValid(), QVariant());
 	CHECK_PARAM_RETVAL(index.column() < m_asProperties.size(), QVariant());
 
-	if (m_proj.isNull() || index.row() >= m_anRows.size())
+	if (m_items.isNull() || index.row() >= m_anRows.size())
 		return QVariant();
 
 	if (role == Qt::DisplayRole || role == Qt::EditRole) {
 		int itemId = m_anRows[index.row()];
-		return m_proj->getProperty(itemId, m_asProperties[index.column()]);
+		Item* item = m_items->find(itemId);
+		CHECK_ASSERT_RETVAL(item != NULL, QVariant());
+		return item->getItemData()->property(m_asProperties[index.column()].toLatin1());
 	}
 	else {
 		return QVariant();
@@ -93,12 +94,14 @@ bool ItemListModel::setData(const QModelIndex &index, const QVariant &value, int
 	CHECK_PARAM_RETVAL(index.isValid(), false);
 	CHECK_PARAM_RETVAL(index.column() < m_asProperties.size(), false);
 
-	if (m_proj.isNull() || index.row() >= m_anRows.size())
+	if (m_items.isNull() || index.row() >= m_anRows.size())
 		return false;
 
 	if (role == Qt::EditRole) {
 		int itemId = m_anRows[index.row()];
-		m_proj->setProperty(itemId, m_asProperties[index.column()], value);
+		Item* item = m_items->find(itemId);
+		CHECK_ASSERT_RETVAL(item != NULL, false);
+		item->setProperty(m_asProperties[index.column()].toLatin1(), value);
 		return true;
 	}
 

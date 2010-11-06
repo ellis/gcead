@@ -2,9 +2,9 @@
 #define __ITEM_H
 
 #include <QMetaType>
-#include <QObject>
 
 #include "Data.h"
+#include "EdmObject.h"
 
 
 class Item;
@@ -17,7 +17,7 @@ public:
 };
 
 
-class Item : public QObject
+class Item : public EdmObject
 {
 	Q_OBJECT
 public:
@@ -25,6 +25,13 @@ public:
 
 	inline Data* getItemData() { return m_data; }
 	inline int itemId() const { return m_data->itemId(); }
+
+protected:
+	//void setItemData(Data* data);
+
+// EdmObject overrides
+protected:
+	bool handleItemProperty(EdmCommandItemProperty* cmd, bool bDo);
 
 private:
 	Data* m_data;

@@ -10,7 +10,6 @@
 
 
 class ItemList;
-class Project;
 
 
 class ItemListModel : public QAbstractTableModel
@@ -19,7 +18,7 @@ class ItemListModel : public QAbstractTableModel
 public:
 	explicit ItemListModel(QObject *parent = 0);
 
-	void setProject(Project* proj);
+	void setItemList(const ItemList* items);
 	//void setTable(const QString& sTable);
 	void setProperties(const QStringList& asProperties);
 
@@ -39,8 +38,7 @@ private slots:
 	void on_items_itemPropertyChanged(int itemId, const QString& sProperty);
 
 private:
-	QPointer<Project> m_proj;
-	const ItemList* m_items;
+	QPointer<ItemList> m_items;
 	//QString m_sTable;
 	QStringList m_asProperties;
 	// REFACTOR: Rename to m_itemIds

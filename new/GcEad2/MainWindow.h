@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef __MAINWINDOW_H
+#define __MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
 
@@ -8,9 +8,12 @@ class QListWidget;
 class QScriptEngine;
 class QScriptEngineDebugger;
 
+class ItemList;
 class ItemListModel;
-class Project;
 class Wave;
+class WaveListController;
+class WaveRepository;
+class Workspace;
 
 
 class MainWindow : public QMainWindow
@@ -22,7 +25,7 @@ public:
     ~MainWindow();
 
 private:
-	void createWidgets(Wave* wave);
+	void createWidgets();
 	QWidget* createCentralWidget1();
 	QWidget* createCentralWidget2();
 	QWidget* createForm(QAbstractTableModel* model);
@@ -31,7 +34,10 @@ private slots:
 	void on_proj_logCommand(const QString& s);
 
 private:
-	Project* m_proj;
+	Workspace* m_space;
+	WaveRepository* m_waveRepo;
+	//const ItemList* m_waves;
+	WaveListController* m_waves;
 	ItemListModel* m_itemModel;
 	QScriptEngine* m_engine;
 
@@ -39,4 +45,4 @@ private:
 	QListWidget* m_lstLog;
 };
 
-#endif // MAINWINDOW_H
+#endif

@@ -15,12 +15,15 @@
 #include <QTreeView>
 #include <QUndoView>
 
-#include "ObjectPropertiesModel.h"
-#include "Project.h"
 #include "GraphicsWidget1.h"
 #include "Item.h"
 #include "ItemListModel.h"
+#include "ItemRepository.h"
+//#include "ObjectPropertiesModel.h"
 #include "Wave.h"
+#include "WaveListController.h"
+#include "WaveList.h"
+#include "Workspace.h"
 
 
 static QScriptValue itemToScript(QScriptEngine* engine, Item* const& in) { return engine->newQObject(in); }
@@ -34,32 +37,37 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	m_engine = new QScriptEngine(this);
 
-	m_proj = new Project(this);
+	m_space = new Workspace(this);
+	m_waveRepo = m_space->waveRepository();
 
-	Wave* wave = m_proj->waveCreate();
+	m_waves = new WaveListController(this);
+	m_waves->setObjectName("waves");
+	m_waves->setRepository(m_waveRepo);
+
+	Wave* wave = m_waves->add();
 	wave->setName("One");
 	wave->setComment("Yay");
 	wave->setSensitivity(1);
 
-	wave = m_proj->waveCreate();
+	wave = (Wave*) m_waves->add();
 	wave->setName("Two");
 	wave->setComment("Yay");
 	wave->setSensitivity(2);
 
 	m_itemModel = new ItemListModel(this);
-	m_itemModel->setProject(m_proj);
+	m_itemModel->setItemList(m_waveRepo->activeItems());
 	m_itemModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
 
 	qRegisterMetaType<Wave*>("Wave*");
 
-	QScriptValue val = m_engine->newQObject(m_proj);
-	m_engine->globalObject().setProperty("project", val);
+	QScriptValue val = m_engine->newQObject(m_waves);
+	m_engine->globalObject().setProperty("waves", val);
 	qScriptRegisterMetaType(m_engine, itemToScript, scriptToItem);
 	qScriptRegisterMetaType(m_engine, waveToScript, scriptToWave);
 
-	createWidgets(wave);
+	createWidgets();
 
-	connect(m_proj, SIGNAL(logCommand(QString)), this, SLOT(on_proj_logCommand(QString)));
+	connect(m_space, SIGNAL(logCommand(QString)), this, SLOT(on_proj_logCommand(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -67,9 +75,9 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::createWidgets(Wave* wave) {
+void MainWindow::createWidgets() {
 	m_lstLog = new QListWidget();
-	QUndoView* undoView = new QUndoView(m_proj->undoStack());
+	QUndoView* undoView = new QUndoView(m_space->undoStack());
 	m_debugger = new QScriptEngineDebugger(this);
 
 	QDockWidget* dock;
@@ -122,7 +130,7 @@ QWidget* MainWindow::createCentralWidget1() {
 }
 
 QWidget* MainWindow::createCentralWidget2() {
-
+	return NULL;
 }
 
 QWidget* MainWindow::createForm(QAbstractTableModel* model) {

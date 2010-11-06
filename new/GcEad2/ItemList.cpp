@@ -1,20 +1,21 @@
 #include "ItemList.h"
 
 #include <Check.h>
-#include "Project.h"
+
+#include "EdmCommand.h"
+#include "EdmCommandTypes.h"
 
 
-ItemList::ItemList(Project* proj)
-	: QObject(proj), m_proj(proj)
+ItemList::ItemList(QObject* parent)
+	: EdmObject(parent)
 {
-	CHECK_PARAM_NORET(proj != NULL);
 }
 
 void ItemList::add(Item* item) {
 	CHECK_PARAM_RET(item != NULL);
 	CHECK_PARAM_RET(!contains(item));
 	CHECK_PARAM_RET(!contains(item->itemId()));
-	CHECK_PARAM_RET(item->parent() == m_proj);
+	//CHECK_PARAM_RET(item->parent() == m_proj);
 
 	m_items.insert(item);
 	m_map.insert(item->itemId(), item);

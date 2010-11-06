@@ -11,26 +11,37 @@ TEMPLATE = app
 
 
 SOURCES += \
+	EdmCommand.cpp \
+	EdmObject.cpp \
 	Data.cpp \
 	Item.cpp \
-    WaveData.cpp \
-	Wave.cpp \
 	ItemList.cpp \
-	Project.cpp \
+	ItemRepository.cpp \
+	WaveData.cpp \
+	Wave.cpp \
+	WaveList.cpp \
 	ItemListModel.cpp \
-    ObjectPropertiesModel.cpp \
+	Workspace.cpp \
+	ObjectPropertiesModel.cpp \
 	MainWindow.cpp \
 	main.cpp \
-    GraphicsWidget1.cpp
+	GraphicsWidget1.cpp \
+    WaveListController.cpp
 
 HEADERS  += Check.h \
+	EdmCommand.h \
+	EdmObject.h \
 	Data.h \
 	Item.h \
 	WaveData.h \
 	Wave.h \
 	ItemList.h \
-    Project.h \
 	ItemListModel.h \
 	ObjectPropertiesModel.h \
 	MainWindow.h \
-    GraphicsWidget1.h
+	GraphicsWidget1.h \
+	ItemRepository.h \
+    EdmCommandTypes.h \
+    WaveList.h \
+    Workspace.h \
+    WaveListController.h

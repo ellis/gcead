@@ -9,7 +9,7 @@
 #include "Item.h"
 #include "WaveData.h"
 
-class IDataPropertySetter;
+//class IDataPropertySetter;
 class WaveData;
 
 
@@ -44,12 +44,10 @@ public:
 	//static const WaveProxy null;
 
 public:
-	explicit Wave(WaveData* data, IItemPropertySetter* setter, QObject* parent);
+	explicit Wave(WaveData* data, QObject* parent);
 
 	WaveData* getWaveData() { return m_data; }
 
-	int objId() const;
-	//int id() const;
 	int recId() const;
 	int typeId() const;
 	QString name() const;
@@ -96,7 +94,6 @@ private:
 	//WaveProxy();
 
 private:
-	IItemPropertySetter* const setter;
 	QPointer<WaveData> m_data;
 };
 
