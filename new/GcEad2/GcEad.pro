@@ -21,6 +21,7 @@ SOURCES += \
     ObjectPropertiesModel.cpp \
 	MainWindow.cpp \
 	main.cpp \
+    GraphicsWidget1.cpp
 
 HEADERS  += Check.h \
 	Data.h \
@@ -31,4 +32,5 @@ HEADERS  += Check.h \
     Project.h \
 	ItemListModel.h \
 	ObjectPropertiesModel.h \
-	MainWindow.h
+	MainWindow.h \
+    GraphicsWidget1.h

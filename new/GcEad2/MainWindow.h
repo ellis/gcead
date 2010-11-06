@@ -8,6 +8,7 @@ class QListWidget;
 class QScriptEngine;
 class QScriptEngineDebugger;
 
+class ItemListModel;
 class Project;
 class Wave;
 
@@ -22,6 +23,8 @@ public:
 
 private:
 	void createWidgets(Wave* wave);
+	QWidget* createCentralWidget1();
+	QWidget* createCentralWidget2();
 	QWidget* createForm(QAbstractTableModel* model);
 
 private slots:
@@ -29,6 +32,7 @@ private slots:
 
 private:
 	Project* m_proj;
+	ItemListModel* m_itemModel;
 	QScriptEngine* m_engine;
 
 	QScriptEngineDebugger* m_debugger;

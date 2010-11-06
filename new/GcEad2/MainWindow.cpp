@@ -2,6 +2,8 @@
 
 #include <QDataWidgetMapper>
 #include <QDockWidget>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -15,6 +17,7 @@
 
 #include "ObjectPropertiesModel.h"
 #include "Project.h"
+#include "GraphicsWidget1.h"
 #include "Item.h"
 #include "ItemListModel.h"
 #include "Wave.h"
@@ -43,6 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
 	wave->setComment("Yay");
 	wave->setSensitivity(2);
 
+	m_itemModel = new ItemListModel(this);
+	m_itemModel->setProject(m_proj);
+	m_itemModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
+
 	qRegisterMetaType<Wave*>("Wave*");
 
 	QScriptValue val = m_engine->newQObject(m_proj);
@@ -61,40 +68,9 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::createWidgets(Wave* wave) {
-	ItemListModel* tableModel = new ItemListModel(this);
-	//ObjectPropertiesModel* objModel = new ObjectPropertiesModel(this);
-
-	QGridLayout* layout = new QGridLayout();
-	QTableView* tbl = new QTableView();
-	//QTreeView* tree = new QTreeView();
 	m_lstLog = new QListWidget();
 	QUndoView* undoView = new QUndoView(m_proj->undoStack());
 	m_debugger = new QScriptEngineDebugger(this);
-	QWidget* w = new QWidget();
-
-	tableModel->setProject(m_proj);
-	tableModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
-
-	//objModel->setProperties(QStringList() << "name" << "comment" << "sensitivity");
-	//objModel->addObject(proxy);
-
-
-	int iCol = 0;
-
-	tbl->setModel(tableModel);
-	layout->addWidget(tbl, 0, iCol++);
-
-	//tree->setModel(tableModel);
-	//layout->addWidget(tree, 0, iCol++);
-	//layout->addWidget(m_lstLog, 0, iCol++);
-
-	layout->addWidget(createForm(tableModel), 0, iCol++);
-
-	//undoView->setWindowTitle(tr("Command List"));
-	//layout->addWidget(undoView, 0, iCol++);
-
-	w->setLayout(layout);
-	setCentralWidget(w);
 
 	QDockWidget* dock;
 
@@ -111,6 +87,8 @@ void MainWindow::createWidgets(Wave* wave) {
 	dock->setWidget(m_debugger->widget(QScriptEngineDebugger::ConsoleWidget));
 	addDockWidget(Qt::BottomDockWidgetArea, dock);
 
+	QWidget* w = createCentralWidget1();
+	setCentralWidget(w);
 	//m_debugger->standardWindow()->show();
 	// TODO:
 	// - add some sample waves to the project
@@ -120,6 +98,31 @@ void MainWindow::createWidgets(Wave* wave) {
 	// - add a button to modify something in a wave
 	// - test that updates by any method leads to changes in all views
 	// - test undo/redo
+}
+
+QWidget* MainWindow::createCentralWidget1() {
+	QGridLayout* layout = new QGridLayout();
+	QGraphicsScene* scene = new QGraphicsScene(this);
+	QGraphicsView* view = new QGraphicsView(scene);
+	QTableView* tbl = new QTableView();
+	QWidget* w = new QWidget();
+
+	int iCol = 0;
+
+	scene->addItem(new GraphicsWidget1());
+	layout->addWidget(view, 0, iCol++);
+
+	tbl->setModel(m_itemModel);
+	layout->addWidget(tbl, 0, iCol++);
+
+	layout->addWidget(createForm(m_itemModel), 0, iCol++);
+
+	w->setLayout(layout);
+	return w;
+}
+
+QWidget* MainWindow::createCentralWidget2() {
+
 }
 
 QWidget* MainWindow::createForm(QAbstractTableModel* model) {
