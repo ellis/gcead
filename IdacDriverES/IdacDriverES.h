@@ -54,9 +54,9 @@ private:
 	bool boot();
 	bool boot_2000_4(const QString& sType);
 	bool boot_2_USB();
-	bool boot_ISA_USB();
-	int bootAtAddress(int addr, int nChannels);
-	QString getBinFileName(int nSignals);
+	//bool boot_ISA_USB();
+	//int bootAtAddress(int addr, int nChannels);
+	//QString getBinFileName(int nSignals);
 	void grabDataFromDll();
 
 private:

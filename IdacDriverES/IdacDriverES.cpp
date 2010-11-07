@@ -32,11 +32,11 @@
 #define MAXSIGNALS_V2_V3	4
 
 
-static const char* BinFilename[2][MAXSIGNALS_V2_V3] =
+/*static const char* BinFilename[2][MAXSIGNALS_V2_V3] =
 	{
 		{ "ASPK32_1.BIN", "ASPK32_2.BIN", "ASPK32_3.BIN", "ASPK32_4.BIN" },
 		{ "ASPK32U1.BIN", "ASPK32U2.BIN", "ASPK32U3.BIN", "ASPK32U4.BIN" }
-	};
+	};*/
 static const char* IDS_BOOT_RETRY1 = QT_TR_NOOP("ERROR: IDAC%0 failed to boot\nPossible error:\n* No IDAC device connected\n* Main power is not connected");
 static const char* IDS_BOOT_RETRY2 = QT_TR_NOOP("Error starting the IDAC%0\r\nConfirm that the IDAC device is available and switched on.");
 
@@ -298,6 +298,7 @@ bool IdacDriverES::boot_2_USB()
 	return b;
 }
 
+/*
 bool IdacDriverES::boot_ISA_USB()
 {
 	// Boot the IDAC and check for proper response of all .bin files
@@ -435,6 +436,7 @@ QString IdacDriverES::getBinFileName(int NrOfSignals)
 
 	return sPath;
 }
+*/
 
 void IdacDriverES::configureChannel(int iChan)
 {
@@ -513,7 +515,10 @@ void IdacDriverES::grabDataFromDll()
 			{
 				data[iChannel] = lpcs->nSample;
 				if (iChannel == 2) {
-					addSample(~data[0], data[1], data[2]);
+					// The IDAC2 driver returns inverted signals compared to the IDAC4
+					if (m_bIdac2)
+						data[0] = ~data[0];
+					addSample(data[0], data[1], data[2]);
 				}
 			}
 			// FIXME: for debug only
