@@ -1,7 +1,7 @@
 <project>
     <shortName>GcEad</shortName>
     <fullName>GC-EAD 2010</fullName>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <installerFilename></installerFilename>
     <allowComponentSelection>1</allowComponentSelection>
     <enableRollback>1</enableRollback>
@@ -116,8 +116,8 @@
                     <mimeType>application/syntech-gcead-ead</mimeType>
                     <progID>syntech.gcead</progID>
                     <commandList>
-	<!-- Defining the "open" command -->
-	<command>
+			<!-- Defining the "open" command -->
+			<command>
                             <makeDefault>0</makeDefault>
                             <runProgram>${installdir}/GcEad.exe</runProgram>
                             <runProgramArguments>"%L"</runProgramArguments>
@@ -182,7 +182,7 @@
             <componentSelectionValidationActionList>
                 <throwError>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <text>You have chosen to install the USB drivers.  However, old drivers appear to already be installed, and we cannot replace them.  Under some circumstances, however, the software can also be made to function with the old drivers.  Please contact support for more information.</text>
+                    <text>You have chosen to install the USB drivers.  However, older drivers appear to already be installed, so we will need to use them instead.  Please deselect the IDAC USB Driver and try again.</text>
                     <ruleList>
                         <fileExists path="${windows_folder_systemroot}/system32/IDAC8_32.dll"/>
                         <fileExists path="${windows_folder_systemroot}/system32/IDAC30.sys.dll"/>

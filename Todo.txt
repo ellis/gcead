@@ -2,6 +2,140 @@ BIG STUFF FOR FUTURE:
 	Check out next:
 	x	models for QTableView
 	x	undo/redo
+	x	add command to create/delete a wave
+	x	have Project create dynamic table models which automatically add/remove rows
+		MainWindow:
+			docks:
+			x	command log
+			x	undo view
+			x	script console
+				item property viewer:
+					list of items
+					slider
+					property browser
+			menus:
+				Edit: undo, redo
+			central widget:
+		Lists and sub-lists:
+			ItemRepository:
+				activate()
+				addInactive()
+				Items need to belong to an item list, which they send command requests to
+		Property setting pathway:
+			setProperty is called on an Item
+			Item forwards the request to its ItemList
+			ItemList forwards the reqest to 
+			the item forwards the request through a GUI Workspace component
+			Workspace asks Project to encode the command as a CommandData object
+			Workspace wraps CommandData in a QUndoCommand
+			
+			Workspace (creates QUndoCommand objects)
+				Project (maintains interconnected consistency)
+					ItemRepository (keeps inactive items)
+						ItemList (notifies about list and item changes)
+							Item (create property commands)
+								Data (hold actual data)
+			
+			CommandDataProperty {
+				item
+				sProperty
+				vOld
+				vNew
+			}
+			
+			EdmObject* ExObject::findPath(cmd) {
+				ExObject* obj = this;
+				QObject* parent = this->parent();
+				while (parent != NULL) {
+					if (parent->isType(ExObject)) {
+						cmd->path.push(obj);
+						obj = parent;
+					}
+					parent = parent->parent();
+				}
+				return obj;
+			}
+			
+			EdmObject::sendProperty(cmd) {
+				findPath(cmd);
+				obj->handleProperty(cmd);
+				if (cmd->bDelete)
+					delete cmd;
+			}
+			
+			EdmObject::sendCommand(cmd) {
+				findPath(cmd);
+				obj->handleCommand(cmd);
+				if (cmd->bDelete)
+					delete cmd;
+			}
+			
+			Item::handleCommand(cmd) {
+			}
+			
+			Item::setProperty(...) {
+				cmd = new CommandPropertyData(this, sProperty, vOld, vNew);
+				m_setter
+				if (m_list != NULL)
+					m_list->postCommand(cmd);
+				else
+					handleCommand(cmd);
+			}
+			
+			List::postCommand(CommandPropertyData* cmd) {
+				if (m_repo != NULL) {
+				}
+			}
+			
+			CommandPropertyHandler::sendCommand(CommandPropertyData* cmd) {
+				if (m_setter != NULL)
+					m_setter->sendCommand(cmd);
+				else
+					handleCommand(cmd);
+			}
+			
+			CommandPropertyHandler::handleCommand(CommandPropertyData* cmd) {
+				cmd->item->itemData()->setProperty(...);
+				emit propertyChanged(cmd->item->itemId(), cmd->sProperty);
+			}
+		Sample script session:
+			project.loadSampleProject()
+			
+			wave = waves.add();
+			wave.type = 1;
+			wave.name = "One";
+			wave.comment = "Yay";
+			wave.toggleInvert();
+			wave.shift += 10;
+			
+			clone = waves.cloneForTransaction(wave);
+			clone.shift -= 20;
+			clone.toggleInvert();
+			waves.commit(clone);
+			
+			wave = waves.copy(wave);
+			wave.name = "Two";
+			
+			waves.delete(wave);
+		
+		More separation thoughts:
+			script interfaces: everything that can be changed by script should be logged
+			Item: sends all modifications back to workspace as commands
+			ItemList: sends all modifications back to workspace as commands
+			Project: receives commands from the workspace, filters them, and forwards them to the ItemLists and Items
+			Workspace: embeds commands into QUndoCommands
+			
+			exposed to script:
+				project
+					items
+					item lists
+						items
+				ui
+					the ui is an item itself
+					child items
+			
+		separate Project into Project/ProjectData, where ProjectData holds the ItemLists.
+		create model sorter and filterer
 		create task views
 			View Task:
 				item selection (preferably multi-selection also possible)
@@ -13,19 +147,18 @@ BIG STUFF FOR FUTURE:
 				custom widget with custom layout and drawing of everything
 				QTreeView
 				derive from QAbstractItemView
-				
-		create QML task views?
+		Separate QUndoStack and QUndoCommand from Project, because they are in the Gui module
+		create ObjectPropertyMapper
+		create GceadProject
 		see how these views work out with an MVP framework?
+		create GceadWorkspace, which holds all the data for the UI
+		create task "presenters"
 		use QSqlite for project file
 		write all edits to a recovery file
 		create an even more abstract Command class that is for both edits and non-edits, and save these so that we can get a more detailed log of the user's actions.
 		tap into application event loop in order to log events
 		catch exceptions so that log files can be flushed
-	Refactor program structure:
-		Use commands for all edits
-		Use data/model/view paradigm better
-		Use sqllite for files
-		Add undo/redo
+		for python scripting, see http://doc.trolltech.com/qq/qq23-pythonqt.html
 	Save all edits in a temporary file
 	Crash recovery
 	Allow user to easily move waves around among files
@@ -41,9 +174,11 @@ BIG STUFF FOR FUTURE:
 	x	fix recording rate
 	x	configure device
 	x	shut down device when done
-		test IDAC2 too
+	x	test IDAC2 too
+	x	test IDAC4 digital
 		search for IDAC8_32.dll instead of shipping with it:
 			http://en.wikipedia.org/wiki/Dynamic-link_library#C_and_C.2B.2B_2
+	x	BUG: Digital settings: enabled and invert signals get lost after save and reload
 	Fix IDAC4 Settings dialog:
 	.	make it smaller?
 	x	on Channel 2, the "Range" label is missing and it should be above the cutoff stuff
@@ -65,65 +200,15 @@ x	Test for correct voltage levels between IDAC2 and IDAC4
 			a2 = 3356
 			r2 = a2/f2 = 288.40
 
-	Today (2010-10-16):
-	x	hide import of ASC files
-	x	recognize old IDAC2 files and show IDAC2 fix dialog
-
 	Import ASC file from Autospike
 	?	ImportRecordDialog: add stretch widget to right sight
 	?	ImportRecordDialog: add OK and Cancel buttons (in platform-dependent order?)
 	?	ImportRecordDialog: fill in map
-	x	debug why radio buttons aren't being disabled
 		fix conversion to voltage
 		make sure FID is also being imported
 	?	don't offer digital import
-	Ian's "x" and "z" measurements
-	x	add MarkerType to peak data (TimeFidPeak, EadPeakXY, EadPeakXYZ)
-	x	set marker type on new peaks which user creates
-	x	draw EAD peak lines DOWN&RIGHT instead of RIGHT&DOWN
-	x	draw the duration to peak below the bottom line
-	x	ctrl-click existing xy marker to make it xyz
-	x	draw z line directly
-	x	draw time span over z line
-	x	BUG FID peaks: handles are missing
-	x	BUG FID peaks: place time at top
-	x	BUG FID peaks: area line and text are red; should be blue
-	x	draw amplitude to the left the line
-	x	EAD peaks: use new ead peak display flags
-	x	EAD peaks: when "times" is selected, show time ticks
-	x	context menu: add a time marker
-	x	context menu: option to add 'z' measurement
-	x	adjust position of text like Ian suggested
-	x	when marker type is changed to EadPeakXYZ, mark file as dirty
-	x	update marker help text
-	x	test export of amplitude and retention data again
-x	BUG: why is "Open Recent" grayed out?
-	TaskMarkers:
-	x	Show FID Peaks: show time, show area
-	x	Show EAD Peaks: show amplitude, show time span(s), show times
-	x	Show Time Markers
-x	rename export actions
-x	test loading of saved markers
-x	show voltage of current wave in status bar
 	Add libusbmac.mak
 
-x	Fix "RECORDING: ??.??" size
-x	Feedback 1 from Ian
-x	don't let user add markers with right-click menu unless in Markers mode
-x	Filters:
-x		create filter task widget
-x		create variables to indicate filtering
-x		add Filters project to .pro file
-x		add function calls to perform filtering in WaveInfo::calcDisplayData()
-x		when filtering is enabled/disabled:
-		x	recalculate display
-		x	recalculate peaks
-		x	recalculate averages
-x	BUG: when scrolling left/right with the middle mouse button, scrolling sometimes "jumps" sporatically
-x	BUG: When app isn't maximized, the Markers and Publish widgets are scrunched
-x	MarkersWidget: why is there such a large bottom border?
-x	When dragging selection area: if user presses ESC, then abort selection
-x	integrate filter code into GcEad
 	create mac installable
 	Screenshots for Peter's documentation
 	more unit tests
@@ -186,9 +271,11 @@ x	integrate filter code into GcEad
 		should I drop "min" unit from time when the unit is minutes?
 		is the thicker tick what you had in mind?
 	
-x	BUG: RecordDialog: digital signals have some display bugs on the tail part of the display
+	Digital wave recording:
+		only record digital wave when it's enabled!
+		when digital wave is disabled, should the display be different in the dialog?
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
-	BUG (maybe): record a wave; Ave view; zoom in on EAD AVE wave; Stop and Save; reopen file; EAD Ave wave might not have kept its sensitivty
+	BUG (maybe): record a wave; Ave view; zoom in on EAD AVE wave; Stop and Save; reopen file; EAD Ave wave might not have kept its sensitivity
 	website: copy image and css files from vivia-video website
 	Ian's suggestion about timebase (make it obvious that timebase refers to grid width)
 	improve selecting region for zoom-in so that zoom factor isn't so large sometimes
