@@ -155,8 +155,8 @@ void GlobalVars::writeIdacChannelSettings(const QString& sIdacName)
 	settings.setValue("RecordingDuration", m_idacSettings->nRecordingDuration);
 	settings.setValue("GcDelay", m_idacSettings->nGcDelay_ms);
 	
-	settings.setValue("DIG_Enabled", m_idacSettings->channels[1].mEnabled);
-	settings.setValue("DIG_Invert", m_idacSettings->channels[1].mInvert);
+	settings.setValue("DIG_Enabled", m_idacSettings->channels[0].mEnabled);
+	settings.setValue("DIG_Invert", m_idacSettings->channels[0].mInvert);
 
 	settings.setValue("EAD_Invert", m_idacSettings->channels[1].mInvert);
 	settings.setValue("EAD_Range", m_idacSettings->channels[1].iRange);

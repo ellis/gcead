@@ -64,7 +64,6 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	// Setup the range editor for all channels
 	ui.lblGeneralRange->setVisible(!caps->bRangePerChannel);
 	ui.lblGeneralRange->setEnabled(!caps->bRangePerChannel);
-	ui.lblGeneralRange->setText("Hi");
 	ui.cmbGeneralRange->setVisible(!caps->bRangePerChannel);
 	ui.cmbGeneralRange->setEnabled(!caps->bRangePerChannel);
 	ui.cmbGeneralRange->addItems(ranges);
@@ -112,6 +111,7 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	ui.chkInvert_3->setChecked(chan->mInvert & 0x01);
 
 	ui.chkEnabled_4->setChecked(chan->mEnabled & 0x02);
+	ui.chkEnabled_4->setEnabled(false); // TODO: add this back in once we respect the setting -- ellis, 2010-11-07
 	ui.chkInvert_4->setChecked(chan->mInvert & 0x02);
 
 	m_bSliderMoved_1 = false;

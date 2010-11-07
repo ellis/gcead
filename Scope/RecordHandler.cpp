@@ -127,8 +127,9 @@ bool RecordHandler::convert()
 	if (m_idac->state() != IdacState_Sampling)
 		return false;
 
-	uchar nDigitalEnabledMask = Globals->idacSettings()->channels[0].mEnabled;
-	uchar nDigitalInversionMask = (Globals->idacSettings()->channels[0].mInvert & nDigitalEnabledMask);
+	//uchar nDigitalEnabledMask = Globals->idacSettings()->channels[0].mEnabled;
+	//uchar nDigitalInversionMask = (Globals->idacSettings()->channels[0].mInvert & nDigitalEnabledMask);
+	uchar nDigitalInversionMask = Globals->idacSettings()->channels[0].mInvert;
 
 	int nSamples = m_idac->takeData(m_anBuffers[0], m_anBuffers[1], m_anBuffers[2], 300);
 

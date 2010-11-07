@@ -49,15 +49,14 @@ IdacDriverES::IdacDriverES(QObject* parent)
 	m_bIdac4 = false;
 
 	switch (IdacType()) {
+	case IDAC_TYPE_2_USB:
+		m_bIdac2 = true;
+		setHardwareName("IDAC2");
+		break;
+
 	case IDAC_TYPE_4:
 		m_bIdac4 = true;
 		setHardwareName("IDAC4");
-		break;
-
-	case IDAC_TYPE_2_USB:
-	case IDAC_TYPE_SERIAL: // I don't know if this is actually also an IDAC2
-		m_bIdac2 = true;
-		setHardwareName("IDAC2");
 		break;
 
 	default:
@@ -87,7 +86,6 @@ void IdacDriverES::loadCaps(IdacCaps* caps)
 		caps->bRangePerChannel = true;
 		break;
 	case IDAC_TYPE_2_USB:
-	case IDAC_TYPE_SERIAL: // I don't know if this is actually also an IDAC2
 		caps->bRangePerChannel = false;
 	}
 }
@@ -130,7 +128,6 @@ void IdacDriverES::loadDefaultChannelSettings(IdacChannelSettings* channels)
 		break;
 
 	case IDAC_TYPE_2_USB:
-	case IDAC_TYPE_SERIAL: // I don't know if this is actually also an IDAC2
 		channels[0].mInvert = 0x01; // Invert the trigger channel
 
 		channels[1].iRange = 3;
@@ -215,30 +212,34 @@ bool IdacDriverES::boot()
 	//int				Present;
 	//LONG			Adr;
 
-	switch (IdacType())
+	int n = IdacType();
+	switch (n)
 	{
-	case IDAC_TYPE_2000:
-		return boot_2000_4("2000");
+	case IDAC_TYPE_2_USB:
+		return boot_2_USB();
 
 	case IDAC_TYPE_4:
 		return boot_2000_4("4");
 
-	case IDAC_TYPE_NONE:
+	/*case IDAC_TYPE_2000:
+		return boot_2000_4("2000");
+
 	case IDAC_TYPE_SERIAL:
-		/* FIXME:
+		/ * FIXME:
 		m_Address = RegInfo . m_IdacAddress;
 		Present = IdacPresent(RegInfo . m_IdacAddress);
 
 		if (Present == 0)
 			return false;
 		break;
-		*/
+		* /
 		addError(tr("Your IDAC type is not supported"));
 		return false;
 
 	case IDAC_TYPE_ISA_V2:
 	case IDAC_TYPE_USB_V3:
 		return boot_ISA_USB();
+	*/
 
 	default:
 		addError(tr("Your IDAC device is not supported"));
@@ -269,6 +270,31 @@ bool IdacDriverES::boot_2000_4(const QString& sType)
 		addError(tr(IDS_BOOT_RETRY2).arg(sType));
 	}
 
+	return b;
+}
+
+bool IdacDriverES::boot_2_USB()
+{
+	CHECK_ASSERT_RETVAL(IdacType() == IDAC_TYPE_2_USB, false);
+	CHECK_ASSERT_RETVAL(IdacPresent(0), false);
+
+	bool b = false;
+	DWORD Result = IdacBoot(NULL, 1);
+	switch (Result)
+	{
+	case 0:
+		addError(tr("Invalid address"));
+		break;
+	case 1:
+		b = true;
+		break;
+	case 3:
+		addError(tr("Booting failed"));
+		break;
+	default:
+		addError(tr("Error"));
+		break;
+	}
 	return b;
 }
 
@@ -487,7 +513,7 @@ void IdacDriverES::grabDataFromDll()
 			{
 				data[iChannel] = lpcs->nSample;
 				if (iChannel == 2) {
-					addSample(data[0], data[1], data[2]);
+					addSample(~data[0], data[1], data[2]);
 				}
 			}
 			// FIXME: for debug only
