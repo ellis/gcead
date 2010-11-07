@@ -22,7 +22,8 @@
 
 #include <Check.h>
 
-#include "IdacControl/Idacpc.h"
+#include "IdacDriverESDefines.h"
+//#include "IdacControl/Idacpc.h"
 
 
 #define IDACSTART_NOIDACBOARD	0
@@ -40,6 +41,75 @@
 static const char* IDS_BOOT_RETRY1 = QT_TR_NOOP("ERROR: IDAC%0 failed to boot\nPossible error:\n* No IDAC device connected\n* Main power is not connected");
 static const char* IDS_BOOT_RETRY2 = QT_TR_NOOP("Error starting the IDAC%0\r\nConfirm that the IDAC device is available and switched on.");
 
+
+static bool g_bDllTested;
+static bool g_bDllPresent;
+
+// Create function pointers to IDAC imports
+#define DLL0(name, ret) ret WINAPI (*name)();
+#define DLL1(name, ret, arg1) ret WINAPI (*name)(arg1);
+#define DLL2(name, ret, arg1, arg2) ret WINAPI (*name)(arg1, arg2);
+extern "C" {
+#include "IdacDllFunctions.h"
+}
+#undef DLL0
+#undef DLL1
+#undef DLL2
+
+extern "C" {
+struct ImportInfo {
+	const char* name;
+	FARPROC* pfunc;
+	//FARPROC func;
+};
+
+#define DLL0(name, ret) { #name, (FARPROC*)(&name) },
+#define DLL1(name, ret, arg1) DLL0(name, ret)
+#define DLL2(name, ret, arg1, arg2) DLL0(name, ret)
+static ImportInfo g_importInfo[] = {
+#include "IdacDllFunctions.h"
+	{ NULL, NULL }
+};
+#undef DLL0
+#undef DLL1
+#undef DLL2
+}
+
+bool IdacDriverES::driverIsPresent() {
+	if (!g_bDllTested) {
+		g_bDllTested = true;
+		g_bDllPresent = false;
+
+		HINSTANCE h = LoadLibrary(TEXT("IDAC8_32.DLL"));
+		if (h != NULL) {
+			int i = 0;
+			while (g_importInfo[i].name != NULL) {
+				const char* name = g_importInfo[i].name;
+				FARPROC* pfunc = g_importInfo[i].pfunc;
+				FARPROC func = GetProcAddress(h, name);
+				*pfunc = func;
+				if (func == NULL) {
+					qDebug() << "ERROR: Function " << name << " not found in IDAC8_32.DLL";
+					return false;
+				}
+				i++;
+			}
+		}
+		g_bDllPresent = true;
+	}
+	/*int x = 0;
+	void (*a)() = NULL;
+	void (*b)() = NULL;
+	if (a == b) x++;
+#define DLL0(name, ret) if (name##2 == &name) x++;
+#define DLL1(name, ret, arg1) DLL0(name, ret)
+#define DLL2(name, ret, arg1, arg2) DLL0(name, ret)
+#include "IdacDllFunctions.h"
+#undef DLL0
+#undef DLL1
+#undef DLL2*/
+	return g_bDllPresent && IdacPresent(-1);
+}
 
 IdacDriverES::IdacDriverES(QObject* parent)
 	: IdacDriverWithThread(parent)

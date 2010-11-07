@@ -27,6 +27,9 @@ class IdacDriverES : public IdacDriverWithThread
 {
 	Q_OBJECT
 public:
+	static bool driverIsPresent();
+
+public:
 	IdacDriverES(QObject* parent = NULL);
 	~IdacDriverES();
 

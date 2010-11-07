@@ -29,10 +29,6 @@
 #include <IdacDriver4/IdacDriver4.h>
 #include <IdacDriverES/IdacDriverES.h>
 
-#ifdef WIN32
-#include <IdacDriverES/IdacControl/Idacpc.h>
-#endif
-
 
 IdacDriverManager::IdacDriverManager(QObject* parent)
 	: QObject(parent)
@@ -102,7 +98,7 @@ void IdacDriverManager::createDriver()
 	}
 #ifdef WIN32
 	else {
-		if (IdacPresent(-1)) {
+		if (IdacDriverES::driverIsPresent()) {
 			m_driver = new IdacDriverES();
 			m_driver->init();
 		}

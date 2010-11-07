@@ -8,8 +8,6 @@ INCLUDEPATH += . \
     .. \
     ../Core \
     ../IdacDriver
-win32:HEADERS += IdacDriverES.h
-win32:SOURCES += IdacDriverES.cpp
 win32:DEFINES += WIN32
 CONFIG(debug, debug|release):DESTDIR = ../debug
 else:DESTDIR = ../release
@@ -18,4 +16,9 @@ win32:HEADERS += \
     IdacControl/Sample.h \
     IdacControl/Ipc.h \
     IdacControl/Idacpc.h \
-    IdacControl/windows_types.h
+	IdacControl/windows_types.h \
+    IdacDriverESDefines.h \
+	IdacDllFunctions.h \
+	IdacDriverES.h
+
+win32:SOURCES += IdacDriverES.cpp

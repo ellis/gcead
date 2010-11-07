@@ -42,6 +42,7 @@ PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
 	$${DESTDIR}/libModel.a \
     $${DESTDIR}/libScope.a
 win32:LIBS += $${PWD}/../extern/win32/libusb.a $${PWD}/../IdacDriverES/IdacControl/IDAC8_32.lib
+#win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \
     -L../release \
     -Wl,-Bstatic \
