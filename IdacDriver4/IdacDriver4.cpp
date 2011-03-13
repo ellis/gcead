@@ -629,10 +629,8 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 				else if (cds.uChannel == 1)
 					nAn1 = cds.nSample;
 				else if (cds.uChannel == 2)
+                                {
 					nAn2 = cds.nSample;
-
-				else if (cds.uChannel == 2)
-				{
 					bool b = addSample(nDig, nAn1, nAn2);
 					if (!b)
 					{
