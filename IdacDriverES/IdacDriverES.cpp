@@ -94,8 +94,8 @@ bool IdacDriverES::driverIsPresent() {
 				}
 				i++;
 			}
-		}
-		g_bDllPresent = true;
+                        g_bDllPresent = true;
+                }
 	}
 	/*int x = 0;
 	void (*a)() = NULL;
