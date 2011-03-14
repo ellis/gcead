@@ -158,3 +158,7 @@ FORMS += ./MainWindow.ui \
 # Resource file(s)
 RESOURCES += ./View.qrc
 macx:ICON = ../Installables/Mac/GcEad.icns
+win32:RC_FILE = ./GcEad.rc
+
+OTHER_FILES += \
+    GcEad.rc
