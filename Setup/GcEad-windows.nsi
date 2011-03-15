@@ -3,8 +3,8 @@
 # make sure that double-clicking .ead file opens it
 # ? install libusb DLL (installdll.bat)
 # ? install IDAC inf files (installinf.bat)
-# don't install USB driver by default
-# disable installation of USB driver if IDAC8_32.dll or IDAC30.sys.dll exists
+# ? don't install USB driver by default
+# ? disable installation of USB driver if IDAC8_32.dll or IDAC30.sys.dll exists
 
 !include "FileAssociation.nsh"
 !include "LogicLib.nsh"
@@ -17,7 +17,7 @@
 
 name "GcEad/2011 version ${MY_VERSION}"
 outfile "GcEad-${MY_VERSION}-windows-installer.exe"
-installDir $PROGRAMFILES\Syntech\GcEad-nsis
+installDir "$PROGRAMFILES\Syntech\GcEad-${MY_VERSION}"
 crcCheck on
 requestExecutionLevel highest
 
@@ -28,6 +28,37 @@ uninstPage uninstConfirm
 uninstPage instfiles
 
 var arch
+var secDriverName
+
+function .onInit
+    readEnvStr $0 PROCESSOR_ARCHITECTURE
+    readEnvStr $1 PROCESSOR_ARCHITEW6432
+    ${If} $0 == "AMD64"
+        StrCpy $arch "AMD64"
+    ${ElseIf} $1 == "AMD64"
+        StrCpy $arch "AMD64"
+    ${ElseIf} $0 == "IA64"
+        StrCpy $arch "ID64"
+    ${ElseIf} $1 == "IA64"
+        StrCpy $arch "IA64"
+    ${Else}
+        StrCpy $arch "X86"
+    ${EndIf}
+
+    messageBox MB_OK "0: $0, 1: $1, Arch: $arch"
+
+    ${If} $arch == "X86"
+        ${If} ${FileExists} "$SYSDIR\IDAC8_32.dll"
+            StrCpy $secDriverName ""
+        ${ElseIf} ${FileExists} "$SYSDIR\IDAC30.sys.dll"
+            StrCpy $secDriverName ""
+        ${Else}
+            StrCpy $secDriverName "IDAC USB Drivers"
+        ${EndIf}
+    ${Else}
+        StrCpy $secDriverName "IDAC USB Drivers"
+    ${EndIf}
+functionEnd
 
 section "GcEad/2011"
     setOutPath "$INSTDIR"
@@ -60,32 +91,17 @@ section "GcEad/2011"
     ${registerExtension} "$INSTDIR\GcEad.exe" ".ead" "GcEad Project File"
 sectionEnd
 
-section "IDAC USB Drivers"
-    readEnvStr $0 PROCESSOR_ARCHITECTURE
-    readEnvStr $1 PROCESSOR_ARCHITEW6432
-    ${If} $0 == "AMD64"
-        StrCpy $arch "AMD64"
-    ${ElseIf} $1 == "AMD64"
-        StrCpy $arch "AMD64"
-    ${ElseIf} $0 == "IA64"
-        StrCpy $arch "ID64"
-    ${ElseIf} $1 == "IA64"
-        StrCpy $arch "IA64"
-    ${Else}
-        StrCpy $arch "X86"
-    ${EndIf}
-
-    messageBox MB_OK "0: $0, 1: $1, Arch: $arch"
-
+;section /o "IDAC USB Drivers"
+section /o $secDriverName
     ${If} $arch == "X86"
-        file /oname=$SYSDIR/libusb0.dll ..\Installables\Windows\driver\x86\libusb0_x86.dll
+        file "/oname=$SYSDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
     ${ElseIf} $arch == "AMD64"
         ${DisableX64FSRedirection}
-        setOutPath $SYSDIR
+        setOutPath "$SYSDIR"
         file ..\Installables\Windows\driver\amd64\libusb0.dll
     ${ElseIf} $arch == "IA64"
         ${DisableX64FSRedirection}
-        setOutPath $SYSDIR
+        setOutPath "$SYSDIR"
         file ..\Installables\Windows\driver\ia64\libusb0.dll
     ${EndIf}
 
