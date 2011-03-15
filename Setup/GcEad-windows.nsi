@@ -1,10 +1,10 @@
 # TODO:
-# ? associate .ead to GcEad
-# make sure that double-clicking .ead file opens it
-# ? install libusb DLL (installdll.bat)
-# ? install IDAC inf files (installinf.bat)
-# ? don't install USB driver by default
-# ? disable installation of USB driver if IDAC8_32.dll or IDAC30.sys.dll exists
+# x associate .ead to GcEad
+# ? make sure that double-clicking .ead file opens it
+# x install libusb DLL (installdll.bat)
+# x install IDAC inf files (installinf.bat)
+# x don't install USB driver by default
+# x disable installation of USB driver if IDAC8_32.dll or IDAC30.sys.dll exists
 
 !include "FileAssociation.nsh"
 !include "LogicLib.nsh"
@@ -45,7 +45,7 @@ function .onInit
         StrCpy $arch "X86"
     ${EndIf}
 
-    messageBox MB_OK "0: $0, 1: $1, Arch: $arch"
+    ;messageBox MB_OK "0: $0, 1: $1, Arch: $arch"
 
     ${If} $arch == "X86"
         ${If} ${FileExists} "$SYSDIR\IDAC8_32.dll"
