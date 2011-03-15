@@ -28,6 +28,7 @@
 IdacControlThread::IdacControlThread(QObject* parent)
 	: QThread(parent)
 {
+	m_manager = NULL;
 }
 
 IdacControlThread::~IdacControlThread()

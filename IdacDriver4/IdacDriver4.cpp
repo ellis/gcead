@@ -554,6 +554,7 @@ void IdacDriver4::sampleLoop()
 	}
 
 	setIsoXferEnabled(true);
+	m_maskDataRecived = 0;
 
 	// Now cycle between reaps and submits
 	bool bSamplingPrev = m_bSampling;
@@ -612,7 +613,6 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 			continue;
 		}
 
-		short nDig = 0, nAn1 = 0, nAn2 = 0;
 		for (int iWord = 0; iWord < nWords; iWord++)
 		{
 			// Read little-endian word
@@ -624,20 +624,37 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 			//printf("i:%d\t%d\t%d\t%d\t%x\n", iPacket, iWord, cds.uChannel, (int) bParsed, wData);
 			if (bParsed)
 			{
+				short maskDataReceived = 0;
 				if (cds.uChannel == 0)
-					nDig = cds.nSample;
+				{
+					m_nDig = cds.nSample;
+					maskDataReceived |= 1;
+				}
 				else if (cds.uChannel == 1)
-					nAn1 = cds.nSample;
+				{
+					m_nAn1 = cds.nSample;
+					maskDataReceived |= 2;
+				}
 				else if (cds.uChannel == 2)
-                                {
-					nAn2 = cds.nSample;
-					bool b = addSample(nDig, nAn1, nAn2);
+				{
+					m_nAn2 = cds.nSample;
+					maskDataReceived |= 4;
+				}
+
+				if ((m_maskDataRecived & maskDataReceived) != 0) {
+					cerr << "Received duplicate data, mask " << maskDataReceived << endl;
+				}
+
+				m_maskDataRecived |= maskDataReceived;
+				if (m_maskDataRecived == 7) {
+					bool b = addSample(m_nDig, m_nAn1, m_nAn2);
 					if (!b)
 					{
 						bOverflow = true;
 						logUsbError(__FILE__, __LINE__, "BUFFER OVERRUN");
 						break;
 					}
+					m_maskDataRecived = 0;
 				}
 			}
 		}

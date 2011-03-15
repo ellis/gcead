@@ -131,6 +131,14 @@ private:
 	bool m_bFpgaProgrammed;
 	quint8 m_nVersion;
 	ConfigData m_config;
+	/// Last digital value received
+	short m_nDig;
+	/// Last analog 1 value received
+	short m_nAn1;
+	/// Last analog 2 value received
+	short m_nAn2;
+	/// Mask to know which values (digital, analog 1, analog 2) have been received
+	short m_maskDataRecived;
 };
 
 #endif

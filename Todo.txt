@@ -274,6 +274,9 @@ x	Test for correct voltage levels between IDAC2 and IDAC4
 	Digital wave recording:
 		only record digital wave when it's enabled!
 		when digital wave is disabled, should the display be different in the dialog?
+	BUG: open recording dialog, close dialog and *quickly* close program; shouldn't crash
+		this is for IDAC4; might be for IDAC2 too
+		exitIdacThreads() should make sure that IdacDriver4::sampleLoop is finished before it starts deleting objects
 	BUG: on Windows; start recording; close program; select discard twice; shouldn't crash
 	BUG (maybe): record a wave; Ave view; zoom in on EAD AVE wave; Stop and Save; reopen file; EAD Ave wave might not have kept its sensitivity
 	website: copy image and css files from vivia-video website
