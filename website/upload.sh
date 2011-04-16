@@ -1,1 +1,1 @@
-rsync -avP -e ssh --exclude '*~' * whiteh12,gcead@web.sourceforge.net:htdocs/
+rsync -avP -e ssh --exclude '*~' --exclude '.svn' * whiteh12,gcead@web.sourceforge.net:htdocs/
