@@ -64,7 +64,7 @@ private:
 	QList<WaveInfo*> m_waves;
 	/// Date/time of recording
 	QDateTime m_time;
-	int m_nShift;
+	//int m_nShift;
 };
 
 #endif

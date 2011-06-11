@@ -7,10 +7,12 @@ DEPENDPATH += . .. ../Core
 
 HEADERS += AppDefines.h ChartPixmap.h EadEnums.h EadFile.h Globals.h PublisherSettings.h RecInfo.h RenderData.h ViewInfo.h ViewSettings.h WaveInfo.h \
     FilterInfo.h \
-    PropertyRowModel.h
+    PropertyRowModel.h \
+    Datastore.h
 SOURCES += ChartPixmap.cpp EadFile.cpp FakeData.cpp Globals.cpp PublisherSettings.cpp RecInfo.cpp RenderData.cpp ViewInfo.cpp WaveInfo.cpp \
     FilterInfo.cpp \
-    PropertyRowModel.cpp
+    PropertyRowModel.cpp \
+    Datastore.cpp
 
 CONFIG(debug, debug|release) {
     DESTDIR = ../debug

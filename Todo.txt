@@ -1,4 +1,49 @@
 BIG STUFF FOR FUTURE:
+	Think about how to completely separate the data from the UI, using a client/server architecture
+	Layers:
+		datastore
+			receives edit and read requests
+			return information about what has changed
+			load/save data
+			maintain recovery information in case of crash
+		application data logic
+			receives non-UI commands for actions and edits
+			translates commands to datastore requests
+			handle undo/redo commands for the datastore
+			propogates datastore responses up to next layer
+		application view logic
+			translate data into QObjects for use in QML
+			translate datastore reponses into list and property update signals
+			receive and handle UI commands
+		application view
+			hook up application view logic to QML
+			implement additional UI functions which can't have concrete implementations in the logic layer
+
+	Major requirements:
+		Single copy of data
+		Changes to data are automatically propogated to GUI (but with a delay to allow for cascading changes)
+		Various GUI lists of data objects get dynamically updated when objects are added or deleted
+		All modifications of data from GUI go through Commands (see QUndoCommand)
+		Data read/write via scripting (though perhaps not normally exposed to user)
+		All GUI commands executable via scripting
+		Create some construct to allow for new objects to be constructed from underlying data and updated dynamically for display in the GUI (so automatically maintain "companion" objects)
+
+	COMMAND LIST INPUT:
+		INP: EDIT WAVE rec01/wav01 name "EAD Fly 1"
+		OUT: EDIT WAVE rec01/wav01 name "EAD Fly 1" "EAD 1"
+		
+		INP: EDIT TOP top nextRec 3
+		INP: NEW WAVE { type=0, time=... }
+		INP: NEW WAVE { type=1, time=... }
+		INP: NEW WAVE { type=2, time=... }
+		
+		createRec("rec02");
+		createWave("rec02/wav01");
+		rec02/wav01: name = "EAD 2", comment = "Second"
+	OUTPUT:
+		rec01/wav01:name
+		recs.addRow ...
+
 	Check out next:
 	x	models for QTableView
 	x	undo/redo
@@ -159,6 +204,8 @@ BIG STUFF FOR FUTURE:
 		tap into application event loop in order to log events
 		catch exceptions so that log files can be flushed
 		for python scripting, see http://doc.trolltech.com/qq/qq23-pythonqt.html
+		allow a brief delay before updating the ave waves
+		only update the ave waves if they are displayed
 	Save all edits in a temporary file
 	Crash recovery
 	Allow user to easily move waves around among files
@@ -168,23 +215,10 @@ BIG STUFF FOR FUTURE:
 ------------
 
 	Add support for Engineering Spirit drivers:
-	x	recognize device
-	x	initialize device
-	x	record from device
-	x	fix recording rate
-	x	configure device
-	x	shut down device when done
-	x	test IDAC2 too
-	x	test IDAC4 digital
 		search for IDAC8_32.dll instead of shipping with it:
 			http://en.wikipedia.org/wiki/Dynamic-link_library#C_and_C.2B.2B_2
-	x	BUG: Digital settings: enabled and invert signals get lost after save and reload
 	Fix IDAC4 Settings dialog:
 	.	make it smaller?
-	x	on Channel 2, the "Range" label is missing and it should be above the cutoff stuff
-	x	hide general range setting if range can be set per channel
-	x	put spacers on left and right sides of dialog
-x	Test for correct voltage levels between IDAC2 and IDAC4
 .	Create my own Autospike recordings for testing ASC import
 		msex_test.asc EAD:
 			-8390 to 1996 (height is 76% of 3 units ~= 4.6mV)
@@ -284,8 +318,6 @@ x	Test for correct voltage levels between IDAC2 and IDAC4
 	improve selecting region for zoom-in so that zoom factor isn't so large sometimes
 	mac: get isochronous transfer to work for IDAC4 (try libusb-1.1 when it comes out)
 	import of old EAG files
-	x	EAD wave
-	x	FID wave
 		scaling factors
 		comments
 	Think about merging recording from another EAD file
@@ -446,4 +478,8 @@ FILE FORMAT FROM OLD EAD PROGRAM (EXAMPLE1.EAD):
 	0x0002BF6F = 180079
 	81FD: 
 
+
+Portable ADC:
+	http://forums.adafruit.com/viewtopic.php?f=31&t=12269 (18-bit arduino)
+	http://www.protostack.com/blog/2011/04/analogue-to-digital-conversion-interrupts-on-an-atmega168a/ (10-bit)
 
