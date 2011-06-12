@@ -1,0 +1,5 @@
+DRIVER_EXPORT BOOL WINAPI IdacProgramFPGA (LPCSTR DummyFileName)
+DRIVER_EXPORT BOOL WINAPI IdacProgramFirmware (LPCSTR FileName)
+DRIVER_EXPORT BOOL WINAPI IdacProgramDSP (LPCSTR FileName)
+DRIVER_EXPORT BOOL WINAPI IdacGetUsbConfigDescriptor (LPSTR pBuffer, DWORD dwBufSize)
+DRIVER_EXPORT BOOL WINAPI IdacGetUsbDeviceDescriptor (LPSTR pBuffer, DWORD dwBufSize)
