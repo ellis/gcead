@@ -10,7 +10,8 @@ SUBDIRS = Core \
     Idac \
     Scope \
     ScopeTest \
-    View
+    View \
+    IdacEs
 OTHER_FILES += Todo.txt \
     UseCases.txt \
     Notes.txt \
