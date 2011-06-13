@@ -18,6 +18,8 @@
 #ifndef SAMPLE_H
 #define SAMPLE_H
 
+#include <qglobal.h>
+
 #ifdef Q_OS_WIN
 #include <windows.h> // For BYTE, WORD, etc
 #else

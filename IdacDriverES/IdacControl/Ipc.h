@@ -25,6 +25,8 @@
 #ifndef IPC_H
 #define IPC_H
 
+#include <windows.h>
+
 
 // Interdependent values for IPC
 const DWORD	IPC_TIMER_INTERVAL	= 100;		// 100 ms
