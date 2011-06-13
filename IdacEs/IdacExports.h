@@ -11,6 +11,7 @@
 #define DRIVER_EXPORT
 
 // Common data definitions
+<<<<<<< HEAD
 #ifndef SAMPLE_H
 #include "sample.h"
 #endif
@@ -18,6 +19,10 @@
 #ifndef IPC_H
 #include "ipc.h"
 #endif
+=======
+#include <IdacDriverES/IdacControl/Sample.h>
+#include <IdacDriverES/IdacControl/Ipc.h>
+>>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
 
 /* C/C++ declarations */
 
@@ -28,6 +33,10 @@ extern "C"
 
 #include <DBT.H>
 #include <WINUSER.H>
+<<<<<<< HEAD
+=======
+#include <windows.h>
+>>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
 
 	/* Version */
 #define IDAC_LIB_VERSION	7L
@@ -420,10 +429,16 @@ DRIVER_EXPORT void WINAPI IdacAIOffsetRange(DOUBLE &dRangeMin, DOUBLE &dRangeMax
 //	@return UINT the number of digital channels that the IDAC has.
 DRIVER_EXPORT	UINT WINAPI	IdacGetNrOfDigitalChan();
 
+<<<<<<< HEAD
 /************************************************************************/
 /*	Author: X. Vink                                                                      
 /*  Date  : 17/10/2003                                                                    
 /************************************************************************/
+=======
+//	Author: X. Vink
+//  Date  : 17/10/2003
+// ************************************************************************
+>>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
 // *	Register a window to receive Device Notifications
 // *	Device notifications are always from the idac who's driver handle
 // *	is specified in dbch.

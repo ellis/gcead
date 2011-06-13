@@ -48,6 +48,8 @@ public:
 	/// Thread-safe.
 	QStringList errorMessages();
 
+	const IdacChannelSettings* desiredSettings();
+	const IdacChannelSettings* desiredChannelSettings(int iChan);
 	void setChannelSettings(int iChannel, const IdacChannelSettings& channel);
 
 public:
@@ -75,8 +77,6 @@ protected:
 	void setLowcutStrings(const QStringList& strings) { m_asLowcutStrings = strings; }
 	void addError(const QString& s);
 
-	const IdacChannelSettings* desiredSettings();
-	const IdacChannelSettings* desiredChannelSettings(int iChan);
 	IdacChannelSettings* actualSettings() { return m_settingsActual; }
 	IdacChannelSettings* actualChannelSettings(int iChan);
 

@@ -18,6 +18,8 @@
 #ifndef __IDACCHANNELSETTINGS_H
 #define __IDACCHANNELSETTINGS_H
 
+#include "qglobal.h" // For uchar
+
 
 class IdacChannelSettings
 {
