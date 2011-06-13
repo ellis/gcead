@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-DRIVER_EXPORT BOOL WINAPI IdacEnableChannel (DWORD Chan, BOOL bEnable)
-=======
 #include "IdacExports.h"
 
 #include <Idac/IdacProxy.h>
@@ -16,7 +13,6 @@ DRIVER_EXPORT BOOL WINAPI IdacEnableChannel (DWORD Chan, BOOL bEnable) {
 	return g_proxy->
 }
 
->>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
 DRIVER_EXPORT	BOOL WINAPI	IdacIsChannelEnabled (DWORD Chan)
 DRIVER_EXPORT	UINT	WINAPI	IdacNrOfAnChannelEnabled	()
 DRIVER_EXPORT BOOL WINAPI IdacZeroPulse (DWORD Chan)
