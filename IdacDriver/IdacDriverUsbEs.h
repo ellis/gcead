@@ -5,6 +5,7 @@
 #include "Sample.h"
 
 
+/// Interface to the IDAC functions required for Engineering Spirit's IDAC32.dll
 class IdacDriverUsbEs : public IdacDriverUsb
 {
     Q_OBJECT
