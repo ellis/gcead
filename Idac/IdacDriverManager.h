@@ -20,7 +20,7 @@
 
 #include <QObject>
 
-#include "IdacEnums.h"
+#include <IdacDriver/IdacEnums.h>
 
 
 struct usb_device;

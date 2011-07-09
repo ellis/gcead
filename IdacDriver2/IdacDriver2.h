@@ -20,7 +20,7 @@
 
 #include <QtGlobal> // for quint8 and related types
 
-#include <IdacDriver/IdacDriverUsbEs.h>
+#include <IdacDriver/IdacDriverUsb.h>
 #include <IdacDriver/IdacSettings.h>
 
 
@@ -29,7 +29,7 @@ struct usb_device;
 class IdacUsb;
 
 
-class IdacDriver2 : public IdacDriverUsbEs
+class IdacDriver2 : public IdacDriverUsb
 {
 public:
 	/// Number of channels for IDAC4
@@ -60,7 +60,7 @@ public:
 	bool setSamplingPaused(bool bPause);
 	/// Activate / deactivate isochrone transfer (SUPPINT.H)
 	bool setIntXferEnabled(bool bEnabled);
-
+/*
 // Overrides for IdacDriverUsbEs, implemented in IdacDriver2_ES.cpp
 public:
 	virtual bool IdacAudio(int iChan, bool bActivate);
@@ -105,6 +105,7 @@ public:
 	virtual void IdacUnlock();
 	virtual void IdacUnlockReadBuffer();
 	virtual bool IdacZeroPulse(int iChan);
+*/
 
 // IdacDriverWithThread overrides
 protected:

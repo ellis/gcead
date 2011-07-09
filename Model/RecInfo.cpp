@@ -24,7 +24,7 @@ RecInfo::RecInfo(EadFile* file, int id)
 	: QObject(file), m_file(file)
 {
 	m_id = id;
-	m_nShift = 0;
+	//m_nShift = 0;
 
 	for (int i = 0; i < WaveTypeCount; i++)
 		m_waves << createWave((WaveType) i);

@@ -62,7 +62,7 @@ static int g_nAnalog2Sum;
 
 
 IdacDriver2::IdacDriver2(struct usb_device* device, QObject* parent)
-	: IdacDriverUsbEs(device, parent)
+	: IdacDriverUsb(device, parent)
 {
 	m_bFpgaProgrammed = false;
 
