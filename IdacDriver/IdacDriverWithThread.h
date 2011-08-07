@@ -37,6 +37,10 @@ public:
 	virtual void stopSampling();
 	virtual int takeData(short* digital, short* analog1, short* analog2, int maxSize);
 
+// For ES drivers
+public:
+	int IdacDataAvail() const { return m_nSamplesInBuffer; }
+
 protected:
 	friend class IdacDriverSamplingThread;
 	/// WARNING: ONLY TO BE CALLED FROM IdacDriverSamplingThread

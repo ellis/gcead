@@ -13,8 +13,7 @@ DEFINES += QT_QTWINMIGRATE_EXPORT
 
 INCLUDEPATH += ..
 
-SOURCES += IdacDriverUsbEs.cpp \
-	IdacEs.cpp \
+SOURCES += IdacEs.cpp \
  #   IdacBrd.cpp \
     qwinwidget.cpp \
     qwinhost.cpp \
@@ -26,8 +25,7 @@ SOURCES += IdacDriverUsbEs.cpp \
 #    IdacData.cpp \
 #    IdacCtrl.cpp
 
-HEADERS += IdacDriverUsbEs.h \
-	IdacEs.h\
+HEADERS += IdacEs.h\
 	IdacEs_global.h \
     qwinwidget.h \
     qwinhost.h \

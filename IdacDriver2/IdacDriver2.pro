@@ -13,10 +13,11 @@ INCLUDEPATH += . \
     ../IdacDriver
 HEADERS += IdacDriver2.h \
     IdacDriver2ReqIds.h \
-    IdacDriver2Constants.h
+    IdacDriver2Constants.h \
+    IdacDriver2Es.h
 SOURCES += IdacDriver2.cpp \
-	IdacDriver2Firmware.cpp
-	#IdacDriver2_ES.cpp
+	IdacDriver2Firmware.cpp \
+	IdacDriver2Es.cpp
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusb ../extern/libusb-compat-0.1.3/libusb
 win32:DEFINES += WIN32

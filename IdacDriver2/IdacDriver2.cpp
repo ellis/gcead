@@ -313,11 +313,13 @@ bool IdacDriver2::sendChannelSettings()
 
 	sendOutgoingMessage(REQUESTID_WRITE_CHANNEL_SETTINGS, buffer, 7);
 
-	// FIXME: for debug only
+	/*
+	// for debug only
 	cerr << "CONFIG: ";
 	for (int i = 0; i < 7; i++)
 		cerr << qPrintable(QString("%0").arg(int(buffer[i]), 2, 16, QChar('0')));
 	cerr << "\n";
+	*/
 
 	// I don't know the purpose this message is sent...
 	// 406739825 S Co:3:005:0 s 40 23 0000 0000 0001 1 = 00

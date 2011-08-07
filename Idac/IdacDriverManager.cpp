@@ -33,11 +33,6 @@
 IdacDriverManager::IdacDriverManager(QObject* parent)
 	: QObject(parent)
 {
-	m_bPresent = false;
-	m_bConfigured = false;
-	m_bPowerOn = false;
-	m_bProgrammed = false;
-
 	m_state = IdacState_None;
 	m_cmd = IdacCommand_None;
 
@@ -105,36 +100,6 @@ void IdacDriverManager::createDriver()
 	}
 #endif
 }
-
-/*
-bool IdacDriverManager::checkPresent()
-{
-	m_device = findIdac();
-	bool b = (m_device != NULL);
-	if (b != m_bPresent)
-	{
-		m_bPresent = b;
-		if (!m_bPresent)
-		{
-			m_bConfigured = false;
-			m_bPowerOn = false;
-			m_bProgrammed = false;
-		}
-	}
-}
-
-bool IdacDriverManager::checkUsbProperlyConfigured()
-{
-}
-
-bool IdacDriverManager::checkPowerOn()
-{
-}
-
-bool IdacDriverManager::checkProgrammed()
-{
-}
-*/
 
 void IdacDriverManager::command(int _cmd)
 {

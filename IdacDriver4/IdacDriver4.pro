@@ -14,10 +14,12 @@ INCLUDEPATH += . \
 HEADERS += IdacDriver4.h \
     IdacDriver4Constants.h \
     IdacDriver4Channel.h \
-    IdacDriver4ReqIds.h
+    IdacDriver4ReqIds.h \
+    IdacDriver4Es.h
 SOURCES += IdacDriver4.cpp \
     IdacDriver4Channel.cpp \
-    IdacDriver4Firmware.cpp
+    IdacDriver4Firmware.cpp \
+    IdacDriver4Es.cpp
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusb ../extern/libusb-compat-0.1.3/libusb
 win32:DEFINES += WIN32

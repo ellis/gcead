@@ -71,11 +71,6 @@ private:
 	void setup();
 
 private:
-	bool m_bPresent;
-	bool m_bConfigured;
-	bool m_bPowerOn;
-	bool m_bProgrammed;
-
 	IdacState m_state;
 	IdacCommand m_cmd;
 
