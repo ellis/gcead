@@ -43,6 +43,8 @@ extern INTEL_HEX_RECORD g_firmwareIdacDriver2[];
 /// Maximum input voltage in uVolt (the range is twice this value)
 #define MAX_INPUT_VOLTAGE_ADC 5000000
 
+const int IDAC_ZEROPULSE_LENGTH = 500;
+
 static int dwRangesList[IDAC_SCALERANGECOUNT+1] =
 {
 	MAX_INPUT_VOLTAGE_ADC / 1,
@@ -493,4 +495,24 @@ void IdacDriver2::sampleLoop()
 	// End of INT xfer?
 	// 412307451 S Co:3:005:0 s 40 2a 0000 0000 0000 0
 	setIntXferEnabled(false);
+}
+
+bool IdacDriver2::IdacZeroPulse(int iChan) {
+	CHECK_PARAM_RETVAL(iChan != 0 && iChan < IDAC_CHANNELCOUNT, false);
+
+	for (int i = 0; i < 3; i++) {
+		if (iChan < 0 || i == iChan && actualChannelSettings(iChan)->mEnabled > 0)
+			actualChannelSettings(iChan)->iLowcut = 8; // FIXME: test whether this works -- ellis, 2011-08-07
+	}
+	sendChannelSettings();
+
+	Sleeper::msleep(IDAC_ZEROPULSE_LENGTH);
+
+	for (int i = 0; i < 3; i++) {
+		if (iChan < 0 || i == iChan && actualChannelSettings(iChan)->mEnabled > 0)
+			actualChannelSettings(iChan)->iLowcut = desiredChannelSettings(iChan)->iLowcut;
+	}
+	sendChannelSettings();
+
+	return true;
 }

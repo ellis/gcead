@@ -19,6 +19,7 @@
 #define __IDACPROXY_H
 
 #include <QObject>
+#include <QPointer>
 #include <QStringList>
 
 #include <IdacDriver/IdacEnums.h>
@@ -81,7 +82,7 @@ private:
 private:
 	IdacState m_state;
 	IdacErrors m_errors;
-	IdacDriverManager* m_manager;
+	QPointer<IdacDriverManager> m_manager;
 
 	IdacCommand m_cmdRequested;
 	IdacCommand m_cmdQueued;

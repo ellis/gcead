@@ -3,6 +3,7 @@
 #include <Check.h>
 
 #include <IdacDriver/IdacSettings.h>
+#include <IdacEs/IdacExports.h>
 
 
 #define IDAC_CHANNELCOUNT       3
@@ -52,7 +53,7 @@ WORD	wScaleAmp			[]	= { 0, 0, 0 };
 */
 static long AddressList[] = { 1, -1 };
 const int IDAC_HIGHPASSCOUNT = 9;
-const int HighPassTable[IDAC_HIGHPASSCOUNT] = {0, 8, 9, 10, 11, 12, 13, 14, 15};
+//const int HighPassTable[IDAC_HIGHPASSCOUNT] = {0, 8, 9, 10, 11, 12, 13, 14, 15};
 
 
 bool IdacDriver2Es::IdacAudio(int /*iChan*/, bool /*bActivate*/) {
@@ -188,16 +189,24 @@ bool IdacDriver2Es::IdacNotch(int, bool) {
 	return false;
 }
 
-void IdacDriver2Es::IdacPowerDown() {
-	m_proxy->setdown();
+bool IdacDriver2Es::IdacStartOutput() {
+	return false;
 }
 
-bool IdacDriver2Es::IdacSmpStart() { return false; } // FIXME: implement -- ellis, 2010-06-13
-bool IdacDriver2Es::IdacSmpStop() { return false; } // FIXME: implement -- ellis, 2010-06-13
-bool IdacDriver2Es::IdacStartOutput() { return false; } // FIXME: implement -- ellis, 2010-06-13
-bool IdacDriver2Es::IdacStopOutput() { return false; } // FIXME: implement -- ellis, 2010-06-13
+bool IdacDriver2Es::IdacStopOutput() {
+	return false;
+}
+
 bool IdacDriver2Es::IdacTuneBoard() { return false; } // FIXME: implement -- ellis, 2010-06-13
-int IdacDriver2Es::IdacType() const { return -1; } // FIXME: implement -- ellis, 2010-06-13
-void IdacDriver2Es::IdacUnlock() { return; } // FIXME: implement -- ellis, 2010-06-13
-void IdacDriver2Es::IdacUnlockReadBuffer() { return; } // FIXME: implement -- ellis, 2010-06-13
-bool IdacDriver2Es::IdacZeroPulse(int iChan) { return false; } // FIXME: implement -- ellis, 2010-06-13
+
+int IdacDriver2Es::IdacType() const {
+	return IDAC_TYPE_2_USB;
+}
+
+void IdacDriver2Es::IdacUnlockReadBuffer() {
+	// Do nothing
+}
+
+bool IdacDriver2Es::IdacZeroPulse(int iChan) {
+	return m_driver->IdacZeroPulse(iChan);
+}

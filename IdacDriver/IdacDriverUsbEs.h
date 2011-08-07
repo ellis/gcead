@@ -1,6 +1,7 @@
 #ifndef __IDACDRIVERUSBES_H
 #define __IDACDRIVERUSBES_H
 
+#include <QPointer>
 #include <QStringList>
 
 #include "IdacDriverUsb.h"
@@ -33,6 +34,7 @@ public:
 	QString IdacLock(const QString& sUserName);
 	const QStringList& IdacLowPassStrings();
 	int IdacNrOfAnChannelEnabled() const;
+	void IdacPowerDown();
 	/// Returns 1 when USB device driver is found
 	bool IdacPresent(int nAddress);
 	/// Set the range for the given channel
@@ -40,6 +42,9 @@ public:
 	void IdacSetBufferEvent(int hEvent);
 	bool IdacSetDecimation(int iChan, int nDecimation);
 	bool IdacSetOffsetAnalogIn(int iChan, int nOffset);
+	bool IdacSmpStart();
+	bool IdacSmpStop();
+	void IdacUnlock();
 
 // Functions used in AutoSpike, in alphabetical order
 public:
@@ -64,21 +69,17 @@ public:
 	virtual CDD32_SAMPLE* IdacLockReadBuffer(int* pnCount);
 	virtual bool IdacLowPass(int iChan, int index) const;
 	virtual bool IdacNotch(int iChan, bool bActivate);
-	virtual void IdacPowerDown();
-	virtual bool IdacSmpStart();
-	virtual bool IdacSmpStop();
 	virtual bool IdacStartOutput();
 	virtual bool IdacStopOutput();
 	virtual bool IdacTuneBoard();
 	virtual int IdacType() const;
-	virtual void IdacUnlock();
 	virtual void IdacUnlockReadBuffer();
 	virtual bool IdacZeroPulse(int iChan);
 
 private:
-	IdacDriverManager* m_manager;
-	IdacProxy* m_proxy;
-	IdacDriverUsb* m_driver;
+	QPointer<IdacDriverManager> m_manager;
+	QPointer<IdacProxy> m_proxy;
+	QPointer<IdacDriverUsb> m_driver;
 };
 
 #endif
