@@ -38,7 +38,7 @@ public:
 	/// Load up the capabilities of the current driver
 	virtual void loadCaps(IdacCaps* caps);
 	/// Load up default channel settings for the current driver
-	virtual void loadDefaultChannelSettings(IdacChannelSettings* channels);
+	const QVector<IdacChannelSettings>& defaultChannelSettings() const { return m_defaultChannelSettings; }
 
 	virtual bool checkUsbFirmwareReady();
 	virtual bool checkDataFirmwareReady();
@@ -54,6 +54,7 @@ protected:
 	virtual void sampleLoop();
 
 private:
+	void initDefaultChannelSettings();
 	bool boot();
 	bool boot_2000_4(const QString& sType);
 	bool boot_2_USB();
@@ -63,6 +64,7 @@ private:
 	void grabDataFromDll();
 
 private:
+	QVector<IdacChannelSettings> m_defaultChannelSettings;
 	bool m_bFirmwareSent;
 	bool m_bIdac2;
 	bool m_bIdac4;

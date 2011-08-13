@@ -38,7 +38,7 @@ int IdacDriverUsbEs::IdacGetChannelDecimation(int iChan) const {
 	return channelSettings(iChan)->nDecimation;
 }
 
-int IdacDriverUsbEs::IdacGetDSPInfo(uchar*, int, int) const {
+int IdacDriverUsbEs::IdacGetDSPInfo() const {
 	if (m_manager->state() == IdacState_Sampling)
 		return 0;
 	return 1;
@@ -61,6 +61,16 @@ bool IdacDriverUsbEs::IdacIsChannelEnabled(int iChan) const {
 
 QString IdacDriverUsbEs::IdacLock(const QString& /*sUserName*/) {
 	return QString(); // NOTE: locking is not implemented -- ellis, 2011-08-07
+}
+
+bool IdacDriverUsbEs::IdacLowPass(int iChan, int index) {
+	CHECK_PARAM_RETVAL(isValidAudioChannel(iChan), false);
+	CHECK_PARAM_RETVAL(index >= 0 && index < IdacLowPassStrings().size(), false);
+
+	IdacChannelSettings& chan = *channelSettings(iChan);
+	chan.iHighcut = index;
+	m_proxy->resendChannelSettings(iChan, chan);
+	return true;
 }
 
 int IdacDriverUsbEs::IdacNrOfAnChannelEnabled() const {
@@ -90,7 +100,7 @@ bool IdacDriverUsbEs::IdacScaleRange(int iChan, int index) {
 	return true;
 }
 
-void IdacDriverUsbEs::IdacSetBufferEvent(int /*hEvent*/) { return; } // FIXME: implement -- ellis, 2010-06-13
+void IdacDriverUsbEs::IdacSetBufferEvent(void* /*hEvent*/) { return; } // FIXME: implement -- ellis, 2010-06-13
 
 bool IdacDriverUsbEs::IdacSetDecimation(int iChan, int nDecimation) {
 	CHECK_PARAM_RETVAL(isValidChannel(iChan), false);

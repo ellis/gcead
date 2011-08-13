@@ -24,6 +24,7 @@ SOURCES += IdacEs.cpp \
 #    IdacDbg.cpp \
 #    IdacData.cpp \
 #    IdacCtrl.cpp
+    IdacExports.cpp
 
 HEADERS += IdacEs.h\
 	IdacEs_global.h \

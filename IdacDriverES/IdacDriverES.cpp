@@ -112,7 +112,8 @@ bool IdacDriverES::driverIsPresent() {
 }
 
 IdacDriverES::IdacDriverES(QObject* parent)
-	: IdacDriverWithThread(parent)
+	: IdacDriverWithThread(parent),
+	m_defaultChannelSettings(3)
 {
 	m_bFirmwareSent = false;
 	m_bIdac2 = false;
@@ -134,6 +135,7 @@ IdacDriverES::IdacDriverES(QObject* parent)
 		break;
 	}
 
+	initDefaultChannelSettings();
 }
 
 IdacDriverES::~IdacDriverES()
@@ -160,8 +162,10 @@ void IdacDriverES::loadCaps(IdacCaps* caps)
 	}
 }
 
-void IdacDriverES::loadDefaultChannelSettings(IdacChannelSettings* channels)
+void IdacDriverES::initDefaultChannelSettings()
 {
+	QVector<IdacChannelSettings>& channels = m_defaultChannelSettings;
+
 	channels[0].mEnabled = 0x03;
 	channels[0].mInvert = 0x00;
 	channels[0].nDecimation = -1;

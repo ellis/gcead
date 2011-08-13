@@ -67,6 +67,27 @@ int IdacDriver2Es::IdacBoot(const QString& /*sFilename*/, int /*nAddress*/) {
 	return 1; // success
 }
 
+bool IdacDriver2Es::IdacCapabilities(int iCap) const {
+	static bool CapTbl[] =
+	{
+		TRUE,	// IDAC_CAN_SCALE
+		FALSE,	// IDAC_HAS_LOWPASS
+		TRUE,	// IDAC_HAS_HIGHPASS
+		FALSE,	// IDAC_HAS_NOTCH
+		FALSE,	// IDAC_HAS_AUDIOOUT
+		FALSE,	// IDAC_HAS_DIGITALOUT
+		FALSE,	// IDAC_HAS_ANALOGOUT
+		TRUE,	// IDAC_HAS_ZEROPULSE
+		TRUE,	// IDAC_HAS_INPUTOFFSET
+		TRUE,	// IDAC_CAN_TUNE
+		FALSE	// IDAC_HAS_EAG
+	};
+
+	CHECK_PARAM_RETVAL(iCap >= 0 && iCap < int(sizeof(CapTbl)/sizeof(CapTbl[0])), false);
+
+	return CapTbl[iCap];
+}
+
 bool IdacDriver2Es::IdacEag(int, bool) {
 	return false;
 }
@@ -157,10 +178,6 @@ CDD32_SAMPLE* IdacDriver2Es::IdacLockReadBuffer(int* pnCount) {
 
 	*pnCount = 0;
 	return NULL;
-}
-
-bool IdacDriver2Es::IdacLowPass(int, int) const {
-	return false;
 }
 
 bool IdacDriver2Es::IdacNotch(int, bool) {

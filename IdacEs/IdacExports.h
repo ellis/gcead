@@ -25,18 +25,49 @@ extern "C"
 #include <WINUSER.H>
 #include <windows.h>
 
-	/* Version */
-#define IDAC_LIB_VERSION	7L
+/* IDAC Capabilitity information */
+enum TIdacCapability
+{	IDAC_CAN_SCALE,
+	IDAC_HAS_LOWPASS,
+	IDAC_HAS_HIGHPASS,
+	IDAC_HAS_NOTCH,
+	IDAC_HAS_AUDIOOUT,
+	IDAC_HAS_DIGITALOUT,
+	IDAC_HAS_ANALOGOUT,
+	IDAC_HAS_ZEROPULSE,
+	IDAC_HAS_INPUTOFFSET,
+	IDAC_CAN_TUNE,
+	IDAC_HAS_EAG
+};
 
+DRIVER_EXPORT	BOOL			WINAPI	IdacCapabilities			(TIdacCapability Cap);
+DRIVER_EXPORT	DWORD			WINAPI	IdacDataAvail				();
+DRIVER_EXPORT	BOOL			WINAPI	IdacEnableChannel			(DWORD Chan, BOOL bEnable);
+DRIVER_EXPORT	DWORD			WINAPI	IdacGetChannelDecimation	(DWORD Chan);
+DRIVER_EXPORT	DWORD			WINAPI	IdacGetDSPInfo				(PWORD pBuffer, WORD wSignalCount, DWORD dwBufCount);
+DRIVER_EXPORT	LPDWORD			WINAPI	IdacGetRanges				();
+DRIVER_EXPORT	BOOL			WINAPI	IdacHighPass				(DWORD Chan, DWORD Index);
+DRIVER_EXPORT	void			WINAPI	IdacHighPassStrings			(int *NrOfStrings, const char **ppFilterStrings[]);
+DRIVER_EXPORT	BOOL			WINAPI	IdacIsChannelEnabled		(DWORD Chan);
+DRIVER_EXPORT	DWORD			WINAPI	IdacLibVersion				();
+DRIVER_EXPORT	LPCSTR			WINAPI	IdacLock					(LPCSTR UserName);
+DRIVER_EXPORT	BOOL			WINAPI	IdacLowPass					(DWORD Chan, DWORD Index);
+DRIVER_EXPORT	void			WINAPI	IdacLowPassStrings			(int *NrOfStrings, const char **ppFilterStrings[]);
+DRIVER_EXPORT	UINT			WINAPI	IdacNrOfAnChannelEnabled	();
+DRIVER_EXPORT	void			WINAPI	IdacPowerDown				();
+DRIVER_EXPORT	LONG			WINAPI	IdacPresent					(LONG Address);
+DRIVER_EXPORT	BOOL			WINAPI	IdacScaleRange				(DWORD Chan, DWORD Index);
+DRIVER_EXPORT	void			WINAPI	IdacSetBufferEvent			(HANDLE hEvent);
+DRIVER_EXPORT	BOOL			WINAPI	IdacSetDecimation			(DWORD Chan, DWORD dwDecimation);
+DRIVER_EXPORT	BOOL			WINAPI	IdacSetOffsetAnalogIn		(DWORD Chan, DWORD Offset);
+DRIVER_EXPORT	BOOL			WINAPI	IdacSmpStart				();
+DRIVER_EXPORT	BOOL			WINAPI	IdacSmpStop					();
+DRIVER_EXPORT	void			WINAPI	IdacUnlock					();
 
-/* Defines for IDAC hardware types	*/
-#define IDAC_TYPE_NONE		0
-#define IDAC_TYPE_ISA_V2	1
-#define IDAC_TYPE_USB_V3	2
-#define IDAC_TYPE_SERIAL	3
-#define IDAC_TYPE_2000		4
-#define IDAC_TYPE_4			5
-#define IDAC_TYPE_2_USB		6
+DRIVER_EXPORT	LPCDD32_SAMPLE	WINAPI	IdacLockReadBuffer			(DWORD* pdwCount);
+DRIVER_EXPORT	void			WINAPI	IdacUnlockReadBuffer		();
+DRIVER_EXPORT	DWORD			WINAPI	IdacType					();
+DRIVER_EXPORT	DWORD			WINAPI	IdacBoot					(LPCSTR FileName, LONG Address);
 
 // Used for the test apllication IdacBox and IdacAutoTest (Production testing)
 // Not used for AutoSpike.
@@ -62,62 +93,6 @@ DRIVER_EXPORT	BOOL	WINAPI	IdacConfigWrite			();
 /************************************************************************************/
 
 /* Return library version. */
-DRIVER_EXPORT	DWORD			WINAPI	IdacLibVersion				();
-
-/************************************************************************************/
-/* System control functions (IDACDLL.CPP)											*/
-/************************************************************************************/
-
-/* Type of IDAC card (hardware type). */
-DRIVER_EXPORT	DWORD			WINAPI	IdacType					();
-
-
-/* IDAC Capabilitity information */
-enum TIdacCapability
-{	IDAC_CAN_SCALE,
-	IDAC_HAS_LOWPASS,
-	IDAC_HAS_HIGHPASS,
-	IDAC_HAS_NOTCH,
-	IDAC_HAS_AUDIOOUT,
-	IDAC_HAS_DIGITALOUT,
-	IDAC_HAS_ANALOGOUT,
-	IDAC_HAS_ZEROPULSE,
-	IDAC_HAS_INPUTOFFSET,
-	IDAC_CAN_TUNE,
-	IDAC_HAS_EAG
-};
-
-DRIVER_EXPORT	BOOL			WINAPI	IdacCapabilities			(TIdacCapability Cap);
-
-
-/* Lock with a program name, (starts reading iso buffer from driver)*/
-DRIVER_EXPORT	LPCSTR			WINAPI	IdacLock					(LPCSTR UserName);
-
-/* Unlock ( stops isotransfer ) */
-DRIVER_EXPORT	void			WINAPI	IdacUnlock					();
-
-/* Bring the board electronics in power-down mode */
-DRIVER_EXPORT	void			WINAPI	IdacPowerDown				();
-
-/************************************************************************************/
-/* Board connection funtions (IDACBRD.CPP)											*/
-/************************************************************************************/
-
-/* IDAC presence test (before boot)
- * Parameters: Address = requested address to test, or -1 to test all addresses
- * Returns: numeric address (meaning depends on board type)
- */
-DRIVER_EXPORT	LONG			WINAPI	IdacPresent					(LONG Address);
-
-/* Boot the DSP with the program in 'FileName'.
- * Parameters: Address = requested address to use, or -1 to detect automatically.
- * Returns: 0 - IDAC not found
- *			1 - IDAC found and successfully booted
- *			2 - IDAC found, but file not found
- *			3 - IDAC found, but error during download
- *	If the board has powerdown functionality, it is powered-up before booting.
- */
-DRIVER_EXPORT	DWORD			WINAPI	IdacBoot					(LPCSTR FileName, LONG Address);
 
 /* Allow the application to check wether the Idac has been booted
  */
@@ -149,14 +124,6 @@ DRIVER_EXPORT	BOOL			WINAPI	IdacGetUsbDeviceDescriptor	(LPSTR pBuffer, DWORD dwB
 /************************************************************************************/
 /* On-board scaling, filtering and utilities (IDACCTRL.CPP)							*/
 /************************************************************************************/
-/* Switch channel on/off. */
-DRIVER_EXPORT	BOOL			WINAPI	IdacEnableChannel			(DWORD Chan, BOOL bEnable);
-
-/* Get channel on/off status. */
-DRIVER_EXPORT	BOOL			WINAPI	IdacIsChannelEnabled		(DWORD Chan);
-
-/* Get the number of active channels */
-DRIVER_EXPORT	UINT			WINAPI	IdacNrOfAnChannelEnabled	();
 
 
 /* Send a zero-pulse to the channel, or the entire board if it cannot differentiate. Analog channels only.
@@ -186,14 +153,6 @@ DRIVER_EXPORT	BOOL			WINAPI	IdacSetOffsetAnalogIn		(DWORD Chan, DWORD Offset);
 DRIVER_EXPORT	BOOL			WINAPI	IdacTuneBoard				();
 
 
-// Set a lowpass filter	(if IDAC_HAS_LOWPASS)
-DRIVER_EXPORT	void			WINAPI	IdacLowPassStrings			(int *NrOfStrings, const char **ppFilterStrings[]);
-DRIVER_EXPORT	BOOL			WINAPI	IdacLowPass					(DWORD Chan, DWORD Index);
-
-
-// Set a highpass filter (if IDAC_HAS_HIGHPASS):
-DRIVER_EXPORT	void			WINAPI	IdacHighPassStrings			(int *NrOfStrings, const char **ppFilterStrings[]);
-DRIVER_EXPORT	BOOL			WINAPI	IdacHighPass				(DWORD Chan, DWORD Index);
 
 /* Switch 50/60Hz notchfilter on/off (if IDAC_HAS_NOTCH) */
 DRIVER_EXPORT	BOOL			WINAPI	IdacNotch					(DWORD Chan, BOOL bActivate);
@@ -277,28 +236,14 @@ DRIVER_EXPORT	DWORD			WINAPI	IdacGetDigSampleBaseRate	();
 /* Sample rate base freq for a selected channel. */
 DRIVER_EXPORT	DOUBLE			WINAPI	IdacGetChannelBaseRate		(DWORD Chan);
 
-/* Current Decimation factor for a selected channel, possibly depending on the number of active channels */
-DRIVER_EXPORT	DWORD			WINAPI	IdacGetChannelDecimation	(DWORD Chan);
-
-
-/* Get available ranges for scalings in uV on analog input, discounting any 
- * external amplifications (-1 terminated). The values are half-ranges,
- * 1000000 represents +/- 1 volt.
- * Example: { 1000000, 250000, -1 }
- */
-DRIVER_EXPORT	LPDWORD			WINAPI	IdacGetRanges				();
 
 /* Get internal DSP data (IDAC2, IDAC3) */
 // not used in idac 2000!!!!!!!!!!!!!!!!!!!
-DRIVER_EXPORT	DWORD			WINAPI	IdacGetDSPInfo				(PWORD pBuffer, WORD wSignalCount, DWORD dwBufCount);
 
 /************************************************************************************/
 /* Data acquisition functions (IDACDATA.CPP)										*/
 /* See also directions for use in IDACDATA.CPP.										*/
 /************************************************************************************/
-
-/* Get number of samples available. */
-DRIVER_EXPORT	DWORD			WINAPI	IdacDataAvail				();
 
 /* Wait specified number of milliseconds for new samples to come available. */
 DRIVER_EXPORT	BOOL			WINAPI	IdacDataWait				(DWORD dwMilliSec);
@@ -313,28 +258,6 @@ DRIVER_EXPORT	CDD32_STATUS	WINAPI	IdacGetStatusFlags			(BOOL bClear);
  * You must have selected at least 1 analog channel.
  * Buffers will be cleared.
  */
-DRIVER_EXPORT	BOOL			WINAPI	IdacSmpStart				();
-
-/* Stop the sampling process. Return TRUE if Idac was running */
-DRIVER_EXPORT	BOOL			WINAPI	IdacSmpStop					();
-
-/* Get a buffer with available samples.
- * Returns a pointer to the buffer, or NULL if no samples are available.
- * pdwCount will receive number of samples.
- * The read buffer will be locked to keep the buffer valid,
- * Data must be dispatched quickly and unlocked after use.
- * Unlocking is not necessary if the function returned NULL.
- */
-DRIVER_EXPORT	LPCDD32_SAMPLE	WINAPI	IdacLockReadBuffer			(DWORD* pdwCount);
-
-/* Unlock the buffer obtained by IdacLockReadBuffer. */
-DRIVER_EXPORT	void			WINAPI	IdacUnlockReadBuffer		();
-
-/* Specify a handle to an event that will be set after every ~ 100 ms during sampling,
- * or when a data buffer is full, whichever happens first.
- * Set to NULL to stop using the event.
- */
-DRIVER_EXPORT	void			WINAPI	IdacSetBufferEvent			(HANDLE hEvent);
 
 /**
  *	IdacOSA_Initialize
@@ -416,16 +339,10 @@ DRIVER_EXPORT void WINAPI IdacAIOffsetRange(DOUBLE &dRangeMin, DOUBLE &dRangeMax
 //	@return UINT the number of digital channels that the IDAC has.
 DRIVER_EXPORT	UINT WINAPI	IdacGetNrOfDigitalChan();
 
-<<<<<<< HEAD
 /************************************************************************/
-/*	Author: X. Vink                                                                      
-/*  Date  : 17/10/2003                                                                    
-/************************************************************************/
-=======
 //	Author: X. Vink
 //  Date  : 17/10/2003
-// ************************************************************************
->>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
+/************************************************************************/
 // *	Register a window to receive Device Notifications
 // *	Device notifications are always from the idac who's driver handle
 // *	is specified in dbch.

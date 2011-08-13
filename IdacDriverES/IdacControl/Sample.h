@@ -58,7 +58,7 @@ typedef struct CDD32_STATUS
 	};
 } FAR* LPCDD32_STATUS;
 
-const	CDD32_STATUS	NULL_CDD32_STATUS = { 0 };
+const	CDD32_STATUS	NULL_CDD32_STATUS = { { 0 } };
 
 
 typedef struct CDD32_SAMPLE
@@ -83,7 +83,7 @@ typedef struct CDD32_SAMPLE
 		
 } FAR* LPCDD32_SAMPLE;
 
-const	CDD32_SAMPLE	NULL_CDD32_SAMPLE = { 0L };
+const	CDD32_SAMPLE	NULL_CDD32_SAMPLE = { { 0L } };
 
 #pragma pack()
 

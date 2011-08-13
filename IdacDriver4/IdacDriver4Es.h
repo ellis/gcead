@@ -44,6 +44,7 @@ public:
 public:
 	virtual bool IdacAudio(int iChan, bool bActivate);
 	virtual int IdacBoot(const QString& sFilename, int nAddress);
+	virtual bool IdacCapabilities(int iCap) const;
 	virtual int IdacDataAvail();
 	virtual bool IdacEag(int iChan, bool bActivate);
 	virtual long* IdacGetAddressTable() const;
@@ -62,7 +63,6 @@ public:
 	virtual bool IdacIsOutputRunning() const;
 	virtual int IdacLibVersion() const;
 	virtual CDD32_SAMPLE* IdacLockReadBuffer(int* pnCount);
-	virtual bool IdacLowPass(int iChan, int index) const;
 	virtual bool IdacNotch(int iChan, bool bActivate);
 	virtual bool IdacStartOutput();
 	virtual bool IdacStopOutput();
