@@ -19,6 +19,7 @@
 #define __IDACSETTINGS_H
 
 #include <QtGlobal> // for uchar
+#include <QVector>
 
 #include "IdacChannelSettings.h"
 
@@ -34,7 +35,7 @@ public:
 	/// Preset delay for the FID signal in milliseconds (ms)
 	int nGcDelay_ms;
 	/// Settings for the individual channels
-	IdacChannelSettings channels[3];
+	QVector<IdacChannelSettings> channels;
 };
 
 

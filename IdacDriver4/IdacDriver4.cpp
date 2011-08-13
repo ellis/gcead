@@ -114,7 +114,8 @@ int dwRangesList_V2[IDAC_SCALERANGECOUNT+1] = {	MAX_INPUT_VOLTAGE_ADC_V2 / 1,
 
 
 IdacDriver4::IdacDriver4(struct usb_device* device, QObject* parent)
-	: IdacDriverUsb(device, parent)
+	: IdacDriverUsb(device, parent),
+	  m_defaultChannelSettings(3)
 {
 	m_bPowerOn = false;
 	m_bFpgaProgrammed = false;
@@ -123,25 +124,8 @@ IdacDriver4::IdacDriver4(struct usb_device* device, QObject* parent)
 
 	setHardwareName("IDAC4");
 
-	loadDefaultChannelSettings(actualSettings());
-}
+	QVector<IdacChannelSettings>& channels = m_defaultChannelSettings;
 
-IdacDriver4::~IdacDriver4()
-{
-	if (handle() != NULL)
-	{
-		power(false);
-	}
-}
-
-void IdacDriver4::loadCaps(IdacCaps* caps)
-{
-	caps->bHighcut = true;
-	caps->bRangePerChannel = true;
-}
-
-void IdacDriver4::loadDefaultChannelSettings(IdacChannelSettings* channels)
-{
 	channels[0].mEnabled = 0x03;
 	channels[0].mInvert = 0x00;
 	channels[0].nDecimation = 960; // 100 samples per second
@@ -161,6 +145,20 @@ void IdacDriver4::loadDefaultChannelSettings(IdacChannelSettings* channels)
 	channels[2].iHighcut = 10; // 3kHz on IDAC4
 	channels[2].iLowcut = 1; // 0.1 Hz on IDAC4
 	channels[2].nExternalAmplification = 1;
+}
+
+IdacDriver4::~IdacDriver4()
+{
+	if (handle() != NULL)
+	{
+		power(false);
+	}
+}
+
+void IdacDriver4::loadCaps(IdacCaps* caps)
+{
+	caps->bHighcut = true;
+	caps->bRangePerChannel = true;
 }
 
 bool IdacDriver4::checkUsbFirmwareReady()

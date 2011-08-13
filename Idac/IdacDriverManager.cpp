@@ -202,11 +202,12 @@ QStringList IdacDriverManager::errorMessages()
 	return m_driver->errorMessages();
 }
 
-void IdacDriverManager::loadDefaultChannelSettings(IdacChannelSettings* channels)
+const QVector<IdacChannelSettings>& IdacDriverManager::defaultChannelSettings()
 {
+	static QVector<IdacChannelSettings> none(0);
 	if (m_driver == NULL)
-		return;
-	m_driver->loadDefaultChannelSettings(channels);
+		return none;
+	return m_driver->defaultChannelSettings();
 }
 
 void IdacDriverManager::setChannelSettings(int iChannel, const IdacChannelSettings& channel)

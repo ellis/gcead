@@ -403,7 +403,7 @@ void MainScope::on_idac_isAvailable()
 	CHECK_PRECOND_RET(m_idac != NULL);
 	if (m_idac->isAvailable())
 	{
-		m_idac->loadDefaultChannelSettings(Globals->idacSettings()->channels);
+		Globals->idacSettings()->channels = m_idac->loadDefaultChannelSettings();
 		Globals->readIdacChannelSettings(m_idac->hardwareName());
 	}
 	updateActions();

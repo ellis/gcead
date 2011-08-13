@@ -43,8 +43,6 @@ extern INTEL_HEX_RECORD g_firmwareIdacDriver2[];
 /// Maximum input voltage in uVolt (the range is twice this value)
 #define MAX_INPUT_VOLTAGE_ADC 5000000
 
-const int IDAC_ZEROPULSE_LENGTH = 500;
-
 static int dwRangesList[IDAC_SCALERANGECOUNT+1] =
 {
 	MAX_INPUT_VOLTAGE_ADC / 1,
@@ -64,7 +62,8 @@ static int g_nAnalog2Sum;
 
 
 IdacDriver2::IdacDriver2(struct usb_device* device, QObject* parent)
-	: IdacDriverUsb(device, parent)
+	: IdacDriverUsb(device, parent),
+	  m_defaultChannelSettings(3)
 {
 	m_bFpgaProgrammed = false;
 
@@ -72,26 +71,8 @@ IdacDriver2::IdacDriver2(struct usb_device* device, QObject* parent)
 
 	setHardwareName("IDAC2");
 
-	loadDefaultChannelSettings(actualSettings());
-}
+	QVector<IdacChannelSettings>& channels = m_defaultChannelSettings;
 
-IdacDriver2::~IdacDriver2()
-{
-	if (handle() != NULL)
-	{
-		setIntXferEnabled(false);
-		setPowerOn(false);
-	}
-}
-
-void IdacDriver2::loadCaps(IdacCaps* caps)
-{
-	caps->bHighcut = false;
-	caps->bRangePerChannel = false;
-}
-
-void IdacDriver2::loadDefaultChannelSettings(IdacChannelSettings* channels)
-{
 	channels[0].mEnabled = 0x03;
 	channels[0].mInvert = 0x01; // Invert the trigger channel
 	channels[0].nDecimation = -1;
@@ -111,6 +92,21 @@ void IdacDriver2::loadDefaultChannelSettings(IdacChannelSettings* channels)
 	channels[2].iHighcut = -1;
 	channels[2].iLowcut = 1; // 0.05 Hz on IDAC2
 	channels[2].nExternalAmplification = 1;
+}
+
+IdacDriver2::~IdacDriver2()
+{
+	if (handle() != NULL)
+	{
+		setIntXferEnabled(false);
+		setPowerOn(false);
+	}
+}
+
+void IdacDriver2::loadCaps(IdacCaps* caps)
+{
+	caps->bHighcut = false;
+	caps->bRangePerChannel = false;
 }
 
 bool IdacDriver2::checkUsbFirmwareReady()
@@ -281,7 +277,7 @@ bool IdacDriver2::sendChannelSettings()
 	// This data is encoded successively from MSB to LSB direction in
 	// the 7 bits available per outgoing byte.
 
-	IdacChannelSettings* chans = actualSettings();
+	const QVector<IdacChannelSettings>& chans = actualSettings();
 
 	quint8 buffer[7];
 
@@ -498,10 +494,10 @@ void IdacDriver2::sampleLoop()
 }
 
 bool IdacDriver2::IdacZeroPulse(int iChan) {
-	CHECK_PARAM_RETVAL(iChan != 0 && iChan < IDAC_CHANNELCOUNT, false);
+	CHECK_PARAM_RETVAL(iChan != 0 && iChan < channelCount(), false);
 
 	for (int i = 0; i < 3; i++) {
-		if (iChan < 0 || i == iChan && actualChannelSettings(iChan)->mEnabled > 0)
+		if ((iChan < 0 || i == iChan) && actualChannelSettings(iChan)->mEnabled > 0)
 			actualChannelSettings(iChan)->iLowcut = 8; // FIXME: test whether this works -- ellis, 2011-08-07
 	}
 	sendChannelSettings();
@@ -509,7 +505,7 @@ bool IdacDriver2::IdacZeroPulse(int iChan) {
 	Sleeper::msleep(IDAC_ZEROPULSE_LENGTH);
 
 	for (int i = 0; i < 3; i++) {
-		if (iChan < 0 || i == iChan && actualChannelSettings(iChan)->mEnabled > 0)
+		if ((iChan < 0 || i == iChan) && actualChannelSettings(iChan)->mEnabled > 0)
 			actualChannelSettings(iChan)->iLowcut = desiredChannelSettings(iChan)->iLowcut;
 	}
 	sendChannelSettings();

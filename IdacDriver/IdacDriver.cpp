@@ -33,8 +33,8 @@ IdacDriver::IdacDriver(QObject* parent)
 void IdacDriver::init()
 {
 	loadCaps(&m_caps);
-	loadDefaultChannelSettings(m_settingsActual);
-	loadDefaultChannelSettings(m_settingsDesired);
+	m_settingsActual = defaultChannelSettings();
+	m_settingsDesired = m_settingsActual;
 }
 
 void IdacDriver::addError(const QString& s)
@@ -73,7 +73,7 @@ void IdacDriver::setChannelSettings(int iChan, const IdacChannelSettings& channe
 	m_settingsDesired[iChan] = channel;
 }
 
-const IdacChannelSettings* IdacDriver::desiredSettings()
+const QVector<IdacChannelSettings>& IdacDriver::desiredSettings()
 {
 	//QMutexLocker locker(&m_settingsMutex);
 	return m_settingsDesired;
@@ -81,12 +81,12 @@ const IdacChannelSettings* IdacDriver::desiredSettings()
 
 const IdacChannelSettings* IdacDriver::desiredChannelSettings(int iChan)
 {
-	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < 3, NULL);
+	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < m_settingsDesired.size(), NULL);
 	return &m_settingsDesired[iChan];
 }
 
 IdacChannelSettings* IdacDriver::actualChannelSettings(int iChan)
 {
-	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < 3, NULL);
+	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < m_settingsActual.size(), NULL);
 	return &m_settingsActual[iChan];
 }

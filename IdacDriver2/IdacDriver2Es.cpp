@@ -3,9 +3,9 @@
 #include <Check.h>
 
 #include <IdacDriver/IdacSettings.h>
-#include <IdacEs/IdacExports.h>
+//#include <IdacEs/IdacExports.h>
 
-
+#define IDAC_TYPE_2_USB           6
 #define IDAC_CHANNELCOUNT       3
 #define IDAC_SMP_BANDWIDTH		500
 #define IDAC_AN_SAMPLEBASE		100
@@ -82,9 +82,9 @@ double IdacDriver2Es::IdacGetAnSampleBaseRate(int nChannels) const {
 }
 
 double IdacDriver2Es::IdacGetChannelBaseRate(int iChan) const {
-	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < IDAC_CHANNELCOUNT, 0);
+	CHECK_PARAM_RETVAL(isValidChannel(iChan), 0);
 
-	const IdacChannelSettings* chan = desiredChannelSettings(iChan);
+	const IdacChannelSettings* chan = channelSettings(iChan);
 	if (chan->mEnabled == 0)
 		return 0;
 	// Digital (chan 0) is fixed
@@ -96,12 +96,6 @@ double IdacDriver2Es::IdacGetChannelBaseRate(int iChan) const {
 
 int IdacDriver2Es::IdacGetChannelCount() const {
 	return IDAC_CHANNELCOUNT;
-}
-
-int IdacDriver2Es::IdacGetChannelDecimation(int iChan) const {
-	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < IDAC_CHANNELCOUNT, 0);
-	const IdacChannelSettings* chan = desiredChannelSettings(iChan);
-	return chan->nDecimation;
 }
 
 int IdacDriver2Es::IdacGetDSPFirmwareVersion() const {
@@ -128,24 +122,6 @@ bool IdacDriver2Es::IdacHasOutput() const {
 	return false;
 }
 
-bool IdacDriver2Es::IdacHighPass(int iChan, int index) const {
-	CHECK_PARAM_RETVAL(iChan >= 1 && iChan < IDAC_CHANNELCOUNT, false);
-	CHECK_PARAM_RETVAL(index >= 0 && index < IDAC_HIGHPASSCOUNT, false);
-
-	IdacSettings* settings = Globals->idacSettings();
-	IdacChannelSettings& chan = settings->channels[iChan];
-	chan.iLowcut = index;
-	m_proxy->resendChannelSettings(iChan, chan);
-	return true;
-}
-
-bool IdacDriver2Es::IdacIsChannelEnabled(int iChan) const {
-	CHECK_PARAM_RETVAL(iChan >= 0 && iChan < IDAC_CHANNELCOUNT, false);
-	IdacSettings* settings = Globals->idacSettings();
-	IdacChannelSettings& chan = settings->channels[iChan];
-	return chan->mEnabled;
-}
-
 bool IdacDriver2Es::IdacIsOutputRunning() const {
 	return false;
 }
@@ -161,20 +137,22 @@ CDD32_SAMPLE* IdacDriver2Es::IdacLockReadBuffer(int* pnCount) {
 	if (n > 0) {
 		int iSample = 0;
 		for (int i = 0; i < n; i++) {
-			CDD32_SAMPLE* pSample = samples[iSample];
-			pSample->flags = 0;
+			CDD32_SAMPLE* pSample = &samples[iSample];
+			pSample->flags.uStatus = 0;
 			pSample->uChannel = 0;
 			pSample->dwData = digital[i];
-			pSample->flags = 0;
+			pSample++;
+			pSample->flags.uStatus = 0;
 			pSample->uChannel = 1;
 			pSample->dwData = analog1[i];
-			pSample->flags = 0;
+			pSample++;
+			pSample->flags.uStatus = 0;
 			pSample->uChannel = 2;
 			pSample->dwData = analog2[i];
 			iSample += 3;
 		}
 		*pnCount = iSample;
-		return &sample;
+		return samples;
 	}
 
 	*pnCount = 0;

@@ -50,7 +50,7 @@ public:
 	QStringList errorMessages();
 
 	/// Load up default channel settings for the current driver
-	void loadDefaultChannelSettings(IdacChannelSettings* channels);
+	const QVector<IdacChannelSettings>& defaultChannelSettings();
 	void setChannelSettings(int iChannel, const IdacChannelSettings& channel);
 	int takeData(short* digital, short* analog1, short* analog2, int maxSize);
 

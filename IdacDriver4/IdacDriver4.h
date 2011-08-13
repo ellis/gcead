@@ -42,7 +42,7 @@ public:
 // Implement IdacDriver
 public:
 	void loadCaps(IdacCaps* caps);
-	void loadDefaultChannelSettings(IdacChannelSettings* channels);
+	const QVector<IdacChannelSettings>& defaultChannelSettings() const { return m_defaultChannelSettings; }
 
 	bool checkUsbFirmwareReady();
 	bool checkDataFirmwareReady();
@@ -127,6 +127,7 @@ private:
 private:
 	static BitPosition bpIdacBox[BI_COUNT];
 
+	QVector<IdacChannelSettings> m_defaultChannelSettings;
 	bool m_bPowerOn;
 	bool m_bFpgaProgrammed;
 	quint8 m_nVersion;

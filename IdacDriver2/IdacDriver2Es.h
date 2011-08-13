@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009  Ellis Whitehead
+ * Copyright (C) 2009,2011  Ellis Whitehead
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class IdacDriver2Es : public IdacDriverUsbEs
 {
 public:
 	/// Number of channels for IDAC4
-	static const int IDAC_CHANNELCOUNT = 5;
+	//static const int IDAC_CHANNELCOUNT = 5;
 
 public:
 	IdacDriver2Es(IdacDriver2* driver);
@@ -50,15 +50,12 @@ public:
 	virtual double IdacGetAnSampleBaseRate(int nChannels) const;
 	virtual double IdacGetChannelBaseRate(int iChan) const;
 	virtual int IdacGetChannelCount() const;
-	virtual int IdacGetChannelDecimation(int iChan) const;
 	virtual int IdacGetDSPFirmwareVersion() const;
 	virtual int IdacGetDigSampleBaseRate() const;
 	virtual int IdacGetNrOfAnalogOutChan() const;
 	virtual int IdacGetNrOfDigitalOutChan() const;
 	virtual int IdacGetSampleBandwidth() const;
 	virtual bool IdacHasOutput() const;
-	virtual bool IdacHighPass(int iChan, int index) const;
-	virtual bool IdacIsChannelEnabled(int iChan) const;
 	virtual bool IdacIsOutputRunning() const;
 	virtual int IdacLibVersion() const;
 	virtual CDD32_SAMPLE* IdacLockReadBuffer(int* pnCount);

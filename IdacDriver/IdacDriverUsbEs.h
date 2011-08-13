@@ -17,22 +17,26 @@ public:
 	static const int IDAC_LIB_VERSION = 7;
 
 public:
-	explicit IdacDriverUsbEs(IdacDriverUsb* driver);
+	explicit IdacDriverUsbEs(IdacDriverUsb* driver, const QVector<IdacChannelSettings>& channelSettings);
 
 // Functions used in AutoSpike, in alphabetical order
 public:
-	const IdacCaps* IdacCapabilities() const { return m_manager->caps(); }
+	const IdacCaps* IdacCapabilities() const { return m_proxy->caps(); }
 	/// Get number of samples available
 	int IdacDataAvail() const { return m_driver->IdacDataAvail(); }
 	/// Turn channel on/off
 	bool IdacEnableChannel(int iChan, bool bEnabled);
-	const QList<int>& IdacGetRanges() const;
+	virtual int IdacGetChannelDecimation(int iChan) const;
 	/// Get internal DSP data (IDAC2, IDAC3)
 	int IdacGetDSPInfo(uchar* pBuffer, int nSignalCount, int nBufCount) const;
-	const QStringList& IdacHighPassStrings() const;
+	const QList<int>& IdacGetRanges() const { return m_proxy->ranges(); }
+	const QStringList& IdacHighPassStrings() const { return m_proxy->lowcutStrings(); }
+	bool IdacIsChannelEnabled(int iChan) const;
+	/// Set the high-pass index
+	bool IdacHighPass(int iChan, int index);
 	int IdacLibVersion() const { return IDAC_LIB_VERSION; }
 	QString IdacLock(const QString& sUserName);
-	const QStringList& IdacLowPassStrings();
+	const QStringList& IdacLowPassStrings() { return m_proxy->highcutStrings(); }
 	int IdacNrOfAnChannelEnabled() const;
 	void IdacPowerDown();
 	/// Returns 1 when USB device driver is found
@@ -56,15 +60,12 @@ public:
 	virtual double IdacGetAnSampleBaseRate(int nChannels) const;
 	virtual double IdacGetChannelBaseRate(int iChan) const;
 	virtual int IdacGetChannelCount() const;
-	virtual int IdacGetChannelDecimation(int iChan) const;
 	virtual int IdacGetDSPFirmwareVersion() const;
 	virtual int IdacGetDigSampleBaseRate() const;
 	virtual int IdacGetNrOfAnalogOutChan() const;
 	virtual int IdacGetNrOfDigitalOutChan() const;
 	virtual int IdacGetSampleBandwidth() const;
 	virtual bool IdacHasOutput() const;
-	virtual bool IdacHighPass(int iChan, int index) const;
-	virtual bool IdacIsChannelEnabled(int iChan) const;
 	virtual bool IdacIsOutputRunning() const;
 	virtual CDD32_SAMPLE* IdacLockReadBuffer(int* pnCount);
 	virtual bool IdacLowPass(int iChan, int index) const;
@@ -76,10 +77,23 @@ public:
 	virtual void IdacUnlockReadBuffer();
 	virtual bool IdacZeroPulse(int iChan);
 
+protected:
+	bool isValidChannel(int iChan) const { return iChan >= 0 && iChan <= m_channelSettings.size(); }
+	int channelCount() const { return m_channelSettings.size(); }
+	IdacChannelSettings* channelSettings(int iChan);
+	const IdacChannelSettings* channelSettings(int iChan) const;
+
+protected:
+	// FIXME: this should be replaced with a list of allowable sampling frequencies in IdacDriver -- ellis, 2011-08-13
+	virtual int decimationCount() const = 0;
+	virtual bool isValidAudioChannel(int iChan) const = 0;
+	virtual bool isValidDigitalChannel(int iChan) const = 0;
+
 private:
+	QPointer<IdacDriverUsb> m_driver;
+	QVector<IdacChannelSettings> m_channelSettings;
 	QPointer<IdacDriverManager> m_manager;
 	QPointer<IdacProxy> m_proxy;
-	QPointer<IdacDriverUsb> m_driver;
 };
 
 #endif

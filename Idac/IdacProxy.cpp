@@ -139,15 +139,15 @@ void IdacProxy::setdown()
 	queueCommand(IdacCommand_Disconnect);
 }
 
-void IdacProxy::loadDefaultChannelSettings(IdacChannelSettings* channels)
+QVector<IdacChannelSettings> IdacProxy::loadDefaultChannelSettings()
 {
-	m_manager->loadDefaultChannelSettings(channels);
+	return m_manager->defaultChannelSettings();
 }
 
-void IdacProxy::startSampling(const IdacChannelSettings* channels)
+void IdacProxy::startSampling(const QVector<IdacChannelSettings>& channels)
 {
-	for (int iChannel = 0; iChannel < 3; iChannel++)
-		m_manager->setChannelSettings(iChannel, channels[iChannel]);
+	for (int iChan = 0; iChan < channels.size(); iChan++)
+		m_manager->setChannelSettings(iChan, channels[iChan]);
 	queueCommand(IdacCommand_SamplingOn);
 }
 
@@ -158,7 +158,7 @@ void IdacProxy::stopSampling()
 
 void IdacProxy::resendChannelSettings(int iChannel, const IdacChannelSettings& channel)
 {
-	CHECK_PARAM_RET(iChannel >= 0 && iChannel <= 2);
+	CHECK_PARAM_RET(iChannel >= 0 && iChannel < m_manager->defaultChannelSettings().size());
 
 	m_manager->setChannelSettings(iChannel, channel);
 	queueCommand((IdacCommand) (IdacCommand_ConfigCh0 + iChannel));

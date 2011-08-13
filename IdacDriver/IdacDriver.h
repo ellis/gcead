@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QMutex>
 #include <QStringList>
+#include <QVector>
 
 #include "IdacCaps.h"
 #include "IdacChannelSettings.h"
@@ -42,13 +43,14 @@ public:
 	const QList<int>& ranges() const { return m_anRanges; }
 	const QStringList& highcutStrings() const { return m_asHighcutStrings; }
 	const QStringList& lowcutStrings() const { return m_asLowcutStrings; }
+	int channelCount() const { return m_settingsActual.size(); }
 
 	bool hasErrors();
 	/// Get a list of existing error messages and then clear the internal list.
 	/// Thread-safe.
 	QStringList errorMessages();
 
-	const IdacChannelSettings* desiredSettings();
+	const QVector<IdacChannelSettings>& desiredSettings();
 	const IdacChannelSettings* desiredChannelSettings(int iChan);
 	void setChannelSettings(int iChannel, const IdacChannelSettings& channel);
 
@@ -56,7 +58,7 @@ public:
 	/// Load up the capabilities of the current driver
 	virtual void loadCaps(IdacCaps* caps) = 0;
 	/// Load up default channel settings for the current driver
-	virtual void loadDefaultChannelSettings(IdacChannelSettings* channels) = 0;
+	virtual const QVector<IdacChannelSettings>& defaultChannelSettings() const = 0;
 
 	virtual bool checkUsbFirmwareReady() = 0;
 	virtual bool checkDataFirmwareReady() = 0;
@@ -77,7 +79,7 @@ protected:
 	void setLowcutStrings(const QStringList& strings) { m_asLowcutStrings = strings; }
 	void addError(const QString& s);
 
-	IdacChannelSettings* actualSettings() { return m_settingsActual; }
+	const QVector<IdacChannelSettings>& actualSettings() { return m_settingsActual; }
 	IdacChannelSettings* actualChannelSettings(int iChan);
 
 private:
@@ -93,9 +95,9 @@ private:
 	// NOTE: I don't think this mutex is necessary, because all members are independent and can be set atomically -- ellis, 2009-04-26
 	QMutex m_settingsMutex;
 	/// Settings requested by user
-	IdacChannelSettings m_settingsDesired[3];
+	QVector<IdacChannelSettings> m_settingsDesired;
 	/// Settings send to the hardware
-	IdacChannelSettings m_settingsActual[3];
+	QVector<IdacChannelSettings> m_settingsActual;
 };
 
 #endif

@@ -29,6 +29,8 @@
 #ifndef __IDACDRIVER4CHANNEL_H
 #define __IDACDRIVER4CHANNEL_H
 
+#include <QVector>
+
 #include "Sample.h"
 
 
@@ -62,12 +64,12 @@ public:
 	void				Reset				(quint16 wSyncCount);
 
 	// Parsing function
-	bool				ParseSample			(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STATUS& csStat, const IdacChannelSettings* channels);
+	bool				ParseSample			(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STATUS& csStat, const QVector<IdacChannelSettings>& channels);
 
 protected:
 	// Private utilities
-	void				Synchronize			(const IdacChannelSettings* channels);
-	quint8				GetNextAnChannel	(const IdacChannelSettings* channels);
+	void				Synchronize			(const QVector<IdacChannelSettings>& channels);
+	quint8				GetNextAnChannel	(const QVector<IdacChannelSettings>& channels);
 };
 
 #endif

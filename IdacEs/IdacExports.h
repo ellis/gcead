@@ -11,18 +11,8 @@
 #define DRIVER_EXPORT
 
 // Common data definitions
-<<<<<<< HEAD
-#ifndef SAMPLE_H
-#include "sample.h"
-#endif
-
-#ifndef IPC_H
-#include "ipc.h"
-#endif
-=======
 #include <IdacDriverES/IdacControl/Sample.h>
 #include <IdacDriverES/IdacControl/Ipc.h>
->>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
 
 /* C/C++ declarations */
 
@@ -33,10 +23,7 @@ extern "C"
 
 #include <DBT.H>
 #include <WINUSER.H>
-<<<<<<< HEAD
-=======
 #include <windows.h>
->>>>>>> 4ca987722c3399d2e8a78775d2ea1dbb386ca116
 
 	/* Version */
 #define IDAC_LIB_VERSION	7L

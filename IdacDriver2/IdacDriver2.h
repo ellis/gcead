@@ -32,17 +32,13 @@ class IdacUsb;
 class IdacDriver2 : public IdacDriverUsb
 {
 public:
-	/// Number of channels for IDAC4
-	static const int IDAC_CHANNELCOUNT = 5;
-
-public:
 	IdacDriver2(struct usb_device* device, QObject* parent = NULL);
 	~IdacDriver2();
 
 // Implement IdacDriver
 public:
 	void loadCaps(IdacCaps* caps);
-	void loadDefaultChannelSettings(IdacChannelSettings* channels);
+	const QVector<IdacChannelSettings>& defaultChannelSettings() const { return m_defaultChannelSettings; }
 
 	bool checkUsbFirmwareReady();
 	bool checkDataFirmwareReady();
@@ -71,22 +67,14 @@ private:
 	bool IdacZeroPulse(int iChan);
 
 private:
-	struct ConfigData
-	{
-		short version;
-		short inputZeroAdjust[IDAC_CHANNELCOUNT-1];	// Analog channels from (zero-based index)
-		quint8 adcZeroAdjust[IDAC_CHANNELCOUNT-1];	// Analog channels from (zero-based index)
-		quint8 notchAdjust[IDAC_CHANNELCOUNT-1];	// Analog channels from (zero-based index)
-	};
-
-private:
 	void initStringsAndRanges();
 	bool claim();
 
 private:
+	QVector<IdacChannelSettings> m_defaultChannelSettings;
 	bool m_bFpgaProgrammed;
 	char m_nVersion;
-	ConfigData m_config;
+	//ConfigData m_config;
 
 	bool m_bSamplingPaused;
 };

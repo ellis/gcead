@@ -75,7 +75,7 @@ void IdacDriver4Channel::Reset(quint16 wSyncCount)
 // TRUE			- sr contains an analog or digital sample
 // FALSE		- only a temporary status was set, or an error occured
 
-bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STATUS& csStat, const IdacChannelSettings* channels)
+bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STATUS& csStat, const QVector<IdacChannelSettings>& channels)
 {
 	qint16 nRead = (qint16) wRead;
 
@@ -126,7 +126,7 @@ bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STAT
 }
 
 // Respond to sync word
-void IdacDriver4Channel::Synchronize(const IdacChannelSettings* channels)
+void IdacDriver4Channel::Synchronize(const QVector<IdacChannelSettings>& channels)
 {
 	// Detect first synchronization
 	if (!m_bSynchronized)
@@ -145,7 +145,7 @@ void IdacDriver4Channel::Synchronize(const IdacChannelSettings* channels)
 }
 
 // Return next analog channel in line, or 0 if not available
-quint8 IdacDriver4Channel::GetNextAnChannel(const IdacChannelSettings* channels)
+quint8 IdacDriver4Channel::GetNextAnChannel(const QVector<IdacChannelSettings>& channels)
 {
 	if (!m_bSynchronized) return 0;
 

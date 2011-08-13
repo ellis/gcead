@@ -51,9 +51,9 @@ public:
 	QString statusText() const;
 
 	/// Load up default channel settings for the current driver
-	void loadDefaultChannelSettings(IdacChannelSettings* channels);
+	QVector<IdacChannelSettings> loadDefaultChannelSettings();
 
-	void startSampling(const IdacChannelSettings* channels);
+	void startSampling(const QVector<IdacChannelSettings>& channels);
 	int takeData(short* digital, short* analog1, short* analog2, int maxSize);
 
 public slots:
