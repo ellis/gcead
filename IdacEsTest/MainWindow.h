@@ -19,7 +19,8 @@ private:
     Ui::MainWindow *ui;
 
 private slots:
-	void on_btn1_clicked();
+	void on_btn2_clicked();
+ void on_btn1_clicked();
 };
 
 #endif // MAINWINDOW_H

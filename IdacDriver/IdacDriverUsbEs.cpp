@@ -86,9 +86,9 @@ void IdacDriverUsbEs::IdacPowerDown() {
 	m_proxy->setdown();
 }
 
-bool IdacDriverUsbEs::IdacPresent(int) {
+/*bool IdacDriverUsbEs::IdacPresent(int) {
 	return (m_manager->state() >= IdacState_Present);
-}
+}*/
 
 bool IdacDriverUsbEs::IdacScaleRange(int iChan, int index) {
 	CHECK_PARAM_RETVAL(isValidAudioChannel(iChan), NULL);

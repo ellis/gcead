@@ -1,8 +1,10 @@
 #include "IdacExports.h"
 
+#include <Idac/IdacDriverManager.h>
 #include <IdacDriver/IdacDriverUsbEs.h>
 
 extern IdacDriverUsbEs* wrapper();
+extern IdacDriverManager* manager();
 
 DRIVER_EXPORT BOOL WINAPI IdacCapabilities(TIdacCapability Cap) { return wrapper()->IdacCapabilities(Cap); }
 DRIVER_EXPORT DWORD WINAPI IdacDataAvail() { return wrapper()->IdacDataAvail(); }
@@ -65,7 +67,7 @@ DRIVER_EXPORT void WINAPI IdacLowPassStrings(int *NrOfStrings, const char **ppFi
 
 DRIVER_EXPORT UINT WINAPI IdacNrOfAnChannelEnabled() { return wrapper()->IdacNrOfAnChannelEnabled(); }
 DRIVER_EXPORT void WINAPI IdacPowerDown() { wrapper()->IdacPowerDown(); }
-DRIVER_EXPORT LONG WINAPI IdacPresent(LONG Address) { return wrapper()->IdacPresent(Address); }
+DRIVER_EXPORT LONG WINAPI IdacPresent(LONG Address) { return (manager()->state() >= IdacState_Present); }
 DRIVER_EXPORT BOOL WINAPI IdacScaleRange(DWORD Chan, DWORD Index) { return wrapper()->IdacScaleRange(Chan, Index); }
 DRIVER_EXPORT void WINAPI IdacSetBufferEvent(HANDLE hEvent) { wrapper()->IdacSetBufferEvent(hEvent); }
 DRIVER_EXPORT BOOL WINAPI IdacSetDecimation(DWORD Chan, DWORD dwDecimation) { return wrapper()->IdacSetDecimation(Chan, dwDecimation); }
@@ -73,3 +75,14 @@ DRIVER_EXPORT BOOL WINAPI IdacSetOffsetAnalogIn(DWORD Chan, DWORD Offset) { retu
 DRIVER_EXPORT BOOL WINAPI IdacSmpStart() { return wrapper()->IdacSmpStart(); }
 DRIVER_EXPORT BOOL WINAPI IdacSmpStop() { return wrapper()->IdacSmpStop(); }
 DRIVER_EXPORT void WINAPI IdacUnlock() { wrapper()->IdacUnlock(); }
+
+DRIVER_EXPORT LPCDD32_SAMPLE WINAPI IdacLockReadBuffer(DWORD* pdwCount) {
+	int nCount = 0;
+	LPCDD32_SAMPLE sample = wrapper()->IdacLockReadBuffer(&nCount);
+	*pdwCount = nCount;
+	return sample;
+}
+
+DRIVER_EXPORT void WINAPI IdacUnlockReadBuffer() { wrapper()->IdacUnlockReadBuffer(); }
+DRIVER_EXPORT DWORD WINAPI IdacType() { return wrapper()->IdacType(); }
+DRIVER_EXPORT DWORD WINAPI IdacBoot(LPCSTR FileName, LONG Address) { return wrapper()->IdacBoot(FileName, Address); }

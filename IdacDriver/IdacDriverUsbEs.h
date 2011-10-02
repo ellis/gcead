@@ -40,7 +40,7 @@ public:
 	int IdacNrOfAnChannelEnabled() const;
 	void IdacPowerDown();
 	/// Returns 1 when USB device driver is found
-	bool IdacPresent(int nAddress);
+	//bool IdacPresent(int nAddress);
 	/// Set the range for the given channel
 	bool IdacScaleRange(int iChan, int index);
 	void IdacSetBufferEvent(void* hEvent);

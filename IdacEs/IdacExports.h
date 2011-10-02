@@ -2,10 +2,18 @@
 #ifndef IDACPC_H
 #define IDACPC_H
 
+#ifdef  __cplusplus
+#ifdef IDACES_LIBRARY
+#define DRIVER_EXPORT extern "C" __declspec(dllexport)
+#else
+#define DRIVER_EXPORT extern "C" __declspec(dllimport)
+#endif
+#else
 #ifdef IDACES_LIBRARY
 #define DRIVER_EXPORT __declspec(dllexport)
 #else
 #define DRIVER_EXPORT __declspec(dllimport)
+#endif
 #endif
 
 // Common data definitions
@@ -37,6 +45,10 @@ enum TIdacCapability
 	IDAC_CAN_TUNE,
 	IDAC_HAS_EAG
 };
+
+#ifdef  __cplusplus
+}
+#endif
 
 DRIVER_EXPORT	BOOL			WINAPI	IdacCapabilities			(TIdacCapability Cap);
 DRIVER_EXPORT	DWORD			WINAPI	IdacDataAvail				();
@@ -367,10 +379,6 @@ DRIVER_EXPORT	UINT WINAPI	IdacGetNrOfDigitalChan();
 // * Interface notifications can be sent by any idac connected	
 // */
 //DRIVER_EXPORT	HDEVNOTIFY	WINAPI IdacRegIntNotify(HWND hWnd);
-
-#ifdef  __cplusplus
-}
-#endif
 
 #endif	/* IDACPC_H */
 

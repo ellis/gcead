@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <windows.h>
 
 #include <Idac/IdacDriverManager.h>
@@ -11,16 +13,24 @@
 
 //#include <qmessagebox.h>
 
-static QPointer<IdacDriverManager> m_manager;
+static QPointer<IdacDriverManager> g_manager;
 IdacDriverUsbEs* g_wrapper;
 
+IdacDriverManager* manager() {
+	if (g_manager.isNull()) {
+		g_manager = IdacFactory::getDriverManager(true);
+		g_manager->command(IdacCommand_Connect);
+	}
+	return g_manager;
+}
+
 IdacDriverUsbEs* wrapper() {
-	if (m_manager.isNull())
+	if (g_manager == NULL)
 		return NULL;
 
 	if (g_wrapper == NULL) {
-		IdacDriver2* driver2 = dynamic_cast<IdacDriver2*>(m_manager->driver());
-		IdacDriver4* driver4 = dynamic_cast<IdacDriver4*>(m_manager->driver());
+		IdacDriver2* driver2 = dynamic_cast<IdacDriver2*>(g_manager->driver());
+		IdacDriver4* driver4 = dynamic_cast<IdacDriver4*>(g_manager->driver());
 		if (driver2 != NULL) {
 			g_wrapper = new IdacDriver2Es(driver2, driver2->defaultChannelSettings());
 		}
@@ -32,14 +42,22 @@ IdacDriverUsbEs* wrapper() {
 
 BOOL WINAPI DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpvReserved )
 {
+	std::cout << "DllMain" << std::endl;
+
 	static bool ownApplication = FALSE;
 
-	if ( dwReason == DLL_PROCESS_ATTACH ) {
+	switch (dwReason) {
+	case DLL_PROCESS_ATTACH:
 		ownApplication = QMfcApp::pluginInstance( hInstance );
-		m_manager = IdacFactory::getDriverManager(false);
+		manager();
+		break;
+	case DLL_THREAD_ATTACH:
+		manager();
+		break;
+	case DLL_PROCESS_DETACH:
+		if (ownApplication)
+			delete qApp;
 	}
-	if ( dwReason == DLL_PROCESS_DETACH && ownApplication )
-		delete qApp;
 
 	return TRUE;
 }
@@ -51,7 +69,6 @@ BOOL WINAPI DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpvReserved )
 //#include <QSettings>
 #include <QTextStream>
 #include <QDateTime>
-#include <iostream>
 
 void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage)
 {
