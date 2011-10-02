@@ -24,7 +24,8 @@ SOURCES += IdacEs.cpp \
 #    IdacDbg.cpp \
 #    IdacData.cpp \
 #    IdacCtrl.cpp
-    IdacExports.cpp
+    IdacExports.cpp \
+    dllmain.cpp
 
 HEADERS += IdacEs.h\
 	IdacEs_global.h \
@@ -33,4 +34,21 @@ HEADERS += IdacEs.h\
     qmfcapp.h \
     IdacExports.h
 
-LIBS += -luser32
+CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
+else:DESTDIR = $${OUT_PWD}/../release
+LIBS += -L$${DESTDIR}
+
+LIBS += -luser32 \
+	-lIdac \
+	-lIdacDriver2 \
+	-lIdacDriver4 \
+	-lIdacDriverES \
+	-lIdacDriver \
+	$${PWD}/../extern/win32/libusb.a
+
+PRE_TARGETDEPS +=  \
+	$${DESTDIR}/libIdac.a \
+	$${DESTDIR}/libIdacDriver.a \
+	$${DESTDIR}/libIdacDriver2.a \
+	$${DESTDIR}/libIdacDriver4.a \
+	$${DESTDIR}/libIdacDriverES.a

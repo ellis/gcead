@@ -5,6 +5,15 @@
 #include <IdacDriver/IdacSettings.h>
 
 
+#define IDAC_DECIMATIONCOUNT 65535
+
+
+IdacDriver4Es::IdacDriver4Es(IdacDriver4* driver, const QVector<IdacChannelSettings>& channelSettings)
+	: IdacDriverUsbEs(driver, channelSettings),
+	m_driver(driver)
+{
+}
+
 bool IdacDriver4Es::IdacAudio(int iChan, bool bActivate) { return false; } // FIXME: implement -- ellis, 2010-06-13
 int IdacDriver4Es::IdacBoot(const QString& sFilename, int nAddress) { return false; } // FIXME: implement -- ellis, 2010-06-13
 int IdacDriver4Es::IdacDataAvail() { return false; } // FIXME: implement -- ellis, 2010-06-13
@@ -54,3 +63,16 @@ bool IdacDriver4Es::IdacTuneBoard() { return false; } // FIXME: implement -- ell
 int IdacDriver4Es::IdacType() const { return -1; } // FIXME: implement -- ellis, 2010-06-13
 void IdacDriver4Es::IdacUnlockReadBuffer() { return; } // FIXME: implement -- ellis, 2010-06-13
 bool IdacDriver4Es::IdacZeroPulse(int iChan) { return false; } // FIXME: implement -- ellis, 2010-06-13
+
+
+int IdacDriver4Es::decimationCount() const {
+	return IDAC_DECIMATIONCOUNT;
+}
+
+bool IdacDriver4Es::isValidAudioChannel(int iChan) const {
+	return (iChan >= 1 && iChan <= 4);
+}
+
+bool IdacDriver4Es::isValidDigitalChannel(int iChan) const {
+	return (iChan == 0);
+}

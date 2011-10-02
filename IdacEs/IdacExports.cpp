@@ -2,17 +2,17 @@
 
 #include <IdacDriver/IdacDriverUsbEs.h>
 
-extern IdacDriverUsbEs* wrapper;
+extern IdacDriverUsbEs* wrapper();
 
-DRIVER_EXPORT BOOL WINAPI IdacCapabilities(TIdacCapability Cap) { return wrapper->IdacCapabilities(Cap); }
-DRIVER_EXPORT DWORD WINAPI IdacDataAvail() { return wrapper->IdacDataAvail(); }
-DRIVER_EXPORT BOOL WINAPI IdacEnableChannel(DWORD Chan, BOOL bEnable) { return wrapper->IdacEnableChannel(Chan, bEnable); }
-DRIVER_EXPORT DWORD WINAPI IdacGetChannelDecimation(DWORD Chan) { return wrapper->IdacGetChannelDecimation(Chan); }
-DRIVER_EXPORT DWORD WINAPI IdacGetDSPInfo(PWORD, WORD, DWORD) { return wrapper->IdacGetDSPInfo(); }
+DRIVER_EXPORT BOOL WINAPI IdacCapabilities(TIdacCapability Cap) { return wrapper()->IdacCapabilities(Cap); }
+DRIVER_EXPORT DWORD WINAPI IdacDataAvail() { return wrapper()->IdacDataAvail(); }
+DRIVER_EXPORT BOOL WINAPI IdacEnableChannel(DWORD Chan, BOOL bEnable) { return wrapper()->IdacEnableChannel(Chan, bEnable); }
+DRIVER_EXPORT DWORD WINAPI IdacGetChannelDecimation(DWORD Chan) { return wrapper()->IdacGetChannelDecimation(Chan); }
+DRIVER_EXPORT DWORD WINAPI IdacGetDSPInfo(PWORD, WORD, DWORD) { return wrapper()->IdacGetDSPInfo(); }
 
 DRIVER_EXPORT LPDWORD WINAPI IdacGetRanges() {
 	static QVector<DWORD> ranges;
-	const QList<int>& l = wrapper->IdacGetRanges();
+	const QList<int>& l = wrapper()->IdacGetRanges();
 	if (l.size() + 1 > ranges.size())
 		ranges.resize(l.size() + 1);
 	int i = 0;
@@ -22,11 +22,11 @@ DRIVER_EXPORT LPDWORD WINAPI IdacGetRanges() {
 	return const_cast<LPDWORD>(ranges.constData());
 }
 
-DRIVER_EXPORT BOOL WINAPI IdacHighPass(DWORD Chan, DWORD Index) { return wrapper->IdacHighPass(Chan, Index); }
+DRIVER_EXPORT BOOL WINAPI IdacHighPass(DWORD Chan, DWORD Index) { return wrapper()->IdacHighPass(Chan, Index); }
 
 DRIVER_EXPORT void WINAPI IdacHighPassStrings(int *NrOfStrings, const char **ppFilterStrings[]) {
 	static QVector<const char*> l0;
-	const QStringList& l = wrapper->IdacHighPassStrings();
+	const QStringList& l = wrapper()->IdacHighPassStrings();
 	qDeleteAll(l0);
 	l0.resize(l.size());
 	for (int i = 0; i < l0.size(); i++) {
@@ -38,20 +38,20 @@ DRIVER_EXPORT void WINAPI IdacHighPassStrings(int *NrOfStrings, const char **ppF
 	*ppFilterStrings = l0.data();
 }
 
-DRIVER_EXPORT BOOL WINAPI IdacIsChannelEnabled(DWORD Chan) { return wrapper->IdacIsChannelEnabled(Chan); }
-DRIVER_EXPORT DWORD WINAPI IdacLibVersion() { return wrapper->IdacLibVersion(); }
+DRIVER_EXPORT BOOL WINAPI IdacIsChannelEnabled(DWORD Chan) { return wrapper()->IdacIsChannelEnabled(Chan); }
+DRIVER_EXPORT DWORD WINAPI IdacLibVersion() { return wrapper()->IdacLibVersion(); }
 
 DRIVER_EXPORT LPCSTR WINAPI IdacLock(LPCSTR UserName) {
 	static QByteArray a;
-	a = wrapper->IdacLock(UserName).toLocal8Bit();
+	a = wrapper()->IdacLock(UserName).toLocal8Bit();
 	return a.constData();
 }
 
-DRIVER_EXPORT BOOL WINAPI IdacLowPass(DWORD Chan, DWORD Index) { return wrapper->IdacLowPass(Chan, Index); }
+DRIVER_EXPORT BOOL WINAPI IdacLowPass(DWORD Chan, DWORD Index) { return wrapper()->IdacLowPass(Chan, Index); }
 
 DRIVER_EXPORT void WINAPI IdacLowPassStrings(int *NrOfStrings, const char **ppFilterStrings[]) {
 	static QVector<const char*> l0;
-	const QStringList& l = wrapper->IdacLowPassStrings();
+	const QStringList& l = wrapper()->IdacLowPassStrings();
 	qDeleteAll(l0);
 	l0.resize(l.size());
 	for (int i = 0; i < l0.size(); i++) {
@@ -63,13 +63,13 @@ DRIVER_EXPORT void WINAPI IdacLowPassStrings(int *NrOfStrings, const char **ppFi
 	*ppFilterStrings = l0.data();
 }
 
-DRIVER_EXPORT UINT WINAPI IdacNrOfAnChannelEnabled() { return wrapper->IdacNrOfAnChannelEnabled(); }
-DRIVER_EXPORT void WINAPI IdacPowerDown() { wrapper->IdacPowerDown(); }
-DRIVER_EXPORT LONG WINAPI IdacPresent(LONG Address) { return wrapper->IdacPresent(Address); }
-DRIVER_EXPORT BOOL WINAPI IdacScaleRange(DWORD Chan, DWORD Index) { return wrapper->IdacScaleRange(Chan, Index); }
-DRIVER_EXPORT void WINAPI IdacSetBufferEvent(HANDLE hEvent) { wrapper->IdacSetBufferEvent(hEvent); }
-DRIVER_EXPORT BOOL WINAPI IdacSetDecimation(DWORD Chan, DWORD dwDecimation) { return wrapper->IdacSetDecimation(Chan, dwDecimation); }
-DRIVER_EXPORT BOOL WINAPI IdacSetOffsetAnalogIn(DWORD Chan, DWORD Offset) { return wrapper->IdacSetOffsetAnalogIn(Chan, Offset); }
-DRIVER_EXPORT BOOL WINAPI IdacSmpStart() { return wrapper->IdacSmpStart(); }
-DRIVER_EXPORT BOOL WINAPI IdacSmpStop() { return wrapper->IdacSmpStop(); }
-DRIVER_EXPORT void WINAPI IdacUnlock() { wrapper->IdacUnlock(); }
+DRIVER_EXPORT UINT WINAPI IdacNrOfAnChannelEnabled() { return wrapper()->IdacNrOfAnChannelEnabled(); }
+DRIVER_EXPORT void WINAPI IdacPowerDown() { wrapper()->IdacPowerDown(); }
+DRIVER_EXPORT LONG WINAPI IdacPresent(LONG Address) { return wrapper()->IdacPresent(Address); }
+DRIVER_EXPORT BOOL WINAPI IdacScaleRange(DWORD Chan, DWORD Index) { return wrapper()->IdacScaleRange(Chan, Index); }
+DRIVER_EXPORT void WINAPI IdacSetBufferEvent(HANDLE hEvent) { wrapper()->IdacSetBufferEvent(hEvent); }
+DRIVER_EXPORT BOOL WINAPI IdacSetDecimation(DWORD Chan, DWORD dwDecimation) { return wrapper()->IdacSetDecimation(Chan, dwDecimation); }
+DRIVER_EXPORT BOOL WINAPI IdacSetOffsetAnalogIn(DWORD Chan, DWORD Offset) { return wrapper()->IdacSetOffsetAnalogIn(Chan, Offset); }
+DRIVER_EXPORT BOOL WINAPI IdacSmpStart() { return wrapper()->IdacSmpStart(); }
+DRIVER_EXPORT BOOL WINAPI IdacSmpStop() { return wrapper()->IdacSmpStop(); }
+DRIVER_EXPORT void WINAPI IdacUnlock() { wrapper()->IdacUnlock(); }
