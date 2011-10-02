@@ -11,7 +11,8 @@ SUBDIRS = Core \
     Scope \
     ScopeTest \
     View \
-    IdacEs
+	IdacEs \
+	IdacEsTest
 OTHER_FILES += Todo.txt \
     UseCases.txt \
     Notes.txt \

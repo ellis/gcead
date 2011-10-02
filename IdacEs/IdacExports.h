@@ -2,13 +2,11 @@
 #ifndef IDACPC_H
 #define IDACPC_H
 
-//Obsolete as a .def file is used
-//#ifdef IDAC_DRIVER
-//#define DRIVER_EXPORT __declspec(dllexport)
-//#else
-//#define DRIVER_EXPORT __declspec(dllimport)
-// #endif
-#define DRIVER_EXPORT
+#ifdef IDACES_LIBRARY
+#define DRIVER_EXPORT __declspec(dllexport)
+#else
+#define DRIVER_EXPORT __declspec(dllimport)
+#endif
 
 // Common data definitions
 #include <IdacDriverES/IdacControl/Sample.h>
