@@ -9,6 +9,7 @@
 extern IdacDriverUsbEs* wrapper();
 extern IdacDriverManager* manager();
 
+DRIVER_EXPORT DWORD WINAPI G01() { return IdacLibVersion(); }
 
 DRIVER_EXPORT BOOL WINAPI IdacCapabilities(TIdacCapability Cap) { NOTE; return wrapper()->IdacCapabilities(Cap); }
 DRIVER_EXPORT DWORD WINAPI IdacDataAvail() { NOTE; return wrapper()->IdacDataAvail(); }
@@ -107,7 +108,7 @@ DRIVER_EXPORT	BOOL	WINAPI	IdacSetInputZero		(DWORD Chan, DWORD Offset) {  ZERO(0
 DRIVER_EXPORT	BOOL	WINAPI	IdacNetfrequency		(DWORD Chan, BOOL bActivate) {  ZERO(0) }
 DRIVER_EXPORT	BOOL	WINAPI	IdacTuneNotch			(DWORD Chan, BYTE Offset) {  ZERO(0) }
 DRIVER_EXPORT	BOOL	WINAPI	ResetFpgaTestDll		() {  ZERO(0) }
-DRIVER_EXPORT	BOOL	WINAPI	GetTransferData			() {  ZERO(0) }
+//DRIVER_EXPORT	BOOL	WINAPI	GetTransferData			() {  ZERO(0) }
 DRIVER_EXPORT	BOOL	WINAPI	IdacConfigRead			() {  ZERO(0) }
 DRIVER_EXPORT	BOOL	WINAPI	IdacConfigWrite			() {  ZERO(0) }
 DRIVER_EXPORT	BOOL			WINAPI	IdacHasBooted				() {  ZERO(0) }

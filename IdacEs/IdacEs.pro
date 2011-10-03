@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-#TARGET = IDAC8_32
+TARGET = IDAC8_32
 TEMPLATE = lib
 CONFIG += qt
 
