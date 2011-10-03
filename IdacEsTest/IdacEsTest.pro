@@ -23,7 +23,7 @@ else:DESTDIR = $${OUT_PWD}/../release
 LIBS += -L$${DESTDIR}
 
 LIBS += -luser32 \
-	$${DESTDIR}/IdacEs.dll
+        $${DESTDIR}/IDAC8_32.dll
 
 PRE_TARGETDEPS +=  \
-	$${DESTDIR}/IdacEs.dll
+        $${DESTDIR}/IDAC8_32.dll

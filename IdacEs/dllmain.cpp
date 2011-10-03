@@ -2,6 +2,8 @@
 
 #include <windows.h>
 
+#include <Core/Check.h>
+
 #include <Idac/IdacDriverManager.h>
 #include <Idac/IdacFactory.h>
 #include <IdacDriver/IdacDriverUsbEs.h>
@@ -17,6 +19,8 @@ static QPointer<IdacDriverManager> g_manager;
 IdacDriverUsbEs* g_wrapper;
 
 IdacDriverManager* manager() {
+	LOG(1, "manager()");
+
 	if (g_manager.isNull()) {
 		g_manager = IdacFactory::getDriverManager(true);
 		g_manager->command(IdacCommand_Connect);
@@ -25,6 +29,8 @@ IdacDriverManager* manager() {
 }
 
 IdacDriverUsbEs* wrapper() {
+	LOG(1, "wrapper()");
+
 	if (g_manager == NULL)
 		return NULL;
 
@@ -40,8 +46,9 @@ IdacDriverUsbEs* wrapper() {
 	return g_wrapper;
 }
 
-BOOL WINAPI DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpvReserved )
+extern "C" __declspec(dllexport) BOOL WINAPI DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpvReserved )
 {
+	checkLog(__FILE__, __LINE__, "DIRECT", "A");
 	std::cout << "DllMain" << std::endl;
 
 	static bool ownApplication = FALSE;
@@ -72,7 +79,8 @@ BOOL WINAPI DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpvReserved )
 
 void checkLog(const char* sFile, int iLine, const QString& sType, const QString& sMessage)
 {
-	QFile file(QCoreApplication::applicationDirPath() + "/GcEad.log");
+	//QFile file(QCoreApplication::applicationDirPath() + "/GcEad.log");
+	QFile file("c:/src/IDAC8_32.log");
 	if (file.open(QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QFileInfo fi(sFile);

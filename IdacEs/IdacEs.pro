@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-TARGET = IdacEs
+#TARGET = IDAC8_32
 TEMPLATE = lib
 CONFIG += qt
 
@@ -34,11 +34,14 @@ HEADERS += IdacEs.h\
     qmfcapp.h \
     IdacExports.h
 
+OTHER_FILES += Idacdll.def
+
 CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
 else:DESTDIR = $${OUT_PWD}/../release
 LIBS += -L$${DESTDIR}
 
-LIBS += -luser32 \
+LIBS += $${PWD}/Idacdll.def -Wl,--kill-at,--output-def,Idacdll.def \
+	-luser32 \
 	-lIdac \
 	-lIdacDriver2 \
 	-lIdacDriver4 \

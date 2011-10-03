@@ -7,8 +7,10 @@
 #define DRIVER_EXPORT extern "C" __declspec(dllexport)
 #else
 #define DRIVER_EXPORT extern "C" __declspec(dllimport)
+#error Woops1
 #endif
 #else
+#error Woops2
 #ifdef IDACES_LIBRARY
 #define DRIVER_EXPORT __declspec(dllexport)
 #else
@@ -66,8 +68,10 @@ DRIVER_EXPORT	void			WINAPI	IdacLowPassStrings			(int *NrOfStrings, const char *
 DRIVER_EXPORT	UINT			WINAPI	IdacNrOfAnChannelEnabled	();
 DRIVER_EXPORT	void			WINAPI	IdacPowerDown				();
 DRIVER_EXPORT	LONG			WINAPI	IdacPresent					(LONG Address);
+/* Set the scaling index. This will scale according to the values of IdacGetRanges(). Analog channels only. */
 DRIVER_EXPORT	BOOL			WINAPI	IdacScaleRange				(DWORD Chan, DWORD Index);
 DRIVER_EXPORT	void			WINAPI	IdacSetBufferEvent			(HANDLE hEvent);
+/* Set the decimation values of the given channel. */
 DRIVER_EXPORT	BOOL			WINAPI	IdacSetDecimation			(DWORD Chan, DWORD dwDecimation);
 DRIVER_EXPORT	BOOL			WINAPI	IdacSetOffsetAnalogIn		(DWORD Chan, DWORD Offset);
 DRIVER_EXPORT	BOOL			WINAPI	IdacSmpStart				();
@@ -78,6 +82,10 @@ DRIVER_EXPORT	LPCDD32_SAMPLE	WINAPI	IdacLockReadBuffer			(DWORD* pdwCount);
 DRIVER_EXPORT	void			WINAPI	IdacUnlockReadBuffer		();
 DRIVER_EXPORT	DWORD			WINAPI	IdacType					();
 DRIVER_EXPORT	DWORD			WINAPI	IdacBoot					(LPCSTR FileName, LONG Address);
+
+
+
+
 
 // Used for the test apllication IdacBox and IdacAutoTest (Production testing)
 // Not used for AutoSpike.
@@ -150,14 +158,6 @@ DRIVER_EXPORT	BOOL			WINAPI	IdacZeroPulse				(DWORD Chan);
  *	4		256
  *	5       1024	
  */
-/* Set the scaling index. This will scale according to the values of IdacGetRanges(). Analog channels only. */
-DRIVER_EXPORT	BOOL			WINAPI	IdacScaleRange				(DWORD Chan, DWORD Index);
-
-/* Set the decimation values of the given channel. */
-DRIVER_EXPORT	BOOL			WINAPI	IdacSetDecimation			(DWORD Chan, DWORD dwDecimation);
-
-// replaces BOOL WINAPI IdacOffset(DWORD Chan, LONG Offset);
-DRIVER_EXPORT	BOOL			WINAPI	IdacSetOffsetAnalogIn		(DWORD Chan, DWORD Offset);
 
 // Idac 2000, empty for others
 DRIVER_EXPORT	BOOL			WINAPI	IdacTuneBoard				();
