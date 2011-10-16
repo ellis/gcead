@@ -1,3 +1,12 @@
+Biggest challenges for driver:
+	IdacSetBufferEvent
+	function which shows dialog
+	create DLL entry function and create driver objects
+	create DLL with exported functions
+	install DLL in proper folder
+	register DLL
+	figure out how to debug
+
 BIG STUFF FOR FUTURE:
 	Think about how to completely separate the data from the UI, using a client/server architecture
 	Layers:
