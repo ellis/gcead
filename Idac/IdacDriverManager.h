@@ -38,6 +38,7 @@ public:
 	~IdacDriverManager();
 
 	struct usb_device* device() { return m_device; }
+	IdacDriver* driver() { return m_driver; }
 
 	IdacState state() const { return m_state; }
 	IdacCommand currentCommand() const { return m_cmd; }

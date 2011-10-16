@@ -37,7 +37,7 @@ public:
 	//static const int IDAC_CHANNELCOUNT = 5;
 
 public:
-	IdacDriver2Es(IdacDriver2* driver);
+	IdacDriver2Es(IdacDriver2* driver, const QVector<IdacChannelSettings>& channelSettings);
 	//~IdacDriver2Es();
 
 // Overrides for IdacDriverUsbEs
@@ -45,7 +45,6 @@ public:
 	virtual bool IdacAudio(int iChan, bool bActivate);
 	virtual int IdacBoot(const QString& sFilename, int nAddress);
 	virtual bool IdacCapabilities(int iCap) const;
-	virtual int IdacDataAvail();
 	virtual bool IdacEag(int iChan, bool bActivate);
 	virtual long* IdacGetAddressTable() const;
 	virtual double IdacGetAnSampleBaseRate(int nChannels) const;
@@ -58,7 +57,6 @@ public:
 	virtual int IdacGetSampleBandwidth() const;
 	virtual bool IdacHasOutput() const;
 	virtual bool IdacIsOutputRunning() const;
-	virtual int IdacLibVersion() const;
 	virtual CDD32_SAMPLE* IdacLockReadBuffer(int* pnCount);
 	virtual bool IdacNotch(int iChan, bool bActivate);
 	virtual bool IdacStartOutput();
@@ -67,6 +65,11 @@ public:
 	virtual int IdacType() const;
 	virtual void IdacUnlockReadBuffer();
 	virtual bool IdacZeroPulse(int iChan);
+
+protected:
+	int decimationCount() const;
+	bool isValidAudioChannel(int iChan) const;
+	bool isValidDigitalChannel(int iChan) const;
 
 private:
 	IdacDriver2* const m_driver;

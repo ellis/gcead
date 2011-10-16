@@ -37,7 +37,7 @@ public:
 	//static const int IDAC_CHANNELCOUNT = 5;
 
 public:
-	IdacDriver4Es(IdacDriver4* driver);
+	IdacDriver4Es(IdacDriver4* driver, const QVector<IdacChannelSettings>& channelSettings);
 	//~IdacDriver4Es();
 
 // Overrides for IdacDriverUsbEs
@@ -70,6 +70,11 @@ public:
 	virtual int IdacType() const;
 	virtual void IdacUnlockReadBuffer();
 	virtual bool IdacZeroPulse(int iChan);
+
+protected:
+	int decimationCount() const;
+	bool isValidAudioChannel(int iChan) const;
+	bool isValidDigitalChannel(int iChan) const;
 
 private:
 	IdacDriver4* const m_driver;

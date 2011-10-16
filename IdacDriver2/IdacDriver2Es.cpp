@@ -12,6 +12,7 @@
 #define IDAC_DIG_SAMPLEBASE		100
 #define ANALOGOUT_CHANNELCOUNT  0
 #define IDAC_DIGITAL_CHANNELCOUNT 0
+#define IDAC_DECIMATIONCOUNT    65535
 
 /*
 #define		MAX_INPUT_VOLTAGE_ADC	5000000		// full scale is +-5V
@@ -55,6 +56,12 @@ static long AddressList[] = { 1, -1 };
 const int IDAC_HIGHPASSCOUNT = 9;
 //const int HighPassTable[IDAC_HIGHPASSCOUNT] = {0, 8, 9, 10, 11, 12, 13, 14, 15};
 
+
+IdacDriver2Es::IdacDriver2Es(IdacDriver2* driver, const QVector<IdacChannelSettings>& channelSettings)
+	: IdacDriverUsbEs(driver, channelSettings),
+	m_driver(driver)
+{
+}
 
 bool IdacDriver2Es::IdacAudio(int /*iChan*/, bool /*bActivate*/) {
 	return false;
@@ -204,4 +211,16 @@ void IdacDriver2Es::IdacUnlockReadBuffer() {
 
 bool IdacDriver2Es::IdacZeroPulse(int iChan) {
 	return m_driver->IdacZeroPulse(iChan);
+}
+
+int IdacDriver2Es::decimationCount() const {
+	return IDAC_DECIMATIONCOUNT;
+}
+
+bool IdacDriver2Es::isValidAudioChannel(int iChan) const {
+	return (iChan >= 1 && iChan <= 2);
+}
+
+bool IdacDriver2Es::isValidDigitalChannel(int iChan) const {
+	return (iChan == 0);
 }

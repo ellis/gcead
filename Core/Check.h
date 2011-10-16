@@ -66,7 +66,7 @@ extern void checkLog(const char* sFile, int iLine, const QString& sType, const Q
 	#define CHECK_FAILURE_RET() \
 		{ return; }
 #else
-	#define LOG(nDebugLevel, s) checkLog(s)
+	#define LOG(nDebugLevel, s) checkLog(__FILE__, __LINE__, "LOG", s)
 
 	#define __CHECK_COND_RETVAL(x, ret) \
 		{ if ((x) == false) { checkFailure(__FILE__, __LINE__, #x); return ret; } }
