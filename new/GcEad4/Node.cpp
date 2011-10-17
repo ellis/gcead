@@ -1,5 +1,8 @@
 #include "Node.h"
 
+#include <iostream>
+using namespace std;
+
 #include "Check.h"
 
 
@@ -32,4 +35,13 @@ void Node::addChild(Node* child) {
 void Node::removeChild(Node* child) {
 	CHECK_PRECOND_RET(m_children.contains(child));
 	m_children.removeAll(child);
+}
+
+void Node::printTree(int nIndent) const {
+	const QString sIndent = QString(nIndent, ' ');
+	const QString sKey = m_entry[KEY].toString();
+	cout << qPrintable(sIndent) << qPrintable(sKey) << endl;
+	foreach (Node* child, m_children) {
+		child->printTree(nIndent + 1);
+	}
 }

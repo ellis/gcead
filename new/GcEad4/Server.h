@@ -23,7 +23,7 @@ public slots:
 	void remove(const QString& key);
 
 private:
-	QVariantMap m_database;
+	QMap<QString, QVariantMap> m_database;
 };
 
 #endif

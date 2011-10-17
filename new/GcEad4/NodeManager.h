@@ -23,7 +23,10 @@ private slots:
 
 private:
 	QPointer<Server> m_server;
+	/// Root nodes, mapped by key
 	QMap<QString, Node*> m_roots;
+	/// All nodes, mapped by key
+	QMap<QString, Node*> m_nodes;
 };
 
 #endif

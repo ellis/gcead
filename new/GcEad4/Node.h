@@ -6,6 +6,8 @@
 #include <QPointer>
 #include <QVariantMap>
 
+#include "Defines.h" // for convenience of KEY constant
+
 
 class Node : public QObject
 {
@@ -16,6 +18,8 @@ public:
 
 	Node* parentNode() const { return m_parent; }
 	void setParent(Node* parent);
+
+	void printTree(int nIndent) const;
 
 signals:
 

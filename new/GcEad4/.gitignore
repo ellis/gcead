@@ -1,0 +1,5 @@
+*.o
+moc_*
+ui_*.h
+GcEad4
+Makefile
