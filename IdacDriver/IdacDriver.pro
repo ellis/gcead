@@ -26,6 +26,6 @@ SOURCES += IdacDriver.cpp \
 	IdacDriverWithThread.cpp \
 	IdacDriverUsbEs.cpp
 win32:INCLUDEPATH += ../extern/win32
-unix:INCLUDEPATH += ../extern/libusb-compat-0.1.3/libusb
+unix:INCLUDEPATH += ../extern/libusbx/include
 CONFIG(debug, debug|release):DESTDIR = ../debug
 else:DESTDIR = ../release

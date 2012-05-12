@@ -67,6 +67,7 @@ RecordDialog::RecordDialog(IdacProxy* idac, QWidget* parent)
 	on_spnWindow_valueChanged();
 	// This forces the time-axis to be placed in the middle (the value passed is arbitrary)
 	ui.eadSignal->setRange(m_nVoltsPerDivision * 5);
+    ui.fidSignal->setRange(20);
 
 	connect(m_idac, SIGNAL(stateChanged(IdacState)), this, SLOT(updateStatus()));
 	updateStatus();
@@ -85,8 +86,8 @@ void RecordDialog::loadSettings()
 	QSettings settings("Syntech", APPSETTINGSKEY);
 
 	settings.beginGroup("RecordPreview");
-	m_nVoltsPerDivision = settings.value("EadSensitivity", 0.05).toDouble();
-	int nWindow = settings.value("WindowWidth", 10).toInt();
+    m_nVoltsPerDivision = settings.value("EadSensitivity", 2.0).toDouble();
+    int nWindow = settings.value("WindowWidth", 10).toInt();
 
 	ui.spnWindow->setValue(nWindow);
 
@@ -216,7 +217,7 @@ void RecordDialog::getData()
 
 void RecordDialog::on_btnSensDec_clicked()
 {
-	m_nVoltsPerDivision = changeVoltsPerDivision(m_nVoltsPerDivision, 1);
+    m_nVoltsPerDivision = changeVoltsPerDivision(m_nVoltsPerDivision, 1);
 	ui.eadSignal->setRange(m_nVoltsPerDivision * 5);
 	updateSens();
 }

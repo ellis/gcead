@@ -10,9 +10,8 @@ SUBDIRS = Core \
     Idac \
     Scope \
     ScopeTest \
-    View \
-	IdacEs \
-	IdacEsTest
+    View
+win32:SUBDIRS += IdacEs IdacEsTest
 OTHER_FILES += Todo.txt \
     UseCases.txt \
     Notes.txt \

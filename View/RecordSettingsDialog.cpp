@@ -102,7 +102,7 @@ RecordSettingsDialog::RecordSettingsDialog(IdacProxy* idac, bool bSendChanges, Q
 	ui.cmbRange_2->setVisible(caps->bRangePerChannel);
 	ui.cmbRange_2->addItems(ranges);
 	ui.cmbRange_2->setCurrentIndex(chan->iRange);
-	ui.cmbRange_2->setValidator(false);
+    ui.cmbRange_2->setValidator(NULL);
 	ui.edtOffset_2->setValue(convOffsetSamplesToMicrovolts(chan->nOffset));
 	ui.edtExternalAmplification_2->setValue(chan->nExternalAmplification);
 	
