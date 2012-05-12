@@ -22,8 +22,15 @@
 
 #include <IdacDriver/IdacEnums.h>
 
-
+// Using libusbx on linux/mac
+#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+struct libusb_device_handle;
+typedef libusb_device_handle UsbDevice;
+// Using libusb0 on windows
+#else
 struct usb_device;
+typedef usb_device UsbDevice;
+#endif
 
 class IdacCaps;
 class IdacChannelSettings;
@@ -37,7 +44,7 @@ public:
 	IdacDriverManager(QObject* parent = NULL);
 	~IdacDriverManager();
 
-	struct usb_device* device() { return m_device; }
+	UsbDevice* device() { return m_device; }
 	IdacDriver* driver() { return m_driver; }
 
 	IdacState state() const { return m_state; }
@@ -63,19 +70,21 @@ signals:
 	void commandFinished(int _cmd);
 
 private:
-	static struct usb_device* findIdac();
-	static struct usb_device* findIdac(struct usb_device* dev);
-
 	void setState(IdacState state);
-	void findDevice();
-	void createDriver();
 	void setup();
+
+// Specialize these for the libusb library being used
+private:
+	void initLibusb();
+	void exitLibusb();
+	void findDevice();
+	//void createDriver();
 
 private:
 	IdacState m_state;
 	IdacCommand m_cmd;
 
-	struct usb_device* m_device;
+	UsbDevice* m_device;
 	IdacDriver* m_driver;
 };
 

@@ -1,29 +1,33 @@
+=====
+GcEAD
+=====
+
 DIRECTORIES
 ===========
 
-Core/
+Core:
 	A few semi-generic files that may be used by all sub-projects
-Idac/
+Idac:
 	Classes to interface between the hardware drivers and the main application code.
 	IdacFactory and IdacProxy are the only two IDAC classes that should be used by
 	the main application (other than the settings and capabilities structures).
 	IdacProxy runs in the main application thread and shields the main application
 	programmer from all driver threads and details.
-IdacDriver/
+IdacDriver:
 	The general driver code.  This is not really a "driver", since it runs in
 	user-space via libusb.
-IdacDriver2/
+IdacDriver2:
 	USB protocol implementation for the IDAC2
-IdacDriver4/
+IdacDriver4:
 	USB protocol implementation for the IDAC4
-Model/
+Model:
 	The basic data classes for GC-EAD
-Scope/
+Scope:
 	Classes to implement non-UI code to support the UI.  Basically, this is a
 	representation of the UI in a form that can potentially be unit-tested without
 	user-interaction.  This approach wasn't taken until near the end of the project,
 	so there's not much in here.
-View/
+View:
 	UI code and main()
 
 
@@ -56,27 +60,30 @@ I used BitRock InstallBuilder to create the installers for Windows and Linux.
 I built both installers from within Linux, which is why there are various
 DLLs in Installables/Windows.
 
-installer for windows
+Installer for windows
 ---------------------
-- build the project
-- make sure that the DLLs in Installabes/Windows are up-to-date
-- copy copy GcEad.exe from the Windows machine to Installables/Windows
+
+* build the project
+* make sure that the DLLs in Installabes/Windows are up-to-date
+* copy copy GcEad.exe from the Windows machine to Installables/Windows
   on the Linux machine
-- cd Setup
-- run: $path_to_builder build GcEad-windows.xml windows
+* cd Setup
+* run: $path_to_builder build GcEad-windows.xml windows
 
-installer for linux
+Installer for linux
 -------------------
-- build the project
-- cd Setup
-- run: ./copylibs
-- run: $path_to_builder build GcEad-linux.xml linux
 
-installer for mac
+* build the project
+* cd Setup
+* run: ./copylibs
+* run: $path_to_builder build GcEad-linux.xml linux
+
+Installer for mac
 -----------------
-- make sure the Qt SDK is installed
-- build the project
-- cd release
-- cp *.hex GcEad.app/Contents/MacOS
-- macdeployqt GcEad.app -dmg
-- GcEad.dmg is now ready for deployment
+
+* make sure the Qt SDK is installed
+* build the project
+* cd release
+* cp *.hex GcEad.app/Contents/MacOS
+* macdeployqt GcEad.app -dmg
+* GcEad.dmg is now ready for deployment

@@ -24,7 +24,7 @@
 #include <IdacDriver/IdacSettings.h>
 
 
-struct usb_device;
+struct UsbDevice;
 
 class IdacUsb;
 
@@ -36,7 +36,7 @@ public:
 	static const int IDAC_CHANNELCOUNT = 5;
 
 public:
-	IdacDriver4(struct usb_device* device, QObject* parent = NULL);
+	IdacDriver4(UsbDevice* device, QObject* parent = NULL);
 	~IdacDriver4();
 
 // Implement IdacDriver

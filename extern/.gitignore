@@ -40,3 +40,6 @@ libusb/libusb/libusb_1_0_la-linux_usbfs.o
 libusb/libusb/libusb_1_0_la-sync.lo
 libusb/libusb/libusb_1_0_la-sync.o
 libusb/stamp-h1
+libusbx
+libusbx-obj
+libusb-compat-obj

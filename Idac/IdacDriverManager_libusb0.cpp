@@ -17,6 +17,8 @@
 
 #include "IdacDriverManager.h"
 
+#include <usb.h>
+
 #include <QtDebug>
 
 #include <Check.h>
@@ -37,12 +39,14 @@ IdacDriverManager::IdacDriverManager(QObject* parent)
 	m_device = NULL;
 	m_driver = NULL;
 
-	initLibusb();
+	usb_init();
+#ifndef QT_NO_DEBUG
+	usb_set_debug(255);
+#endif
 }
 
 IdacDriverManager::~IdacDriverManager()
 {
-	exitLibusb();
 	delete m_driver;
 }
 
@@ -54,6 +58,47 @@ void IdacDriverManager::setState(IdacState state)
 		m_state = state;
 		emit stateChanged(m_state);
 	}
+}
+
+void IdacDriverManager::findDevice()
+{
+	usb_find_busses();
+	usb_find_devices();
+
+	struct usb_device* device = findIdac();
+	if (device != m_device || m_driver == NULL)
+	{
+		m_device = device;
+		createDriver();
+	}
+}
+
+void IdacDriverManager::createDriver()
+{
+	if (m_driver != NULL)
+		delete m_driver;
+
+	m_driver = NULL;
+
+	if (m_device != NULL)
+	{
+		// IDAC 4
+		if (m_device->descriptor.idProduct == 0x0006)
+			m_driver = new IdacDriver4(m_device);
+		// IDAC 2
+		else if (m_device->descriptor.idProduct == 0x0008)
+			m_driver = new IdacDriver2(m_device);
+
+		m_driver->init();
+	}
+#ifdef WIN32
+	else {
+		if (IdacDriverES::driverIsPresent()) {
+			m_driver = new IdacDriverES();
+			m_driver->init();
+		}
+	}
+#endif
 }
 
 void IdacDriverManager::command(int _cmd)
@@ -232,6 +277,46 @@ void IdacDriverManager::setup()
 	setState(IdacState_Ready);
 }
 
+struct usb_device* IdacDriverManager::findIdac()
+{
+	struct usb_device* found = NULL;
+
+	for (struct usb_bus* bus = usb_busses; bus && !found; bus = bus->next)
+	{
+		if (bus->root_dev)
+			found = findIdac(bus->root_dev);
+		else
+		{
+			for (struct usb_device* dev = bus->devices; dev && !found; dev = dev->next)
+				found = findIdac(dev);
+		}
+	}
+
+	return found;
+}
+
+struct usb_device* IdacDriverManager::findIdac(struct usb_device* dev)
+{
+	// IDAC 4 = 088D:0006
+	// IDAC 2 = 088D:0008
+	if (dev->descriptor.idVendor == 0x088D) {
+		if (dev->descriptor.idProduct == 0x0008 || dev->descriptor.idProduct == 0x0006)
+			return dev;
+	}
+
+	struct usb_device* found = NULL;
+	for (int i = 0; i < dev->num_children && !found; i++)
+	{
+		// TODO: Add an error message if child is NULL -- that happens when user doesn't have permissions for the device
+		if (dev->children == NULL)
+			break;
+		if (dev->children[i] != NULL)
+			found = findIdac(dev->children[i]);
+	}
+
+	return found;
+}
+
 /*
 void print_endpoint(struct usb_endpoint_descriptor *endpoint)
 {
@@ -286,7 +371,7 @@ void print_configuration(struct usb_config_descriptor *config)
 		print_interface(&config->interface[i]);
 }
 
-int print_device(UsbDevice *dev, int level)
+int print_device(struct usb_device *dev, int level)
 {
 	usb_dev_handle *udev;
 	char description[256];

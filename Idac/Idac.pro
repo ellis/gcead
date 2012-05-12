@@ -15,6 +15,9 @@ SOURCES += \
     IdacControlThread.cpp \
     IdacProxy.cpp \
     IdacFactory.cpp
+win32:SOURCES += IdacDriverManager_libusb0.cpp
+unix:SOURCES += IdacDriverManager_libusbx.cpp
+
 win32:DEFINES += WIN32
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusbx/include

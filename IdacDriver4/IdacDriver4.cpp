@@ -23,10 +23,11 @@
 
 #if defined(Q_WS_X11) || defined(Q_WS_MAC)
 extern "C" {
-#include <libusb/libusb.h>
+#include <libusb-1.0/libusb.h>
 //#undef _GNU_SOURCE // Supress a warning
 //#include <libusb/libusbi.h>
-#include <usbi.h>
+//#include <usbi.h>
+#include "../extern/libusb-compat-0.1.4/libusb/usbi.h"
 }
 #endif
 
@@ -113,7 +114,7 @@ int dwRangesList_V2[IDAC_SCALERANGECOUNT+1] = {	MAX_INPUT_VOLTAGE_ADC_V2 / 1,
 													-1 };
 
 
-IdacDriver4::IdacDriver4(struct usb_device* device, QObject* parent)
+IdacDriver4::IdacDriver4(UsbDevice* device, QObject* parent)
 	: IdacDriverUsb(device, parent),
 	  m_defaultChannelSettings(3)
 {
