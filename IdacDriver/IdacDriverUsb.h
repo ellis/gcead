@@ -18,11 +18,8 @@
 #ifndef __IDACDRIVERUSB_H
 #define __IDACDRIVERUSB_H
 
+#include <Idac/IdacDriverManager.h> // For UsbDevice
 #include "IdacDriverWithThread.h"
-
-
-struct usb_device;
-struct usb_dev_handle;
 
 
 // These should be used in IdacDriverUsb and derived classes to check USB errors
@@ -44,11 +41,10 @@ struct INTEL_HEX_RECORD
 class IdacDriverUsb : public IdacDriverWithThread
 {
 public:
-	IdacDriverUsb(struct usb_device* device, QObject* parent = NULL);
+	IdacDriverUsb(UsbDevice* device, QObject* parent = NULL);
 	~IdacDriverUsb();
 
-	struct usb_device* device() { return m_device; }
-	struct usb_dev_handle* handle() { return m_handle; }
+	UsbDevice* device() { return m_device; }
 
 protected:
 	void logUsbError(const char* file, int line, int result);
@@ -63,8 +59,18 @@ protected:
 	bool sendBinData(const QByteArray& hex);
 
 private:
-	struct usb_device* m_device;
-	struct usb_dev_handle* m_handle;
+	int myusb_control_transfer(
+		quint8  	bmRequestType,
+		quint8  	bRequest,
+		quint16  	wValue,
+		quint16  	wIndex,
+		unsigned char *  	data,
+		quint16  	wLength,
+		unsigned int  	timeout
+	);
+
+private:
+	UsbDevice* m_device;
 };
 
 #endif

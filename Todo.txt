@@ -383,6 +383,9 @@ Windows 7 x64 USB:
 	Could IDAC4 firmware be re-written to not use isochronous transfer, so that WinUSB could be used?
 	Could IDAC firmware be rewritten to implement a "Communication Class", in particular "Asynchronous Transfer Mode", and then use the standard Windows driver?
 
+libusbx:
+	http://www.dreamincode.net/forums/topic/148707-introduction-to-using-libusb-10/
+
 BEFORE A RELEASE:
 
 	INSTALLER:

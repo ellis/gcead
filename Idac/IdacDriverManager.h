@@ -23,7 +23,7 @@
 #include <IdacDriver/IdacEnums.h>
 
 // Using libusbx on linux/mac
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+#ifdef LIBUSBX
 struct libusb_device_handle;
 typedef libusb_device_handle UsbDevice;
 // Using libusb0 on windows

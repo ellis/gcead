@@ -17,7 +17,11 @@
 
 #include "IdacDriverUsb.h"
 
+#ifdef LIBUSBX
+#include <libusb-1.0/libusb.h>
+#else
 #include <usb.h>
+#endif
 
 #include <QtDebug>
 #include <QFile>
@@ -27,11 +31,12 @@
 #include "Sleeper.h"
 
 
-IdacDriverUsb::IdacDriverUsb(struct usb_device* device, QObject* parent)
+IdacDriverUsb::IdacDriverUsb(UsbDevice* device, QObject* parent)
 	: IdacDriverWithThread(parent)
 {
 	m_device = device;
 
+#ifdef LIBUSB0
 	if (m_device != NULL)
 	{
 		m_handle = usb_open(m_device);
@@ -40,10 +45,12 @@ IdacDriverUsb::IdacDriverUsb(struct usb_device* device, QObject* parent)
 	}
 	else
 		m_handle = NULL;
+#endif
 }
 
 IdacDriverUsb::~IdacDriverUsb()
 {
+#ifdef LIBUSB0
 	if (m_handle != NULL)
 	{
 		// The pointers needs to be checked incase the USB device has
@@ -65,11 +72,16 @@ IdacDriverUsb::~IdacDriverUsb()
 		usb_close(m_handle);
 		m_handle = NULL;
 	}
+#endif
 }
 
 void IdacDriverUsb::logUsbError(const char* file, int line, int result)
 {
+#ifdef LIBUSBX
+	const char* s = libusb_error_name(result);
+#else
 	const char* s = usb_strerror();
+#endif
 	if (s != NULL && *s != 0) {
 		logUsbError(file, line, QString("USB ERROR %0: %1").arg(result).arg(s));
 	}
@@ -84,8 +96,13 @@ void IdacDriverUsb::logUsbError(const char* file, int line, const QString& s)
 
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 {
+#ifdef LIBUSBX
+	int n = libusb_control_transfer(
+			m_device,
+#else // LIBUSB0
 	int n = usb_control_msg(
 			m_handle,
+#endif
 			0x40, // requesttype (vendor message, host -> device)
 			requestId, // request
 			0,
@@ -100,14 +117,23 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size, int timeout)
 {
+#ifdef LIBUSBX
+	int n = libusb_control_transfer(
+			m_device,
+#else // LIBUSB0
 	int n = usb_control_msg(
 			m_handle,
+#endif
 			//usb_sndctrlpipe(m_handle, 0), // requesttype
 			0x40, // requesttype (vendor message, host -> device)
 			requestId, // request
 			0,
 			0,
+#ifdef LIBUSBX
+			buffer,
+#else
 			(char*) buffer,
+#endif
 			size,
 			timeout);
 	CHECK_USBRESULT_RETVAL(n, false);
@@ -117,13 +143,22 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size,
 
 bool IdacDriverUsb::sendIncomingMessage(int requestId, quint8* buffer, int size, int timeout)
 {
+#ifdef LIBUSBX
+	int n = libusb_control_transfer(
+			m_device,
+#else // LIBUSB0
 	int n = usb_control_msg(
 			m_handle,
+#endif
 			0xC0, // requesttype (vendor message, device -> host)
 			requestId, // request
 			0,
 			0,
+#ifdef LIBUSBX
+			buffer,
+#else
 			(char*) buffer,
+#endif
 			size,
 			timeout);
 	CHECK_USBRESULT_RETVAL(n, false);
@@ -133,13 +168,13 @@ bool IdacDriverUsb::sendIncomingMessage(int requestId, quint8* buffer, int size,
 
 bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 {
-	char buffer[1];
+	unsigned char buffer[1];
 	int res;
 	bool bOk = true;
 
 	// USB Reset
 	buffer[0] = 1;
-	res = usb_control_msg(m_handle, 0x40, 0xA0, 0xE600, 0, (char*) &buffer, 1, 5000);
+	res = myusb_control_transfer(0x40, 0xA0, 0xE600, 0, (unsigned char*) &buffer, 1, 5000);
 	CHECK_USBRESULT_NORET(res);
 	if (res < 0)
 	{
@@ -153,7 +188,7 @@ bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 		{
 			INTEL_HEX_RECORD& d = firmware[i];
 
-			res = usb_control_msg(m_handle, 0x40, 0xA0, d.address, 0, (char*) d.data, d.length, 5000);
+			res = myusb_control_transfer(0x40, 0xA0, d.address, 0, d.data, d.length, 5000);
 			CHECK_USBRESULT_NORET(res);
 			if (res < 0)
 			{
@@ -168,7 +203,7 @@ bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 
 	// USB Reset
 	buffer[0] = 0;
-	res = usb_control_msg(m_handle, 0x40, 0xA0, 0xE600, 0, (char*) &buffer, 1, 5000);
+	res = myusb_control_transfer(0x40, 0xA0, 0xE600, 0, (unsigned char*) &buffer, 1, 5000);
 	CHECK_USBRESULT_NORET(res);
 	if (res < 0)
 	{
@@ -305,4 +340,28 @@ bool IdacDriverUsb::sendBinData(const QByteArray& bin)
 	}
 
 	return b;
+}
+
+int IdacDriverUsb::myusb_control_transfer(
+	uint8_t  	bmRequestType,
+	uint8_t  	bRequest,
+	uint16_t  	wValue,
+	uint16_t  	wIndex,
+	unsigned char *  	data,
+	uint16_t  	wLength,
+	unsigned int  	timeout
+) {
+	return
+#ifdef LIBUSBX
+	libusb_control_transfer(m_device,
+#else
+	usb_control_msg(m_handle,
+#endif
+		bmRequestType, bRequest, wValue, wIndex,
+#ifdef LIBUSBX
+		data,
+#else
+		(char*) data,
+#endif
+		wLength, timeout);
 }
