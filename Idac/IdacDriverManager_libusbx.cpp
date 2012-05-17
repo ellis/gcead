@@ -49,8 +49,8 @@ void IdacDriverManager::exitLibusb()
 		m_driver = NULL;
 	}
 
-	if (m_device != NULL) {
-		libusb_close(m_device);
+	if (m_handle != NULL) {
+		libusb_close(m_handle);
 	}
 
 	libusb_exit(NULL);
@@ -58,10 +58,9 @@ void IdacDriverManager::exitLibusb()
 
 void IdacDriverManager::findDevice()
 {
-	UsbDevice* handle = NULL;
+	UsbHandle* handle = NULL;
 
 	libusb_device** devs;
-	int r;
 	ssize_t cnt = libusb_get_device_list(NULL, &devs);
 	if (cnt >= 0) {
 		for (int i = 0; i < cnt; i++) {
@@ -75,11 +74,11 @@ void IdacDriverManager::findDevice()
 					if (desc.idProduct == 0x0008 || desc.idProduct == 0x0006) {
 						r = libusb_open(dev, &handle);
 						if (r >= 0) {
-							m_device = handle;
+							m_handle = handle;
 							if (desc.idProduct == 0x0008)
-								m_driver = new IdacDriver4(m_device);
+								m_driver = new IdacDriver4(m_handle);
 							else
-								m_driver = new IdacDriver2(m_device);
+								m_driver = new IdacDriver2(m_handle);
 							break;
 						}
 					}
@@ -89,6 +88,4 @@ void IdacDriverManager::findDevice()
 	}
 
 	libusb_free_device_list(devs, 1);
-
-	return handle;
 }

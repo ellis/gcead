@@ -34,7 +34,7 @@ public:
 	static const int IDAC_CHANNELCOUNT = 5;
 
 public:
-	IdacDriver4(UsbDevice* device, QObject* parent = NULL);
+	IdacDriver4(UsbHandle* device, QObject* parent = NULL);
 	~IdacDriver4();
 
 // Implement IdacDriver
@@ -107,7 +107,7 @@ private:
 
 private:
 	void initStringsAndRanges();
-	bool claim();
+	bool claim(bool bUnhalt);
 	/// Updates analog input stage of specific channel
 	bool UpdateAnalogIn(int iChan, BOXINDEX Bi, quint32 nValue);
 	void SetBoxBits(int iChan, BOXINDEX Bi, quint32 nValue);

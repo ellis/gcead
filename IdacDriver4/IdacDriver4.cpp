@@ -19,11 +19,10 @@
 
 #include <iostream>
 
-#include <usb.h>
-
 #if LIBUSBX
 #include <libusb-1.0/libusb.h>
 #else
+#include <usb.h>
 extern "C" {
 //#undef _GNU_SOURCE // Supress a warning
 //#include <libusb/libusbi.h>
@@ -115,7 +114,7 @@ int dwRangesList_V2[IDAC_SCALERANGECOUNT+1] = {	MAX_INPUT_VOLTAGE_ADC_V2 / 1,
 													-1 };
 
 
-IdacDriver4::IdacDriver4(UsbDevice* device, QObject* parent)
+IdacDriver4::IdacDriver4(UsbHandle* device, QObject* parent)
 	: IdacDriverUsb(device, parent),
 	  m_defaultChannelSettings(3)
 {
@@ -165,12 +164,24 @@ void IdacDriver4::loadCaps(IdacCaps* caps)
 
 bool IdacDriver4::checkUsbFirmwareReady()
 {
-	CHECK_PRECOND_RETVAL(device() != NULL, false);
+	CHECK_PRECOND_RETVAL(handle() != NULL, false);
 
 	bool b = false;
-	if (device()->config[0].bNumInterfaces == 1)
-		if (device()->config[0].interface[0].num_altsetting == 1)
+#if defined(LIBUSB0)
+	if (handle()->config[0].bNumInterfaces == 1)
+		if (handle()->config[0].interface[0].num_altsetting == 1)
 			b = true;
+#elif defined(LIBUSBX)
+	libusb_device* dev = libusb_get_device(handle());
+	CHECK_ASSERT_RETVAL(dev != NULL, false);
+	libusb_config_descriptor* config = NULL;
+	int res = libusb_get_config_descriptor(dev, 0, &config);
+	CHECK_USBRESULT_RETVAL(res, false);
+	if (config->bNumInterfaces == 1) {
+		const libusb_interface* interface = &config->interface[0];
+		b = (interface->num_altsetting == 1);
+	}
+#endif
 
 	//interface[0].altsetting[0].bNumEndpoints != 3
 	return b;
@@ -183,31 +194,16 @@ bool IdacDriver4::checkDataFirmwareReady()
 
 void IdacDriver4::initUsbFirmware()
 {
-	CHECK_PRECOND_RET(handle() != NULL);
-
-	int res;
-
-	struct usb_device* dev = device();
-	int idConfiguration = dev->config[0].bConfigurationValue;
-	res = usb_set_configuration(handle(), idConfiguration);
-	CHECK_USBRESULT_RET(res);
-
-	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
-	res = usb_claim_interface(handle(), idInterface);
-	CHECK_USBRESULT_RET(res);
-
-	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
-	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	CHECK_USBRESULT_RET(res);
-
-	sendFirmware(g_firmwareIdacDriver4);
+	if (claim(false)) {
+		sendFirmware(g_firmwareIdacDriver4);
+	}
 }
 
 void IdacDriver4::initDataFirmware()
 {
 	QString sFilename = QCoreApplication::applicationDirPath() + "/idc4fpga.hex";
 
-	if (!claim())
+	if (!claim(true))
 		return;
 
 	//Power up
@@ -329,29 +325,66 @@ void IdacDriver4::initStringsAndRanges()
 	setRanges(list);
 }
 
-bool IdacDriver4::claim()
+bool IdacDriver4::claim(bool bUnhalt)
 {
+	CHECK_PRECOND_RETVAL(handle() != NULL, false);
+
 	int res;
 
-	struct usb_device* dev = device();
+#if defined(LIBUSB0)
+	struct usb_device* dev = handle();
 	int idConfiguration = dev->config[0].bConfigurationValue;
 	res = usb_set_configuration(handle(), idConfiguration);
-	CHECK_USBRESULT_RETVAL(res, false);
+	CHECK_USBRESULT_RET(res);
 
 	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
 	res = usb_claim_interface(handle(), idInterface);
-	CHECK_USBRESULT_RETVAL(res, false);
+	CHECK_USBRESULT_RET(res);
 
 	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
 	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
+	CHECK_USBRESULT_RET(res);
+
+	if (bUnhalt) {
+		for (int iPipe = 0; iPipe < setting->bNumEndpoints; iPipe++)
+		{
+			int idPipe = setting->endpoint[iPipe].bEndpointAddress;
+			res = usb_clear_halt(handle(), idPipe);
+			CHECK_USBRESULT_RETVAL(res, false);
+		}
+	}
+#elif defined(LIBUSBX)
+	libusb_device* dev = libusb_get_device(handle());
+	CHECK_ASSERT_RETVAL(dev != NULL, false);
+
+	libusb_config_descriptor* config = NULL;
+	res = libusb_get_config_descriptor(dev, 0, &config);
 	CHECK_USBRESULT_RETVAL(res, false);
 
-	for (int iPipe = 0; iPipe < setting->bNumEndpoints; iPipe++)
-	{
-		int idPipe = setting->endpoint[iPipe].bEndpointAddress;
-		res = usb_clear_halt(handle(), idPipe);
-		CHECK_USBRESULT_RETVAL(res, false);
+	// Select configuration for the first descriptor
+	res = libusb_set_configuration(handle(), config->bConfigurationValue);
+	CHECK_USBRESULT_RETVAL(res, false);
+
+	CHECK_ASSERT_RETVAL(config->bNumInterfaces > 0, false);
+	const libusb_interface* interface = &config->interface[0];
+	CHECK_ASSERT_RETVAL(interface->num_altsetting > 0, false);
+	const libusb_interface_descriptor* altsetting = &interface->altsetting[0];
+	const int idInterface = altsetting->bInterfaceNumber;
+	res = libusb_claim_interface(handle(), idInterface);
+	CHECK_USBRESULT_RETVAL(res, false);
+
+	res = libusb_set_interface_alt_setting(handle(), idInterface, altsetting->bAlternateSetting);
+	CHECK_USBRESULT_RETVAL(res, false);
+
+	if (bUnhalt) {
+		for (int i = 0; i < altsetting->bNumEndpoints; i++)
+		{
+			const int idEndpoint = altsetting->endpoint[i].bEndpointAddress;
+			res = libusb_clear_halt(handle(), idEndpoint);
+			CHECK_USBRESULT_RETVAL(res, false);
+		}
 	}
+#endif
 
 	return true;
 }
@@ -393,7 +426,7 @@ static char* isobuf;
 static IdacDriver4Channel IdacChannelState(true); // Digital inputs are inverted
 static CDD32_STATUS cdStatus;
 
-#ifdef WIN32
+#ifdef LIBUSB0
 static void* isourb[ISO_CONTEXT_COUNT];
 #else
 static libusb_transfer* iso_transfer[ISO_CONTEXT_COUNT];
@@ -455,8 +488,22 @@ static int wait_for_iso_transfer(libusb_transfer* transfer)
 
 void IdacDriver4::sampleInit()
 {
-	int nBufSize = ISO_TRANSFER_SIZE * ISO_CONTEXT_COUNT;
-	int pipeId = device()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
+	const int nBufSize = ISO_TRANSFER_SIZE * ISO_CONTEXT_COUNT;
+#if defined(LIBUSB0)
+	const int pipeId = handle()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
+#elif defined(LIBUSBX)
+	libusb_device* dev = libusb_get_device(handle());
+	CHECK_ASSERT_RET(dev != NULL);
+	libusb_config_descriptor* config = NULL;
+	const int res0 = libusb_get_config_descriptor(dev, 0, &config);
+	CHECK_USBRESULT_RET(res0);
+	CHECK_ASSERT_RET(config->bNumInterfaces > 0);
+	const libusb_interface* interface = &config->interface[0];
+	CHECK_ASSERT_RET(interface->num_altsetting > 0);
+	const libusb_interface_descriptor* altsetting = &interface->altsetting[0];
+	CHECK_ASSERT_RET(altsetting->bNumEndpoints > 1);
+	const int pipeId = altsetting->endpoint[1].bEndpointAddress;
+#endif
 
 	isobuf = new char[nBufSize];
 	// Initialize to -1's for debugging purposes
@@ -473,15 +520,16 @@ void IdacDriver4::sampleInit()
 #else
 		libusb_transfer* transfer = libusb_alloc_transfer(ISO_CONTEXT_COUNT);
 		iso_transfer[i] = transfer;
+		void* user_data = (void*) (intptr_t) i;
 		libusb_fill_iso_transfer(
 			transfer,                    // transfer
-			handle()->handle,                        // dev_handle
+			handle(),                        // dev_handle
 			pipeId,    // endpoint
 			(unsigned char*) isobuf + ISO_TRANSFER_SIZE * i,                // buffer
 			ISO_TRANSFER_SIZE,        // length
 			ISO_PACKETS_PER_TRANSFER,           // num_iso_packets
 			iso_transfer_cb,                        // callback
-			(void*) i,                        // user_data
+			user_data,                        // user_data
 			5000);                       // timeout
 		libusb_set_iso_packet_lengths(transfer, ISO_PACKET_SIZE);
 #endif

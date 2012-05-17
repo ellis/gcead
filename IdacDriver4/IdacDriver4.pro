@@ -20,9 +20,15 @@ SOURCES += IdacDriver4.cpp \
     IdacDriver4Channel.cpp \
     IdacDriver4Firmware.cpp \
     IdacDriver4Es.cpp
+
+
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusbx/include
 #unix:INCLUDEPATH += ../extern/libusb ../extern/libusb-compat-0.1.3/libusb
+
 win32:DEFINES += WIN32
+win32:DEFINES += LIBUSB0
+unix:DEFINES += LIBUSBX
+
 CONFIG(debug, debug|release):DESTDIR = ../debug
 else:DESTDIR = ../release

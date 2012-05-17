@@ -34,7 +34,7 @@ IdacDriverManager::IdacDriverManager(QObject* parent)
 	m_state = IdacState_None;
 	m_cmd = IdacCommand_None;
 
-	m_device = NULL;
+	m_handle = NULL;
 	m_driver = NULL;
 
 	initLibusb();
@@ -196,7 +196,7 @@ void IdacDriverManager::setup()
 		m_driver->initUsbFirmware();
 		delete m_driver;
 		m_driver = NULL;
-		m_device = NULL;
+		m_handle = NULL;
 
 		// After USB initialization, try to find the device again
 		bool bReady = false;
@@ -286,7 +286,7 @@ void print_configuration(struct usb_config_descriptor *config)
 		print_interface(&config->interface[i]);
 }
 
-int print_device(UsbDevice *dev, int level)
+int print_device(UsbHandle *dev, int level)
 {
 	usb_dev_handle *udev;
 	char description[256];

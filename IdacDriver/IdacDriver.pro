@@ -20,11 +20,13 @@ HEADERS += IdacDriver.h \
 	IdacDriverSamplingThread.h \
     IdacCaps.h \
 	IdacDriverWithThread.h \
-	IdacDriverUsbEs.h	
+	IdacDriverUsbEs.h \	
+    IdacDriverUsb24Base.h
 SOURCES += IdacDriver.cpp \
     IdacDriverUsb.cpp \
 	IdacDriverWithThread.cpp \
-	IdacDriverUsbEs.cpp
+	IdacDriverUsbEs.cpp \
+    IdacDriverUsb24Base.cpp
 
 win32:DEFINES += LIBUSB0
 unix:DEFINES += LIBUSBX

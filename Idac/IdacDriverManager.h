@@ -25,11 +25,11 @@
 // Using libusbx on linux/mac
 #ifdef LIBUSBX
 struct libusb_device_handle;
-typedef libusb_device_handle UsbDevice;
+typedef libusb_device_handle UsbHandle;
 // Using libusb0 on windows
 #else
 struct usb_device;
-typedef usb_device UsbDevice;
+typedef usb_device UsbHandle;
 #endif
 
 class IdacCaps;
@@ -44,7 +44,7 @@ public:
 	IdacDriverManager(QObject* parent = NULL);
 	~IdacDriverManager();
 
-	UsbDevice* device() { return m_device; }
+	UsbHandle* handle() { return m_handle; }
 	IdacDriver* driver() { return m_driver; }
 
 	IdacState state() const { return m_state; }
@@ -84,7 +84,7 @@ private:
 	IdacState m_state;
 	IdacCommand m_cmd;
 
-	UsbDevice* m_device;
+	UsbHandle* m_handle;
 	IdacDriver* m_driver;
 };
 

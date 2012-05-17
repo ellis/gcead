@@ -18,7 +18,7 @@
 #ifndef __IDACDRIVERUSB_H
 #define __IDACDRIVERUSB_H
 
-#include <Idac/IdacDriverManager.h> // For UsbDevice
+#include <Idac/IdacDriverManager.h> // For UsbHandle
 #include "IdacDriverWithThread.h"
 
 
@@ -41,10 +41,10 @@ struct INTEL_HEX_RECORD
 class IdacDriverUsb : public IdacDriverWithThread
 {
 public:
-	IdacDriverUsb(UsbDevice* device, QObject* parent = NULL);
+	IdacDriverUsb(UsbHandle* device, QObject* parent = NULL);
 	~IdacDriverUsb();
 
-	UsbDevice* device() { return m_device; }
+	UsbHandle* handle() { return m_handle; }
 
 protected:
 	void logUsbError(const char* file, int line, int result);
@@ -78,7 +78,7 @@ private:
 	);
 
 private:
-	UsbDevice* m_device;
+	UsbHandle* m_handle;
 };
 
 #endif

@@ -24,15 +24,13 @@
 #include <IdacDriver/IdacSettings.h>
 
 
-struct usb_device;
-
 class IdacUsb;
 
 
 class IdacDriver2 : public IdacDriverUsb
 {
 public:
-	IdacDriver2(struct usb_device* device, QObject* parent = NULL);
+	IdacDriver2(UsbHandle* handle, QObject* parent = NULL);
 	~IdacDriver2();
 
 // Implement IdacDriver

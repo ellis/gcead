@@ -31,15 +31,15 @@
 #include "Sleeper.h"
 
 
-IdacDriverUsb::IdacDriverUsb(UsbDevice* device, QObject* parent)
+IdacDriverUsb::IdacDriverUsb(UsbHandle* handle, QObject* parent)
 	: IdacDriverWithThread(parent)
 {
-	m_device = device;
+	m_handle = handle;
 
 #ifdef LIBUSB0
-	if (m_device != NULL)
+	if (m_handle != NULL)
 	{
-		m_handle = usb_open(m_device);
+		m_handle = usb_open(m_handle);
 		if (m_handle == NULL)
 			logUsbError(__FILE__, __LINE__, "Unable to open USB device");
 	}
@@ -55,7 +55,7 @@ IdacDriverUsb::~IdacDriverUsb()
 	{
 		// The pointers needs to be checked incase the USB device has
 		// been unplugged and the pointers have been NULLed by libusb.
-		struct usb_config_descriptor* config = &m_device->config[0];
+		struct usb_config_descriptor* config = &m_handle->config[0];
 		if (config != NULL)
 		{
 			struct usb_interface* interface = &config->interface[0];
@@ -98,7 +98,7 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 {
 #ifdef LIBUSBX
 	int n = libusb_control_transfer(
-			m_device,
+			m_handle,
 #else // LIBUSB0
 	int n = usb_control_msg(
 			m_handle,
@@ -119,7 +119,7 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size,
 {
 #ifdef LIBUSBX
 	int n = libusb_control_transfer(
-			m_device,
+			m_handle,
 #else // LIBUSB0
 	int n = usb_control_msg(
 			m_handle,
@@ -145,7 +145,7 @@ bool IdacDriverUsb::sendIncomingMessage(int requestId, quint8* buffer, int size,
 {
 #ifdef LIBUSBX
 	int n = libusb_control_transfer(
-			m_device,
+			m_handle,
 #else // LIBUSB0
 	int n = usb_control_msg(
 			m_handle,
@@ -210,7 +210,7 @@ bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 		bOk = false;
 	}
 
-	m_device = NULL;
+	m_handle = NULL;
 #ifdef LIBUSB0
 	m_handle = NULL;
 #endif
@@ -318,7 +318,7 @@ int IdacDriverUsb::myusb_control_transfer(
 ) {
 	return
 #ifdef LIBUSBX
-	libusb_control_transfer(m_device,
+	libusb_control_transfer(m_handle,
 #else
 	usb_control_msg(m_handle,
 #endif
@@ -340,7 +340,7 @@ int IdacDriverUsb::myusb_bulk_write(
 ) {
 #ifdef LIBUSBX
 	int transferred = 0;
-	return libusb_bulk_transfer(m_device,
+	return libusb_bulk_transfer(m_handle,
 #else
 	return usb_bulk_write(m_handle,
 #endif

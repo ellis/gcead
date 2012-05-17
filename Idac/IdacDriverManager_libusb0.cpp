@@ -36,7 +36,7 @@ IdacDriverManager::IdacDriverManager(QObject* parent)
 	m_state = IdacState_None;
 	m_cmd = IdacCommand_None;
 
-	m_device = NULL;
+	m_handle = NULL;
 	m_driver = NULL;
 
 	usb_init();
@@ -66,9 +66,9 @@ void IdacDriverManager::findDevice()
 	usb_find_devices();
 
 	struct usb_device* device = findIdac();
-	if (device != m_device || m_driver == NULL)
+	if (device != m_handle || m_driver == NULL)
 	{
-		m_device = device;
+		m_handle = device;
 		createDriver();
 	}
 }
@@ -80,14 +80,14 @@ void IdacDriverManager::createDriver()
 
 	m_driver = NULL;
 
-	if (m_device != NULL)
+	if (m_handle != NULL)
 	{
 		// IDAC 4
-		if (m_device->descriptor.idProduct == 0x0006)
-			m_driver = new IdacDriver4(m_device);
+		if (m_handle->descriptor.idProduct == 0x0006)
+			m_driver = new IdacDriver4(m_handle);
 		// IDAC 2
-		else if (m_device->descriptor.idProduct == 0x0008)
-			m_driver = new IdacDriver2(m_device);
+		else if (m_handle->descriptor.idProduct == 0x0008)
+			m_driver = new IdacDriver2(m_handle);
 
 		m_driver->init();
 	}
@@ -241,7 +241,7 @@ void IdacDriverManager::setup()
 		m_driver->initUsbFirmware();
 		delete m_driver;
 		m_driver = NULL;
-		m_device = NULL;
+		m_handle = NULL;
 
 		// After USB initialization, try to find the device again
 		bool bReady = false;
