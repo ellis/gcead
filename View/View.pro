@@ -66,32 +66,24 @@ unix:pg {
 
 # Copy IDAC2 hex file
 !macx:idac2hex.target = $${DESTDIR}/idc2fpga.hex
-macx:idac2hex.target = $${DESTDIR}/GcEad.app/Contents/MacOS/idc2fpga.hex
 win32:idac2hex.commands = ${COPY_FILE} \
     $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex \
-    ${DESTDIR}
+    $${DESTDIR}
 unix:!macx:idac2hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc2fpga.hex \
-    ${DESTDIR}
-macx:idac2hex.commands = ${COPY_FILE} \
-    $${PWD}/../Installables/idc2fpga.hex \
-    ${DESTDIR}/GcEad.app/Contents/MacOS
+    $${DESTDIR}
 
 # Copy IDAC4 hex file
-idac4hex.target = $${DESTDIR}/idc4fpga.hex
-mac:idac4hex.target = $${DESTDIR}/GcEad.app/Contents/MacOS/idc4fpga.hex
+!macx:idac4hex.target = $${DESTDIR}/idc4fpga.hex
 win32:idac4hex.commands = ${COPY_FILE} \
     $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex \
-    ${DESTDIR}
+    $${DESTDIR}
 unix:!macx:idac4hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc4fpga.hex \
-    ${DESTDIR}
-macx:idac4hex.commands = ${COPY_FILE} \
-    $${PWD}/../Installables/idc4fpga.hex \
-    ${DESTDIR}/GcEad.app/Contents/MacOS
+    $${DESTDIR}
 
-QMAKE_EXTRA_TARGETS += idac2hex \
-    idac4hex
+!macx:QMAKE_EXTRA_TARGETS += idac2hex idac4hex
+
 POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex \
     $${DESTDIR}/idc4fpga.hex
 HEADERS += ./WaitCursor.h \
@@ -163,3 +155,8 @@ win32:RC_FILE = ./GcEad.rc
 
 OTHER_FILES += \
     GcEad.rc
+
+hexfiles.files = $${PWD}/../Installables/idc2fpga.hex $${PWD}/../Installables/idc4fpga.hex
+mac:hexfiles.path = Content/MacOS
+#!mac:hexfiles.path =
+QMAKE_BUNDLE_DATA += hexfiles
