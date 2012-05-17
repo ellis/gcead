@@ -20,14 +20,14 @@
 
 #include <QtGlobal> // for quint8 and related types
 
-#include <IdacDriver/IdacDriverUsb.h>
+#include <IdacDriver/IdacDriverUsb24Base.h>
 #include <IdacDriver/IdacSettings.h>
 
 
 class IdacUsb;
 
 
-class IdacDriver4 : public IdacDriverUsb
+class IdacDriver4 : public IdacDriverUsb24Base
 {
 public:
 	/// Number of channels for IDAC4
@@ -41,9 +41,6 @@ public:
 public:
 	void loadCaps(IdacCaps* caps);
 	const QVector<IdacChannelSettings>& defaultChannelSettings() const { return m_defaultChannelSettings; }
-
-	bool checkUsbFirmwareReady();
-	bool checkDataFirmwareReady();
 
 	void initUsbFirmware();
 	void initDataFirmware();
@@ -107,7 +104,6 @@ private:
 
 private:
 	void initStringsAndRanges();
-	bool claim(bool bUnhalt);
 	/// Updates analog input stage of specific channel
 	bool UpdateAnalogIn(int iChan, BOXINDEX Bi, quint32 nValue);
 	void SetBoxBits(int iChan, BOXINDEX Bi, quint32 nValue);
@@ -127,7 +123,6 @@ private:
 
 	QVector<IdacChannelSettings> m_defaultChannelSettings;
 	bool m_bPowerOn;
-	bool m_bFpgaProgrammed;
 	quint8 m_nVersion;
 	ConfigData m_config;
 	/// Last digital value received

@@ -58,7 +58,7 @@ protected:
 	bool sendBinFile(QString sFilename);
 	bool sendBinData(const QByteArray& hex);
 
-private:
+protected:
 	int myusb_control_transfer(
 		quint8  	bmRequestType,
 		quint8  	bRequest,

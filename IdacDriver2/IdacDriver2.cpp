@@ -65,12 +65,10 @@ static int g_nAnalog1Sum;
 static int g_nAnalog2Sum;
 
 
-IdacDriver2::IdacDriver2(struct usb_device* device, QObject* parent)
-	: IdacDriverUsb(device, parent),
+IdacDriver2::IdacDriver2(UsbHandle* handle, QObject* parent)
+	: IdacDriverUsb24Base(handle, parent),
 	  m_defaultChannelSettings(3)
 {
-	m_bFpgaProgrammed = false;
-
 	m_bSampling = false;
 
 	setHardwareName("IDAC2");
@@ -113,55 +111,11 @@ void IdacDriver2::loadCaps(IdacCaps* caps)
 	caps->bRangePerChannel = false;
 }
 
-bool IdacDriver2::checkUsbFirmwareReady()
-{
-	CHECK_PRECOND_RETVAL(handle() != NULL, false);
-
-	bool b = false;
-#if defined(LIBUSB0)
-	if (handle()->config[0].bNumInterfaces == 1)
-		if (handle()->config[0].interface[0].num_altsetting == 1)
-			b = true;
-#elif defined(LIBUSBX)
-	libusb_device* dev = libusb_get_device(handle());
-	CHECK_ASSERT_RETVAL(dev != NULL, false);
-	libusb_config_descriptor* config = NULL;
-	int res = libusb_get_config_descriptor(dev, 0, &config);
-	CHECK_USBRESULT_RETVAL(res, false);
-	if (config->bNumInterfaces == 1) {
-		const libusb_interface* interface = &config->interface[0];
-		b = (interface->num_altsetting == 1);
-	}
-#endif
-
-	//interface[0].altsetting[0].bNumEndpoints != 3
-	return b;
-}
-bool IdacDriver2::checkDataFirmwareReady()
-{
-	return m_bFpgaProgrammed;
-}
-
 void IdacDriver2::initUsbFirmware()
 {
-	CHECK_PRECOND_RET(handle() != NULL);
-
-	int res;
-
-	struct usb_device* dev = handle();
-	int idConfiguration = dev->config[0].bConfigurationValue;
-	res = usb_set_configuration(handle(), idConfiguration);
-	CHECK_USBRESULT_RET(res);
-
-	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
-	res = usb_claim_interface(handle(), idInterface);
-	CHECK_USBRESULT_RET(res);
-
-	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
-	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	CHECK_USBRESULT_RET(res);
-
-	sendFirmware(g_firmwareIdacDriver2);
+	   if (claim(false)) {
+			   sendFirmware(g_firmwareIdacDriver2);
+	   }
 }
 
 void IdacDriver2::initDataFirmware()
@@ -169,7 +123,7 @@ void IdacDriver2::initDataFirmware()
 	QString sFilename = QCoreApplication::applicationDirPath() + "/idc2fpga.hex";
 	quint8 buffer[16];
 
-	if (!claim())
+	if (!claim(true))
 		return;
 
 	setPowerOn(false);
@@ -235,33 +189,6 @@ void IdacDriver2::initStringsAndRanges()
 	while (*ranges != -1)
 		list << *ranges++;
 	setRanges(list);
-}
-
-bool IdacDriver2::claim()
-{
-	int res;
-
-	struct usb_device* dev = handle();
-	int idConfiguration = dev->config[0].bConfigurationValue;
-	res = usb_set_configuration(handle(), idConfiguration);
-	CHECK_USBRESULT_RETVAL(res, false);
-
-	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
-	res = usb_claim_interface(handle(), idInterface);
-	CHECK_USBRESULT_RETVAL(res, false);
-
-	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
-	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	CHECK_USBRESULT_RETVAL(res, false);
-
-	for (int iPipe = 0; iPipe < setting->bNumEndpoints; iPipe++)
-	{
-		int idPipe = setting->endpoint[iPipe].bEndpointAddress;
-		res = usb_clear_halt(handle(), idPipe);
-		CHECK_USBRESULT_RETVAL(res, false);
-	}
-
-	return true;
 }
 
 void IdacDriver2::configureChannel(int iChan)
@@ -397,7 +324,7 @@ void IdacDriver2::sampleLoop()
 	setIntXferEnabled(true);
 
 	// 406779815 S Co:3:005:0 s 02 01 0000 0081 0000 0
-	ret = usb_control_msg(handle(), 0x02, 0x01, 0, 0x0081, NULL, 0, 0);
+	ret = myusb_control_transfer(0x02, 0x01, 0, 0x0081, NULL, 0, 0);
 	CHECK_USBRESULT_NORET(ret);
 
 	g_iDecimation = 0;
@@ -416,11 +343,16 @@ void IdacDriver2::sampleLoop()
 	{
 		bool bSamplingNow = m_bSampling;
 
+#if defined(LIBUSB0)
 		ret = usb_interrupt_read(handle(), 0x81, (char*) buffer, 51, 5000);
+#else
+		int actual_length = 0;
+		ret = libusb_interrupt_transfer(handle(), 0x81, buffer, 51, &actual_length, 5000);
+#endif
 		CHECK_USBRESULT_NORET(ret);
 		if (ret < 0)
 		{
-			cout << "INTERRUPT READ ret = " << ret << " " << usb_strerror() << endl;
+			cout << "INTERRUPT READ ret = " << ret << endl;
 		}
 
 		//int nPackets = (ret > 0) ? (ret / 51) : 0;

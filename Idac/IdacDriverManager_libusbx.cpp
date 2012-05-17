@@ -75,7 +75,7 @@ void IdacDriverManager::findDevice()
 						r = libusb_open(dev, &handle);
 						if (r >= 0) {
 							m_handle = handle;
-							if (desc.idProduct == 0x0008)
+							if (desc.idProduct == 0x0006)
 								m_driver = new IdacDriver4(m_handle);
 							else
 								m_driver = new IdacDriver2(m_handle);

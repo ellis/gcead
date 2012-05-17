@@ -20,14 +20,14 @@
 
 #include <QtGlobal> // for quint8 and related types
 
-#include <IdacDriver/IdacDriverUsb.h>
+#include <IdacDriver/IdacDriverUsb24Base.h>
 #include <IdacDriver/IdacSettings.h>
 
 
 class IdacUsb;
 
 
-class IdacDriver2 : public IdacDriverUsb
+class IdacDriver2 : public IdacDriverUsb24Base
 {
 public:
 	IdacDriver2(UsbHandle* handle, QObject* parent = NULL);
@@ -37,9 +37,6 @@ public:
 public:
 	void loadCaps(IdacCaps* caps);
 	const QVector<IdacChannelSettings>& defaultChannelSettings() const { return m_defaultChannelSettings; }
-
-	bool checkUsbFirmwareReady();
-	bool checkDataFirmwareReady();
 
 	void initUsbFirmware();
 	void initDataFirmware();
@@ -66,11 +63,9 @@ private:
 
 private:
 	void initStringsAndRanges();
-	bool claim();
 
 private:
 	QVector<IdacChannelSettings> m_defaultChannelSettings;
-	bool m_bFpgaProgrammed;
 	char m_nVersion;
 	//ConfigData m_config;
 

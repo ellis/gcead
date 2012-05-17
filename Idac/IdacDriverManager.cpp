@@ -184,11 +184,21 @@ void IdacDriverManager::setup()
 {
 	setState(IdacState_Searching);
 	findDevice();
+#ifdef WIN32
+	if (m_driver == NULL) {
+		if (IdacDriverES::driverIsPresent()) {
+			m_driver = new IdacDriverES();
+			m_driver->init();
+		}
+	}
+#endif
 	if (m_driver == NULL)
 	{
 		setState(IdacState_NotPresent);
 		return;
 	}
+
+	m_driver->init();
 
 	setState(IdacState_Initializing);
 	if (!m_driver->checkUsbFirmwareReady())
