@@ -157,6 +157,6 @@ OTHER_FILES += \
     GcEad.rc
 
 hexfiles.files = $${PWD}/../Installables/idc2fpga.hex $${PWD}/../Installables/idc4fpga.hex
-mac:hexfiles.path = Content/MacOS
+mac:hexfiles.path = Contents/MacOS
 #!mac:hexfiles.path =
 QMAKE_BUNDLE_DATA += hexfiles
