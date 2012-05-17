@@ -69,6 +69,14 @@ private:
 		unsigned int  	timeout
 	);
 
+	int myusb_bulk_write(
+		unsigned char endpoint,
+		unsigned char * data,
+		int length,
+		//int * transferred,
+		unsigned int timeout
+	);
+
 private:
 	UsbDevice* m_device;
 };

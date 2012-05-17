@@ -21,13 +21,14 @@
 
 #include <usb.h>
 
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
-extern "C" {
+#if LIBUSBX
 #include <libusb-1.0/libusb.h>
+#else
+extern "C" {
 //#undef _GNU_SOURCE // Supress a warning
 //#include <libusb/libusbi.h>
 //#include <usbi.h>
-#include "../extern/libusb-compat-0.1.4/libusb/usbi.h"
+//#include "../extern/libusb-compat-0.1.4/libusb/usbi.h"
 }
 #endif
 

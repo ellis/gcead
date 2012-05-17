@@ -24,8 +24,6 @@
 #include <IdacDriver/IdacSettings.h>
 
 
-struct UsbDevice;
-
 class IdacUsb;
 
 

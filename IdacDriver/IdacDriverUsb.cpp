@@ -210,48 +210,15 @@ bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 		bOk = false;
 	}
 
+	m_device = NULL;
+#ifdef LIBUSB0
 	m_handle = NULL;
+#endif
 
 	Sleeper::msleep(5000);
 
 	return bOk;
 }
-
-/*
-struct Idac4InitLine
-{
-	int requesttype;
-	int request;
-	int value;
-	int index;
-	int size;
-	const char *code;
-};
-
-void IdacDriverUsb::sendMessages(Idac4InitLine* lines, int count)
-{
-	for (int i = 0; i < count; i++) {
-		Idac4InitLine& d = lines[i];
-
-		QString sCode = d.code;
-		int iBuffer = 0;
-		while (!sCode.isEmpty()) {
-			QString sByte = sCode.left(2);
-			buffer[iBuffer++] = (quint8) sByte.toInt(NULL, 16);
-			sCode = sCode.mid(2).trimmed();
-		}
-
-		CHECK_ASSERT_RET(d.size <= sizeof(buffer));
-		res = usb_control_msg(m_handle, d.requesttype, d.request, d.value, d.index, (char*) &buffer, d.size, 5000);
-		if (res < 0)
-		{
-			// TODO: add some error message/handling here
-			qDebug() << "Failed to init: res =" << res;
-			break;
-		}
-	}
-}
-*/
 
 bool IdacDriverUsb::sendHexFile(QString sFilename)
 {
@@ -288,10 +255,9 @@ bool IdacDriverUsb::sendHexData(const QByteArray& hex)
 			buffer[iData] = (quint8) sHex.toInt(NULL, 16);
 		}
 
-		int res = usb_bulk_write(
-				m_handle,
+		int res = myusb_bulk_write(
 				1, // end point, TODO: don't hardcode the endpoint? -- ellis, 2009-04-26
-				(char*) buffer, // bytes
+				buffer, // bytes
 				nData, // size
 				5000); // timeout
 		CHECK_USBRESULT_NORET(res);
@@ -327,10 +293,9 @@ bool IdacDriverUsb::sendBinData(const QByteArray& bin)
 		if (nData > 5000)
 			nData = 5000;
 
-		int res = usb_bulk_write(
-				m_handle,
+		int res = myusb_bulk_write(
 				1, // end point, TODO: don't hardcode the endpoint? -- ellis, 2009-04-26
-				(char*) bin.data() + iData, // bytes
+				(unsigned char*) bin.data() + iData, // bytes
 				nData, // size
 				5000); // timeout
 		CHECK_USBRESULT_NORET(res);
@@ -364,4 +329,30 @@ int IdacDriverUsb::myusb_control_transfer(
 		(char*) data,
 #endif
 		wLength, timeout);
+}
+
+int IdacDriverUsb::myusb_bulk_write(
+	unsigned char endpoint,
+	unsigned char * data,
+	int length,
+	//int * transferred,
+	unsigned int timeout
+) {
+#ifdef LIBUSBX
+	int transferred = 0;
+	return libusb_bulk_transfer(m_device,
+#else
+	return usb_bulk_write(m_handle,
+#endif
+		endpoint,
+#ifdef LIBUSBX
+		data,
+#else
+		(char*) data,
+#endif
+		length,
+#ifdef LIBUSBX
+		&transferred,
+#endif
+		timeout);
 }
