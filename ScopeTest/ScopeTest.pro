@@ -29,18 +29,18 @@ LIBS += \
 	-lIdac \
 	-lIdacDriver2 \
 	-lIdacDriver4 \
-	-lIdacDriverES \
     -lIdacDriver \
 	-lCore
+win32:LIBS += -lIadDriverES
 PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libIdacDriver.a \
     $${DESTDIR}/libIdacDriver2.a \
 	$${DESTDIR}/libIdacDriver4.a \
-	$${DESTDIR}/libIdacDriverES.a \
 	$${DESTDIR}/libIdac.a \
 	$${DESTDIR}/libFilters.a \
 	$${DESTDIR}/libModel.a \
 	$${DESTDIR}/libScope.a
+win32:PRE_TARGETDEPS += $${DESTDIR}/libIdacDriverES.a
 #win32:LIBS += $${PWD}/../extern/win32/libusb.a $${PWD}/../IdacDriverES/IdacControl/IDAC8_32.lib
 win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \
@@ -52,6 +52,7 @@ unix:!macx:LIBS += -static-libgcc \
     $${PWD}/../extern/libusbx/lib/libusb-1.0.a
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
+    -lobjc \
     $${PWD}/../extern/libusbx/lib/libusb.a \
     $${PWD}/../extern/libusbx/lib/libusb-1.0.a
 unix:QMAKE_CFLAGS += -static-libgcc
