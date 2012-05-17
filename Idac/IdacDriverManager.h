@@ -72,12 +72,13 @@ signals:
 private:
 	void setState(IdacState state);
 	void setup();
+	void loadDriver();
 
 // Specialize these for the libusb library being used
 private:
 	void initLibusb();
 	void exitLibusb();
-	void findDevice();
+	void createLibusbDriver();
 	//void createDriver();
 
 private:

@@ -183,22 +183,12 @@ int IdacDriverManager::takeData(short* digital, short* analog1, short* analog2, 
 void IdacDriverManager::setup()
 {
 	setState(IdacState_Searching);
-	findDevice();
-#ifdef WIN32
-	if (m_driver == NULL) {
-		if (IdacDriverES::driverIsPresent()) {
-			m_driver = new IdacDriverES();
-			m_driver->init();
-		}
-	}
-#endif
+	loadDriver();
 	if (m_driver == NULL)
 	{
 		setState(IdacState_NotPresent);
 		return;
 	}
-
-	m_driver->init();
 
 	setState(IdacState_Initializing);
 	if (!m_driver->checkUsbFirmwareReady())
@@ -214,7 +204,7 @@ void IdacDriverManager::setup()
 		{
 			setState(IdacState_Searching);
 			Sleeper::msleep(5000);
-			findDevice();
+			loadDriver();
 			if (m_driver != NULL && m_driver->checkUsbFirmwareReady())
 			{
 				bReady = true;
@@ -240,6 +230,20 @@ void IdacDriverManager::setup()
 	}
 
 	setState(IdacState_Ready);
+}
+
+void IdacDriverManager::loadDriver()
+{
+	createLibusbDriver();
+#ifdef WIN32
+	if (m_driver == NULL) {
+		if (IdacDriverES::driverIsPresent()) {
+			m_driver = new IdacDriverES();
+		}
+	}
+#endif
+	if (m_driver != NULL)
+		m_driver->init();
 }
 
 /*

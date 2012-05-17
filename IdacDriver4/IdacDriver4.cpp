@@ -418,7 +418,7 @@ void IdacDriver4::sampleInit()
 	// Setup
 	for (int i = 0; i < ISO_CONTEXT_COUNT; i++)
 	{
-#ifdef WIN32
+#ifdef LIBUSB0
 		isourb[i] = NULL;
 		int ret = usb_isochronous_setup_async(handle(), &isourb[i], pipeId, ISO_PACKET_SIZE);
 		CHECK_USBRESULT_NORET(ret);

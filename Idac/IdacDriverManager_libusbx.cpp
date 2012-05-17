@@ -56,7 +56,7 @@ void IdacDriverManager::exitLibusb()
 	libusb_exit(NULL);
 }
 
-void IdacDriverManager::findDevice()
+void IdacDriverManager::createLibusbDriver()
 {
 	UsbHandle* handle = NULL;
 

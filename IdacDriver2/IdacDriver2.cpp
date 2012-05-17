@@ -348,6 +348,8 @@ void IdacDriver2::sampleLoop()
 #else
 		int actual_length = 0;
 		ret = libusb_interrupt_transfer(handle(), 0x81, buffer, 51, &actual_length, 5000);
+		if (ret >= 0)
+			ret = actual_length;
 #endif
 		CHECK_USBRESULT_NORET(ret);
 		if (ret < 0)
