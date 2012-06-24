@@ -341,7 +341,7 @@ static bool g_abIsoTransferDone[ISO_CONTEXT_COUNT];
 static void iso_transfer_cb(struct libusb_transfer *transfer)
 {
 	int iTransfer = (int) (size_t) transfer->user_data;
-	g_abIsoTransferDone[iTransfer] = true;
+    g_abIsoTransferDone[iTransfer] = true;
 	//qDebug() << "iso_transfer_cb" << iTransfer;
 }
 
@@ -365,6 +365,11 @@ static int wait_for_iso_transfer(libusb_transfer* transfer)
 		}
 	}
 
+	if (transfer->status != LIBUSB_TRANSFER_COMPLETED) {
+		qDebug() << "wait_for_iso_transfer()" << "transfer->status" << transfer->status;
+	}
+
+
 	switch (transfer->status) {
 	case LIBUSB_TRANSFER_COMPLETED:
 		r = 0;
@@ -385,6 +390,16 @@ static int wait_for_iso_transfer(libusb_transfer* transfer)
 		//usbi_warn(HANDLE_CTX(dev_handle),
 		//	"unrecognised status code %d", transfer->status);
 		r = LIBUSB_ERROR_OTHER;
+	}
+
+	if (transfer->status == LIBUSB_TRANSFER_COMPLETED) {
+		for (int iPacket = 0; iPacket < transfer->num_iso_packets; iPacket++) {
+			libusb_iso_packet_descriptor* packet = &transfer->iso_packet_desc[iPacket];
+			if (packet->status != LIBUSB_TRANSFER_COMPLETED) {
+				qDebug() << "wait_for_iso_transfer()" << "packet" << iPacket << "of" << transfer->num_iso_packets << "status" << packet->status;
+				r = LIBUSB_ERROR_OTHER;
+			}
+		}
 	}
 
 	return r;
@@ -482,8 +497,10 @@ static int iso_reap(int iTransfer)
 	ret = wait_for_iso_transfer(transfer);
 	if (ret >= 0) {
 		int nBytesReceived = 0;
-		for (int iPacket = 0; iPacket < transfer->num_iso_packets; iPacket++)
+		for (int iPacket = 0; iPacket < transfer->num_iso_packets; iPacket++) {
+			//libusb_iso_packet_descriptor* packet = &transfer->iso_packet_desc[iPacket];
 			nBytesReceived += transfer->iso_packet_desc[iPacket].actual_length;
+		}
 		ret = nBytesReceived;
 	}
 #endif
