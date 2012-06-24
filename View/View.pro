@@ -53,7 +53,6 @@ unix:!macx:LIBS += -static-libgcc \
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
     -lobjc \
-    $${PWD}/../extern/libusbx/lib/libusb.a \
     $${PWD}/../extern/libusbx/lib/libusb-1.0.a
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc

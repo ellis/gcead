@@ -1,0 +1,93 @@
+This file lists notable changes in each release. 
+For fine grained history, please see the git log at:
+http://libusbx.git.sourceforge.net/git/gitweb.cgi?p=libusbx/libusbx;a=log
+
+2012-06-15: v1.0.12
+* Fix a potential major regression with pthread on Linux
+* Fix missing thread ID from debug log output on cygwin
+* Fix possible crash when using longjmp and MinGW's gcc 4.6
+* Add topology calls: libusb_get_port_number(), libusb_get_parent() & libusb_get_port_path()
+* Add toggleable debug, using libusb_set_debug() or the LIBUSB_DEBUG environment variable
+* Define log levels in libusb.h and set timestamp origin to first libusb_init() call
+* All logging is now sent to to stderr (info was sent to stdout previously)
+* Update log messages severity and avoid polluting log output on OS-X
+* Add HID driver support on Windows
+* Enable interchangeability of MSVC and MinGW DLLs
+* Additional bug fixes and improvements
+
+2012-05-08: v1.0.11
+* Revert removal of critical Windows event handling that was introduced in 1.0.10
+* Fix a possible deadlock in Windows when submitting transfers
+* Add timestamped logging
+* Add NetBSD support (experimental) and BSD libusb_get_device_speed() data
+* Add bootstrap.sh alongside autogen.sh (bootstrap.sh doesn't invoke configure)
+* Search for device nodes in /dev for Android support
+* Other bug fixes
+
+2012-04-17: v1.0.10
+* Public release
+* Add libusb_get_version
+* Add Visual Studio 2010 project files
+* Some Windows code cleanup
+* Fix xusb sample warnings 
+
+2012-04-02: v1.0.9
+* First libusbx release
+* Add libusb_get_device_speed (all, except BSD) and libusb_error_name
+* Add Windows support (WinUSB driver only)
+* Add OpenBSD support
+* Add xusb sample
+* Tons of bug fixes
+
+2010-05-07: v1.0.8
+* Bug fixes
+
+2010-04-19: v1.0.7
+* Bug fixes and documentation tweaks
+* Add more interface class definitions
+
+2009-11-22: v1.0.6
+* Bug fixes
+* Increase libusb_handle_events() timeout to 60s for powersaving
+
+2009-11-15: v1.0.5
+ * Use timerfd when available for timer management
+ * Small fixes/updates
+
+2009-11-06: v1.0.4 release
+ * Bug fixes including transfer locking to fix some potential threading races
+ * More flexibility with clock types on Linux
+ * Use new bulk continuation tracking in Linux 2.6.32 for improved handling
+   of short/failed transfers
+
+2009-08-27: v1.0.3 release
+ * Bug fixes
+ * Add libusb_get_max_iso_packet_size()
+
+2009-06-13: v1.0.2 release
+ * Bug fixes
+
+2009-05-12: v1.0.1 release
+ * Bug fixes
+ * Darwin backend
+
+2008-12-13: v1.0.0 release
+ * Bug fixes
+
+2008-11-21: v0.9.4 release
+ * Bug fixes
+ * Add libusb_attach_kernel_driver()
+
+2008-08-23: v0.9.3 release
+ * Bug fixes
+
+2008-07-19: v0.9.2 release
+ * Bug fixes
+
+2008-06-28: v0.9.1 release
+ * Bug fixes
+ * Introduce contexts to the API
+ * Compatibility with new Linux kernel features
+
+2008-05-25: v0.9.0 release
+ * First libusb-1.0 beta release
