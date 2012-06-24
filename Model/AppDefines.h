@@ -18,9 +18,9 @@
 #ifndef __APPDEFINES_H
 #define __APPDEFINES_H
 
-#define APPNAME "GcEad 2011"
-#define APPVERSION "v1.2.3"
-#define APPVERSIONDATE "2011-03-15"
+#define APPNAME "GcEad 2012"
+#define APPVERSION "v1.2.4"
+#define APPVERSIONDATE "2012-06-24"
 #define APPSETTINGSKEY "GC-EAD"
 
 #endif

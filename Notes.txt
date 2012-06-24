@@ -56,12 +56,10 @@ Recording objects:
 INSTALL PROGRAMS
 ================
 
-I used BitRock InstallBuilder to create the installers for Windows and Linux.
-I built both installers from within Linux, which is why there are various
-DLLs in Installables/Windows.
-
 Installer for windows
 ---------------------
+
+The installer for Windows is build with NSI.  The following instructions are no longer valid...
 
 * build the project
 * make sure that the DLLs in Installabes/Windows are up-to-date
@@ -72,6 +70,8 @@ Installer for windows
 
 Installer for linux
 -------------------
+
+I used BitRock InstallBuilder to create the installer for Linux.
 
 * build the project
 * cd Setup
@@ -84,6 +84,7 @@ Installer for mac
 * make sure the Qt SDK is installed
 * build the project
 * cd release
-* cp *.hex GcEad.app/Contents/MacOS
 * macdeployqt GcEad.app -dmg
+* since I installed the Qt SDK to ~/local/QtSDK, the above command line is
+  ``~/local/QtSDK/Desktop/Qt/4.8.1/gcc/bin/macdeployqt GcEad.app -dmg``
 * GcEad.dmg is now ready for deployment
