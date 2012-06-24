@@ -31,7 +31,7 @@ LIBS += \
 	-lIdacDriver4 \
     -lIdacDriver \
 	-lCore
-win32:LIBS += -lIadDriverES
+win32:LIBS += -lIdacDriverES
 PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
     $${DESTDIR}/libIdacDriver.a \
     $${DESTDIR}/libIdacDriver2.a \

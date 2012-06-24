@@ -65,8 +65,8 @@ unix:pg {
 # Copy IDAC2 hex file
 !macx:idac2hex.target = $${DESTDIR}/idc2fpga.hex
 win32:idac2hex.commands = ${COPY_FILE} \
-    $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex \
-    $${DESTDIR}
+	$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex \
+	$${DESTDIR}
 unix:!macx:idac2hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc2fpga.hex \
     $${DESTDIR}

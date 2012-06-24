@@ -7,7 +7,6 @@
 #define DRIVER_EXPORT extern "C" __declspec(dllexport)
 #else
 #define DRIVER_EXPORT extern "C" __declspec(dllimport)
-#error Woops1
 #endif
 #else
 #error Woops2

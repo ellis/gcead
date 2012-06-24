@@ -34,7 +34,7 @@ public:
 	static const int IDAC_CHANNELCOUNT = 5;
 
 public:
-	IdacDriver4(UsbHandle* device, QObject* parent = NULL);
+	IdacDriver4(UsbDevice* device, UsbHandle* handle, QObject* parent = NULL);
 	~IdacDriver4();
 
 // Implement IdacDriver

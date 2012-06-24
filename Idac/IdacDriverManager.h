@@ -26,10 +26,13 @@
 #ifdef LIBUSBX
 struct libusb_device_handle;
 typedef libusb_device_handle UsbHandle;
+typedef void UsbDevice;
 // Using libusb0 on windows
 #else
+struct usb_dev_handle;
+typedef usb_dev_handle UsbHandle;
 struct usb_device;
-typedef usb_device UsbHandle;
+typedef usb_device UsbDevice;
 #endif
 
 class IdacCaps;
@@ -44,6 +47,8 @@ public:
 	IdacDriverManager(QObject* parent = NULL);
 	~IdacDriverManager();
 
+	/// Only needed by libusb0-win32; remove once we've moved to libusbx.
+	UsbDevice* device() { return m_device; }
 	UsbHandle* handle() { return m_handle; }
 	IdacDriver* driver() { return m_driver; }
 
@@ -78,6 +83,7 @@ private:
 private:
 	void initLibusb();
 	void exitLibusb();
+    /// Set m_handle and m_driver, if IDAC found.
 	void createLibusbDriver();
 	//void createDriver();
 
@@ -85,6 +91,7 @@ private:
 	IdacState m_state;
 	IdacCommand m_cmd;
 
+	UsbDevice* m_device;
 	UsbHandle* m_handle;
 	IdacDriver* m_driver;
 };

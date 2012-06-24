@@ -11,11 +11,12 @@
 !include "x64.nsh"
 
 !define MY_APP "GcEad"
-!define MY_VERSION "1.2.3"
-!define MY_SRC_QT_DLL "C:\Qt\2010.05\qt\bin"
+!define MY_VERSION "1.2.4"
+!define MY_SRC_QT_DLL "C:\QtSDK\Desktop\Qt\4.8.1\mingw\bin"
+!define MY_SRC_MINGW_DLL "C:\QtSDK\mingw\bin"
 !define MY_SRC_COMMON "..\Installables"
 
-name "GcEad/2011 version ${MY_VERSION}"
+name "GcEad/2012 version ${MY_VERSION}"
 outfile "GcEad-${MY_VERSION}-windows-installer.exe"
 installDir "$PROGRAMFILES\Syntech\GcEad-${MY_VERSION}"
 crcCheck on
@@ -67,8 +68,8 @@ section "GcEad/2011"
     file ${MY_SRC_COMMON}\idc2fpga.hex
     file ${MY_SRC_COMMON}\idc4fpga.hex
     file ..\View\images\GcEad.ico
-    file ${MY_SRC_QT_DLL}\libgcc_s_dw2-1.dll
-    file ${MY_SRC_QT_DLL}\mingwm10.dll
+    file ${MY_SRC_MINGW_DLL}\libgcc_s_dw2-1.dll
+    file ${MY_SRC_MINGW_DLL}\mingwm10.dll
     file ${MY_SRC_QT_DLL}\QtCore4.dll
     file ${MY_SRC_QT_DLL}\QtGui4.dll
     file ${MY_SRC_QT_DLL}\QtSvg4.dll
