@@ -41,9 +41,10 @@ struct INTEL_HEX_RECORD
 class IdacDriverUsb : public IdacDriverWithThread
 {
 public:
-	IdacDriverUsb(UsbHandle* device, QObject* parent = NULL);
+	IdacDriverUsb(UsbDevice* device, UsbHandle* handle, QObject* parent = NULL);
 	~IdacDriverUsb();
 
+	UsbDevice* device() { return m_device; }
 	UsbHandle* handle() { return m_handle; }
 
 protected:
@@ -78,6 +79,7 @@ protected:
 	);
 
 private:
+	UsbDevice* m_device;
 	UsbHandle* m_handle;
 };
 

@@ -7,10 +7,12 @@ SUBDIRS = Core \
     IdacDriver4 \
     IdacDriver2 \
     Idac \
-    Scope \
-    ScopeTest \
+	Scope
+win32:SUBDIRS += IdacDriverES
+SUBDIRS += \
+	ScopeTest \
     View
-win32:SUBDIRS += IdacEs IdacEsTest IdacDriverES
+#win32:SUBDIRS += IdacEs IdacEsTest
 OTHER_FILES += Todo.txt \
     UseCases.txt \
     Notes.txt \

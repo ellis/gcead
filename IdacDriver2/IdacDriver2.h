@@ -30,7 +30,7 @@ class IdacUsb;
 class IdacDriver2 : public IdacDriverUsb24Base
 {
 public:
-	IdacDriver2(UsbHandle* handle, QObject* parent = NULL);
+	IdacDriver2(UsbDevice* device, UsbHandle* handle, QObject* parent = NULL);
 	~IdacDriver2();
 
 // Implement IdacDriver
