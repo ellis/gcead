@@ -61,12 +61,11 @@ Installer for windows
 
 The installer for Windows is build with NSI.  The following instructions are no longer valid...
 
-* build the project
-* make sure that the DLLs in Installabes/Windows are up-to-date
-* copy copy GcEad.exe from the Windows machine to Installables/Windows
-  on the Linux machine
-* cd Setup
-* run: $path_to_builder build GcEad-windows.xml windows
+* Install Qt SDK.  I installed it in C:\QtSDK with Qt 4.8.1.  Adapt Setup/GcEad-windows.nsi for newer versions or different directories.
+* build the project (e.g. by opening GcEad.pro with Qt Creator)
+* Install NSIS (I have v2.46 installed)
+* Open Setup/GcEad-windows.nsi and compile it.
+* Upload Setup/GcEad-x.x.x-windows-installer.exe to sourceforge.net.
 
 Installer for linux
 -------------------
