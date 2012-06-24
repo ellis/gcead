@@ -48,7 +48,6 @@ unix:!macx:LIBS += -static-libgcc \
     -Wl,-Bstatic \
     -lstdc++ \
     -Wl,-Bdynamic \
-    $${PWD}/../extern/libusbx/lib/libusb.a \
     $${PWD}/../extern/libusbx/lib/libusb-1.0.a
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
