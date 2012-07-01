@@ -62,7 +62,7 @@ using namespace std;
 #define BOXSTRINGLENGTH 32
 
 #define ISO_CONTEXT_COUNT 8
-#define ISO_PACKETS_PER_TRANSFER 8
+#define ISO_PACKETS_PER_TRANSFER 64
 #define ISO_PACKET_SIZE 600
 #define ISO_TRANSFER_SIZE (ISO_PACKETS_PER_TRANSFER * ISO_PACKET_SIZE)
 
@@ -438,7 +438,7 @@ void IdacDriver4::sampleInit()
 		int ret = usb_isochronous_setup_async(handle(), &isourb[i], pipeId, ISO_PACKET_SIZE);
 		CHECK_USBRESULT_NORET(ret);
 #else
-		libusb_transfer* transfer = libusb_alloc_transfer(ISO_CONTEXT_COUNT);
+		libusb_transfer* transfer = libusb_alloc_transfer(ISO_PACKETS_PER_TRANSFER);
 		iso_transfer[i] = transfer;
 		void* user_data = (void*) (intptr_t) i;
 		libusb_fill_iso_transfer(
