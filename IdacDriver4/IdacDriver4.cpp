@@ -62,7 +62,7 @@ using namespace std;
 #define BOXSTRINGLENGTH 32
 
 #define ISO_CONTEXT_COUNT 8
-#define ISO_PACKETS_PER_TRANSFER 64
+#define ISO_PACKETS_PER_TRANSFER 16
 #define ISO_PACKET_SIZE 600
 #define ISO_TRANSFER_SIZE (ISO_PACKETS_PER_TRANSFER * ISO_PACKET_SIZE)
 
@@ -393,13 +393,26 @@ static int wait_for_iso_transfer(libusb_transfer* transfer)
 	}
 
 	if (transfer->status == LIBUSB_TRANSFER_COMPLETED) {
+		int nGood = 0;
+		int nBad = 0;
+		int nEmpty = 0;
 		for (int iPacket = 0; iPacket < transfer->num_iso_packets; iPacket++) {
 			libusb_iso_packet_descriptor* packet = &transfer->iso_packet_desc[iPacket];
-			if (packet->status != LIBUSB_TRANSFER_COMPLETED) {
-				qDebug() << "wait_for_iso_transfer()" << "packet" << iPacket << "of" << transfer->num_iso_packets << "status" << packet->status;
-				r = LIBUSB_ERROR_OTHER;
+			if (packet->status == LIBUSB_TRANSFER_COMPLETED) {
+				if (packet->actual_length > 0)
+					nGood++;
+				else
+					nEmpty++;
+			}
+			else {
+				nBad++;
+				quint16* pBuffer = (quint16*) (isobuf + ISO_TRANSFER_SIZE * iTransfer + ISO_PACKET_SIZE * iPacket);
+				*pBuffer = 0;
+				//qDebug() << "wait_for_iso_transfer()" << "packet" << iPacket << "of" << transfer->num_iso_packets << "status" << packet->status;
+				//r = LIBUSB_ERROR_OTHER;
 			}
 		}
+		qDebug() << "packets good/bad/empty:" << nGood << nBad << nEmpty;
 	}
 
 	return r;
@@ -498,8 +511,10 @@ static int iso_reap(int iTransfer)
 	if (ret >= 0) {
 		int nBytesReceived = 0;
 		for (int iPacket = 0; iPacket < transfer->num_iso_packets; iPacket++) {
-			//libusb_iso_packet_descriptor* packet = &transfer->iso_packet_desc[iPacket];
-			nBytesReceived += transfer->iso_packet_desc[iPacket].actual_length;
+			libusb_iso_packet_descriptor* packet = &transfer->iso_packet_desc[iPacket];
+			if (packet->status == LIBUSB_TRANSFER_COMPLETED) {
+				nBytesReceived += packet->actual_length;
+			}
 		}
 		ret = nBytesReceived;
 	}
@@ -561,13 +576,14 @@ void IdacDriver4::sampleLoop()
 	setIsoXferEnabled(false);
 }
 
-bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
+bool IdacDriver4::processSampledData(const int iTransfer, const int nBytesReceived) {
 	CHECK_ASSERT_NORET((nBytesReceived % ISO_PACKET_SIZE) == 0);
 
 	bool bOverflow = false;
-	int nPackets = (nBytesReceived > 0) ? (nBytesReceived / ISO_PACKET_SIZE) : 0;
+	//int nPackets = (nBytesReceived > 0) ? (nBytesReceived / ISO_PACKET_SIZE) : 0;
+	int nBytesProcessed = 0;
 
-	for (int iPacket = 0; iPacket < nPackets; iPacket++)
+	for (int iPacket = 0; iPacket < ISO_PACKETS_PER_TRANSFER; iPacket++ && nBytesProcessed < nBytesReceived)
 	{
 		quint16* pBuffer = (quint16*) (isobuf + ISO_TRANSFER_SIZE * iTransfer + ISO_PACKET_SIZE * iPacket);
 		int nBytes = *pBuffer++;
@@ -575,7 +591,7 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 
 		if (nBytes > ISO_PACKET_SIZE - 2) {
 			logUsbError(__FILE__, __LINE__, QString("Invalid data size: %0").arg(nBytes));
-			cerr << iTransfer << " " << iPacket << " " << nPackets << " " << nBytes << endl;
+			cerr << iTransfer << " " << iPacket << " " << nBytes << endl;
 			for (int j = 0; j < 299; j++) {
 				cerr << pBuffer[j] << " ";
 			}
@@ -628,6 +644,8 @@ bool IdacDriver4::processSampledData(int iTransfer, int nBytesReceived) {
 				}
 			}
 		}
+
+		nBytesProcessed += nBytes;
 	}
 
 	return bOverflow;
