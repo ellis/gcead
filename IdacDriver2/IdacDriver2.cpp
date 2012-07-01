@@ -65,8 +65,8 @@ static int g_nAnalog1Sum;
 static int g_nAnalog2Sum;
 
 
-IdacDriver2::IdacDriver2(UsbHandle* handle, QObject* parent)
-	: IdacDriverUsb24Base(handle, parent),
+IdacDriver2::IdacDriver2(UsbDevice* device, UsbHandle* handle, QObject* parent)
+	: IdacDriverUsb24Base(device, handle, parent),
 	  m_defaultChannelSettings(3)
 {
 	m_bSampling = false;

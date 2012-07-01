@@ -32,7 +32,7 @@ class IdacUsb;
 class IdacDriverUsb24Base : public IdacDriverUsb
 {
 public:
-	IdacDriverUsb24Base(UsbHandle* device, QObject* parent = NULL);
+	IdacDriverUsb24Base(UsbDevice* device, UsbHandle* handle, QObject* parent = NULL);
 
 public:
 	bool checkUsbFirmwareReady();

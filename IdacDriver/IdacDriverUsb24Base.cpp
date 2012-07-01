@@ -9,8 +9,8 @@
 #endif
 
 
-IdacDriverUsb24Base::IdacDriverUsb24Base(UsbHandle* device, QObject* parent)
-	: IdacDriverUsb(device, parent)
+IdacDriverUsb24Base::IdacDriverUsb24Base(UsbDevice* device, UsbHandle* handle, QObject* parent)
+	: IdacDriverUsb(device, handle, parent)
 {
 	m_bFpgaProgrammed = false;
 }
@@ -21,8 +21,8 @@ bool IdacDriverUsb24Base::checkUsbFirmwareReady()
 
 	bool b = false;
 #if defined(LIBUSB0)
-	if (handle()->config[0].bNumInterfaces == 1)
-		if (handle()->config[0].interface[0].num_altsetting == 1)
+	if (device()->config[0].bNumInterfaces == 1)
+		if (device()->config[0].interface[0].num_altsetting == 1)
 			b = true;
 #elif defined(LIBUSBX)
 	libusb_device* dev = libusb_get_device(handle());
@@ -52,18 +52,18 @@ bool IdacDriverUsb24Base::claim(bool bUnhalt)
 	int res;
 
 #if defined(LIBUSB0)
-	struct usb_device* dev = handle();
+	struct usb_device* dev = device();
 	int idConfiguration = dev->config[0].bConfigurationValue;
 	res = usb_set_configuration(handle(), idConfiguration);
-	CHECK_USBRESULT_RET(res);
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	int idInterface = dev->config[0].interface[0].altsetting[0].bInterfaceNumber;
 	res = usb_claim_interface(handle(), idInterface);
-	CHECK_USBRESULT_RET(res);
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	usb_interface_descriptor* setting = &dev->config[0].interface[0].altsetting[0];
 	res = usb_set_altinterface(handle(), setting->bAlternateSetting);
-	CHECK_USBRESULT_RET(res);
+	CHECK_USBRESULT_RETVAL(res, false);
 
 	if (bUnhalt) {
 		for (int iPipe = 0; iPipe < setting->bNumEndpoints; iPipe++)

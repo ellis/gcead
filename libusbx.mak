@@ -12,6 +12,9 @@ COMPAT := ${LIBUSB_OUTDIR}/lib/libusb.a
 
 all: ${LIBUSB} ${COMPAT}
 
+clean:
+	rm -rf ${LIBUSB_OBJDIR} ${LIBUSB_OUTDIR}
+
 ${LIBUSB}:
 	mkdir -p ${LIBUSB_OBJDIR}
 	cd ${LIBUSB_OBJDIR} && \

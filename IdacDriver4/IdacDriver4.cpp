@@ -114,8 +114,8 @@ int dwRangesList_V2[IDAC_SCALERANGECOUNT+1] = {	MAX_INPUT_VOLTAGE_ADC_V2 / 1,
 													-1 };
 
 
-IdacDriver4::IdacDriver4(UsbHandle* device, QObject* parent)
-	: IdacDriverUsb24Base(device, parent),
+IdacDriver4::IdacDriver4(UsbDevice* device, UsbHandle* handle, QObject* parent)
+	: IdacDriverUsb24Base(device, handle, parent),
 	  m_defaultChannelSettings(3)
 {
 	m_bPowerOn = false;
@@ -423,7 +423,7 @@ void IdacDriver4::sampleInit()
 {
 	const int nBufSize = ISO_TRANSFER_SIZE * ISO_CONTEXT_COUNT;
 #if defined(LIBUSB0)
-	const int pipeId = handle()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
+	const int pipeId = device()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
 #elif defined(LIBUSBX)
 	libusb_device* dev = libusb_get_device(handle());
 	CHECK_ASSERT_RET(dev != NULL);

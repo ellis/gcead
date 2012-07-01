@@ -31,48 +31,15 @@
 #include "Sleeper.h"
 
 
-IdacDriverUsb::IdacDriverUsb(UsbHandle* handle, QObject* parent)
+IdacDriverUsb::IdacDriverUsb(UsbDevice* device, UsbHandle* handle, QObject* parent)
 	: IdacDriverWithThread(parent)
 {
+	m_device = device;
 	m_handle = handle;
-
-#ifdef LIBUSB0
-	if (m_handle != NULL)
-	{
-		m_handle = usb_open(m_handle);
-		if (m_handle == NULL)
-			logUsbError(__FILE__, __LINE__, "Unable to open USB device");
-	}
-	else
-		m_handle = NULL;
-#endif
 }
 
 IdacDriverUsb::~IdacDriverUsb()
 {
-#ifdef LIBUSB0
-	if (m_handle != NULL)
-	{
-		// The pointers needs to be checked incase the USB device has
-		// been unplugged and the pointers have been NULLed by libusb.
-		struct usb_config_descriptor* config = &m_handle->config[0];
-		if (config != NULL)
-		{
-			struct usb_interface* interface = &config->interface[0];
-			if (interface != NULL)
-			{
-				struct usb_interface_descriptor* altsetting = &interface->altsetting[0];
-				if (altsetting != NULL)
-				{
-					int idInterface = altsetting->bInterfaceNumber;
-					usb_release_interface(m_handle, idInterface);
-				}
-			}
-		}
-		usb_close(m_handle);
-		m_handle = NULL;
-	}
-#endif
 }
 
 void IdacDriverUsb::logUsbError(const char* file, int line, int result)

@@ -34,6 +34,7 @@ IdacDriverManager::IdacDriverManager(QObject* parent)
 	m_state = IdacState_None;
 	m_cmd = IdacCommand_None;
 
+	m_device = NULL;
 	m_handle = NULL;
 	m_driver = NULL;
 
