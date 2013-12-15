@@ -63,7 +63,7 @@ QModelIndex PropertyRowModel::index(int row, int column, const QModelIndex &pare
 {
 	QModelIndex idx;
 	if (!parent.isValid())
-		idx = createIndex(row, column, 0);
+        idx = createIndex(row, column, (void*)0);
 	return idx;
 }
 

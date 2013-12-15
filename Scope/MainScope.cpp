@@ -380,7 +380,7 @@ void MainScope::updateRecentFileActions()
 	for (int i = 0; i < Globals->recentFiles.count(); i++)
 	{
 		QString sFilename = Globals->recentFiles[i];
-		sFilename = QDir::convertSeparators(sFilename);
+        sFilename = QDir::toNativeSeparators(sFilename);
 		sFilename = QFileInfo(sFilename).fileName();
 		QString text = tr("&%1 %2").arg(i + 1).arg(sFilename);
 		m_actions->fileOpenRecentActions[i]->setText(text);

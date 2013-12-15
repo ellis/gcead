@@ -54,8 +54,8 @@ IdacDriver4Channel::~IdacDriver4Channel()
 // Initialization
 void IdacDriver4Channel::Reset(quint16 wSyncCount)
 {
-	m_bSynchronized	= FALSE;	// TRUE will generally work but there will be sync errors at higher speeds
-	m_bDigital		= FALSE;
+    m_bSynchronized	= false;	// true will generally work but there will be sync errors at higher speeds
+    m_bDigital		= false;
 
 	m_wSyncTracker	= 0;
 	m_wSyncCount	= wSyncCount;
@@ -72,8 +72,8 @@ void IdacDriver4Channel::Reset(quint16 wSyncCount)
 // csStat		- Will receive error flags if applicable
 //
 // Returns:
-// TRUE			- sr contains an analog or digital sample
-// FALSE		- only a temporary status was set, or an error occured
+// true			- sr contains an analog or digital sample
+// false		- only a temporary status was set, or an error occured
 
 bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STATUS& csStat, const QVector<IdacChannelSettings>& channels)
 {
@@ -82,7 +82,7 @@ bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STAT
 	if (nRead != SMP_SYNCWORD)
 	{
 		// if not synchronised: dont process samples
-		if (!m_bSynchronized) return FALSE;
+        if (!m_bSynchronized) return false;
 
 		quint8 Chan = GetNextAnChannel(channels);
 
@@ -93,7 +93,7 @@ bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STAT
 			sr.uChannel			= 0;
 			sr.flags			= csStat;
 
-			return TRUE;
+            return true;
 		}
 		// analog channels
 		else
@@ -102,7 +102,7 @@ bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STAT
 			sr.uChannel		= Chan;
 			sr.flags		= csStat;
 
-			return TRUE;
+            return true;
 		}
 	}
 	else
@@ -117,12 +117,12 @@ bool IdacDriver4Channel::ParseSample(quint16 wRead, CDD32_SAMPLE& sr, CDD32_STAT
 
 		default:
 			// This should never happen, this signals a communication fault
-			csStat.bCommErr = TRUE;
+            csStat.bCommErr = true;
 			break;
 		}
 	}
 
-	return FALSE;	
+    return false;
 }
 
 // Respond to sync word
@@ -131,7 +131,7 @@ void IdacDriver4Channel::Synchronize(const QVector<IdacChannelSettings>& channel
 	// Detect first synchronization
 	if (!m_bSynchronized)
 	{
-		m_bSynchronized = TRUE;
+        m_bSynchronized = true;
 	}
 
 	for (quint8 Chan = 0; Chan < nIdacChannelCount; Chan++)

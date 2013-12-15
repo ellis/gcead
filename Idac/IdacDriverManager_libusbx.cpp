@@ -17,7 +17,7 @@
 
 #include "IdacDriverManager.h"
 
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+#if defined(Q_OS_LINUX) || defined(Q_WS_MAC)
 #include <libusb-1.0/libusb.h>
 #else
 #include <usb.h>
@@ -76,9 +76,9 @@ void IdacDriverManager::createLibusbDriver()
 						if (r >= 0) {
 							m_handle = handle;
 							if (desc.idProduct == 0x0006)
-								m_driver = new IdacDriver4(m_handle);
+                                m_driver = new IdacDriver4(dev, m_handle);
 							else
-								m_driver = new IdacDriver2(m_handle);
+                                m_driver = new IdacDriver2(dev, m_handle);
 							break;
 						}
 					}

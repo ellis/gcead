@@ -21,17 +21,17 @@ int IdacDriver4Es::IdacDataAvail() { return false; } // FIXME: implement -- elli
 bool IdacDriver4Es::IdacCapabilities(int iCap) const {
 	static bool CapTbl[] =
 	{
-		TRUE,	// IDAC_CAN_SCALE
-		TRUE,	// IDAC_HAS_LOWPASS
-		TRUE,	// IDAC_HAS_HIGHPASS
-		TRUE,	// IDAC_HAS_NOTCH
-		TRUE,	// IDAC_HAS_AUDIOOUT
-		TRUE,	// IDAC_HAS_DIGITALOUT
-		TRUE,	// IDAC_HAS_ANALOGOUT
-		TRUE,	// IDAC_HAS_ZEROPULSE
-		TRUE,	// IDAC_HAS_INPUTOFFSET
-		TRUE,	// IDAC_CAN_TUNE
-		TRUE	// IDAC_HAS_EAG
+        true,	// IDAC_CAN_SCALE
+        true,	// IDAC_HAS_LOWPASS
+        true,	// IDAC_HAS_HIGHPASS
+        true,	// IDAC_HAS_NOTCH
+        true,	// IDAC_HAS_AUDIOOUT
+        true,	// IDAC_HAS_DIGITALOUT
+        true,	// IDAC_HAS_ANALOGOUT
+        true,	// IDAC_HAS_ZEROPULSE
+        true,	// IDAC_HAS_INPUTOFFSET
+        true,	// IDAC_CAN_TUNE
+        true	// IDAC_HAS_EAG
 	};
 
 	CHECK_PARAM_RETVAL(iCap >= 0 && iCap < int(sizeof(CapTbl)/sizeof(CapTbl[0])), false);

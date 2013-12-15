@@ -28,7 +28,7 @@ LIBS += -lCore \
 	-lIdacDriver2 \
 	-lIdacDriver4 \
 	-lIdacDriver \
-        -lModel \
+	-lModel \
 	-lFilters \
 	-lScope
 win32:LIBS += -lIdacDriverES
@@ -47,6 +47,7 @@ unix:!macx:LIBS += -static-libgcc \
     -L../release \
     -Wl,-Bstatic \
     -lstdc++ \
+	-llibudev \
     -Wl,-Bdynamic \
     $${PWD}/../extern/libusbx/lib/libusb-1.0.a
 unix:macx:LIBS += -Wl,-framework \

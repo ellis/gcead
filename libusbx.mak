@@ -2,11 +2,11 @@
 # libusbx 1.x for linux and mac.
 
 BASEDIR := $(shell pwd)
-LIBUSB_SRCDIR := ${BASEDIR}/extern/libusbx-1.0.12
+LIBUSB_SRCDIR := ${BASEDIR}/extern/libusbx-1.0.17
 LIBUSB_OBJDIR := ${BASEDIR}/extern/libusbx-obj
 LIBUSB_OUTDIR := ${BASEDIR}/extern/libusbx
 LIBUSB := ${LIBUSB_OUTDIR}/lib/libusb-1.0.a
-COMPAT_SRCDIR := ${BASEDIR}/extern/libusb-compat-0.1.4
+COMPAT_SRCDIR := ${BASEDIR}/extern/libusb-compat-0.1.5
 COMPAT_OBJDIR := ${BASEDIR}/extern/libusb-compat-obj
 COMPAT := ${LIBUSB_OUTDIR}/lib/libusb.a
 

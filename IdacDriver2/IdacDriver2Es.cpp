@@ -38,7 +38,7 @@ LONG			AddressList			[]	= { 1, -1 };
 
 // State machine (SUPPDATA.H)
 // TODO check if digital channel must be inverted
-CChannelState	IdacChannelState		(FALSE);		// Do invert digital data
+CChannelState	IdacChannelState		(false);		// Do invert digital data
 
 // Buffer (SUPPDATA.H)
 CIdacFifo		ChannelBuffer;
@@ -47,7 +47,7 @@ CIdacFifo		ChannelBuffer;
 HANDLE			hBufferEvent			= NULL;
 
 // Sampling parameters (SUPPINT.H)
-BOOL	bIdacChannelEnabled	[]	= { FALSE, FALSE, FALSE};
+BOOL	bIdacChannelEnabled	[]	= { false, false, false};
 WORD	wDecimations		[]	= { 1, 1, 1 };	// sample rate is fixed at 100hz
 WORD	wScaleAmp			[]	= { 0, 0, 0 };
 
@@ -77,17 +77,17 @@ int IdacDriver2Es::IdacBoot(const QString& /*sFilename*/, int /*nAddress*/) {
 bool IdacDriver2Es::IdacCapabilities(int iCap) const {
 	static bool CapTbl[] =
 	{
-		TRUE,	// IDAC_CAN_SCALE
-		FALSE,	// IDAC_HAS_LOWPASS
-		TRUE,	// IDAC_HAS_HIGHPASS
-		FALSE,	// IDAC_HAS_NOTCH
-		FALSE,	// IDAC_HAS_AUDIOOUT
-		FALSE,	// IDAC_HAS_DIGITALOUT
-		FALSE,	// IDAC_HAS_ANALOGOUT
-		TRUE,	// IDAC_HAS_ZEROPULSE
-		TRUE,	// IDAC_HAS_INPUTOFFSET
-		TRUE,	// IDAC_CAN_TUNE
-		FALSE	// IDAC_HAS_EAG
+        true,	// IDAC_CAN_SCALE
+        false,	// IDAC_HAS_LOWPASS
+        true,	// IDAC_HAS_HIGHPASS
+        false,	// IDAC_HAS_NOTCH
+        false,	// IDAC_HAS_AUDIOOUT
+        false,	// IDAC_HAS_DIGITALOUT
+        false,	// IDAC_HAS_ANALOGOUT
+        true,	// IDAC_HAS_ZEROPULSE
+        true,	// IDAC_HAS_INPUTOFFSET
+        true,	// IDAC_CAN_TUNE
+        false	// IDAC_HAS_EAG
 	};
 
 	CHECK_PARAM_RETVAL(iCap >= 0 && iCap < int(sizeof(CapTbl)/sizeof(CapTbl[0])), false);
