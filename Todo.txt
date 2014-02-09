@@ -1,3 +1,7 @@
+- [ ] put code on github
+- [ ] see about linking in libusbx and libusb and libusb-compat as git submodules
+- [ ] let user delete waves
+
 Biggest challenges for driver:
 	IdacSetBufferEvent
 	function which shows dialog
