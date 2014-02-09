@@ -54,8 +54,9 @@ private slots:
 	void on_btnShiftDec_clicked();
 	void on_btnShiftInc_clicked();
 	void on_chkVisible_clicked();
-	void on_edtComment_textChanged();
-	void on_btnInvert_clicked();
+    void on_edtName_textChanged();
+    void on_edtComment_textChanged();
+    void on_btnInvert_clicked();
 
 private:
 	QPointer<ViewWaveInfo> m_vwi;
@@ -72,9 +73,11 @@ private:
 	QPushButton* m_btnShiftDec;
 	QLabel* m_lblVisibleLabel;
 	QCheckBox* m_chkVisible;
-	QLabel* m_lblCommentLabel;
-	QLineEdit* m_edtComment;
-	QToolButton* m_btnInvert;
+    QLabel* m_lblNameLabel;
+    QLineEdit* m_edtName;
+    QLabel* m_lblCommentLabel;
+    QLineEdit* m_edtComment;
+    QToolButton* m_btnInvert;
 
 	class GraphicsWaveInfoItem* m_graphics;
 };

@@ -137,7 +137,13 @@ void ViewWaveInfo::invert()
 	if (m_wave->type == WaveType_FID)
 		m_wave->findFidPeaks();
 	
-	emitChanged(ViewChangeEvent_CalcAve);
+    emitChanged(ViewChangeEvent_CalcAve);
+}
+
+void ViewWaveInfo::setName(const QString &sName)
+{
+    m_wave->sName = sName;
+    emitChanged(ViewChangeEvent_Paint);
 }
 
 void ViewWaveInfo::setComment(const QString& sComment)

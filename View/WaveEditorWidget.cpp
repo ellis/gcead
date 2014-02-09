@@ -101,9 +101,13 @@ void WaveEditorWidget::setupWidgets()
 	m_chkVisible = new QCheckBox();
 	connect(m_chkVisible, SIGNAL(clicked()), this, SLOT(on_chkVisible_clicked()));
 
-	m_lblCommentLabel = new QLabel(tr("Comment:"));
-	m_edtComment = new QLineEdit();
-	connect(m_edtComment, SIGNAL(textChanged(const QString&)), this, SLOT(on_edtComment_textChanged()));
+    m_lblNameLabel = new QLabel(tr("Name:"));
+    m_edtName = new QLineEdit();
+    connect(m_edtName, SIGNAL(textChanged(const QString&)), this, SLOT(on_edtName_textChanged()));
+
+    m_lblCommentLabel = new QLabel(tr("Comment:"));
+    m_edtComment = new QLineEdit();
+    connect(m_edtComment, SIGNAL(textChanged(const QString&)), this, SLOT(on_edtComment_textChanged()));
 
 	m_btnInvert = new QToolButton();
 	m_btnInvert->setText(tr("Invert"));
@@ -125,7 +129,11 @@ void WaveEditorWidget::setupWidgets()
 	iRow++;
 	layout->addWidget(m_lblVisibleLabel, iRow, 1);
 	layout->addWidget(m_chkVisible, iRow, 2);
-	iRow++;
+    iRow++;
+    layout->addWidget(m_lblNameLabel, iRow, 1);
+    iRow++;
+    layout->addWidget(m_edtName, iRow, 1, 1, 4);
+    iRow++;
 	layout->addWidget(m_lblCommentLabel, iRow, 1);
 	iRow++;
 	layout->addWidget(m_edtComment, iRow, 1, 1, 4);
@@ -145,10 +153,14 @@ void WaveEditorWidget::setWave(ViewWaveInfo* vwi, WaveEditorFlags flags)
 
 	updateFromInfo();
 
-	if (m_vwi != NULL)
+    if (m_vwi != NULL) {
+        m_edtName->setText(m_vwi->waveInfo()->sName);
 		m_edtComment->setText(m_vwi->waveInfo()->sComment);
-	else
+    }
+    else {
+        m_edtName->setText("");
 		m_edtComment->setText("");
+    }
 }
 
 void WaveEditorWidget::updateFromInfo()
@@ -201,7 +213,9 @@ void WaveEditorWidget::updateVisibility()
 	m_btnShiftInc->setVisible(bVis);
 
 	bVis = (d && m_flags.testFlag(WaveEditorFlag_Comment));
-	m_lblCommentLabel->setVisible(bVis);
+    m_lblNameLabel->setVisible(bVis);
+    m_edtName->setVisible(bVis);
+    m_lblCommentLabel->setVisible(bVis);
 	m_edtComment->setVisible(bVis);
 
 	bVis = (d && m_flags.testFlag(WaveEditorFlag_Invert));
@@ -242,13 +256,19 @@ void WaveEditorWidget::on_btnShiftInc_clicked()
 void WaveEditorWidget::on_chkVisible_clicked()
 {
 	CHECK_PRECOND_RET(m_vwi != NULL);
-	m_vwi->setVisible(m_chkVisible->isChecked());
+    m_vwi->setVisible(m_chkVisible->isChecked());
+}
+
+void WaveEditorWidget::on_edtName_textChanged()
+{
+    CHECK_PRECOND_RET(m_vwi != NULL);
+    m_vwi->setName(m_edtName->text());
 }
 
 void WaveEditorWidget::on_edtComment_textChanged()
 {
-	CHECK_PRECOND_RET(m_vwi != NULL);
-	m_vwi->setComment(m_edtComment->text());
+    CHECK_PRECOND_RET(m_vwi != NULL);
+    m_vwi->setComment(m_edtComment->text());
 }
 
 void WaveEditorWidget::on_btnInvert_clicked()

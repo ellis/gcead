@@ -70,7 +70,8 @@ public:
 
 	void invert();
 
-	void setComment(const QString& sComment);
+    void setName(const QString& sName);
+    void setComment(const QString& sComment);
 
 	void choosePeak(const WavePeakChosenInfo& peak);
 	void choosePeakAtDidx(int didx);
