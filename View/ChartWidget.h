@@ -62,6 +62,7 @@ protected:
 private:
 	void setupWidgets();
 	void layoutRecordingLabel();
+    void abortDragOrSelect(const Qt::KeyboardModifiers modifiers);
 	void updateMouseCursor(Qt::KeyboardModifiers modifiers);
 
 	QSize calcPixmapSize() const;

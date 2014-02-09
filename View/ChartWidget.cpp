@@ -195,14 +195,14 @@ void ChartWidget::on_scope_recordingLabelTextChanged(const QString& s)
 
 QSize ChartWidget::calcPixmapSize() const
 {
-	QRect rcPixmapMax(20, m_buttons->height(), width() - 35, height() - m_buttons->height() - 20);
+    //QRect rcPixmapMax(20, m_buttons->height(), width() - 35, height() - m_buttons->height() - 20);
 
 	QSize sz = m_rcPixmapMax.size();
-	int nCols = 0;
+    //int nCols = 0;
 	if (m_mainS->taskType() == EadTask_Publish)
 	{
-		if (Globals->publisherSettings()->bPublishCols)
-			nCols = Globals->publisherSettings()->nPublishCols;
+        //if (Globals->publisherSettings()->bPublishCols)
+        //	nCols = Globals->publisherSettings()->nPublishCols;
 		if (Globals->publisherSettings()->bPublishHeight && Globals->publisherSettings()->nPublishSize > 0)
 		{
 			sz = QSize(Globals->publisherSettings()->nPublishSize, Globals->publisherSettings()->nPublishSize);
@@ -232,7 +232,20 @@ void ChartWidget::resizeEvent(QResizeEvent* e)
 void ChartWidget::layoutRecordingLabel()
 {
 	m_lblRecording->setGeometry(width() - m_lblRecording->sizeHint().width() - 20, 5,
-			m_lblRecording->sizeHint().width(), m_lblRecording->sizeHint().height());
+                                m_lblRecording->sizeHint().width(), m_lblRecording->sizeHint().height());
+}
+
+void ChartWidget::abortDragOrSelect(const Qt::KeyboardModifiers modifiers)
+{
+    if (m_bDragging || m_bSelecting) {
+        m_bDragging = false;
+        m_bSelecting = false;
+
+        // Call this to get the appropriate mouse cursor
+        updateMouseCursor(modifiers);
+
+        update();
+    }
 }
 
 void ChartWidget::paintEvent(QPaintEvent* e)
@@ -290,21 +303,13 @@ void ChartWidget::keyPressEvent(QKeyEvent* e)
 {
 	// Escape key pressed
 	if (e->modifiers() == 0 && e->key() == Qt::Key_Escape) {
-		// Selecting:
-		if (m_bDragging && m_bSelecting) {
-			m_bDragging = false;
-			m_bSelecting = false;
-
-			// Call this to get the appropriate mouse cursor
-			updateMouseCursor(e->modifiers());
-
-			update();
-		}
+        abortDragOrSelect(0);
 	}
 }
 
 void ChartWidget::mousePressEvent(QMouseEvent* e)
 {
+    //qDebug() << "mousePressEvent";
 	QRect rcWaveforms = m_rcPixmap;
 
 	ChartPointInfo info;
@@ -398,7 +403,8 @@ void ChartWidget::mousePressEvent(QMouseEvent* e)
 
 void ChartWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-	Q_UNUSED(e);
+    //qDebug() << "mouseReleaseEvent";
+    Q_UNUSED(e);
 
 	m_ptMouseWidget = e->pos();
 	m_ptMousePixmap = m_ptMouseWidget - m_rcPixmap.topLeft();
@@ -507,7 +513,8 @@ void ChartWidget::mouseMoveEvent(QMouseEvent* e)
 
 void ChartWidget::mouseDoubleClickEvent(QMouseEvent* e)
 {
-	QRect rcWaveforms = m_rcPixmap;
+    //qDebug() << "mouseDoubleClickEvent";
+    QRect rcWaveforms = m_rcPixmap;
 
 	ChartPointInfo info;
 	QPoint ptPixmap = e->pos() - m_rcPixmap.topLeft();
@@ -526,6 +533,8 @@ void ChartWidget::mouseDoubleClickEvent(QMouseEvent* e)
 
 	if (e->button() == Qt::LeftButton)
 	{
+        abortDragOrSelect(e->modifiers());
+
 		// Clicked on a chosen peak:
 		if (info.iChosenPeak >= 0)
 		{
