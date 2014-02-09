@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = GcEad
-QT += xml \
+QT += printsupport \
+    xml \
     svg
 CONFIG += warn_on \
     debug_and_release \
@@ -47,9 +48,9 @@ unix:!macx:LIBS += -static-libgcc \
     -L../release \
     -Wl,-Bstatic \
     -lstdc++ \
-	-llibudev \
     -Wl,-Bdynamic \
-    $${PWD}/../extern/libusbx/lib/libusb-1.0.a
+    $${PWD}/../extern/libusbx/lib/libusb-1.0.a \
+    -l:libudev.so.1
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
     -lobjc \

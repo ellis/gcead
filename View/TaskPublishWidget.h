@@ -28,6 +28,7 @@ class QComboBox;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
+class QPrinter;
 class QPushButton;
 class QRadioButton;
 class QSpinBox;

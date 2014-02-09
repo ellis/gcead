@@ -29,12 +29,12 @@ LIBS += \
 	-lIdac \
 	-lIdacDriver2 \
 	-lIdacDriver4 \
-    -lIdacDriver \
+        -lIdacDriver \
 	-lCore
 win32:LIBS += -lIdacDriverES
 PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
-    $${DESTDIR}/libIdacDriver.a \
-    $${DESTDIR}/libIdacDriver2.a \
+        $${DESTDIR}/libIdacDriver.a \
+        $${DESTDIR}/libIdacDriver2.a \
 	$${DESTDIR}/libIdacDriver4.a \
 	$${DESTDIR}/libIdac.a \
 	$${DESTDIR}/libFilters.a \
@@ -48,8 +48,8 @@ unix:!macx:LIBS += -static-libgcc \
     -Wl,-Bstatic \
     -lstdc++ \
     -Wl,-Bdynamic \
-	-l:libudev.so.1 \
-    $${PWD}/../extern/libusbx/lib/libusb-1.0.a
+    $${PWD}/../extern/libusbx/lib/libusb-1.0.a \
+    -l:libudev.so.1
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
     -lobjc \

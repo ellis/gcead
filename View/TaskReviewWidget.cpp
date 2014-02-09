@@ -633,14 +633,14 @@ void TaskReviewWidget::changeSens(ViewWaveInfo* vwi, int nIndexInc)
 void TaskReviewWidget::on_cmbEad_activated()
 {
 	int iItem = m_cmbEad->currentIndex();
-	WaveInfo* wave = (WaveInfo*) qVariantValue<QObject*>(m_cmbEad->itemData(iItem));
+    WaveInfo* wave = (WaveInfo*) m_cmbEad->itemData(iItem).value<QObject*>();
 	selectExtraWave(wave);
 }
 
 void TaskReviewWidget::on_cmbFid_activated()
 {
 	int iItem = m_cmbFid->currentIndex();
-	WaveInfo* wave = (WaveInfo*) qVariantValue<QObject*>(m_cmbFid->itemData(iItem));
+    WaveInfo* wave = (WaveInfo*) m_cmbFid->itemData(iItem).value<QObject*>();
 	selectExtraWave(wave);
 }
 
