@@ -48,12 +48,12 @@ unix:!macx:LIBS += -static-libgcc \
     -Wl,-Bstatic \
     -lstdc++ \
     -Wl,-Bdynamic \
-    $${PWD}/../extern/libusbx/lib/libusb-1.0.a \
+    $${PWD}/../extern/libusb/lib/libusb-1.0.a \
     -l:libudev.so.1
 unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
     -lobjc \
-    $${PWD}/../extern/libusbx/lib/libusb-1.0.a
+    $${PWD}/../extern/libusb/lib/libusb-1.0.a
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc

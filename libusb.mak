@@ -1,5 +1,5 @@
-# Run this makefile (make -f libusbx.mak) in order to build
-# libusbx 1.x for linux and mac.
+# Run this makefile (make -f libusb.mak) in order to build
+# libusb 1.x for linux and mac.
 
 BASEDIR := $(shell pwd)
 LIBUSB_SRCDIR := ${BASEDIR}/extern/libusb-1

@@ -32,7 +32,7 @@ win32:DEFINES += LIBUSB0
 unix:DEFINES += LIBUSBX
 
 win32:INCLUDEPATH += ../extern/win32
-unix:INCLUDEPATH += ../extern/libusbx/include
+unix:INCLUDEPATH += ../extern/libusb/include
 
 CONFIG(debug, debug|release):DESTDIR = ../debug
 else:DESTDIR = ../release
