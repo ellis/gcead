@@ -15,16 +15,22 @@ all: ${LIBUSB} ${COMPAT}
 clean:
 	rm -rf ${LIBUSB_OBJDIR} ${LIBUSB_OUTDIR}
 
-${LIBUSB}:
+${LIBUSB_SRCDIR}/configure:
+	cd ${LIBUSB_SRCDIR} && ./bootstrap.sh
+
+${LIBUSB}: ${LIBUSB_SRCDIR}/configure
 	mkdir -p ${LIBUSB_OBJDIR}
 	cd ${LIBUSB_OBJDIR} && \
 	${LIBUSB_SRCDIR}/configure --prefix ${LIBUSB_OUTDIR} && \
 	make install
 
-${COMPAT}:
-	mkdir -p ${COMPAT_OBJDIR}
-	cd ${COMPAT_OBJDIR} && \
+${COMPAT_SRCDIR}/configure:
+	cd ${COMPAT_SRCDIR} && ./bootstrap.sh
+
+${COMPAT}: ${COMPAT_SRCDIR}/configure
+	#mkdir -p ${COMPAT_OBJDIR}
+	cd ${COMPAT_SRCDIR} && \
 	export LIBUSB_1_0_LIBS="-L${LIBUSB_OUTDIR}/lib" && \
 	export LIBUSB_1_0_CFLAGS="-I${LIBUSB_OUTDIR}/include/libusb-1.0" && \
-	${COMPAT_SRCDIR}/configure --prefix ${LIBUSB_OUTDIR} && \
+	./configure --prefix ${LIBUSB_OUTDIR} && \
 	make install
