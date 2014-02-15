@@ -1,23 +1,30 @@
-# Run this makefile (make -f libusb.mak) in order to build
-# libusb 1.0 for linux and mac.
+# Run this makefile (make -f libusbx.mak) in order to build
+# libusbx 1.x for linux and mac.
 
 BASEDIR := $(shell pwd)
-LIBUSB1_BASEDIR := extern/libusb
-LIBUSB1_SRCDIR := ${LIBUSB1_BASEDIR}/libusb
-LIBUSB1_LIBDIR := ${LIBUSB1_SRCDIR}/.libs
-LIBUSB1 := ${LIBUSB1_LIBDIR}/libusb-1.0.a
-LIBCOMPAT := extern/libusb-compat-0.1.3/libusb/.libs/libusb.a
+LIBUSB_SRCDIR := ${BASEDIR}/extern/libusb-1
+LIBUSB_OBJDIR := ${BASEDIR}/extern/libusb-obj
+LIBUSB_OUTDIR := ${BASEDIR}/extern/libusb
+LIBUSB := ${LIBUSB_OUTDIR}/lib/libusb-1.0.a
+COMPAT_SRCDIR := ${BASEDIR}/extern/libusb-compat-0.1
+COMPAT_OBJDIR := ${BASEDIR}/extern/libusb-compat-obj
+COMPAT := ${LIBUSB_OUTDIR}/lib/libusb.a
 
-all: ${LIBUSB1} ${LIBCOMPAT}
+all: ${LIBUSB} ${COMPAT}
 
-${LIBUSB1}:
-	cd ${LIBUSB1_BASEDIR} && \
-	./configure && \
-	make
+clean:
+	rm -rf ${LIBUSB_OBJDIR} ${LIBUSB_OUTDIR}
 
-${LIBCOMPAT}:
-	cd extern/libusb-compat-0.1.3 && \
-	export LIBUSB_1_0_LIBS="-L${BASEDIR}/${LIBUSB1_LIBDIR}" && \
-	export LIBUSB_1_0_CFLAGS="-I${BASEDIR}/${LIBUSB1_SRCDIR}" && \
-	./configure && \
-	make
+${LIBUSB}:
+	mkdir -p ${LIBUSB_OBJDIR}
+	cd ${LIBUSB_OBJDIR} && \
+	${LIBUSB_SRCDIR}/configure --prefix ${LIBUSB_OUTDIR} && \
+	make install
+
+${COMPAT}:
+	mkdir -p ${COMPAT_OBJDIR}
+	cd ${COMPAT_OBJDIR} && \
+	export LIBUSB_1_0_LIBS="-L${LIBUSB_OUTDIR}/lib" && \
+	export LIBUSB_1_0_CFLAGS="-I${LIBUSB_OUTDIR}/include/libusb-1.0" && \
+	${COMPAT_SRCDIR}/configure --prefix ${LIBUSB_OUTDIR} && \
+	make install
