@@ -8,8 +8,8 @@ DEPENDPATH += . ..
 HEADERS += Check.h Utils.h
 SOURCES += Utils.cpp
 
-CONFIG(debug, debug|release) {
-    DESTDIR = ../debug
-} else {
-    DESTDIR = ../release
-}
+#CONFIG(debug, debug|release) {
+#    DESTDIR = ../debug
+#} else {
+#    DESTDIR = ../release
+#}

@@ -36,8 +36,8 @@ HEADERS += IdacEs.h\
 
 OTHER_FILES += Idacdll.def
 
-CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
-else:DESTDIR = $${OUT_PWD}/../release
+#CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
+#else:DESTDIR = $${OUT_PWD}/../release
 LIBS += -L$${DESTDIR}
 
 LIBS += $${PWD}/Idacdll.def -Wl,--kill-at,--output-def,Idacdll.def \

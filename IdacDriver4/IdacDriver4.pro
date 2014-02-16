@@ -29,5 +29,5 @@ win32:DEFINES += WIN32
 win32:DEFINES += LIBUSB0
 unix:DEFINES += LIBUSBX
 
-CONFIG(debug, debug|release):DESTDIR = ../debug
-else:DESTDIR = ../release
+#CONFIG(debug, debug|release):DESTDIR = ../debug
+#else:DESTDIR = ../release

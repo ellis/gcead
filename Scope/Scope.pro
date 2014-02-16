@@ -24,5 +24,5 @@ SOURCES += Actions.cpp \
     MainScope.cpp \
     RecordHandler.cpp \
     ChartScope.cpp
-CONFIG(debug, debug|release):DESTDIR = ../debug
-else:DESTDIR = ../release
+#CONFIG(debug, debug|release):DESTDIR = ../debug
+#else:DESTDIR = ../release

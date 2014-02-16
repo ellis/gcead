@@ -18,8 +18,8 @@ HEADERS  += MainWindow.h
 
 FORMS    += MainWindow.ui
 
-CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
-else:DESTDIR = $${OUT_PWD}/../release
+#CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
+#else:DESTDIR = $${OUT_PWD}/../release
 LIBS += -L$${DESTDIR}
 
 LIBS += -luser32 \

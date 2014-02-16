@@ -14,8 +14,8 @@ SOURCES += ChartPixmap.cpp EadFile.cpp FakeData.cpp Globals.cpp PublisherSetting
     PropertyRowModel.cpp \
 	#Datastore.cpp
 
-CONFIG(debug, debug|release) {
-    DESTDIR = ../debug
-} else {
-    DESTDIR = ../release
-}
+#CONFIG(debug, debug|release) {
+#    DESTDIR = ../debug
+#} else {
+#    DESTDIR = ../release
+#}

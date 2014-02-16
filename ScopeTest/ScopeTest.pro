@@ -17,8 +17,8 @@ DEPENDPATH += . \
     ../Model \
     ../Scope \
     ../Idac
-CONFIG(debug, debug|release):DESTDIR = ../debug
-else:DESTDIR = ../release
+#CONFIG(debug, debug|release):DESTDIR = ../debug
+#else:DESTDIR = ../release
 LIBS += -L$${DESTDIR}
 
 # VPATH += ../debug
@@ -32,14 +32,14 @@ LIBS += \
         -lIdacDriver \
 	-lCore
 win32:LIBS += -lIdacDriverES
-PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
-        $${DESTDIR}/libIdacDriver.a \
-        $${DESTDIR}/libIdacDriver2.a \
-	$${DESTDIR}/libIdacDriver4.a \
-	$${DESTDIR}/libIdac.a \
-	$${DESTDIR}/libFilters.a \
-	$${DESTDIR}/libModel.a \
-	$${DESTDIR}/libScope.a
+PRE_TARGETDEPS += ../Core/libCore.a \
+        ../IdacDriver/libIdacDriver.a \
+        ../IdacDriver2/libIdacDriver2.a \
+	../IdacDriver4/libIdacDriver4.a \
+	../Idac/libIdac.a \
+	../Filters/libFilters.a \
+	../Model/libModel.a \
+	../Scope/libScope.a
 win32:PRE_TARGETDEPS += $${DESTDIR}/libIdacDriverES.a
 #win32:LIBS += $${PWD}/../extern/win32/libusb.a $${PWD}/../IdacDriverES/IdacControl/IDAC8_32.lib
 win32:LIBS += $${PWD}/../extern/win32/libusb.a
@@ -64,28 +64,28 @@ unix:pg {
 }
 
 # Copy IDAC2 hex file
-!macx:idac2hex.target = $${DESTDIR}/idc2fpga.hex
+!macx:idac2hex.target = ./idc2fpga.hex
 macx:idac2hex.target = $${DESTDIR}/ScopeTest.app/Contents/MacOS/idc2fpga.hex
 win32:idac2hex.commands = ${COPY_FILE} \
     $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex \
     ${DESTDIR}
 unix:!macx:idac2hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc2fpga.hex \
-    ${DESTDIR}
+    .
 macx:idac2hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc2fpga.hex \
     ${DESTDIR}
 #    ${DESTDIR}/ScopeTest.app/Contents/MacOS/
 
 # Copy IDAC4 hex file
-!mac:idac4hex.target = $${DESTDIR}/idc4fpga.hex
+!mac:idac4hex.target = idc4fpga.hex
 mac:idac4hex.target = $${DESTDIR}/ScopeTest.app/Contents/MacOS/idc4fpga.hex
 win32:idac4hex.commands = ${COPY_FILE} \
     $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex \
     ${DESTDIR}
 unix:!macx:idac4hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc4fpga.hex \
-    ${DESTDIR}
+    .
 macx:idac4hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc4fpga.hex \
     ${DESTDIR}
