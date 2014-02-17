@@ -21,32 +21,30 @@ DEPENDPATH += . \
     ../Idac
 #CONFIG(debug, debug|release):DESTDIR = $${OUT_PWD}/../debug
 #else:DESTDIR = $${OUT_PWD}/../release
-LIBS += -L$${DESTDIR}
+#LIBS += -L$${DESTDIR}
 
 # VPATH += ../debug
-LIBS += -lCore \
-    -lIdac \
-	-lIdacDriver2 \
-	-lIdacDriver4 \
-	-lIdacDriver \
-	-lModel \
-	-lFilters \
-	-lScope
-win32:LIBS += -lIdacDriverES
-PRE_TARGETDEPS += $${DESTDIR}/libCore.a \
-    $${DESTDIR}/libIdacDriver.a \
-    $${DESTDIR}/libIdacDriver2.a \
-    $${DESTDIR}/libIdacDriver4.a \
-	$${DESTDIR}/libIdac.a \
-	$${DESTDIR}/libFilters.a \
-	$${DESTDIR}/libModel.a \
-    $${DESTDIR}/libScope.a
+PRE_TARGETDEPS += ../Core/libCore.a \
+	../IdacDriver/libIdacDriver.a \
+	../IdacDriver2/libIdacDriver2.a \
+	../IdacDriver4/libIdacDriver4.a \
+	../Idac/libIdac.a \
+	../Filters/libFilters.a \
+	../Model/libModel.a \
+	../Scope/libScope.a
 win32:LIBS += $${DESTDIR}/libIdacDriverES.a
 #win32:LIBS += $${PWD}/../extern/win32/libusb.a $${PWD}/../IdacDriverES/IdacControl/IDAC8_32.lib
 win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \
-    -L../release \
-    -Wl,-Bstatic \
+	../Scope/libScope.a \
+	../Model/libModel.a \
+	../Filters/libFilters.a \
+	../Idac/libIdac.a \
+	../IdacDriver4/libIdacDriver4.a \
+	../IdacDriver2/libIdacDriver2.a \
+	../IdacDriver/libIdacDriver.a \
+	../Core/libCore.a \
+	-Wl,-Bstatic \
     -lstdc++ \
     -Wl,-Bdynamic \
     $${PWD}/../extern/libusb/lib/libusb-1.0.a \
@@ -55,6 +53,16 @@ unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
     -lobjc \
     $${PWD}/../extern/libusb/lib/libusb-1.0.a
+#LIBS += \
+#	-lScope \
+#	-lModel \
+#	-lFilters \
+#	-lIdac \
+#	-lIdacDriver2 \
+#	-lIdacDriver4 \
+#	-lIdacDriver \
+#	-lCore
+win32:LIBS += -lIdacDriverES
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc
@@ -65,27 +73,27 @@ unix:pg {
 }
 
 # Copy IDAC2 hex file
-!macx:idac2hex.target = $${DESTDIR}/idc2fpga.hex
+!macx:idac2hex.target = idc2fpga.hex
 win32:idac2hex.commands = ${COPY_FILE} \
 	$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex \
-	$${DESTDIR}
+	.
 unix:!macx:idac2hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc2fpga.hex \
-    $${DESTDIR}
+	.
 
 # Copy IDAC4 hex file
-!macx:idac4hex.target = $${DESTDIR}/idc4fpga.hex
+!macx:idac4hex.target = idc4fpga.hex
 win32:idac4hex.commands = ${COPY_FILE} \
     $$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex \
-    $${DESTDIR}
+	.
 unix:!macx:idac4hex.commands = ${COPY_FILE} \
     $${PWD}/../Installables/idc4fpga.hex \
-    $${DESTDIR}
+	.
 
 !macx:QMAKE_EXTRA_TARGETS += idac2hex idac4hex
 
-POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex \
-    $${DESTDIR}/idc4fpga.hex
+POST_TARGETDEPS += idc2fpga.hex \
+	idc4fpga.hex
 HEADERS += ./WaitCursor.h \
     ./ChartWidget.h \
     ./SuffixSpinBox.h \

@@ -17,3 +17,11 @@ OTHER_FILES += Todo.txt \
     UseCases.txt \
     Notes.txt \
     Compiling.txt
+
+IdacDriver.depends = Core
+IdacDriver2.depends = IdacDriver
+IdacDriver4.depends = IdacDriver
+Idac.depends = IdacDriver IdacDriver2 IdacDriver4
+Scope.depends = Core Filters Model Idac
+ScopeTest.depends = Core IdacDriver IdacDriver2 IdacDriver4 Idac Filters Model Scope
+View.depends = Core IdacDriver IdacDriver2 IdacDriver4 Idac Filters Model Scope

@@ -19,22 +19,12 @@ DEPENDPATH += . \
     ../Idac
 #CONFIG(debug, debug|release):DESTDIR = ../debug
 #else:DESTDIR = ../release
-LIBS += -L$${DESTDIR}
+#LIBS += -L$${DESTDIR}
 
 # VPATH += ../debug
-LIBS += \
-	-lScope \
-	-lModel \
-	-lFilters \
-	-lIdac \
-	-lIdacDriver2 \
-	-lIdacDriver4 \
-        -lIdacDriver \
-	-lCore
-win32:LIBS += -lIdacDriverES
 PRE_TARGETDEPS += ../Core/libCore.a \
-        ../IdacDriver/libIdacDriver.a \
-        ../IdacDriver2/libIdacDriver2.a \
+	../IdacDriver/libIdacDriver.a \
+	../IdacDriver2/libIdacDriver2.a \
 	../IdacDriver4/libIdacDriver4.a \
 	../Idac/libIdac.a \
 	../Filters/libFilters.a \
@@ -44,8 +34,15 @@ win32:PRE_TARGETDEPS += $${DESTDIR}/libIdacDriverES.a
 #win32:LIBS += $${PWD}/../extern/win32/libusb.a $${PWD}/../IdacDriverES/IdacControl/IDAC8_32.lib
 win32:LIBS += $${PWD}/../extern/win32/libusb.a
 unix:!macx:LIBS += -static-libgcc \
-    -L../release \
-    -Wl,-Bstatic \
+	../Scope/libScope.a \
+	../Model/libModel.a \
+	../Filters/libFilters.a \
+	../Idac/libIdac.a \
+	../IdacDriver4/libIdacDriver4.a \
+	../IdacDriver2/libIdacDriver2.a \
+	../IdacDriver/libIdacDriver.a \
+	../Core/libCore.a \
+	-Wl,-Bstatic \
     -lstdc++ \
     -Wl,-Bdynamic \
     $${PWD}/../extern/libusb/lib/libusb-1.0.a \
@@ -54,6 +51,18 @@ unix:macx:LIBS += -Wl,-framework \
     -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
     -lobjc \
     $${PWD}/../extern/libusb/lib/libusb-1.0.a
+
+#LIBS += \
+#	-lScope \
+#	-lModel \
+#	-lFilters \
+#	-lIdac \
+#	-lIdacDriver2 \
+#	-lIdacDriver4 \
+#	-lIdacDriver \
+#	-lCore
+win32:LIBS += -lIdacDriverES
+
 unix:QMAKE_CFLAGS += -static-libgcc
 unix:QMAKE_CXXFLAGS += -static-libgcc
 unix:QMAKE_LFLAGS += -static-libgcc
@@ -93,8 +102,8 @@ macx:idac4hex.commands = ${COPY_FILE} \
 
 QMAKE_EXTRA_TARGETS += idac2hex \
     idac4hex
-!mac:POST_TARGETDEPS += $${DESTDIR}/idc2fpga.hex \
-    $${DESTDIR}/idc4fpga.hex
+!mac:POST_TARGETDEPS += idc2fpga.hex \
+	idc4fpga.hex
 mac:POST_TARGETDEPS += $${DESTDIR}/ScopeTest.app/Contents/MacOS/idc2fpga.hex \
     $${DESTDIR}/ScopeTest.app/Contents/MacOS/idc4fpga.hex
 HEADERS += \
