@@ -76,7 +76,7 @@ public:
 class TestBase : public QObject
 {
 public:
-	TestBase(bool bIdac);
+    TestBase(int id, bool bIdac);
 	~TestBase();
 
 protected:
@@ -93,6 +93,7 @@ protected:
 	void contrast(const QString& sLabel, const QString& sFilename) { compare(sLabel, sFilename, false); }
 
 protected:
+    const int id;
 	TestUi* ui;
 	MainScope* scope;
 	QSize sz;

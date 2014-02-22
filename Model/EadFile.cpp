@@ -396,8 +396,8 @@ void EadFile::createWaveNode(QDomDocument& doc, QDomElement& parent, WaveInfo* w
 	elem.setAttribute("factor_den", wave->nRawToVoltageFactorDen);
 	elem.setAttribute("shift", wave->shift());
 	elem.setAttribute("visible", (wave->pos.bVisible) ? "t" : "f");
-	elem.setAttribute("volts", wave->pos.nVoltsPerDivision);
-	elem.setAttribute("yOffset", wave->pos.nDivisionOffset);
+    elem.setAttribute("volts", QString::number(wave->pos.nVoltsPerDivision));
+    elem.setAttribute("yOffset", QString::number(wave->pos.nDivisionOffset));
 
 	if (!wave->sComment.isEmpty())
 	{
@@ -539,8 +539,8 @@ void EadFile::createViewWaveNode(QDomDocument& doc, QDomElement& parent, ViewWav
 	elem.setAttribute("recID", wave->recId());
 	elem.setAttribute("type", getWaveTypeNodeName(wave->type));
 	elem.setAttribute("visible", (vwi->isVisible()) ? "t" : "f");
-	elem.setAttribute("volts", vwi->voltsPerDivision());
-	elem.setAttribute("yOffset", vwi->divisionOffset());
+    elem.setAttribute("volts", QString::number(vwi->voltsPerDivision()));
+    elem.setAttribute("yOffset", QString::number(vwi->divisionOffset()));
 }
 
 void EadFile::loadViewWaveNode(QDomElement& elem, ViewInfo* view, bool bExtra)

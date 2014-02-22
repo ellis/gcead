@@ -24,7 +24,7 @@
 #include <IdacDriver/IdacSettings.h>
 
 
-TestRecording::TestRecording() : TestBase(true)
+TestRecording::TestRecording(int id) : TestBase(id, true)
 {
 	m_nRecordings = 0;
 

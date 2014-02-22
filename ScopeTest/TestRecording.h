@@ -28,7 +28,7 @@ class TestRecording : public TestBase
 {
 	Q_OBJECT
 public:
-	TestRecording();
+    TestRecording(int id);
 
 // QObject overrides
 protected:

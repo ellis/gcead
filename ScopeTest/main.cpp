@@ -41,7 +41,7 @@
 class TestActions : public TestBase
 {
 public:
-	TestActions() : TestBase(false)
+    TestActions(int id) : TestBase(id, false)
 	{
 		Actions* actions = scope->actions();
 
@@ -149,16 +149,17 @@ public:
 		ViewWaveInfo* vwi = scope->file()->viewInfo(EadView_Averages)->vwis()[1];
 		vwi->choosePeakAtDidx(vwi->wave()->peaks0[1].middle.i);
 		snap("PeaksEdit1");
+        // Leave markers mode
+        actions->viewViewMode->trigger();
+        QString sFilenamePeaksVerified1 = snapAndContrast("PeaksVerified1", sFilenameAves);
 		// Hide markers
 		actions->markersShowFidPeakMarkers->toggle();
 		compare("AVEs", sFilenameAves);
 		// Unhide markers
 		actions->markersShowFidPeakMarkers->toggle();
-		snapAndContrast("PeaksVerified1", sFilenameAves);
-
+        compare("PeaksVerified1", sFilenamePeaksVerified1);
+        // Hide markers again
 		actions->markersShowFidPeakMarkers->trigger();
-		actions->viewViewMode->trigger();
-		compare("AVEs", sFilenameAves);
 
 		//
 		// WAVE VISIBILITY
@@ -213,11 +214,9 @@ public:
 class TestSaving : public TestBase
 {
 public:
-	TestSaving() : TestBase(false)
+    TestSaving(int id) : TestBase(id, false)
 	{
 		Actions* actions = scope->actions();
-
-		QString sFilename;
 
 		// Load sample project
 		actions->fileLoadSampleProject->trigger();
@@ -320,11 +319,11 @@ int main(int argc, char *argv[])
 
 	Globals = new GlobalVars();
 
-	//TestActions();
-	TestSaving();
+    TestActions(1);
+    TestSaving(2);
 
 	if (false) {
-		TestRecording test;
+        TestRecording(3);
 		a.exec();
 		IdacFactory::exitIdacThreads();
 	}

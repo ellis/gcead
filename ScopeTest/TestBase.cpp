@@ -44,7 +44,8 @@ bool TestUi::showRecordPreview(IdacProxy* idac)
 }
 
 
-TestBase::TestBase(bool bIdac)
+TestBase::TestBase(int id, bool bIdac)
+    : id(id)
 {
 	ui = new TestUi;
 	IdacProxy* idac = NULL;
@@ -64,7 +65,7 @@ TestBase::~TestBase()
 QString TestBase::getFilename(const QString& sLabel)
 {
 	iStep++;
-	QString sFilename = QString("1-%0-%1.png").arg(iStep, 3, 10, QChar('0')).arg(sLabel);
+    QString sFilename = QString("%0-%1-%2.png").arg(id).arg(iStep, 3, 10, QChar('0')).arg(sLabel);
 	return sFilename;
 }
 
