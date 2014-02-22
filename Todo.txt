@@ -1,6 +1,9 @@
-- [ ] put code on github
-- [ ] see about linking in libusbx and libusb and libusb-compat as git submodules
+- [x] put code on github
+- [x] see about linking in libusbx and libusb and libusb-compat as git submodules
+- [ ] let user select which waves to import when importing another EAD file
 - [ ] let user delete waves
+- [ ] build GcEad on mac
+- [ ] build GcEad on windows
 
 Biggest challenges for driver:
 	IdacSetBufferEvent
