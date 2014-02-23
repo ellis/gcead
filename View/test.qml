@@ -28,6 +28,21 @@ Rectangle {
 			rec: 1
 			name: "DIG 1"
 		}
+		ListElement {
+			checked: false
+			rec: 2
+			name: "FID 2"
+		}
+		ListElement {
+			checked: false
+			rec: 2
+			name: "EAD 2"
+		}
+		ListElement {
+			checked: false
+			rec: 2
+			name: "DIG 2"
+		}
 	}
 
 	Component {
@@ -37,13 +52,20 @@ Rectangle {
 			}
 	}
 
-	ListView {
-		y: 20
-		width: 200
-		x: 20
-		height: 200
-		model: waveList
-		delegate: waveDelegate
+	ScrollView {
+		//anchors.fill: parent
+		width: 100
+		height: 100
+		frameVisible: true
+		highlightOnFocus: true
+		ListView {
+			y: 20
+			width: 200
+			x: 20
+			height: 200
+			model: waveList
+			delegate: waveDelegate
+		}
 	}
 /*
     Text {
