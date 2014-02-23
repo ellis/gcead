@@ -2,7 +2,9 @@ TEMPLATE = app
 TARGET = GcEad
 QT += printsupport \
     xml \
-    svg
+    svg \
+	qml \
+	quick
 CONFIG += warn_on \
     debug_and_release \
     link_prl
