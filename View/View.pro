@@ -123,7 +123,8 @@ HEADERS += ./WaitCursor.h \
     TaskMarkersWidget.h \
     TaskFilterWidget.h \
     TaskFilterWidgetModel.h \
-    ImportRecordDialog.h
+    ImportRecordDialog.h \
+	ImportEadDialog.h
 SOURCES += ./DataListItem.cpp \
     ./TaskReviewWidget.cpp \
     ./MainWindow.cpp \
@@ -150,13 +151,14 @@ SOURCES += ./DataListItem.cpp \
     TaskMarkersWidget.cpp \
     TaskFilterWidget.cpp \
     TaskFilterWidgetModel.cpp \
-    ImportRecordDialog.cpp
+    ImportRecordDialog.cpp \
+	ImportEadDialog.cpp
 
 # Forms
 FORMS += ./MainWindow.ui \
     ./Options.ui \
     ./RecordDialog.ui \
-    ./RecordSettingsDialog.ui
+	./RecordSettingsDialog.ui
 
 # Resource file(s)
 RESOURCES += ./View.qrc
@@ -164,7 +166,8 @@ macx:ICON = ../Installables/Mac/GcEad.icns
 win32:RC_FILE = ./GcEad.rc
 
 OTHER_FILES += \
-    GcEad.rc
+	GcEad.rc \
+	ImportDialog.qml
 
 hexfiles.files = $${PWD}/../Installables/idc2fpga.hex $${PWD}/../Installables/idc4fpga.hex
 mac:hexfiles.path = Contents/MacOS

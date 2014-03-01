@@ -66,7 +66,8 @@ private:
 	void readSettings();
 	void writeSettings();
 
-	LoadSaveResult importAsc(const QString& sFilename);
+    LoadSaveResult importEad(const QString& sFilename);
+    LoadSaveResult importAsc(const QString& sFilename);
 
 private slots:
 	void idac_statusErrorChanged(QString sError);
