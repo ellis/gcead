@@ -1,10 +1,9 @@
 #include "ImportEadDialog.h"
 
-#include <QButtonGroup>
+#include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
-#include <QRadioButton>
 #include <QVBoxLayout>
 
 #include <EadFile.h>
@@ -26,51 +25,28 @@ void ImportEadDialog::setupWidgets()
 	vbox->addWidget(new QLabel("You may import a maximum of one signal per type."));
 
 	int iRow = 0;
-	grid->addWidget(new QLabel("Signal Name"), iRow, 0);
-	grid->addWidget(new QLabel("EAD"), iRow, 1);
-	grid->addWidget(new QLabel("FID"), iRow, 2);
-	//grid->addWidget(new QLabel("Digital"), iRow, 3);
-	grid->addWidget(new QLabel("Skip"), iRow, 4);
+	grid->addWidget(new QLabel("Import?"), iRow, 0);
+	grid->addWidget(new QLabel("Record#"), iRow, 1);
+	grid->addWidget(new QLabel("Type"), iRow, 2);
+	grid->addWidget(new QLabel("Signal Name"), iRow, 3);
 	iRow++;
 
-	CONTINUE HERE
 	for (int i = 1; i < m_file.recs().size(); i++) {
+		RecInfo* rec = m_file.recs()[i];
 
-	}
-	for (int i = 0; i < m_asNames.size(); i++) {
-		QString sName = m_asNames[i];
-		QLabel* lbl = new QLabel(sName);
-		grid->addWidget(lbl, iRow, 0);
-
-		QRadioButton* rdo;
-		QButtonGroup* grp = new QButtonGroup(this);
-
-		rdo = new QRadioButton();
-		grp->addButton(rdo);
-		grid->addWidget(rdo, iRow, 1);
-		m_eads << rdo;
-		connect(rdo, SIGNAL(toggled(bool)), this, SLOT(on_ead()));
-
-		rdo = new QRadioButton();
-		grp->addButton(rdo);
-		grid->addWidget(rdo, iRow, 2);
-		m_fids << rdo;
-		connect(rdo, SIGNAL(toggled(bool)), this, SLOT(on_fid()));
-
-		/*rdo = new QRadioButton();
-		grp->addButton(rdo);
-		grid->addWidget(rdo, iRow, 3);
-		m_digs << rdo;
-		connect(rdo, SIGNAL(toggled(bool)), this, SLOT(on_dig()));
-		*/
-		rdo = new QRadioButton();
-		rdo->setChecked(true);
-		grp->addButton(rdo);
-		grid->addWidget(rdo, iRow, 4);
-		m_skps << rdo;
-		connect(rdo, SIGNAL(toggled(bool)), this, SLOT(on_skp()));
-
-		iRow++;
+		foreach (WaveInfo* wave, rec->waves()) {
+			QCheckBox* chk = new QCheckBox(this);
+			chk->setChecked(true);
+			chk->setProperty("rec", i);
+			chk->setProperty("type", (int) wave->type);
+			connect(chk, SIGNAL(toggled(bool)), this, SLOT(on_checked(bool)));
+			grid->addWidget(chk, iRow, 0);
+			grid->addWidget(new QLabel(QString::number(i)), iRow, 1);
+			grid->addWidget(new QLabel(WaveInfo::getWaveTypeName(wave->type)), iRow, 2);
+			QString sName = (wave->sComment.isEmpty()) ? wave->sName : QString("%0: %1").arg(wave->sName).arg(wave->sComment);
+			grid->addWidget(new QLabel(sName), iRow, 3);
+			iRow++;
+		}
 	}
 
 	vbox->addLayout(grid);
@@ -84,31 +60,14 @@ void ImportEadDialog::setupWidgets()
 	setLayout(vbox);
 }
 
-void ImportEadDialog::updateEnabled()
-{
-	m_map.clear();
-	updateEnabled(m_eads, WaveType_EAD);
-	updateEnabled(m_fids, WaveType_FID);
-	//updateEnabled(m_digs, WaveType_Digital);
-}
-
-void ImportEadDialog::updateEnabled(const QList<QRadioButton*>& rdos, WaveType waveType) {
-	int iRow = -1;
-	for (int i = 0; i < rdos.size(); i++) {
-		if (rdos[i]->isChecked()) {
-			iRow = i;
-			m_map.insert(m_asNames[i], waveType);
-			break;
-		}
+void ImportEadDialog::on_checked(bool checked) {
+	const QCheckBox* chk = static_cast<QCheckBox*>(sender());
+	const int iRec = chk->property("rec").toInt();
+	const WaveType type = (WaveType) chk->property("type").toInt();
+	if (checked) {
+		m_map.insert(iRec, type);
 	}
-
-	for (int i = 0; i < rdos.size(); i++) {
-		bool bEnabled = (iRow < 0 || i == iRow);
-		rdos[i]->setEnabled(bEnabled);
+	else {
+		m_map.remove(iRec, type);
 	}
 }
-
-void ImportEadDialog::on_ead() { updateEnabled(); }
-void ImportEadDialog::on_fid() { updateEnabled(); }
-void ImportEadDialog::on_dig() { updateEnabled(); }
-void ImportEadDialog::on_skp() { updateEnabled(); }

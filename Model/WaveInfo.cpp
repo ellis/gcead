@@ -29,6 +29,18 @@
 #define RADIUS (EAD_SAMPLES_PER_SECOND / 2)
 
 
+QString WaveInfo::getWaveTypeName(WaveType type)
+{
+	QString sType;
+	switch (type)
+	{
+	case WaveType_EAD: sType = "EAD"; break;
+	case WaveType_FID: sType = "FID"; break;
+	case WaveType_Digital: sType = "DIG"; break;
+	}
+	return sType;
+}
+
 WaveInfo::WaveInfo(RecInfo* rec)
 {
 	Q_ASSERT(rec != NULL);

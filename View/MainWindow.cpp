@@ -41,6 +41,7 @@
 #include "Check.h"
 #include "EadFile.h"
 #include "Globals.h"
+#include "ImportEadDialog.h"
 #include "ImportRecordDialog.h"
 #include "MainScope.h"
 #include "MainWindowUi.h"
@@ -379,7 +380,7 @@ LoadSaveResult MainWindow::importEad(const QString &sFilename)
 	const LoadSaveResult result1 = file2.load(sFilename);
 	if (result1 != LoadSaveResult_Ok) {
 		QMessageBox::critical(this, tr("Error loading file"), tr("Unable to open the file."));
-		return restul1;
+		return result1;
 	}
 
 	//m_scope->file()->importWaves(&file2);
@@ -388,10 +389,10 @@ LoadSaveResult MainWindow::importEad(const QString &sFilename)
 	ImportEadDialog dlg(file2, this);
 	dlg.exec();
 
-	QMap<QString, WaveType> map = dlg.map();
+	const QMultiMap<int, WaveType>& map = dlg.recordToWaveTypes();
 	if (map.size() == 0)
 		return LoadSaveResult_Ok;
-
+/*
 	RecInfo* rec = new RecInfo(m_scope->file(), m_scope->file()->recs().size());
 	rec->
 	str.seek(0);
@@ -510,13 +511,6 @@ LoadSaveResult MainWindow::importEad(const QString &sFilename)
 
 	// Set time of recording to now
 	m_newRec->setTimeOfRecording(QDateTime::currentDateTime());
-	*/
-
-	/*
-	; Wave data Signal Mix43-1
-	; Rec. Factor 116.364313
-	; Sample rate 20.0
-	; Format :<time>         <Value>
 	*/
 
 	return LoadSaveResult_Ok;

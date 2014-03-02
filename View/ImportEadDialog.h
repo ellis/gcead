@@ -25,21 +25,11 @@ public:
 
 private:
 	void setupWidgets();
-	void updateEnabled();
-	void updateEnabled(const QList<QRadioButton*>& rdos, WaveType waveType);
 
 public slots:
-	void on_ead();
-	void on_fid();
-	void on_dig();
-	void on_skp();
+	void on_checked(bool checked);
 
 private:
-	QList<QRadioButton*> m_eads;
-	QList<QRadioButton*> m_fids;
-	QList<QRadioButton*> m_digs;
-	QList<QRadioButton*> m_skps;
-
 	const EadFile& m_file;
 	QMultiMap<int, WaveType> m_map;
 };

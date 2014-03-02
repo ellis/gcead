@@ -122,6 +122,9 @@ public:
 	WavePos pos;
 
 public:
+	static QString getWaveTypeName(WaveType waveType);
+
+public:
 	WaveInfo(RecInfo* rec);
 
 	void copyFrom(const WaveInfo* other);
