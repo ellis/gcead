@@ -1,8 +1,9 @@
 - [x] put code on github
 - [x] see about linking in libusbx and libusb and libusb-compat as git submodules
-- [ ] Figure out how to setup View.pro for usign QML Controls
-- [ ] Figure out how to bind a qml file into View.pro
-- [ ] let user select which waves to import when importing another EAD file
+- [x] let user select which waves to import when importing another EAD file
+- [ ] ImportEadDialog: don't show empty waves
+- [ ] ImportEadDialog: in m_map, select all displayed waves initially
+- [ ] MainWindow: step through code where import should take place
 - [ ] let user delete waves
 - [ ] build GcEad on mac
 - [ ] build GcEad on windows

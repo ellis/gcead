@@ -53,6 +53,7 @@ public:
 	WaveInfo* digital() { return m_waves[WaveType_Digital]; }
 
 	WaveInfo* wave(WaveType type) { return m_waves[type]; }
+	const WaveInfo* wave(WaveType type) const { return m_waves[type]; }
 	const QList<WaveInfo*>& waves() const { return m_waves; }
 
 private:

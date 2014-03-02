@@ -390,11 +390,24 @@ LoadSaveResult MainWindow::importEad(const QString &sFilename)
 	dlg.exec();
 
 	const QMultiMap<int, WaveType>& map = dlg.recordToWaveTypes();
-	if (map.size() == 0)
-		return LoadSaveResult_Ok;
+	for (int i = 0; i < file2.recs().size(); i++) {
+		const RecInfo* rec2 = file2.recs()[i];
+		RecInfo* recNew = NULL;
+		foreach (int nType, map.values(i)) {
+			if (recNew == NULL) {
+				recNew = new RecInfo(m_scope->file(), m_scope->file()->recs().size());
+			}
+			const WaveType waveType = (WaveType) nType;
+			const WaveInfo* wave2 = rec2->wave(waveType);
+			WaveInfo* waveNew = recNew->wave(waveType);
+			waveNew->copyFrom(wave2);
+		}
+		if (recNew != NULL) {
+			m_scope->file()->addImportedRecording(recNew);
+		}
+	}
 /*
 	RecInfo* rec = new RecInfo(m_scope->file(), m_scope->file()->recs().size());
-	rec->
 	str.seek(0);
 	bool bReadLine = true;
 	while (!str.atEnd()) {
