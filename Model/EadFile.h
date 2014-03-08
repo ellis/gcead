@@ -82,6 +82,8 @@ public:
 	void saveNewRecording();
 	/// Add a recording which has been imported from another source
 	void addImportedRecording(RecInfo* rec);
+	/// Remove the given wave from the file
+	void remove(WaveInfo* wave);
 
 	//FilterMode filterMode() const { return m_filterMode; }
 	//void setFilterMode(FilterMode mode);

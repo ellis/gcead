@@ -23,6 +23,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
@@ -604,6 +605,7 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 	QAction* actAddTimeMarker = NULL;
 	QAction* actRemoveMarker = NULL;
 	QAction* actSettings = NULL;
+	QAction* actDelete = NULL;
 	{
 		// Clicked on a chosen peak:
 		if (info.iChosenPeak >= 0)
@@ -626,7 +628,6 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		// Clicked on a wave:
 		else if (wave != NULL)
 		{
-			menu.addAction(actSettings);
 			if (m_chartS->params().task == EadTask_Markers) {
 				if (wave->type == WaveType_EAD || wave->type == WaveType_FID) {
 					actAddPeakMarker = new QAction(tr("Add Peak Marker"), &menu);
@@ -636,6 +637,12 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 				menu.addAction(actAddTimeMarker);
 			}
 			actSettings = new QAction(tr("Settings..."), &menu);
+			menu.addAction(actSettings);
+
+			actDelete = new QAction(tr("Delete..."), &menu);
+			// Enable if this is not an averaged wave
+			actDelete->setEnabled(wave->recId() > 0);
+			menu.addAction(actDelete);
 		}
 		else if (rcWaveforms.contains(e->pos()))
 		{
@@ -676,6 +683,24 @@ void ChartWidget::contextMenuEvent(QContextMenuEvent* e)
 		else if (act == actSettings)
 		{
 			openWaveEditorDialog(vwi, ptGlobal);
+		}
+		else if (act == actDelete)
+		{
+			QMessageBox msgBox;
+			msgBox.setIcon(QMessageBox::Warning);
+			msgBox.setText(tr("Delete Wave"));
+			msgBox.setInformativeText(tr("This operation cannot be undone.  Do you really want to delete the wave named \"%0\"?").arg(wave->sName));
+			msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+			msgBox.setDefaultButton(QMessageBox::Cancel);
+			int ret = msgBox.exec();
+			switch (ret) {
+			case QMessageBox::Yes:
+				vwi->remove();
+				break;
+			default:
+				break;
+			}
+
 		}
 	}
 

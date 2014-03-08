@@ -812,6 +812,26 @@ void EadFile::addImportedRecording(RecInfo* rec)
 	emit dirtyChanged();
 }
 
+void EadFile::remove(WaveInfo* wave)
+{
+	CHECK_PRECOND_RET(wave != NULL);
+	//CHECK_PRECOND_RET(m_pos != NULL);
+	// Can only remove recorded waves
+	CHECK_PRECOND_RET(wave->recId() > 0);
+
+	// Delete the raw data
+	wave->raw.clear();
+
+	updateViewInfo();
+	updateAveWaves();
+
+	emit waveListChanged();
+
+	m_bDirty = true;
+	emit dirtyChanged();
+}
+
+
 /*void EadFile::setFilterMode(FilterMode mode)
 {
 	if (mode != m_filterMode) {
@@ -958,12 +978,16 @@ void EadFile::updateAveWave(WaveType type)
 
 		foreach (WaveInfo* wave, rec->waves())
 		{
-			if (wave->type == type && wave->pos.bVisible)
+			if (wave->type == type && wave->pos.bVisible && !wave->raw.isEmpty())
 				waves << wave;
 		}
 	}
-	if (waves.size() == 0)
+	if (waves.size() == 0) {
+		ave->raw.clear();
+		ave->display.clear();
+		ave->std.clear();
 		return;
+	}
 
 	// Find the max number of samples we'll need for the average
 	int nSamples = 0;

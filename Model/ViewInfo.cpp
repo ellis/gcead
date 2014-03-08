@@ -140,6 +140,11 @@ void ViewWaveInfo::invert()
     emitChanged(ViewChangeEvent_CalcAve);
 }
 
+void ViewWaveInfo::remove()
+{
+	m_view->remove(m_wave);
+}
+
 void ViewWaveInfo::setName(const QString &sName)
 {
     m_wave->sName = sName;
@@ -289,6 +294,13 @@ ViewWaveInfo* ViewInfo::addExtraWave(WaveInfo* wave)
 	emitChanged(ViewChangeEvent_Paint);
 
 	return vwi;
+}
+
+void ViewInfo::remove(WaveInfo* wave)
+{
+	m_file->remove(wave);
+	// This operation requires a recalculation of the averaged waves
+	emitChanged(ViewChangeEvent_CalcAve);
 }
 
 void ViewInfo::clearWaves()

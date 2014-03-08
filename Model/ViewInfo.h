@@ -69,6 +69,7 @@ public:
 	void changeShift(int nIndexInc);
 
 	void invert();
+	void remove();
 
     void setName(const QString& sName);
     void setComment(const QString& sComment);
@@ -122,6 +123,9 @@ public:
 	/// Add a wave whose chart position is given by this ViewInfo
 	ViewWaveInfo* addExtraWave(WaveInfo* wave);
 	
+	/// Delete the raw data for the given wave
+	void remove(WaveInfo* vwi);
+
 	/// Delete our list of vwis() objects (doesn't delete the WaveInfos)
 	void clearWaves();
 
