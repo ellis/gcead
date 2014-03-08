@@ -1,9 +1,8 @@
 - [x] put code on github
 - [x] see about linking in libusbx and libusb and libusb-compat as git submodules
 - [x] let user select which waves to import when importing another EAD file
-- [ ] ImportEadDialog: don't show empty waves
-- [ ] ImportEadDialog: in m_map, select all displayed waves initially
-- [ ] MainWindow: step through code where import should take place
+- [x] ImportEadDialog: don't show empty waves
+- [x] ImportEadDialog: in m_map, select all displayed waves initially
 - [ ] let user delete waves
 - [ ] build GcEad on mac
 - [ ] build GcEad on windows

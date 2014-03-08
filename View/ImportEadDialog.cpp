@@ -35,17 +35,22 @@ void ImportEadDialog::setupWidgets()
 		RecInfo* rec = m_file.recs()[i];
 
 		foreach (WaveInfo* wave, rec->waves()) {
-			QCheckBox* chk = new QCheckBox(this);
-			chk->setChecked(true);
-			chk->setProperty("rec", i);
-			chk->setProperty("type", (int) wave->type);
-			connect(chk, SIGNAL(toggled(bool)), this, SLOT(on_checked(bool)));
-			grid->addWidget(chk, iRow, 0);
-			grid->addWidget(new QLabel(QString::number(i)), iRow, 1);
-			grid->addWidget(new QLabel(WaveInfo::getWaveTypeName(wave->type)), iRow, 2);
-			QString sName = (wave->sComment.isEmpty()) ? wave->sName : QString("%0: %1").arg(wave->sName).arg(wave->sComment);
-			grid->addWidget(new QLabel(sName), iRow, 3);
-			iRow++;
+			if (!wave->raw.isEmpty()) {
+				// Add wave to map (so that it's selected)
+				m_map.insert(i, wave->type);
+				// Create UI elements
+				QCheckBox* chk = new QCheckBox(this);
+				chk->setChecked(true);
+				chk->setProperty("rec", i);
+				chk->setProperty("type", (int) wave->type);
+				connect(chk, SIGNAL(toggled(bool)), this, SLOT(on_checked(bool)));
+				grid->addWidget(chk, iRow, 0);
+				grid->addWidget(new QLabel(QString::number(i)), iRow, 1);
+				grid->addWidget(new QLabel(WaveInfo::getWaveTypeName(wave->type)), iRow, 2);
+				QString sName = (wave->sComment.isEmpty()) ? wave->sName : QString("%0: %1").arg(wave->sName).arg(wave->sComment);
+				grid->addWidget(new QLabel(sName), iRow, 3);
+				iRow++;
+			}
 		}
 	}
 
