@@ -131,8 +131,7 @@ void WaveEditorWidget::setupWidgets()
 	layout->addWidget(m_chkVisible, iRow, 2);
     iRow++;
     layout->addWidget(m_lblNameLabel, iRow, 1);
-    iRow++;
-    layout->addWidget(m_edtName, iRow, 1, 1, 4);
+	layout->addWidget(m_edtName, iRow, 2, 1, 3);
     iRow++;
 	layout->addWidget(m_lblCommentLabel, iRow, 1);
 	iRow++;
