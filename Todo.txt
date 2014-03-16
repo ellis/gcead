@@ -3,7 +3,9 @@
 - [x] let user select which waves to import when importing another EAD file
 - [x] ImportEadDialog: don't show empty waves
 - [x] ImportEadDialog: in m_map, select all displayed waves initially
-- [ ] let user delete waves
+- [x] let user delete waves
+- [ ] mac: edit ScopeTest.pro to handle idac hex files, also consider mac vs macx keywords
+- [ ] windows: update software in vmplayer Syntech7 image
 - [ ] build GcEad on mac
 - [ ] build GcEad on windows
 

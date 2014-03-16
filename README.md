@@ -93,6 +93,10 @@ I used BitRock InstallBuilder to create the installer for Linux.
 #### Installer for mac
 
 * make sure the Qt SDK is installed
+* install homebrew
+* run `brew install automake` from the appropriate user account
+* run `make -f libusb.mak`
+* run `cd extern/libusb-compat-0.1 && git clean -fd` optionally
 * build the project
 * cd release
 * macdeployqt GcEad.app -dmg
