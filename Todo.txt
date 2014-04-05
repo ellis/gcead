@@ -6,6 +6,7 @@
 - [x] let user delete waves
 - [ ] mac: edit ScopeTest.pro to handle idac hex files, also consider mac vs macx keywords
 - [ ] windows: update software in vmplayer Syntech7 image
+  - [ ] error in libusb0 -- just upgraded using Zidac driver, see whether it works now, but should copy libusb.a and usb.h first
 - [ ] build GcEad on mac
 - [ ] build GcEad on windows
 
