@@ -512,8 +512,8 @@ void TaskPublishWidget::on_preview_paintRequested(QPrinter* printer)
 	int nPageWidth = printer->pageRect().width();
 
 	QPainter painter(printer);
-	QFontMetrics fm = painter.fontMetrics();
-	QRect rcCanvas = painter.viewport();
+    //QFontMetrics fm = painter.fontMetrics();
+    //QRect rcCanvas = painter.viewport();
 	
 	int yChartTop = 0;
 	

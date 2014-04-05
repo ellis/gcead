@@ -275,12 +275,12 @@ bool IdacDriverUsb::sendBinData(const QByteArray& bin)
 }
 
 int IdacDriverUsb::myusb_control_transfer(
-	uint8_t  	bmRequestType,
-	uint8_t  	bRequest,
-	uint16_t  	wValue,
-	uint16_t  	wIndex,
+    quint8  	bmRequestType,
+    quint8  	bRequest,
+    quint16  	wValue,
+    quint16  	wIndex,
 	unsigned char *  	data,
-	uint16_t  	wLength,
+    quint16  	wLength,
 	unsigned int  	timeout
 ) {
 	return
