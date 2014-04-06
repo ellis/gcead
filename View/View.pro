@@ -7,40 +7,15 @@ QT += printsupport \
 	quick
 CONFIG += warn_on link_prl
 
-unix:!macx:LIBS += -static-libgcc \
-	../Scope/libScope.a \
-	../Model/libModel.a \
-	../Filters/libFilters.a \
-	../Idac/libIdac.a \
-	../IdacDriver4/libIdacDriver4.a \
-	../IdacDriver2/libIdacDriver2.a \
-	../IdacDriver/libIdacDriver.a \
-	../Core/libCore.a \
-	-Wl,-Bstatic \
-    -lstdc++ \
-    -Wl,-Bdynamic \
-    $${PWD}/../extern/libusb/lib/libusb-1.0.a \
-    -l:libudev.so.1
-unix:macx:LIBS += -Wl,-framework \
-    -Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
-    -lobjc \
-    $${PWD}/../extern/libusb/lib/libusb-1.0.a
-#LIBS += \
-#	-lScope \
-#	-lModel \
-#	-lFilters \
-#	-lIdac \
-#	-lIdacDriver2 \
-#	-lIdacDriver4 \
-#	-lIdacDriver \
-#	-lCore
-unix:QMAKE_CFLAGS += -static-libgcc
-unix:QMAKE_CXXFLAGS += -static-libgcc
-unix:QMAKE_LFLAGS += -static-libgcc
-unix:pg { 
-    QMAKE_CFLAGS += -pg
-    QMAKE_CXXFLAGS += -pg
-    QMAKE_LFLAGS += -pg
+unix:!macx {
+	QMAKE_CFLAGS += -static-libgcc
+	QMAKE_CXXFLAGS += -static-libgcc
+	QMAKE_LFLAGS += -static-libgcc
+	pg {
+		QMAKE_CFLAGS += -pg
+		QMAKE_CXXFLAGS += -pg
+		QMAKE_LFLAGS += -pg
+	}
 }
 
 ## Copy IDAC2 hex file
@@ -63,8 +38,6 @@ unix:pg {
 
 #!macx:QMAKE_EXTRA_TARGETS += idac2hex idac4hex
 
-#POST_TARGETDEPS += idc2fpga.hex \
-#	idc4fpga.hex
 HEADERS += ./WaitCursor.h \
     ./ChartWidget.h \
     ./SuffixSpinBox.h \
@@ -138,27 +111,6 @@ OTHER_FILES += \
 	GcEad.rc \
 	ImportDialog.qml
 
-hexfiles.files = $${PWD}/../Installables/idc2fpga.hex $${PWD}/../Installables/idc4fpga.hex
-mac:hexfiles.path = Contents/MacOS
-#!mac:hexfiles.path =
-QMAKE_BUNDLE_DATA += hexfiles
-
-
-
-
-
-
-
-
-# Copy IDAC hex files
-win32 {
-    idac2hex.target = idc2fpga.hex
-    idac2hex.commands = ${COPY_FILE} \"$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex\" \"$${OUT_PWD}\"
-    idac4hex.target = idc4fpga.hex
-    idac4hex.commands = ${COPY_FILE} \"$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex\" \"$${OUT_PWD}\"
-    QMAKE_EXTRA_TARGETS += idac2hex idac4hex
-    PRE_TARGETDEPS += idc2fpga.hex idc4fpga.hex
-}
 
 ## Copy IDAC2 hex file
 #!macx:idac2hex.target = idc2fpga.hex
@@ -183,11 +135,6 @@ win32 {
 #POST_TARGETDEPS += idc2fpga.hex \
 #	idc4fpga.hex
 
-
-
-install_hex.files = $${PWD}/../Installables/idc*.hex
-install_hex.path = $${OUT_PWD}
-INSTALLS += install_hex
 
 win32:CONFIG(release, debug|release): LIBS += \
     -L$$OUT_PWD/../Scope/release/ -lScope \
@@ -272,7 +219,39 @@ else:unix: PRE_TARGETDEPS += \
     $$OUT_PWD/../IdacDriver/libIdacDriver.a \
     $$OUT_PWD/../Core/libCore.a
 
-# For libusb on windows
-win32:LIBS += -L$$PWD/../extern/win32/ -lusb
-win32:INCLUDEPATH += $$PWD/../extern/win32
-win32:DEPENDPATH += $$PWD/../extern/win32
+
+# For libusb
+win32 {
+	LIBS += -L$$PWD/../extern/win32/ -lusb
+	INCLUDEPATH += $$PWD/../extern/win32
+	DEPENDPATH += $$PWD/../extern/win32
+}
+else:macx {
+	LIBS += -Wl,-framework \
+		-Wl,IOKit -Wl,-framework -Wl,CoreFoundation \
+		-lobjc \
+		$${PWD}/../extern/libusb/lib/libusb-1.0.a
+}
+else {
+	LIBS += \
+		-Wl,-Bstatic \
+		-lstdc++ \
+		-Wl,-Bdynamic \
+		$${PWD}/../extern/libusb/lib/libusb-1.0.a \
+		-l:libudev.so.1
+}
+
+# Copy IDAC hex files
+win32 {
+	idac2hex.target = idc2fpga.hex
+	idac2hex.commands = ${COPY_FILE} \"$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex\" \"$${OUT_PWD}\"
+	idac4hex.target = idc4fpga.hex
+	idac4hex.commands = ${COPY_FILE} \"$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex\" \"$${OUT_PWD}\"
+	QMAKE_EXTRA_TARGETS += idac2hex idac4hex
+	PRE_TARGETDEPS += idc2fpga.hex idc4fpga.hex
+}
+else:macx {
+	hexfiles.files = $${PWD}/../Installables/idc2fpga.hex $${PWD}/../Installables/idc4fpga.hex
+	hexfiles.path = Contents/MacOS
+	QMAKE_BUNDLE_DATA += hexfiles
+}

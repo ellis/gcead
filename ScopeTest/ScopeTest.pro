@@ -14,13 +14,15 @@ SOURCES += \
 	TestRecording.cpp \
 	./main.cpp
 
-unix:QMAKE_CFLAGS += -static-libgcc
-unix:QMAKE_CXXFLAGS += -static-libgcc
-unix:QMAKE_LFLAGS += -static-libgcc
-unix:pg {
-	QMAKE_CFLAGS += -pg
-	QMAKE_CXXFLAGS += -pg
-	QMAKE_LFLAGS += -pg
+unix:!macx {
+	QMAKE_CFLAGS += -static-libgcc
+	QMAKE_CXXFLAGS += -static-libgcc
+	QMAKE_LFLAGS += -static-libgcc
+	pg {
+		QMAKE_CFLAGS += -pg
+		QMAKE_CXXFLAGS += -pg
+		QMAKE_LFLAGS += -pg
+	}
 }
 
 win32:CONFIG(release, debug|release): LIBS += \
