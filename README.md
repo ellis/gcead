@@ -74,7 +74,7 @@ Recording objects:
 
 The installer for Windows is build with NSI.  The following instructions are no longer valid...
 
-* Install Qt SDK.  I installed it in C:\QtSDK with Qt 4.8.1.  Adapt Setup/GcEad-windows.nsi for newer versions or different directories.
+* Install Qt SDK.  I installed it in C:\Qt with Qt 5.2.  Adapt Setup/GcEad-windows.nsi for newer versions or different directories.
 * build the project (e.g. by opening GcEad.pro with Qt Creator)
 * Install NSIS (I have v2.46 installed)
 * Open Setup/GcEad-windows.nsi and compile it.
@@ -96,10 +96,10 @@ I used BitRock InstallBuilder to create the installer for Linux.
 * install homebrew
 * run `brew install automake` from the appropriate user account
 * run `make -f libusb.mak`
-* run `cd extern/libusb-compat-0.1 && git clean -fd` optionally
-* build the project
-* cd release
-* macdeployqt GcEad.app -dmg
-* since I installed the Qt SDK to ~/local/QtSDK, the above command line is
-  ``~/local/QtSDK/Desktop/Qt/4.8.1/gcc/bin/macdeployqt GcEad.app -dmg``
+* optionally, run `cd extern/libusb-compat-0.1 && git clean -fd`
+* build the project, for example with QtCreator
+* cd release (e.g. ``~/src/build-GcEad-Desktop_Qt_5_2_0_clang_64bit-Release/View``)
+* run ``macdeployqt GcEad.app -dmg``;
+  since I installed Qt to ~/local/Qt, on my machine the above command line is
+  ``~/local/Qt/5.2.0/clang_64/bin/macdeployqt GcEad.app -dmg``
 * GcEad.dmg is now ready for deployment
