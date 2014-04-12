@@ -15,8 +15,9 @@ SUBDIRS += \
 #win32:SUBDIRS += IdacEs IdacEsTest
 OTHER_FILES += Todo.txt \
     UseCases.txt \
-    Notes.txt \
-    Compiling.txt
+    Notes.md \
+    Compiling.txt \
+    README.md
 
 IdacDriver.depends = Core
 IdacDriver2.depends = IdacDriver
