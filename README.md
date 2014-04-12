@@ -80,6 +80,15 @@ The installer for Windows is build with NSI.  The following instructions are no 
 * Open Setup/GcEad-windows.nsi and compile it.
 * Upload Setup/GcEad-x.x.x-windows-installer.exe to sourceforge.net.
 
+To deinstall the libusb-win32 drivers in Windows 7:
+
+* Download USBDeview from http://www.nirsoft.net/utils/usb_devices_view.html
+* Unzip it an run the exe
+* Select the IDAC4 devices, right click, "Uninstall Selected Devices"
+* Open a Command Prompt window, running it as administrator
+* Type ``pnputil -e`` to list all USB device drivers, and find the ones listed as "libusb-win32 devices"
+* Remove them with ``pnputil -d oemXX.inf``, where you replace XX with the appropriate number from the above listing.
+
 #### Installer for linux
 
 I have not created a linux installer for a long time.  Back when I did it,
