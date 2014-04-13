@@ -243,15 +243,44 @@ else {
 
 # Copy IDAC hex files
 win32 {
-	idac2hex.target = idc2fpga.hex
-	idac2hex.commands = ${COPY_FILE} \"$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc2fpga.hex\" \"$${OUT_PWD}\"
-	idac4hex.target = idc4fpga.hex
-	idac4hex.commands = ${COPY_FILE} \"$$replace(_PRO_FILE_PWD_, '/', '\\')\..\Installables\idc4fpga.hex\" \"$${OUT_PWD}\"
-	QMAKE_EXTRA_TARGETS += idac2hex idac4hex
-	PRE_TARGETDEPS += idc2fpga.hex idc4fpga.hex
+        PWD_WIN = $$PWD
+        PWD_WIN ~= s,/,\\,g
+        OUT_PWD_WIN = $${OUT_PWD}
+        OUT_PWD_WIN ~= s,/,\\,g
+        CONFIG(debug, debug|release): SUB = debug
+        CONFIG(release, debug|release): SUB = release
+
+        idac2hex.target = $$SUB\\idc2fpga.hex
+        idac2hex.commands = $$QMAKE_COPY \"$${PWD_WIN}\\..\\Installables\\idc2fpga.hex\" \"$${OUT_PWD_WIN}\\$$SUB\"
+
+        idac4hex.target = $$SUB\\idc4fpga.hex
+        idac4hex.commands = $$QMAKE_COPY \"$${PWD_WIN}\\..\\Installables\\idc4fpga.hex\" \"$${OUT_PWD_WIN}\\$$SUB\"
+
+        QMAKE_EXTRA_TARGETS += idac2hex idac4hex
+        POST_TARGETDEPS += $$SUB\\idc2fpga.hex $$SUB\\idc4fpga.hex
 }
 else:macx {
 	hexfiles.files = $${PWD}/../Installables/idc2fpga.hex $${PWD}/../Installables/idc4fpga.hex
 	hexfiles.path = Contents/MacOS
 	QMAKE_BUNDLE_DATA += hexfiles
 }
+
+# Function to copy the given files to the destination directory
+# copyToDestdir($$OTHER_FILES) # a variable containing multiple paths
+# copyToDestdir(run.sh) # a single filename
+# copyToDestdir(run.sh README) # multiple files
+#defineTest(copyToDestdir) {
+#    files = $$1
+
+#    for(FILE, files) {
+#        DDIR = $$DESTDIR
+
+#        # Replace slashes in paths with backslashes for Windows
+#        win32:FILE ~= s,/,\\,g
+#        win32:DDIR ~= s,/,\\,g
+
+#        QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DDIR) $$escape_expand(\\n\\t)
+#    }
+
+#    export(QMAKE_POST_LINK)
+#}
