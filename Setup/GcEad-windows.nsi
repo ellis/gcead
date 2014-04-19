@@ -11,12 +11,12 @@
 !include "x64.nsh"
 
 !define MY_APP "GcEad"
-!define MY_VERSION "1.2.4"
-!define MY_SRC_QT_DLL "C:\QtSDK\Desktop\Qt\4.8.1\mingw\bin"
+!define MY_VERSION "1.2.5"
+!define MY_SRC_QT_DLL "C:\Qt\5.2.1\mingw48_32\bin"
 !define MY_SRC_MINGW_DLL "C:\QtSDK\mingw\bin"
 !define MY_SRC_COMMON "..\Installables"
 
-name "GcEad/2012 version ${MY_VERSION}"
+name "GcEad/2014 version ${MY_VERSION}"
 outfile "GcEad-${MY_VERSION}-windows-installer.exe"
 installDir "$PROGRAMFILES\Syntech\GcEad-${MY_VERSION}"
 crcCheck on

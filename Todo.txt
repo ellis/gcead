@@ -4,8 +4,10 @@
 - [x] ImportEadDialog: don't show empty waves
 - [x] ImportEadDialog: in m_map, select all displayed waves initially
 - [x] let user delete waves
-- [ ] mac: edit ScopeTest.pro to handle idac hex files, also consider mac vs macx keywords
-- [ ] windows: update software in vmplayer Syntech7 image
+- [x] mac: edit ScopeTest.pro to handle idac hex files, also consider mac vs macx keywords
+- [x] windows: update software in vmplayer Syntech7 image
+  - [ ] build release version and run depends on it, then update GcEad-windows.nsi
+  - [ ] GcEad-windows.nsi: install libusb0.dll no matter what, even if we don't install the drivers
   - [ ] error in libusb0 -- just upgraded using Zidac driver, see whether it works now, but should copy libusb.a and usb.h first
 - [ ] build GcEad on mac
 - [ ] build GcEad on windows
