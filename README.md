@@ -9,6 +9,7 @@ GC-EAD is coupled gas chromatography - electroantennographic detection. It is an
 
 ## News
 
+* 2014-04-21: Version 1.2.5 released. Mac supports IDAC4 now, import selected waves from another .EAD file, renames waves, delete waves via mouse right-click.
 * 2012-06-24: Version 1.2.4 released. In the pre-recording dialog, give FID display a fixed height.
 * 2011-03-15: Version 1.2.3 released. Compatibility with Windows 7 and IDAC4 bugfix.
 * 2010-11-07: Version 1.2.2 released. Update for Windows to let GcEad/2010 use the IDAC drivers from older Syntech software.

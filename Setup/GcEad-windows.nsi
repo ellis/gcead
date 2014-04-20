@@ -12,8 +12,7 @@
 
 !define MY_APP "GcEad"
 !define MY_VERSION "1.2.5"
-!define MY_SRC_QT_DLL "C:\Qt\5.2.1\mingw48_32\bin"
-!define MY_SRC_MINGW_DLL "C:\QtSDK\mingw\bin"
+!define MY_SRC_DLL "C:\Qt\5.2.1\mingw48_32\bin"
 !define MY_SRC_COMMON "..\Installables"
 
 name "GcEad/2014 version ${MY_VERSION}"
@@ -61,21 +60,26 @@ function .onInit
     ${EndIf}
 functionEnd
 
-section "GcEad/2011"
+section "GcEad/2014"
     setOutPath "$INSTDIR"
 
     file ${MY_SRC_COMMON}\gpl-3.0.txt
     file ${MY_SRC_COMMON}\idc2fpga.hex
     file ${MY_SRC_COMMON}\idc4fpga.hex
     file ..\View\images\GcEad.ico
-    file ${MY_SRC_MINGW_DLL}\libgcc_s_dw2-1.dll
-    file ${MY_SRC_MINGW_DLL}\mingwm10.dll
-    file ${MY_SRC_QT_DLL}\QtCore4.dll
-    file ${MY_SRC_QT_DLL}\QtGui4.dll
-    file ${MY_SRC_QT_DLL}\QtSvg4.dll
-    file ${MY_SRC_QT_DLL}\QtXml4.dll
-    file ..\Installables\Windows\msvcr90.dll
-    file ..\..\GcEad-build-desktop\release\GcEad.exe
+    file ${MY_SRC_DLL}\icudt51.dll
+    file ${MY_SRC_DLL}\icuin51.dll
+    file ${MY_SRC_DLL}\icuuc51.dll
+    file ${MY_SRC_DLL}\libgcc_s_dw2-1.dll
+    file ${MY_SRC_DLL}\libstdc++-6.dll
+    file ${MY_SRC_DLL}\libwinpthread-1.dll
+    file ${MY_SRC_DLL}\Qt5Core.dll
+    file ${MY_SRC_DLL}\Qt5Gui.dll
+    file ${MY_SRC_DLL}\Qt5PrintSupport.dll
+    file ${MY_SRC_DLL}\Qt5Svg.dll
+    file ${MY_SRC_DLL}\Qt5Widgets.dll
+    file ${MY_SRC_DLL}\Qt5Xml.dll
+    file ..\..\build-GcEad-Desktop_Qt_5_2_1_MinGW_32bit-Release\View\release\GcEad.exe
     file /r /x .svn ..\Installables\Windows\driver
 
     # messagebox MB_OK "Hello world!"
@@ -92,8 +96,7 @@ section "GcEad/2011"
     ${registerExtension} "$INSTDIR\GcEad.exe" ".ead" "GcEad Project File"
 sectionEnd
 
-;section /o "IDAC USB Drivers"
-section /o $secDriverName
+section "libusb0.dll"
     ${If} $arch == "X86"
         file "/oname=$SYSDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
     ${ElseIf} $arch == "AMD64"
@@ -105,9 +108,13 @@ section /o $secDriverName
         setOutPath "$SYSDIR"
         file ..\Installables\Windows\driver\ia64\libusb0.dll
     ${EndIf}
+sectionEnd
 
+;section /o "IDAC USB Drivers"
+section /o $secDriverName
     setOutPath "$INSTDIR\driver"
-    Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac.inf'
+    Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac2.inf'
+    Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac4.inf'
 sectionEnd
 
 section "Uninstall"
@@ -116,13 +123,23 @@ section "Uninstall"
     delete $INSTDIR\idc4fpga.hex
     delete $INSTDIR\GcEad.ico
 
+    file ${MY_SRC_DLL}\Qt5Core.dll
+    file ${MY_SRC_DLL}\Qt5Gui.dll
+    file ${MY_SRC_DLL}\Qt5PrintSupport.dll
+    file ${MY_SRC_DLL}\Qt5Svg.dll
+    file ${MY_SRC_DLL}\Qt5Widgets.dll
+    file ${MY_SRC_DLL}\Qt5Xml.dll
+    file ..\..\build-GcEad-Desktop_Qt_5_2_1_MinGW_32bit-Release\View\release\GcEad.exe
+
     delete $INSTDIR\libgcc_s_dw2-1.dll
-    delete $INSTDIR\mingwm10.dll
-    delete $INSTDIR\QtCore4.dll
-    delete $INSTDIR\QtGui4.dll
-    delete $INSTDIR\QtSvg4.dll
-    delete $INSTDIR\QtXml4.dll
-    delete $INSTDIR\msvcr90.dll
+    delete $INSTDIR\libstdc++-6.dll
+    delete $INSTDIR\libwinpthread-1.dll
+    delete $INSTDIR\Qt5Core.dll
+    delete $INSTDIR\Qt5Gui.dll
+    delete $INSTDIR\Qt5PrintSupport.dll
+    delete $INSTDIR\Qt5Svg.dll
+    delete $INSTDIR\Qt5Widgets.dll
+    delete $INSTDIR\Qt5Xml.dll
     delete $INSTDIR\GcEad.exe
     rmdir /r $INSTDIR\driver
     rmdir $INSTDIR\uninstall.exe
