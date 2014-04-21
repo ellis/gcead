@@ -97,21 +97,25 @@ extern INTEL_HEX_RECORD g_firmwareIdacDriver4[];
 #define		MAX_INPUT_VOLTAGE_ADC_V1	1000000		// full scale is 1V   ( 2Vpp)
 #define		MAX_INPUT_VOLTAGE_ADC_V2	5500000		// full scale is 5.5V (11Vpp)
 
-int dwRangesList_V1[IDAC_SCALERANGECOUNT+1] = {	MAX_INPUT_VOLTAGE_ADC_V1 / 1,
-													MAX_INPUT_VOLTAGE_ADC_V1 / 4,
-													MAX_INPUT_VOLTAGE_ADC_V1 / 16,
-													MAX_INPUT_VOLTAGE_ADC_V1 / 64,
-													MAX_INPUT_VOLTAGE_ADC_V1 / 256,
-													MAX_INPUT_VOLTAGE_ADC_V1 / 1024,
-													-1 };
+int dwRangesList_V1[IDAC_SCALERANGECOUNT+1] = {
+    MAX_INPUT_VOLTAGE_ADC_V1 / 1024,
+    MAX_INPUT_VOLTAGE_ADC_V1 / 256,
+    MAX_INPUT_VOLTAGE_ADC_V1 / 64,
+    MAX_INPUT_VOLTAGE_ADC_V1 / 16,
+    MAX_INPUT_VOLTAGE_ADC_V1 / 4,
+    MAX_INPUT_VOLTAGE_ADC_V1 / 1,
+    -1
+};
 
-int dwRangesList_V2[IDAC_SCALERANGECOUNT+1] = {	MAX_INPUT_VOLTAGE_ADC_V2 / 1,
-													MAX_INPUT_VOLTAGE_ADC_V2 / 4,
-													MAX_INPUT_VOLTAGE_ADC_V2 / 16,
-													MAX_INPUT_VOLTAGE_ADC_V2 / 64,
-													MAX_INPUT_VOLTAGE_ADC_V2 / 256,
-													MAX_INPUT_VOLTAGE_ADC_V2 / 1024,
-													-1 };
+int dwRangesList_V2[IDAC_SCALERANGECOUNT+1] = {
+    MAX_INPUT_VOLTAGE_ADC_V2 / 1024,
+    MAX_INPUT_VOLTAGE_ADC_V2 / 256,
+    MAX_INPUT_VOLTAGE_ADC_V2 / 64,
+    MAX_INPUT_VOLTAGE_ADC_V2 / 16,
+    MAX_INPUT_VOLTAGE_ADC_V2 / 4,
+    MAX_INPUT_VOLTAGE_ADC_V2 / 1,
+    -1
+};
 
 
 IdacDriver4::IdacDriver4(UsbDevice* device, UsbHandle* handle, QObject* parent)
@@ -595,6 +599,7 @@ bool IdacDriver4::processSampledData(const int iTransfer, const int nBytesReceiv
 			for (int j = 0; j < 299; j++) {
 				cerr << pBuffer[j] << " ";
 			}
+            cerr << endl;
 			cerr.flush();
 			continue;
 		}

@@ -11,9 +11,11 @@
   - [x] error in libusb0 -- just upgraded using Zidac driver, see whether it works now, but should copy libusb.a and usb.h first
   - [x] build release version and run depends on it, then update GcEad-windows.nsi
   - [x] GcEad-windows.nsi: install libusb0.dll no matter what, even if we don't install the drivers
-  - [ ] create idac2.inf and put it in the drivers directory too
+  - [x] create idac2.inf and put it in the drivers directory too
   - [ ] test installer on clean windows machine
   - [ ] See whether Peter had any other installation requests
+- [ ] switch windows version to libusb from libusb-win32, since libusb now supports isochronous transfers
+- [ ] switch to HDF5 for file format?
 
 QML:
 - display a QML dialog in QMainWindow: http://www.ics.com/blog/combining-qt-widgets-and-qml-qwidgetcreatewindowcontainer#.UwovrviVthE

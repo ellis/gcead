@@ -49,13 +49,13 @@ extern INTEL_HEX_RECORD g_firmwareIdacDriver2[];
 
 static int dwRangesList[IDAC_SCALERANGECOUNT+1] =
 {
-	MAX_INPUT_VOLTAGE_ADC / 1,
-	MAX_INPUT_VOLTAGE_ADC / 4,
-	MAX_INPUT_VOLTAGE_ADC / 16,
-	MAX_INPUT_VOLTAGE_ADC / 64,
-	MAX_INPUT_VOLTAGE_ADC / 256,
-	MAX_INPUT_VOLTAGE_ADC / 1024,
-	-1
+    MAX_INPUT_VOLTAGE_ADC / 1024,
+    MAX_INPUT_VOLTAGE_ADC / 256,
+    MAX_INPUT_VOLTAGE_ADC / 64,
+    MAX_INPUT_VOLTAGE_ADC / 16,
+    MAX_INPUT_VOLTAGE_ADC / 4,
+    MAX_INPUT_VOLTAGE_ADC / 1,
+    -1
 };
 
 // Sampling variables
@@ -335,7 +335,7 @@ void IdacDriver2::sampleLoop()
 	// Now loop till done
 	quint8 buffer[51];
 	bool bSamplingPrev = m_bSampling;
-	bool bOverflow = false;
+    //bool bOverflow = false;
 	int iPart = 0;
 	quint8 parts[8];
 	parts[7] = 0;
@@ -427,7 +427,7 @@ void IdacDriver2::sampleLoop()
 						// A sample was produced
 						if (!addSample(digital, analog1, analog2))
 						{
-							bOverflow = true;
+                            //bOverflow = true;
 							//m_bSampling = false;
 							addError("OVERFLOW");
 						}

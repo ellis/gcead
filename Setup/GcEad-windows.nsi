@@ -97,6 +97,7 @@ section "GcEad/2014"
 sectionEnd
 
 section "libusb0.dll"
+    sectionIn RO ; flag this section as required
     ${If} $arch == "X86"
         file "/oname=$SYSDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
     ${ElseIf} $arch == "AMD64"
