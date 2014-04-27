@@ -13,6 +13,7 @@
 !define MY_APP "GcEad"
 !define MY_VERSION "1.2.5"
 !define MY_SRC_DLL "C:\Qt\5.2.1\mingw48_32\bin"
+!define MY_SRC_PLUGINS "C:\Qt\5.2.1\mingw48_32\plugins"
 !define MY_SRC_COMMON "..\Installables"
 
 name "GcEad/2014 version ${MY_VERSION}"
@@ -81,6 +82,24 @@ section "GcEad/2014"
     file ${MY_SRC_DLL}\Qt5Xml.dll
     file ..\..\build-GcEad-Desktop_Qt_5_2_1_MinGW_32bit-Release\View\release\GcEad.exe
     file /r /x .svn ..\Installables\Windows\driver
+    SetOutPath $INSTDIR\accessible
+    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblequick.dll
+    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblewidgets.dll
+    SetOutPath $INSTDIR\iconengines
+    file ${MY_SRC_PLUGINS}\iconengines\qsvgicon.dll
+    SetOutPath $INSTDIR\imageformats
+    file ${MY_SRC_PLUGINS}\imageformats\qtiff.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qmng.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qwbmp.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qtga.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qsvg.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qgif.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qico.dll
+    file ${MY_SRC_PLUGINS}\imageformats\qjpeg.dll
+    SetOutPath $INSTDIR\platforms
+    file ${MY_SRC_PLUGINS}\platforms\qwindows.dll
+    SetOutPath $INSTDIR\printsupport
+    file ${MY_SRC_PLUGINS}\printsupport\windowsprintersupport.dll
 
     # messagebox MB_OK "Hello world!"
     writeUninstaller $INSTDIR\uninstall.exe"
@@ -97,6 +116,9 @@ section "GcEad/2014"
 sectionEnd
 
 section "libusb0.dll"
+    ; GcEad.exe seems to require the x86 version of the lib in its same directory
+    file "/oname=$INSTDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
+
     sectionIn RO ; flag this section as required
     ${If} $arch == "X86"
         file "/oname=$SYSDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
@@ -123,15 +145,6 @@ section "Uninstall"
     delete $INSTDIR\idc2fpga.hex
     delete $INSTDIR\idc4fpga.hex
     delete $INSTDIR\GcEad.ico
-
-    file ${MY_SRC_DLL}\Qt5Core.dll
-    file ${MY_SRC_DLL}\Qt5Gui.dll
-    file ${MY_SRC_DLL}\Qt5PrintSupport.dll
-    file ${MY_SRC_DLL}\Qt5Svg.dll
-    file ${MY_SRC_DLL}\Qt5Widgets.dll
-    file ${MY_SRC_DLL}\Qt5Xml.dll
-    file ..\..\build-GcEad-Desktop_Qt_5_2_1_MinGW_32bit-Release\View\release\GcEad.exe
-
     delete $INSTDIR\libgcc_s_dw2-1.dll
     delete $INSTDIR\libstdc++-6.dll
     delete $INSTDIR\libwinpthread-1.dll
@@ -143,6 +156,12 @@ section "Uninstall"
     delete $INSTDIR\Qt5Xml.dll
     delete $INSTDIR\GcEad.exe
     rmdir /r $INSTDIR\driver
+    rmdir /r $INSTDIR\accessible
+    rmdir /r $INSTDIR\iconengines
+    rmdir /r $INSTDIR\imageformats
+    rmdir /r $INSTDIR\platforms
+    rmdir /r $INSTDIR\printsupport
+    delete $INSTDIR\libusb0.dll
     rmdir $INSTDIR\uninstall.exe
     rmdir $INSTDIR
 

@@ -14,6 +14,7 @@
   - [x] create idac2.inf and put it in the drivers directory too
   - [ ] test installer on clean windows machine
   - [ ] See whether Peter had any other installation requests
+- [ ] BUG: on windows, IDAC 2, using external input, voltage range 4.9mV properly shows 1mV amplidude, but 19mV falsely shows 15mV amplitude.
 - [ ] switch windows version to libusb from libusb-win32, since libusb now supports isochronous transfers
 - [ ] switch to HDF5 for file format?
 
