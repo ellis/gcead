@@ -5,6 +5,7 @@
 # x install IDAC inf files (installinf.bat)
 # x don't install USB driver by default
 # x disable installation of USB driver if IDAC8_32.dll or IDAC30.sys.dll exists
+# x select drivers for installation by default
 
 !include "FileAssociation.nsh"
 !include "LogicLib.nsh"
@@ -115,7 +116,7 @@ section "GcEad/2014"
     ${registerExtension} "$INSTDIR\GcEad.exe" ".ead" "GcEad Project File"
 sectionEnd
 
-section "libusb0.dll"
+section "" secLibusb0
     ; GcEad.exe seems to require the x86 version of the lib in its same directory
     file "/oname=$INSTDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
 
@@ -134,7 +135,7 @@ section "libusb0.dll"
 sectionEnd
 
 ;section /o "IDAC USB Drivers"
-section /o $secDriverName
+section $secDriverName secIdacDrivers
     setOutPath "$INSTDIR\driver"
     Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac2.inf'
     Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac4.inf'

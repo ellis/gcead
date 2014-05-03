@@ -20,7 +20,7 @@
 
 #define APPNAME "GcEad 2014"
 #define APPVERSION "v1.2.5"
-#define APPVERSIONDATE "2014-04-21"
+#define APPVERSIONDATE "2014-05-03"
 #define APPSETTINGSKEY "GC-EAD"
 
 #endif
