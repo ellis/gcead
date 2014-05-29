@@ -1,0 +1,70 @@
+undo/redo
+data consistency in all views
+traceback of user actions (in the case of a crash or to produce test cases)
+bug reporting
+playback of recorded user actions
+separation of UI and functionality
+scriptable
+automated testing
+automated screenshot creation for documentation
+automated screencast creation?
+theadsafe?
+transactions
+separate updating of data, calculated data, view data, and views
+
+
+undo/redo:
+all modifications to underlying data have to be done via commands.
+consequence 1: we need command classes to handle all modifications
+consequence 2: we need a proxy class for each data class (assuming we want to work with objects and not commands in the main code)
+
+data consistency in all views:
+consequence 1: only one copy of each data object
+consequence 2: changes to data objects must be propagated to proxy objects (via signals, for example) and QModels
+consequence 3: proxy lists need to have only one instance in the program or they all need to be updated automatically when the underlying data list changes
+
+traceback of user actions:
+consequence 1: we need unique identifiers for all actions and the objects that contain them
+consequence 2: all actions and commands need to be logged
+consequence 3: use a subclass of QAction which catches its own activated() signal in order to log the action
+consequence 4: custom widgets with replayable actions also need an ID
+consequence 5: some dialog boxes will need to log their modifications too; so some dialog boxes will be global objects which get shown and hidden when needed.
+consequence 6: need to think about how to deal with message boxes
+
+bug reporting:
+consequence 1: need to write logs to a file
+consequence 2: need to catch exceptions somewhere
+consequence 3: might want to write log upon CHECK failure and exceptions
+consequence 4: might want to send error log to server upon program exit
+consequence 5: need to think about how to avoid getting a mass of unwanted error logs
+
+playback of recorded user actions:
+consequence 1: need to be able to parse the logged actions
+consequence 2: need to call methods with parameters
+consequence 3: need to think about how to playback dialog box actions; complex dialog boxes may require underlying data objects too
+consequence 4: need to think about how to playback message boxes
+
+separation of UI and functionality:
+We might want to entirely separate the application functionality from the UI so that the scripts and tests can be run without UI
+consequence 1: need Presenter/View layers
+consequence 2: we need to tie Views to Presenters
+consequence 3: need to handle dialogs and message boxes differently, depending on whether the UI is there or not
+
+scriptable:
+consequence 1: script engine needs to know about command methods, actions, and relevant objects
+consequence 2: need to catch errors so that script can be stopped when something goes wrong
+consequence 3: should probably let user use QScriptEngine's debugger
+
+automated testing:
+consequence: we might want to produce the logs in a format which can be compiled in C++ too via #include?
+
+automated testing in UI:
+the exact same tests should run with or without UI
+
+automated screenshot creation for documentation:
+consequence 1: need a function to take screenshots of the whole app or just specific views
+
+automated screencast creation?:
+how to create screencasts?
+It'd be nice to show an overlay of mouse and keyboard actions
+it'd be nice to show a transcript at the bottom of the screencast
