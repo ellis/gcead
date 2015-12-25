@@ -197,7 +197,7 @@ win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += \
     $$OUT_PWD/../IdacDriver2/release/libIdacDriver2.a \
     $$OUT_PWD/../IdacDriver/release/libIdacDriver.a \
     $$OUT_PWD/../Core/release/libCore.a \
-    $$PWD/../extern/win32/libusb.a
+    $$PWD/../extern/win32/libusb-1.0.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += \
     $$OUT_PWD/../Scope/debug/libScope.a \
     $$OUT_PWD/../Model/debug/libModel.a \
@@ -208,7 +208,7 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += \
     $$OUT_PWD/../IdacDriver2/debug/libIdacDriver2.a \
     $$OUT_PWD/../IdacDriver/debug/libIdacDriver.a \
     $$OUT_PWD/../Core/debug/libCore.a \
-    $$PWD/../extern/win32/libusb.a
+    $$PWD/../extern/win32/libusb-1.0.a
 else:unix: PRE_TARGETDEPS += \
     $$OUT_PWD/../Scope/libScope.a \
     $$OUT_PWD/../Model/libModel.a \
@@ -222,7 +222,7 @@ else:unix: PRE_TARGETDEPS += \
 
 # For libusb
 win32 {
-	LIBS += -L$$PWD/../extern/win32/ -lusb
+        LIBS += $${PWD}/../extern/win32/libusb-1.0.a
 	INCLUDEPATH += $$PWD/../extern/win32
 	DEPENDPATH += $$PWD/../extern/win32
 }

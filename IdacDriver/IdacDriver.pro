@@ -28,7 +28,9 @@ SOURCES += IdacDriver.cpp \
 	IdacDriverUsbEs.cpp \
     IdacDriverUsb24Base.cpp
 
-win32:DEFINES += LIBUSB0
+#GET RID OF LIBUSB0 INSTANCES
+#win32:DEFINES += LIBUSB0
+win32:DEFINES += LIBUSBX
 unix:DEFINES += LIBUSBX
 
 win32:INCLUDEPATH += ../extern/win32

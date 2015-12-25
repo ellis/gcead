@@ -342,7 +342,7 @@ static libusb_transfer* iso_transfer[ISO_CONTEXT_COUNT];
 static bool g_abIsoTransferDone[ISO_CONTEXT_COUNT];
 
 
-static void iso_transfer_cb(struct libusb_transfer *transfer)
+static void LIBUSB_CALL iso_transfer_cb(struct libusb_transfer *transfer)
 {
 	int iTransfer = (int) (size_t) transfer->user_data;
     g_abIsoTransferDone[iTransfer] = true;
@@ -494,12 +494,12 @@ void IdacDriver4::sampleStart()
 static int iso_submit(int iTransfer)
 {
 	int ret = 0;
-#ifdef WIN32
-	ret = usb_submit_async(isourb[iTransfer], isobuf + ISO_TRANSFER_SIZE * iTransfer, ISO_TRANSFER_SIZE);
-#else
+/*#ifdef WIN32
+    ret = usb_submit_async(isourb[iTransfer], isobuf + ISO_TRANSFER_SIZE * iTransfer, ISO_TRANSFER_SIZE);
+#else*/
 	g_abIsoTransferDone[iTransfer] = false;
 	ret = libusb_submit_transfer(iso_transfer[iTransfer]);
-#endif
+//#endif
 	return ret;
 }
 
@@ -507,9 +507,9 @@ static int iso_submit(int iTransfer)
 static int iso_reap(int iTransfer)
 {
 	int ret = 0;
-#ifdef WIN32
-	ret = usb_reap_async(isourb[iTransfer], 5000);
-#else
+//#ifdef WIN32
+//	ret = usb_reap_async(isourb[iTransfer], 5000);
+//#else
 	libusb_transfer* transfer = iso_transfer[iTransfer];
 	ret = wait_for_iso_transfer(transfer);
 	if (ret >= 0) {
@@ -522,7 +522,7 @@ static int iso_reap(int iTransfer)
 		}
 		ret = nBytesReceived;
 	}
-#endif
+//#endif
 	return ret;
 }
 

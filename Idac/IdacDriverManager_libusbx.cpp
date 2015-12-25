@@ -17,11 +17,11 @@
 
 #include "IdacDriverManager.h"
 
-#if defined(Q_OS_UNIX)
+//#if defined(Q_OS_UNIX)
 #include <libusb-1.0/libusb.h>
-#else
-#include <usb.h>
-#endif
+//#else
+//#include <usb.h>
+//#endif
 
 #include <QtDebug>
 
