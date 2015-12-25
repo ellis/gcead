@@ -236,7 +236,7 @@ void IdacDriverManager::setup()
 void IdacDriverManager::loadDriver()
 {
 	createLibusbDriver();
-#ifdef WIN32
+#ifdef Q_OS_WIN
 	if (m_driver == NULL) {
 		if (IdacDriverES::driverIsPresent()) {
 			m_driver = new IdacDriverES();

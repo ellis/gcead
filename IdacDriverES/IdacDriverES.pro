@@ -8,7 +8,7 @@ INCLUDEPATH += . \
     .. \
     ../Core \
     ../IdacDriver
-win32:DEFINES += WIN32
+
 #CONFIG(debug, debug|release):DESTDIR = ../debug
 #else:DESTDIR = ../release
 

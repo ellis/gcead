@@ -17,11 +17,7 @@
 
 #include "IdacDriverUsb.h"
 
-#ifdef LIBUSBX
 #include <libusb-1.0/libusb.h>
-#else
-#include <usb.h>
-#endif
 
 #include <QtDebug>
 #include <QFile>
@@ -44,11 +40,7 @@ IdacDriverUsb::~IdacDriverUsb()
 
 void IdacDriverUsb::logUsbError(const char* file, int line, int result)
 {
-#ifdef LIBUSBX
 	const char* s = libusb_error_name(result);
-#else
-	const char* s = usb_strerror();
-#endif
 	if (s != NULL && *s != 0) {
 		logUsbError(file, line, QString("USB ERROR %0: %1").arg(result).arg(s));
 	}
@@ -63,13 +55,8 @@ void IdacDriverUsb::logUsbError(const char* file, int line, const QString& s)
 
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 {
-#ifdef LIBUSBX
 	int n = libusb_control_transfer(
 			m_handle,
-#else // LIBUSB0
-	int n = usb_control_msg(
-			m_handle,
-#endif
 			0x40, // requesttype (vendor message, host -> device)
 			requestId, // request
 			0,
@@ -84,23 +71,14 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, int timeout)
 
 bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size, int timeout)
 {
-#ifdef LIBUSBX
 	int n = libusb_control_transfer(
 			m_handle,
-#else // LIBUSB0
-	int n = usb_control_msg(
-			m_handle,
-#endif
 			//usb_sndctrlpipe(m_handle, 0), // requesttype
 			0x40, // requesttype (vendor message, host -> device)
 			requestId, // request
 			0,
 			0,
-#ifdef LIBUSBX
 			buffer,
-#else
-			(char*) buffer,
-#endif
 			size,
 			timeout);
 	CHECK_USBRESULT_RETVAL(n, false);
@@ -110,22 +88,13 @@ bool IdacDriverUsb::sendOutgoingMessage(int requestId, quint8* buffer, int size,
 
 bool IdacDriverUsb::sendIncomingMessage(int requestId, quint8* buffer, int size, int timeout)
 {
-#ifdef LIBUSBX
 	int n = libusb_control_transfer(
 			m_handle,
-#else // LIBUSB0
-	int n = usb_control_msg(
-			m_handle,
-#endif
 			0xC0, // requesttype (vendor message, device -> host)
 			requestId, // request
 			0,
 			0,
-#ifdef LIBUSBX
 			buffer,
-#else
-			(char*) buffer,
-#endif
 			size,
 			timeout);
 	CHECK_USBRESULT_RETVAL(n, false);
@@ -178,9 +147,6 @@ bool IdacDriverUsb::sendFirmware(INTEL_HEX_RECORD firmware[])
 	}
 
 	m_handle = NULL;
-#ifdef LIBUSB0
-	m_handle = NULL;
-#endif
 
 	Sleeper::msleep(5000);
 
@@ -284,17 +250,9 @@ int IdacDriverUsb::myusb_control_transfer(
 	unsigned int  	timeout
 ) {
 	return
-#ifdef LIBUSBX
 	libusb_control_transfer(m_handle,
-#else
-	usb_control_msg(m_handle,
-#endif
 		bmRequestType, bRequest, wValue, wIndex,
-#ifdef LIBUSBX
 		data,
-#else
-		(char*) data,
-#endif
 		wLength, timeout);
 }
 
@@ -305,21 +263,11 @@ int IdacDriverUsb::myusb_bulk_write(
 	//int * transferred,
 	unsigned int timeout
 ) {
-#ifdef LIBUSBX
 	int transferred = 0;
 	return libusb_bulk_transfer(m_handle,
-#else
-	return usb_bulk_write(m_handle,
-#endif
 		endpoint,
-#ifdef LIBUSBX
 		data,
-#else
-		(char*) data,
-#endif
 		length,
-#ifdef LIBUSBX
 		&transferred,
-#endif
 		timeout);
 }

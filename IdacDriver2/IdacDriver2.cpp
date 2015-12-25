@@ -19,11 +19,7 @@
 
 #include <iostream>
 
-#if defined(LIBUSBX)
 #include <libusb-1.0/libusb.h>
-#elif defined(LIBUSB0)
-#include <usb.h>
-#endif
 
 #include <QtDebug>
 #include <QCoreApplication>
@@ -343,14 +339,10 @@ void IdacDriver2::sampleLoop()
 	{
 		bool bSamplingNow = m_bSampling;
 
-#if defined(LIBUSB0)
-		ret = usb_interrupt_read(handle(), 0x81, (char*) buffer, 51, 5000);
-#else
 		int actual_length = 0;
 		ret = libusb_interrupt_transfer(handle(), 0x81, buffer, 51, &actual_length, 5000);
 		if (ret >= 0)
 			ret = actual_length;
-#endif
 		CHECK_USBRESULT_NORET(ret);
 		if (ret < 0)
 		{

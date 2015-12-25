@@ -12,14 +12,10 @@ HEADERS += \
     IdacDriverManager.h 
 SOURCES += \
     IdacDriverManager.cpp \
+    IdacDriverManager_libusbx.cpp \
     IdacControlThread.cpp \
     IdacProxy.cpp \
     IdacFactory.cpp
-win32:SOURCES += IdacDriverManager_libusbx.cpp #IdacDriverManager_libusb0.cpp
-unix:SOURCES += IdacDriverManager_libusbx.cpp
-
-win32:DEFINES += WIN32 LIBUSBX #LIBUSB0
-unix:DEFINES += LIBUSBX
 
 win32:INCLUDEPATH += ../extern/win32
 unix:INCLUDEPATH += ../extern/libusb/include

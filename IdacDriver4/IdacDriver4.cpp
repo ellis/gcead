@@ -19,17 +19,7 @@
 
 #include <iostream>
 
-#if LIBUSBX
 #include <libusb-1.0/libusb.h>
-#else
-#include <usb.h>
-extern "C" {
-//#undef _GNU_SOURCE // Supress a warning
-//#include <libusb/libusbi.h>
-//#include <usbi.h>
-//#include "../extern/libusb-compat-0.1.4/libusb/usbi.h"
-}
-#endif
 
 #include <QtDebug>
 #include <QCoreApplication>
@@ -335,9 +325,6 @@ static char* isobuf;
 static IdacDriver4Channel IdacChannelState(true); // Digital inputs are inverted
 static CDD32_STATUS cdStatus;
 
-#ifdef LIBUSB0
-static void* isourb[ISO_CONTEXT_COUNT];
-#else
 static libusb_transfer* iso_transfer[ISO_CONTEXT_COUNT];
 static bool g_abIsoTransferDone[ISO_CONTEXT_COUNT];
 
@@ -421,14 +408,10 @@ static int wait_for_iso_transfer(libusb_transfer* transfer)
 
 	return r;
 }
-#endif
 
 void IdacDriver4::sampleInit()
 {
 	const int nBufSize = ISO_TRANSFER_SIZE * ISO_CONTEXT_COUNT;
-#if defined(LIBUSB0)
-	const int pipeId = device()->config[0].interface[0].altsetting[0].endpoint[1].bEndpointAddress;
-#elif defined(LIBUSBX)
 	libusb_device* dev = libusb_get_device(handle());
 	CHECK_ASSERT_RET(dev != NULL);
 	libusb_config_descriptor* config = NULL;
@@ -440,7 +423,6 @@ void IdacDriver4::sampleInit()
 	const libusb_interface_descriptor* altsetting = &interface->altsetting[0];
 	CHECK_ASSERT_RET(altsetting->bNumEndpoints > 1);
 	const int pipeId = altsetting->endpoint[1].bEndpointAddress;
-#endif
 
 	isobuf = new char[nBufSize];
 	// Initialize to -1's for debugging purposes
@@ -450,11 +432,6 @@ void IdacDriver4::sampleInit()
 	// Setup
 	for (int i = 0; i < ISO_CONTEXT_COUNT; i++)
 	{
-#ifdef LIBUSB0
-		isourb[i] = NULL;
-		int ret = usb_isochronous_setup_async(handle(), &isourb[i], pipeId, ISO_PACKET_SIZE);
-		CHECK_USBRESULT_NORET(ret);
-#else
 		libusb_transfer* transfer = libusb_alloc_transfer(ISO_PACKETS_PER_TRANSFER);
 		iso_transfer[i] = transfer;
 		void* user_data = (void*) (intptr_t) i;
@@ -469,7 +446,6 @@ void IdacDriver4::sampleInit()
 			user_data,                        // user_data
 			5000);                       // timeout
 		libusb_set_iso_packet_lengths(transfer, ISO_PACKET_SIZE);
-#endif
 	}
 }
 
@@ -494,12 +470,8 @@ void IdacDriver4::sampleStart()
 static int iso_submit(int iTransfer)
 {
 	int ret = 0;
-/*#ifdef WIN32
-    ret = usb_submit_async(isourb[iTransfer], isobuf + ISO_TRANSFER_SIZE * iTransfer, ISO_TRANSFER_SIZE);
-#else*/
 	g_abIsoTransferDone[iTransfer] = false;
 	ret = libusb_submit_transfer(iso_transfer[iTransfer]);
-//#endif
 	return ret;
 }
 

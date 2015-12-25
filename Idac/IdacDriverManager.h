@@ -23,17 +23,10 @@
 #include <IdacDriver/IdacEnums.h>
 
 // Using libusbx on linux/mac
-#ifdef LIBUSBX
 struct libusb_device_handle;
 typedef libusb_device_handle UsbHandle;
 typedef void UsbDevice;
 // Using libusb0 on windows
-#else
-struct usb_dev_handle;
-typedef usb_dev_handle UsbHandle;
-struct usb_device;
-typedef usb_device UsbDevice;
-#endif
 
 class IdacCaps;
 class IdacChannelSettings;
