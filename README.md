@@ -1,6 +1,6 @@
 # GcEAD
 
-GcEad/2012 is software for GC-EAD research. It is free and open source by [Syntech](http://www.syntech.nl/).
+GcEad/2015 is software for GC-EAD research. It is free and open source by [Syntech](http://www.syntech.nl/).
 
 ## What is GC-EAD?
 
@@ -9,6 +9,7 @@ GC-EAD is coupled gas chromatography - electroantennographic detection. It is an
 
 ## News
 
+* 2015-12-26: Version 1.2.6 released. Compatibility with Windows 8.
 * 2014-05-03: Version 1.2.5 released. Mac supports IDAC4 now, import selected waves from another .EAD file, renames waves, delete waves via mouse right-click.
 * 2012-06-24: Version 1.2.4 released. In the pre-recording dialog, give FID display a fixed height.
 * 2011-03-15: Version 1.2.3 released. Compatibility with Windows 7 and IDAC4 bugfix.
