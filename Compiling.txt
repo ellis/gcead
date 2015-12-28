@@ -13,9 +13,16 @@ On linux, you'll need to install `libudev`.  For Debian, you can run
 * linux and mac: make -f libusbx.mak
 * windows: pre-compiled libraries already provided
 
+On Windows, if you need to update the pre-compiled libaries:
+
+* goto http://libusb.info and download the latest pre-compiled Windows binaries
+* unpack the binary
+* copy $BINARY/include/libusb-1.0/libusb.h to $SRC/extern/win32/libusb-1.0/libusb.h
+* copy $BINARY/MinGW32/static/libusb-1.0.a to $SRC/extern/win32/libusb-1.0.a
+
 ## GcEad
 
-I built the project with the Qt SDK for Qt 4.8.1 and Qt Creator 2.4.
+I built the project with the Qt SDK for Qt 5.5.1 and Qt Creator 3.5.1.
 
 You will find the final program, GcEad, in either the debug/ or release/
 subfolders.

@@ -21,8 +21,10 @@
 - [x] Upgrade to newest libusb and get rid of libusb0 for Windows
 - [x] Increment GcEad version and year
 - [ ] Update Installables/Windows/driver
+    - look in C:\Users\McGoo\usb_driver
 - [ ] Update Setup/GcEad*.nsi files
 - [ ] Update README.md regarding library versions
+- [ ] Update README.md for creating Mac package
 - [ ] Build NSI installers
 - [ ] After upgrading libusb, respond to email from 2014-10-02 and ask them to try again with the new version
 - [ ] switch to HDF5 for file format?
