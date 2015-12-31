@@ -20,10 +20,11 @@
 - [x] replace define WIN32 with Q_OS_WIN
 - [x] Upgrade to newest libusb and get rid of libusb0 for Windows
 - [x] Increment GcEad version and year
-- [ ] Update Installables/Windows/driver
+- [?] Update Installables/Windows/driver
     - look in C:\Users\McGoo\usb_driver
-- [ ] Do we need the .CAT files from Zadig?
 - [ ] Update Setup/GcEad*.nsi files
+    - figure out how to distinguish 32/64 bit, since IA64 isn't an option for libusb anymore
+- [ ] Do we need the .CAT files from Zadig?
 - [ ] Update README.md regarding library versions
 - [ ] Update README.md for creating Mac package
 - [ ] Update README.md for updating Installables/Windows/driver

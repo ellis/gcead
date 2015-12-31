@@ -13,11 +13,11 @@
 
 !define MY_APP "GcEad"
 !define MY_VERSION "1.2.5"
-!define MY_SRC_DLL "C:\Qt\5.2.1\mingw48_32\bin"
-!define MY_SRC_PLUGINS "C:\Qt\5.2.1\mingw48_32\plugins"
+!define MY_SRC_DLL "C:\Qt\5.5\mingw492_32\bin"
+!define MY_SRC_PLUGINS "C:\Qt\5.5\mingw492_32\plugins"
 !define MY_SRC_COMMON "..\Installables"
 
-name "GcEad/2014 version ${MY_VERSION}"
+name "GcEad/2015 version ${MY_VERSION}"
 outfile "GcEad-${MY_VERSION}-windows-installer.exe"
 installDir "$PROGRAMFILES\Syntech\GcEad-${MY_VERSION}"
 crcCheck on
@@ -62,16 +62,16 @@ function .onInit
     ${EndIf}
 functionEnd
 
-section "GcEad/2014"
+section "GcEad/2015"
     setOutPath "$INSTDIR"
 
     file ${MY_SRC_COMMON}\gpl-3.0.txt
     file ${MY_SRC_COMMON}\idc2fpga.hex
     file ${MY_SRC_COMMON}\idc4fpga.hex
     file ..\View\images\GcEad.ico
-    file ${MY_SRC_DLL}\icudt51.dll
-    file ${MY_SRC_DLL}\icuin51.dll
-    file ${MY_SRC_DLL}\icuuc51.dll
+    file ${MY_SRC_DLL}\icudt54.dll
+    file ${MY_SRC_DLL}\icuin54.dll
+    file ${MY_SRC_DLL}\icuuc54.dll
     file ${MY_SRC_DLL}\libgcc_s_dw2-1.dll
     file ${MY_SRC_DLL}\libstdc++-6.dll
     file ${MY_SRC_DLL}\libwinpthread-1.dll
@@ -81,7 +81,7 @@ section "GcEad/2014"
     file ${MY_SRC_DLL}\Qt5Svg.dll
     file ${MY_SRC_DLL}\Qt5Widgets.dll
     file ${MY_SRC_DLL}\Qt5Xml.dll
-    file ..\..\build-GcEad-Desktop_Qt_5_2_1_MinGW_32bit-Release\View\release\GcEad.exe
+    file ..\..\build-GcEad-Desktop_Qt_5_5_1_MinGW_32bit-Debug\View\release\GcEad.exe
     file /r /x .svn ..\Installables\Windows\driver
     SetOutPath $INSTDIR\accessible
     file ${MY_SRC_PLUGINS}\accessible\qtaccessiblequick.dll
@@ -116,9 +116,9 @@ section "GcEad/2014"
     ${registerExtension} "$INSTDIR\GcEad.exe" ".ead" "GcEad Project File"
 sectionEnd
 
-section "" secLibusb0
+section "" secLibusbK
     ; GcEad.exe seems to require the x86 version of the lib in its same directory
-    file "/oname=$INSTDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
+    file "/oname=$INSTDIR\libusbK.dll" ..\Installables\Windows\driver\x86\libusbK.dll
 
     sectionIn RO ; flag this section as required
     ${If} $arch == "X86"
@@ -137,8 +137,8 @@ sectionEnd
 ;section /o "IDAC USB Drivers"
 section $secDriverName secIdacDrivers
     setOutPath "$INSTDIR\driver"
-    Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac2.inf'
-    Exec 'rundll32 libusb0.dll,usb_install_driver_np_rundll idac4.inf'
+    Exec 'rundll32 libusbK.dll,usb_install_driver_np_rundll idac2.inf'
+    Exec 'rundll32 libusbK.dll,usb_install_driver_np_rundll idac4.inf'
 sectionEnd
 
 section "Uninstall"
@@ -146,6 +146,9 @@ section "Uninstall"
     delete $INSTDIR\idc2fpga.hex
     delete $INSTDIR\idc4fpga.hex
     delete $INSTDIR\GcEad.ico
+    delete $INSTDIR\icudt54.dll
+    delete $INSTDIR\icuin54.dll
+    delete $INSTDIR\icuuc54.dll
     delete $INSTDIR\libgcc_s_dw2-1.dll
     delete $INSTDIR\libstdc++-6.dll
     delete $INSTDIR\libwinpthread-1.dll
@@ -162,7 +165,7 @@ section "Uninstall"
     rmdir /r $INSTDIR\imageformats
     rmdir /r $INSTDIR\platforms
     rmdir /r $INSTDIR\printsupport
-    delete $INSTDIR\libusb0.dll
+    delete $INSTDIR\libusbK.dll
     rmdir $INSTDIR\uninstall.exe
     rmdir $INSTDIR
 
