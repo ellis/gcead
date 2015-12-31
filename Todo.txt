@@ -22,9 +22,11 @@
 - [x] Increment GcEad version and year
 - [ ] Update Installables/Windows/driver
     - look in C:\Users\McGoo\usb_driver
+- [ ] Do we need the .CAT files from Zadig?
 - [ ] Update Setup/GcEad*.nsi files
 - [ ] Update README.md regarding library versions
 - [ ] Update README.md for creating Mac package
+- [ ] Update README.md for updating Installables/Windows/driver
 - [ ] Build NSI installers
 - [ ] After upgrading libusb, respond to email from 2014-10-02 and ask them to try again with the new version
 - [ ] switch to HDF5 for file format?
