@@ -24,6 +24,7 @@
     - look in C:\Users\McGoo\usb_driver
 - [ ] Update Setup/GcEad*.nsi files
     - figure out how to distinguish 32/64 bit, since IA64 isn't an option for libusb anymore
+    - remove IA64 check, and set IA64 to X86
 - [ ] Do we need the .CAT files from Zadig?
 - [ ] Update README.md regarding library versions
 - [ ] Update README.md for creating Mac package
