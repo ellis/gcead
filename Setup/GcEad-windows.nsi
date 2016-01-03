@@ -39,10 +39,6 @@ function .onInit
         StrCpy $arch "AMD64"
     ${ElseIf} $1 == "AMD64"
         StrCpy $arch "AMD64"
-    ${ElseIf} $0 == "IA64"
-        StrCpy $arch "ID64"
-    ${ElseIf} $1 == "IA64"
-        StrCpy $arch "IA64"
     ${Else}
         StrCpy $arch "X86"
     ${EndIf}
@@ -81,11 +77,11 @@ section "GcEad/2015"
     file ${MY_SRC_DLL}\Qt5Svg.dll
     file ${MY_SRC_DLL}\Qt5Widgets.dll
     file ${MY_SRC_DLL}\Qt5Xml.dll
-    file ..\..\build-GcEad-Desktop_Qt_5_5_1_MinGW_32bit-Debug\View\release\GcEad.exe
+    file ..\..\build-GcEad-Desktop_Qt_5_5_1_MinGW_32bit-Release\View\release\GcEad.exe
     file /r /x .svn ..\Installables\Windows\driver
-    SetOutPath $INSTDIR\accessible
-    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblequick.dll
-    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblewidgets.dll
+#    SetOutPath $INSTDIR\accessible
+#    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblequick.dll
+#    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblewidgets.dll
     SetOutPath $INSTDIR\iconengines
     file ${MY_SRC_PLUGINS}\iconengines\qsvgicon.dll
     SetOutPath $INSTDIR\imageformats
@@ -122,15 +118,11 @@ section "" secLibusbK
 
     sectionIn RO ; flag this section as required
     ${If} $arch == "X86"
-        file "/oname=$SYSDIR\libusb0.dll" ..\Installables\Windows\driver\x86\libusb0_x86.dll
+        file "/oname=$SYSDIR\libusbK.dll" ..\Installables\Windows\driver\x86\libusbK.dll
     ${ElseIf} $arch == "AMD64"
         ${DisableX64FSRedirection}
         setOutPath "$SYSDIR"
-        file ..\Installables\Windows\driver\amd64\libusb0.dll
-    ${ElseIf} $arch == "IA64"
-        ${DisableX64FSRedirection}
-        setOutPath "$SYSDIR"
-        file ..\Installables\Windows\driver\ia64\libusb0.dll
+        file ..\Installables\Windows\driver\amd64\libusbK.dll
     ${EndIf}
 sectionEnd
 
