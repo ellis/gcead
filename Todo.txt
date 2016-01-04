@@ -24,8 +24,10 @@
 - [ ] Update Setup/GcEad*.nsi files
     - [x] figure out how to distinguish 32/64 bit, since IA64 isn't an option for libusb anymore
     - [x] remove IA64 check, and set IA64 to X86
+    - [x] try windeployqt from http://doc.qt.io/qt-5/windows-deployment.html
+    - [ ] update GcEad*.nsi to copy files from Installables\Windows\windeployqt
     - [ ] try C:\Users\McGoo\Documents\GitHub\gcead\Setup\GcEad-1.2.5-windows-installer.exe
-    - [ ] try windeployqt from http://doc.qt.io/qt-5/windows-deployment.html
+    - [ ] add note to README about running setup_windows.bat
 - [ ] maybe try to remove the debug_and_config CONFIG option from the pro files
 - [ ] Do we need the .CAT files from Zadig?
 - [ ] Update README.md regarding library versions

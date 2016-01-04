@@ -6,3 +6,4 @@ Makefile.Release
 ui_*.h
 release/
 debug/
+Installables/Windows/windeployqt
