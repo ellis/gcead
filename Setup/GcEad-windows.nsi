@@ -16,6 +16,7 @@
 !define MY_SRC_DLL "C:\Qt\5.5\mingw492_32\bin"
 !define MY_SRC_PLUGINS "C:\Qt\5.5\mingw492_32\plugins"
 !define MY_SRC_COMMON "..\Installables"
+!define MY_SRC_DEPLOY "..\Installables\Windows\windeployqt"
 
 name "GcEad/2015 version ${MY_VERSION}"
 outfile "GcEad-${MY_VERSION}-windows-installer.exe"
@@ -65,38 +66,14 @@ section "GcEad/2015"
     file ${MY_SRC_COMMON}\idc2fpga.hex
     file ${MY_SRC_COMMON}\idc4fpga.hex
     file ..\View\images\GcEad.ico
-    file ${MY_SRC_DLL}\icudt54.dll
-    file ${MY_SRC_DLL}\icuin54.dll
-    file ${MY_SRC_DLL}\icuuc54.dll
-    file ${MY_SRC_DLL}\libgcc_s_dw2-1.dll
-    file ${MY_SRC_DLL}\libstdc++-6.dll
-    file ${MY_SRC_DLL}\libwinpthread-1.dll
-    file ${MY_SRC_DLL}\Qt5Core.dll
-    file ${MY_SRC_DLL}\Qt5Gui.dll
-    file ${MY_SRC_DLL}\Qt5PrintSupport.dll
-    file ${MY_SRC_DLL}\Qt5Svg.dll
-    file ${MY_SRC_DLL}\Qt5Widgets.dll
-    file ${MY_SRC_DLL}\Qt5Xml.dll
+    file ${MY_SRC_DEPLOY}\*.dll
+    file /r ${MY_SRC_DEPLOY}\iconengines
+    file /r ${MY_SRC_DEPLOY}\imageformats
+    file /r ${MY_SRC_DEPLOY}\platforms
+    file /r ${MY_SRC_DEPLOY}\printsupport
+    file /r ${MY_SRC_DEPLOY}\translations
     file ..\..\build-GcEad-Desktop_Qt_5_5_1_MinGW_32bit-Release\View\release\GcEad.exe
-    file /r /x .svn ..\Installables\Windows\driver
-#    SetOutPath $INSTDIR\accessible
-#    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblequick.dll
-#    file ${MY_SRC_PLUGINS}\accessible\qtaccessiblewidgets.dll
-    SetOutPath $INSTDIR\iconengines
-    file ${MY_SRC_PLUGINS}\iconengines\qsvgicon.dll
-    SetOutPath $INSTDIR\imageformats
-    file ${MY_SRC_PLUGINS}\imageformats\qtiff.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qmng.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qwbmp.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qtga.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qsvg.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qgif.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qico.dll
-    file ${MY_SRC_PLUGINS}\imageformats\qjpeg.dll
-    SetOutPath $INSTDIR\platforms
-    file ${MY_SRC_PLUGINS}\platforms\qwindows.dll
-    SetOutPath $INSTDIR\printsupport
-    file ${MY_SRC_PLUGINS}\printsupport\windowsprintersupport.dll
+    file /r ..\Installables\Windows\driver
 
     # messagebox MB_OK "Hello world!"
     writeUninstaller $INSTDIR\uninstall.exe"
@@ -138,26 +115,14 @@ section "Uninstall"
     delete $INSTDIR\idc2fpga.hex
     delete $INSTDIR\idc4fpga.hex
     delete $INSTDIR\GcEad.ico
-    delete $INSTDIR\icudt54.dll
-    delete $INSTDIR\icuin54.dll
-    delete $INSTDIR\icuuc54.dll
-    delete $INSTDIR\libgcc_s_dw2-1.dll
-    delete $INSTDIR\libstdc++-6.dll
-    delete $INSTDIR\libwinpthread-1.dll
-    delete $INSTDIR\Qt5Core.dll
-    delete $INSTDIR\Qt5Gui.dll
-    delete $INSTDIR\Qt5PrintSupport.dll
-    delete $INSTDIR\Qt5Svg.dll
-    delete $INSTDIR\Qt5Widgets.dll
-    delete $INSTDIR\Qt5Xml.dll
+    delete $INSTDIR\*.dll
     delete $INSTDIR\GcEad.exe
     rmdir /r $INSTDIR\driver
-    rmdir /r $INSTDIR\accessible
     rmdir /r $INSTDIR\iconengines
     rmdir /r $INSTDIR\imageformats
     rmdir /r $INSTDIR\platforms
     rmdir /r $INSTDIR\printsupport
-    delete $INSTDIR\libusbK.dll
+    rmdir /r $INSTDIR\translations
     rmdir $INSTDIR\uninstall.exe
     rmdir $INSTDIR
 

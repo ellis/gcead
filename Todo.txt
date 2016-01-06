@@ -25,7 +25,8 @@
     - [x] figure out how to distinguish 32/64 bit, since IA64 isn't an option for libusb anymore
     - [x] remove IA64 check, and set IA64 to X86
     - [x] try windeployqt from http://doc.qt.io/qt-5/windows-deployment.html
-    - [ ] update GcEad*.nsi to copy files from Installables\Windows\windeployqt
+    - [x] update GcEad*.nsi to copy files from Installables\Windows\windeployqt
+    - [ ] Try to create a libusbK inf Wizard installer: http://libusbk.sourceforge.net/UsbK3/usbk_installers.html
     - [ ] try C:\Users\McGoo\Documents\GitHub\gcead\Setup\GcEad-1.2.5-windows-installer.exe
     - [ ] add note to README about running setup_windows.bat
 - [ ] maybe try to remove the debug_and_config CONFIG option from the pro files
