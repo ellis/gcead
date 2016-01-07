@@ -91,23 +91,23 @@ sectionEnd
 
 section "" secLibusbK
     ; GcEad.exe seems to require the x86 version of the lib in its same directory
-    file "/oname=$INSTDIR\libusbK.dll" ..\Installables\Windows\driver\x86\libusbK.dll
+    file "/oname=$INSTDIR\libusbK.dll" ..\Installables\Windows\driver\x86\libusbK_x86.dll
 
-    sectionIn RO ; flag this section as required
-    ${If} $arch == "X86"
-        file "/oname=$SYSDIR\libusbK.dll" ..\Installables\Windows\driver\x86\libusbK.dll
-    ${ElseIf} $arch == "AMD64"
-        ${DisableX64FSRedirection}
-        setOutPath "$SYSDIR"
-        file ..\Installables\Windows\driver\amd64\libusbK.dll
-    ${EndIf}
+;    sectionIn RO ; flag this section as required
+;    ${If} $arch == "X86"
+;        file "/oname=$SYSDIR\libusbK.dll" ..\Installables\Windows\driver\x86\libusbK.dll
+;    ${ElseIf} $arch == "AMD64"
+;        ${DisableX64FSRedirection}
+;        setOutPath "$SYSDIR"
+;        file ..\Installables\Windows\driver\amd64\libusbK.dll
+;    ${EndIf}
 sectionEnd
 
 ;section /o "IDAC USB Drivers"
 section $secDriverName secIdacDrivers
     setOutPath "$INSTDIR\driver"
-    Exec 'rundll32 libusbK.dll,usb_install_driver_np_rundll idac2.inf'
-    Exec 'rundll32 libusbK.dll,usb_install_driver_np_rundll idac4.inf'
+    Exec 'InstallDriver.exe'
+    ;Exec 'rundll32 libusbK.dll,usb_install_driver_np_rundll idac4.inf'
 sectionEnd
 
 section "Uninstall"
