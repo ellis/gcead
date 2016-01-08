@@ -28,6 +28,7 @@
     - [x] update GcEad*.nsi to copy files from Installables\Windows\windeployqt
     - [x] Try to create a libusbK inf Wizard installer: http://libusbk.sourceforge.net/UsbK3/usbk_installers.html
     - [ ] try C:\Users\McGoo\Documents\GitHub\gcead\Setup\GcEad-1.2.5-windows-installer.exe
+        - [ ] why isn't InstallDriver.exe working with both .inf files?  Can I put both devices into a single .inf file?
     - [ ] add note to README about running setup_windows.bat
 - [ ] maybe try to remove the debug_and_config CONFIG option from the pro files
 - [ ] Do we need the .CAT files from Zadig?
