@@ -21,13 +21,14 @@
 - [x] Upgrade to newest libusb and get rid of libusb0 for Windows
 - [x] Increment GcEad version and year
 - [x] Update Installables/Windows/driver
+- [ ] Why isn't IDAC4 working?
 - [ ] Update Setup/GcEad*.nsi files
     - [x] figure out how to distinguish 32/64 bit, since IA64 isn't an option for libusb anymore
     - [x] remove IA64 check, and set IA64 to X86
     - [x] try windeployqt from http://doc.qt.io/qt-5/windows-deployment.html
     - [x] update GcEad*.nsi to copy files from Installables\Windows\windeployqt
     - [x] Try to create a libusbK inf Wizard installer: http://libusbk.sourceforge.net/UsbK3/usbk_installers.html
-    - [ ] try C:\Users\McGoo\Documents\GitHub\gcead\Setup\GcEad-1.2.5-windows-installer.exe
+    - [ ] compile NSI installer again and re-try C:\Users\McGoo\Documents\GitHub\gcead\Setup\GcEad-1.2.5-windows-installer.exe
     - [ ] add note to README about running setup_windows.bat
 - [ ] Re-setup libusbK drivers again and document how to do it
     - InfWizard for both IDAC2 and IDAC4, run re-pack-drivers.cmd from git console
