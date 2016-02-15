@@ -10,10 +10,12 @@ COMPAT_SRCDIR := ${BASEDIR}/extern/libusb-compat-0.1
 COMPAT_OBJDIR := ${BASEDIR}/extern/libusb-compat-obj
 COMPAT := ${LIBUSB_OUTDIR}/lib/libusb.a
 
-all: ${LIBUSB} ${COMPAT}
+all: ${LIBUSB} #${COMPAT}
 
 clean:
 	rm -rf ${LIBUSB_OBJDIR} ${LIBUSB_OUTDIR}
+	cd ${LIBUSB_SRCDIR} && git clean -xdf
+	git submodule foreach git pull origin master
 
 ${LIBUSB_SRCDIR}/configure:
 	cd ${LIBUSB_SRCDIR} && ./bootstrap.sh
