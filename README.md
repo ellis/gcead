@@ -74,13 +74,15 @@ Recording objects:
 
 For Ubuntu 15.10, you'll need to install the following packages:
 
-* `sudo apt-get install libudev-dev libtool automake qtcreator`
+* `sudo apt-get install libudev-dev libtool automake qt5-default qtdeclarative5-dev libqt5svg5-dev qtcreator`
 
 If may need to clean the libusb build: ``make -f libusb.mak clean``
 
 Then:
 
 * `make -f libusb.mak`
+* `qmake`
+* `make`
 
 ### Install programs
 
