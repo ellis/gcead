@@ -70,6 +70,20 @@ Recording objects:
   - tells ChartWidget to update itself when in Recording view
   - auto-stops Idac recording when duration is reached
 
+### Building for linux
+
+For Ubuntu 15.10, you'll need to install the following packages:
+
+* `sudo apt-get install libudev-dev libtool automake qt5-default qtdeclarative5-dev libqt5svg5-dev qtcreator`
+
+If may need to clean the libusb build: ``make -f libusb.mak clean``
+
+Then:
+
+* `make -f libusb.mak`
+* `qmake`
+* `make`
+
 ### Install programs
 
 #### Installer for windows
@@ -97,9 +111,9 @@ I have not created a linux installer for a long time.  Back when I did it,
 I used BitRock InstallBuilder to create the installer for Linux.
 
 * build the project
-* cd Setup
-* run: ./copylibs
-* run: $path_to_builder build GcEad-linux.xml linux
+* `cd Setup`
+* run: `./copylibs`
+* run: `$path_to_builder build GcEad-linux.xml linux`
 
 #### Installer for mac
 
