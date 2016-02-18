@@ -50,7 +50,7 @@ private slots:
 	void getData();
 	void on_btnSensDec_clicked();
 	void on_btnSensInc_clicked();
-	void on_spnWindow_valueChanged();
+    void on_spnWindow_valueChanged(int);
 	void on_btnRecord_clicked();
 	void on_btnConnect_clicked();
 	void on_btnOptions_clicked();

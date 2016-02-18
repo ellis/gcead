@@ -64,7 +64,7 @@ RecordDialog::RecordDialog(IdacProxy* idac, QWidget* parent)
 	m_bOptionsDialogOpen = false;
 
 	loadSettings();
-	on_spnWindow_valueChanged();
+    on_spnWindow_valueChanged(0);
 	// This forces the time-axis to be placed in the middle (the value passed is arbitrary)
 	ui.eadSignal->setRange(m_nVoltsPerDivision * 5);
     ui.fidSignal->setRange(20);
@@ -229,7 +229,7 @@ void RecordDialog::on_btnSensInc_clicked()
 	updateSens();
 }
 
-void RecordDialog::on_spnWindow_valueChanged()
+void RecordDialog::on_spnWindow_valueChanged(int)
 {
 	int nSamples = ui.spnWindow->value() * EAD_SAMPLES_PER_SECOND;
 	ui.eadSignal->setSampleCount(nSamples);

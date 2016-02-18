@@ -22,6 +22,7 @@
 - [x] Increment GcEad version and year
 - [x] Update Installables/Windows/driver
 - [ ] Why isn't IDAC4 working?
+    - see IdacDriver4.cpp:473, static int iso_submit(int iTransfer)
 - [ ] Update Setup/GcEad*.nsi files
     - [x] figure out how to distinguish 32/64 bit, since IA64 isn't an option for libusb anymore
     - [x] remove IA64 check, and set IA64 to X86
