@@ -17,7 +17,8 @@ OTHER_FILES += Todo.txt \
     UseCases.txt \
     Notes.md \
     Compiling.txt \
-    README.md
+    README.md \
+    IdacSpecs.md
 
 IdacDriver.depends = Core
 IdacDriver2.depends = IdacDriver
