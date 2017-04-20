@@ -1,0 +1,90 @@
+EAG: einzelnes EAG
+Settings are almost the same as GcEad
+
+need to trigger for a signal response
+
+t: set the total duration, maybe 10s
+pre-trigger time: 1-2s, typically, during which signal is recorded prior to trigger
+
+Measured maximum deviation in mV, duration of deviation, and the steigung into and out of the deviation (less important for most)
+
+a project has many experiments, and an experiment has many recordings.
+EAG should be associated with a stimulus
+
+Later, we compare the responses
+
+Others do this:
+one recording that takes 60s, and multiple stimuli are given during this time.
+The software looks for the maximum deviation after the trigger.
+Trigger is recorded via one of the digital inputs.
+Then the deviations are split into multiple recordings.
+So one experiment would be one long recording with many experiments.
+
+When a trigger is initiated, the signal gets zeroed out for a new baseline.
+
+Recording number get assigned automatically.
+Recordings get IDs, which is editable.  This labels the stimulus.
+Stimulus description can also be set by the user.
+The ID is used for analysis later.
+
+Normalizing:
+The antenna response degrades over time. E.g. might respond with 10mV at the beginning, then only 5mV afterwards
+So you normalize by fitting a regression to the "aging" and then normalize the measurements over time.
+This is done using a control stimulus (which is a "blank" paper that the antenna still responds to).
+
+Also, if you reuse a stimulus, its concentration gets lower over time.  So you need to do the same normalization
+using a reference stimulus that causes a strong response.
+
+Then you can check the other stimulus and what would change if you used that as the reference.
+
+---
+User interface
+
+There are three windows.
+If you click on the project, you see a table of StimID, Stim Description, Count (how often did you record that stimulus), average (mean of amplitudes), standard deviation, minimum, maximum
+The project also has a histogram view (the reference stim may be highlighted in a different color).
+
+From the experiment, you see a thumbnail of each recording.
+Three views: thumbs, table, historgram
+Table: stimId, Stim description, recording (max amplitude), surface(v*s) (area of the deviation, but we don't need it), maximum, threshold (not needed), slope1 (v/s), slope2
+Histogram: for just this experiment
+
+Clikc on recording, and you see the recording osciloscope view.
+A vertical line for the trigger.
+A horizontal line for the zero where the trigger was.
+A dot fot the min
+A dot for the middle of each slope, and a line for each slope.
+The dots need to be movable, and then recalculate automatically.
+
+In the experiment view, you can deselect or delete bad recordings.
+
+Remarks can be entered in the project and experiment views.
+
+In EAG you need to test a lot and a lot of replications.
+So you need to import a simulus list of the compounds you work with.
+
+In the current EAG screen for recording osciloscope, the window is too technical.  Should be simpler.
+Should be more like GcEad.  It should be easier to adjust the view of the signal (the zoom and offset)
+
+
+antenna, stimulus, order
+
+an antenna can be possibly used for multiple experiments if it lasts for a long time,
+so track time of experiments as well.
+
+Uncontrollable factors: age of antenna (so try to use insects with same age),
+physiological status, mated or not.
+
+Add: calculation of required experiment size in order to get desired CI.
+
+Feature: shape recognition for each ID, to have the signals overlayed, to see if there are dramatic variations
+
+Feature: graph of amplitude vs stimulus (ANOVA visualization)
+Feature: graph visualizing whether different stimuli are significantly different than each other
+Featuer: either suggest the randomization order of stimuli, or let the user specify it
+Feature: would be nice to be able to change colors and line thicknesses on graphs
+Feature: work with all the IDACs and the new one
+Feature: export functionality (raw data, analysis data, graphs, tables)
+
+PET123
+ELL049
